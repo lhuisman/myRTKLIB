@@ -53,7 +53,7 @@ extern "C" {
 
 /* constants -----------------------------------------------------------------*/
 
-#define VER_RTKLIB  "2.4.3"             /* library version */
+#define VER_RTKLIB  "2.4.3 demo4"             /* library version */
 
 #define PATCH_LEVEL "b12"               /* patch level */
 
@@ -311,11 +311,12 @@ extern "C" {
 #define PMODE_DGPS   1                  /* positioning mode: DGPS/DGNSS */
 #define PMODE_KINEMA 2                  /* positioning mode: kinematic */
 #define PMODE_STATIC 3                  /* positioning mode: static */
-#define PMODE_MOVEB  4                  /* positioning mode: moving-base */
-#define PMODE_FIXED  5                  /* positioning mode: fixed */
-#define PMODE_PPP_KINEMA 6              /* positioning mode: PPP-kinemaric */
-#define PMODE_PPP_STATIC 7              /* positioning mode: PPP-static */
-#define PMODE_PPP_FIXED 8               /* positioning mode: PPP-fixed */
+#define PMODE_STATIC_START 4            /* positioning mode: static */
+#define PMODE_MOVEB  5                  /* positioning mode: moving-base */
+#define PMODE_FIXED  6                  /* positioning mode: fixed */
+#define PMODE_PPP_KINEMA 7              /* positioning mode: PPP-kinemaric */
+#define PMODE_PPP_STATIC 8              /* positioning mode: PPP-static */
+#define PMODE_PPP_FIXED 9               /* positioning mode: PPP-fixed */
 
 #define SOLF_LLH    0                   /* solution format: lat/lon/height */
 #define SOLF_XYZ    1                   /* solution format: x/y/z-ecef */
@@ -870,6 +871,7 @@ typedef struct {        /* solution type */
     unsigned char ns;   /* number of valid satellites */
     float age;          /* age of differential (s) */
     float ratio;        /* AR ratio factor for valiation */
+	float prev_ratio;   /* previous AR ratio factor for valiation */
     float thres;        /* AR ratio threshold for valiation */
 } sol_t;
 
@@ -986,9 +988,13 @@ typedef struct {        /* processing options type */
     int sateph;         /* satellite ephemeris/clock (EPHOPT_???) */
     int modear;         /* AR mode (0:off,1:continuous,2:instantaneous,3:fix and hold,4:ppp-ar) */
     int glomodear;      /* GLONASS AR mode (0:off,1:on,2:auto cal,3:ext cal) */
+    int gpsmodear;      /* GPS AR mode (0:off,1:on) */
     int bdsmodear;      /* BeiDou AR mode (0:off,1:on) */
+	int arfilter;      /* AR filtering to reject bad sats (0:off,1:on) */
     int maxout;         /* obs outage count to reset bias */
     int minlock;        /* min lock count to fix ambiguity */
+	int minfixsats;     /* min sats to fix integer ambiguities */
+	int minholdsats;    /* min sats to hold integer ambiguities */
     int minfix;         /* min fix count to hold ambiguity */
     int armaxiter;      /* max iteration to resolve ambiguity */
     int ionoopt;        /* ionosphere option (IONOOPT_???) */
@@ -1112,6 +1118,7 @@ typedef struct {        /* satellite status type */
     double azel[2];     /* azimuth/elevation angles {az,el} (rad) */
     double resp[NFREQ]; /* residuals of pseudorange (m) */
     double resc[NFREQ]; /* residuals of carrier-phase (m) */
+	double icbias[NFREQ];  /* glonass IC bias (cycles) */
     unsigned char vsat[NFREQ]; /* valid satellite flag */
     unsigned char snr [NFREQ]; /* signal strength (0.25 dBHz) */
     unsigned char fix [NFREQ]; /* ambiguity fix flag (1:fix,2:float,3:hold) */
@@ -1145,6 +1152,7 @@ typedef struct {        /* RTK control/result type */
     double *x, *P;      /* float states and their covariance */
     double *xa,*Pa;     /* fixed states and their covariance */
     int nfix;           /* number of continuous fixes of ambiguity */
+	double com_bias;    /* phase bias common between all sats (used to be distributed to all sats */
     ambc_t ambc[MAXSAT]; /* ambibuity control */
     ssat_t ssat[MAXSAT]; /* satellite status */
     int neb;            /* bytes in error message buffer */

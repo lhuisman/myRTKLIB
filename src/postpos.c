@@ -361,7 +361,7 @@ static void procpos(FILE *fp, const prcopt_t *popt, const solopt_t *sopt,
     trace(3,"procpos : mode=%d\n",mode);
     
     solstatic=sopt->solstatic&&
-              (popt->mode==PMODE_STATIC||popt->mode==PMODE_PPP_STATIC);
+              (popt->mode==PMODE_STATIC||popt->mode==PMODE_STATIC_START||popt->mode==PMODE_PPP_STATIC);
     
     rtkinit(&rtk,popt);
     rtcm_path[0]='\0';
@@ -456,7 +456,7 @@ static void combres(FILE *fp, const prcopt_t *popt, const solopt_t *sopt)
     trace(3,"combres : isolf=%d isolb=%d\n",isolf,isolb);
     
     solstatic=sopt->solstatic&&
-              (popt->mode==PMODE_STATIC||popt->mode==PMODE_PPP_STATIC);
+              (popt->mode==PMODE_STATIC||popt->mode==PMODE_STATIC_START||popt->mode==PMODE_PPP_STATIC);
     
     for (i=0,j=isolb-1;i<isolf&&j>=0;i++,j--) {
         
@@ -1011,7 +1011,7 @@ static int execses(gtime_t ts, gtime_t te, double ti, const prcopt_t *popt,
             return 0;
         }
     }
-    else if (PMODE_DGPS<=popt_.mode&&popt_.mode<=PMODE_STATIC) {
+    else if (PMODE_DGPS<=popt_.mode&&popt_.mode<=PMODE_STATIC_START) {
         if (!antpos(&popt_,2,&obss,&navs,stas,fopt->stapos)) {
             freeobsnav(&obss,&navs);
             return 0;
