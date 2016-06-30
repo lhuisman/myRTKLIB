@@ -566,7 +566,7 @@ static void prstatus(vt_t *vt)
     const char *svrstate[]={"stop","run"},*type[]={"rover","base","corr"};
     const char *sol[]={"-","fix","float","SBAS","DGPS","single","PPP",""};
     const char *mode[]={
-         "single","DGPS","kinematic","static","moving-base","fixed",
+         "single","DGPS","kinematic","static","static-start","moving-base","fixed",
          "PPP-kinema","PPP-static"
     };
     const char *freq[]={"-","L1","L1+L2","L1+L2+L5","","",""};
