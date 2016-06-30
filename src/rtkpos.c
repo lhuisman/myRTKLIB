@@ -1580,8 +1580,6 @@ static void holdamb(rtk_t *rtk, const double *xa)
             }
         }
     }
-    /* switch to kinematic after hold if in static-start mode */
-    if (rtk->opt.mode==PMODE_STATIC_START) rtk->opt.mode=PMODE_KINEMA;
 }
 /* resolve integer ambiguity by LAMBDA ---------------------------------------*/
 static int resamb_LAMBDA(rtk_t *rtk, double *bias, double *xa,int gps,int glo,int sbs)
@@ -1946,9 +1944,12 @@ static int relpos(rtk_t *rtk, const obsd_t *obs, int nu, int nr,
             if (valpos(rtk,v,R,vflg,nv,4.0)) {
                 
                     /* hold integer ambiguity if meet minfix count */
-                if (++rtk->nfix>=rtk->opt.minfix&&
-                    rtk->opt.modear==ARMODE_FIXHOLD) {
-                    holdamb(rtk,xa);
+                if (++rtk->nfix>=rtk->opt.minfix) {
+                    if (rtk->opt.modear==ARMODE_FIXHOLD) 
+                        holdamb(rtk,xa);
+                    /* switch to kinematic after qualify for hold if in static-start mode */
+                    if (rtk->opt.mode==PMODE_STATIC_START) 
+                        rtk->opt.mode=PMODE_KINEMA;
                 }
                 stat=SOLQ_FIX;
             }
