@@ -1138,7 +1138,7 @@ static int ddres(rtk_t *rtk, const nav_t *nav, double dt, const double *x,
                  double *H, double *R, int *vflg)
 {
     prcopt_t *opt=&rtk->opt;
-    double bl,dr[3],posu[3],posr[3],didxi=0.0,didxj=0.0,*im,icb,Rv;
+    double bl,dr[3],posu[3],posr[3],didxi=0.0,didxj=0.0,*im,icb;
     double *tropr,*tropu,*dtdxr,*dtdxu,*Ri,*Rj,lami,lamj,fi,fj,df,*Hi=NULL;
     int i,j,k,m,f,ff,nv=0,nb[NFREQ*4*2+2]={0},b=0,sysi,sysj,nf=NF(opt);
     
@@ -1293,13 +1293,6 @@ static int ddres(rtk_t *rtk, const nav_t *nav, double dt, const double *x,
             /* single-differenced measurement error variances */
             Ri[nv]=varerr(sat[i],sysi,azel[1+iu[i]*2],bl,dt,f,opt);
             Rj[nv]=varerr(sat[j],sysj,azel[1+iu[j]*2],bl,dt,f,opt);
-
-            /* adjust measurement error variances for missing samples if have velocity estimate */
-            if (dt>0&&rtk->opt.dynamics) {
-                Rv=dt*sqrt(SQR(rtk->x[3])+SQR(rtk->x[4])+SQR(rtk->x[5]));
-                Ri[nv]+=Rv;
-                Rj[nv]+=Rv;
-            }
             
             /* set valid data flags */
             if (opt->mode>PMODE_DGPS) {
