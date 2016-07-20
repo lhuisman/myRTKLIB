@@ -1170,83 +1170,83 @@ static int ddres(rtk_t *rtk, const nav_t *nav, double dt, const double *x,
     }
     /* step through sat systems: m=0:gps/qzs/sbs,1:glo,2:gal,3:bds */
     for (m=0;m<4;m++) { 
-    
+
         /* step through phase/code, f=0: phase, f=1: code */
-    for (f=opt->mode>PMODE_DGPS?0:nf;f<nf*2;f++) {
-        
+        for (f=opt->mode>PMODE_DGPS?0:nf;f<nf*2;f++) {
+
             /* find reference satellite with highest elevation, set to i */
-        for (i=-1,j=0;j<ns;j++) {
-            sysi=rtk->ssat[sat[j]-1].sys;
-                if (!test_sys(sysi,m) || sysi==SYS_SBS) continue;
-            if (!validobs(iu[j],ir[j],f,nf,y)) continue;
-            if (i<0||azel[1+iu[j]*2]>=azel[1+iu[i]*2]) i=j;
-        }
-        if (i<0) continue;
+            for (i=-1,j=0;j<ns;j++) {
+                sysi=rtk->ssat[sat[j]-1].sys;
+                    if (!test_sys(sysi,m) || sysi==SYS_SBS) continue;
+                if (!validobs(iu[j],ir[j],f,nf,y)) continue;
+                if (i<0||azel[1+iu[j]*2]>=azel[1+iu[i]*2]) i=j;
+            }
+            if (i<0) continue;
         
             /* calculate double differences of residuals (code/phase) for each sat */
-        for (j=0;j<ns;j++) {
+            for (j=0;j<ns;j++) {
                 if (i==j) continue;  /* skip ref sat */
-            sysi=rtk->ssat[sat[i]-1].sys;
-            sysj=rtk->ssat[sat[j]-1].sys;
-            if (!test_sys(sysj,m)) continue;
-            if (!validobs(iu[j],ir[j],f,nf,y)) continue;
+                sysi=rtk->ssat[sat[i]-1].sys;
+                sysj=rtk->ssat[sat[j]-1].sys;
+                if (!test_sys(sysj,m)) continue;
+                if (!validobs(iu[j],ir[j],f,nf,y)) continue;
             
-            ff=f%nf;
-            lami=nav->lam[sat[i]-1][ff];
-            lamj=nav->lam[sat[j]-1][ff];
-            if (lami<=0.0||lamj<=0.0) continue;
-            if (H) Hi=H+nv*rtk->nx;
+                ff=f%nf;
+                lami=nav->lam[sat[i]-1][ff];
+                lamj=nav->lam[sat[j]-1][ff];
+                if (lami<=0.0||lamj<=0.0) continue;
+                if (H) Hi=H+nv*rtk->nx;
             
                 /* double-differenced measurements from 2 receivers and 2 sats in meters */
-            v[nv]=(y[f+iu[i]*nf*2]-y[f+ir[i]*nf*2])-
-                  (y[f+iu[j]*nf*2]-y[f+ir[j]*nf*2]);
+                v[nv]=(y[f+iu[i]*nf*2]-y[f+ir[i]*nf*2])-
+                      (y[f+iu[j]*nf*2]-y[f+ir[j]*nf*2]);
             
                 /* partial derivatives by rover position, combine unit vectors from two sats */
-            if (H) {
-                for (k=0;k<3;k++) {
-                        Hi[k]=-e[k+iu[i]*3]+e[k+iu[j]*3];  /* translation of innovation to position states */
-                }
-            }
-            if (opt->ionoopt==IONOOPT_EST) {
-                    /* adjust double-differenced measurements by double-differenced ionospheric delay term */
-                fi=lami/lam_carr[0]; fj=lamj/lam_carr[0];
-                didxi=(f<nf?-1.0:1.0)*fi*fi*im[i];
-                didxj=(f<nf?-1.0:1.0)*fj*fj*im[j];
-                v[nv]-=didxi*x[II(sat[i],opt)]-didxj*x[II(sat[j],opt)];
                 if (H) {
-                    Hi[II(sat[i],opt)]= didxi;
-                    Hi[II(sat[j],opt)]=-didxj;
+                    for (k=0;k<3;k++) {
+                        Hi[k]=-e[k+iu[i]*3]+e[k+iu[j]*3];  /* translation of innovation to position states */
+                    }
                 }
-            }
-            if (opt->tropopt==TROPOPT_EST||opt->tropopt==TROPOPT_ESTG) {
+                if (opt->ionoopt==IONOOPT_EST) {
+                    /* adjust double-differenced measurements by double-differenced ionospheric delay term */
+                    fi=lami/lam_carr[0]; fj=lamj/lam_carr[0];
+                    didxi=(f<nf?-1.0:1.0)*fi*fi*im[i];
+                    didxj=(f<nf?-1.0:1.0)*fj*fj*im[j];
+                    v[nv]-=didxi*x[II(sat[i],opt)]-didxj*x[II(sat[j],opt)];
+                    if (H) {
+                        Hi[II(sat[i],opt)]= didxi;
+                        Hi[II(sat[j],opt)]=-didxj;
+                    }
+                }
+                if (opt->tropopt==TROPOPT_EST||opt->tropopt==TROPOPT_ESTG) {
                     /* adjust double-differenced measurements by double-differenced tropospheric delay term */
-                v[nv]-=(tropu[i]-tropu[j])-(tropr[i]-tropr[j]);
-                for (k=0;k<(opt->tropopt<TROPOPT_ESTG?1:3);k++) {
-                    if (!H) continue;
-                    Hi[IT(0,opt)+k]= (dtdxu[k+i*3]-dtdxu[k+j*3]);
-                    Hi[IT(1,opt)+k]=-(dtdxr[k+i*3]-dtdxr[k+j*3]);
+                    v[nv]-=(tropu[i]-tropu[j])-(tropr[i]-tropr[j]);
+                    for (k=0;k<(opt->tropopt<TROPOPT_ESTG?1:3);k++) {
+                        if (!H) continue;
+                        Hi[IT(0,opt)+k]= (dtdxu[k+i*3]-dtdxu[k+j*3]);
+                        Hi[IT(1,opt)+k]=-(dtdxr[k+i*3]-dtdxr[k+j*3]);
+                    }
                 }
-            }
-            if (f<nf) {
+                if (f<nf) {
                     /* adjust phase residual by double-differenced phase-bias term,
                           IB=look up index by sat&freq */
-                if (opt->ionoopt!=IONOOPT_IFLC) {
+                    if (opt->ionoopt!=IONOOPT_IFLC) {
                         /* phase-bias states are single-differenced so need to difference them */
-                    v[nv]-=lami*x[IB(sat[i],f,opt)]-lamj*x[IB(sat[j],f,opt)];
-                    if (H) {
-                        Hi[IB(sat[i],f,opt)]= lami;
-                        Hi[IB(sat[j],f,opt)]=-lamj;
+                        v[nv]-=lami*x[IB(sat[i],f,opt)]-lamj*x[IB(sat[j],f,opt)];
+                        if (H) {
+                            Hi[IB(sat[i],f,opt)]= lami;
+                            Hi[IB(sat[j],f,opt)]=-lamj;
+                        }
+                    }
+                    else {
+                        v[nv]-=x[IB(sat[i],f,opt)]-x[IB(sat[j],f,opt)];
+                        if (H) {
+                            Hi[IB(sat[i],f,opt)]= 1.0;
+                            Hi[IB(sat[j],f,opt)]=-1.0;
+                        }
                     }
                 }
-                else {
-                    v[nv]-=x[IB(sat[i],f,opt)]-x[IB(sat[j],f,opt)];
-                    if (H) {
-                        Hi[IB(sat[i],f,opt)]= 1.0;
-                        Hi[IB(sat[j],f,opt)]=-1.0;
-                    }
-                }
-            }
-    
+        
     
                 /* adjust double-difference for glonass sats */
                 if (sysi==SYS_GLO&&sysj==SYS_GLO) {
@@ -1281,54 +1281,55 @@ static int ddres(rtk_t *rtk, const nav_t *nav, double dt, const double *x,
                 else      rtk->ssat[sat[j]-1].resp[f-nf]=v[nv];  /* pseudorange measurements */
 
                 /* if residual too large, flag as outlier */
-            if (opt->maxinno>0.0&&fabs(v[nv])>opt->maxinno) {
-                if (f<nf) {
-                    rtk->ssat[sat[i]-1].rejc[f]++;
-                    rtk->ssat[sat[j]-1].rejc[f]++;
+                if (opt->maxinno>0.0&&fabs(v[nv])>opt->maxinno) {
+                    if (f<nf) {
+                        rtk->ssat[sat[i]-1].rejc[f]++;
+                        rtk->ssat[sat[j]-1].rejc[f]++;
+                    }
+                    errmsg(rtk,"outlier rejected (sat=%3d-%3d %s%d v=%.3f)\n",
+                            sat[i],sat[j],f<nf?"L":"P",f%nf+1,v[nv]);
+                    continue;
                 }
-                errmsg(rtk,"outlier rejected (sat=%3d-%3d %s%d v=%.3f)\n",
-                       sat[i],sat[j],f<nf?"L":"P",f%nf+1,v[nv]);
-                continue;
-            }
-            /* single-differenced measurement error variances */
-            Ri[nv]=varerr(sat[i],sysi,azel[1+iu[i]*2],bl,dt,f,opt);
-            Rj[nv]=varerr(sat[j],sysj,azel[1+iu[j]*2],bl,dt,f,opt);
+                /* single-differenced measurement error variances */
+                Ri[nv]=varerr(sat[i],sysi,azel[1+iu[i]*2],bl,dt,f,opt);
+                Rj[nv]=varerr(sat[j],sysj,azel[1+iu[j]*2],bl,dt,f,opt);
             
-            /* set valid data flags */
-            if (opt->mode>PMODE_DGPS) {
-                if (f<nf) rtk->ssat[sat[i]-1].vsat[f]=rtk->ssat[sat[j]-1].vsat[f]=1;
-            }
-            else {
-                rtk->ssat[sat[i]-1].vsat[f-nf]=rtk->ssat[sat[j]-1].vsat[f-nf]=1;
-            }
+                /* set valid data flags */
+                if (opt->mode>PMODE_DGPS) {
+                    if (f<nf) rtk->ssat[sat[i]-1].vsat[f]=rtk->ssat[sat[j]-1].vsat[f]=1;
+                }
+                else {
+                    rtk->ssat[sat[i]-1].vsat[f-nf]=rtk->ssat[sat[j]-1].vsat[f-nf]=1;
+                }
     
                 icb=rtk->ssat[sat[i]-1].icbias[f]*lami - rtk->ssat[sat[j]-1].icbias[f]*lamj;
                 trace(3,"sat=%3d-%3d %s%d v=%13.3f R=%8.6f %8.6f icb=%9.6f\n",sat[i],
-                      sat[j],f<nf?"L":"P",f%nf+1,v[nv],Ri[nv],Rj[nv],icb);
+                        sat[j],f<nf?"L":"P",f%nf+1,v[nv],Ri[nv],Rj[nv],icb);
             
-            vflg[nv++]=(sat[i]<<16)|(sat[j]<<8)|((f<nf?0:1)<<4)|(f%nf);
-            nb[b]++;
-        }
-    #if 0 /* residuals referenced to reference satellite (2.4.2 p11) */
-        /* restore single-differenced residuals assuming sum equal zero */
-        if (f<nf) {
-            for (j=0,s=0.0;j<MAXSAT;j++) s+=rtk->ssat[j].resc[f];
-            s/=nb[b]+1;
-            for (j=0;j<MAXSAT;j++) {
-                if (j==sat[i]-1||rtk->ssat[j].resc[f]!=0.0) rtk->ssat[j].resc[f]-=s;
+                vflg[nv++]=(sat[i]<<16)|(sat[j]<<8)|((f<nf?0:1)<<4)|(f%nf);
+                nb[b]++;
             }
-        }
-        else {
-            for (j=0,s=0.0;j<MAXSAT;j++) s+=rtk->ssat[j].resp[f-nf];
-            s/=nb[b]+1;
-            for (j=0;j<MAXSAT;j++) {
-                if (j==sat[i]-1||rtk->ssat[j].resp[f-nf]!=0.0)
-                    rtk->ssat[j].resp[f-nf]-=s;
+
+        #if 0 /* residuals referenced to reference satellite (2.4.2 p11) */
+            /* restore single-differenced residuals assuming sum equal zero */
+            if (f<nf) {
+                for (j=0,s=0.0;j<MAXSAT;j++) s+=rtk->ssat[j].resc[f];
+                s/=nb[b]+1;
+                for (j=0;j<MAXSAT;j++) {
+                    if (j==sat[i]-1||rtk->ssat[j].resc[f]!=0.0) rtk->ssat[j].resc[f]-=s;
+                }
             }
+            else {
+                for (j=0,s=0.0;j<MAXSAT;j++) s+=rtk->ssat[j].resp[f-nf];
+                s/=nb[b]+1;
+                for (j=0;j<MAXSAT;j++) {
+                    if (j==sat[i]-1||rtk->ssat[j].resp[f-nf]!=0.0)
+                        rtk->ssat[j].resp[f-nf]-=s;
+                }
+            }
+        #endif
+            b++;
         }
-    #endif
-        b++;
-    }
     }    /* end of system loop */
     
     /* baseline length constraint for moving baseline */
@@ -1514,6 +1515,7 @@ static void holdamb(rtk_t *rtk, const double *xa)
         }
     }
     if (nv>=rtk->opt.minholdsats-1) {  /* nv=sat pairs, so subtract 1 */
+
         R=zeros(nv,nv);
         for (i=0;i<nv;i++) R[i+i*nv]=VAR_HOLDAMB;
         
@@ -1916,7 +1918,7 @@ static int relpos(rtk_t *rtk, const obsd_t *obs, int nu, int nr,
         /* if fix-and-hold gloarmode enabled, re-run AR with final gps/glo settings if differ from above */
         if (rtk->opt.glomodear==3) {
             /* turn off gloarmode if no fix or not enabled */
-            glo2=rtk->opt.glomodear==0||rtk->sol.ratio<rtk->opt.thresar[0]?0:1;  
+            glo2=rtk->opt.glomodear==0||rtk->sol.ratio<rtk->opt.thresar[0]?0:1;
             /* turn off gpsmode if not enabled and got good fix (used for debug and eval only) */
             gps2=rtk->opt.gpsmodear==0&&rtk->sol.ratio>=rtk->opt.thresar[0]?0:1;  
 
@@ -1927,27 +1929,27 @@ static int relpos(rtk_t *rtk, const obsd_t *obs, int nu, int nr,
     
         /* if valid fixed solution, process it */
         if (result>1) {
-        /* find zero-diff residuals for fixed solution */
-        if (zdres(0,obs,nu,rs,dts,svh,nav,xa,opt,0,y,e,azel)) {
-            
-            /* post-fit residuals for fixed solution (xa includes fixed phase biases, rtk->xa does not) */
-            nv=ddres(rtk,nav,dt,xa,NULL,sat,y,e,azel,iu,ir,ns,v,NULL,R,vflg);
-            
-            /* validation of fixed solution, always returns valid */
-            if (valpos(rtk,v,R,vflg,nv,4.0)) {
+            /* find zero-diff residuals for fixed solution */
+            if (zdres(0,obs,nu,rs,dts,svh,nav,xa,opt,0,y,e,azel)) {
                 
-                    /* hold integer ambiguity if meet minfix count */
-                if (++rtk->nfix>=rtk->opt.minfix) {
-                    if (rtk->opt.modear==ARMODE_FIXHOLD) 
-                        holdamb(rtk,xa);
-                    /* switch to kinematic after qualify for hold if in static-start mode */
-                    if (rtk->opt.mode==PMODE_STATIC_START) 
-                        rtk->opt.mode=PMODE_KINEMA;
+                /* post-fit residuals for fixed solution (xa includes fixed phase biases, rtk->xa does not) */
+                nv=ddres(rtk,nav,dt,xa,NULL,sat,y,e,azel,iu,ir,ns,v,NULL,R,vflg);
+                
+                /* validation of fixed solution, always returns valid */
+                if (valpos(rtk,v,R,vflg,nv,4.0)) {
+                    
+                        /* hold integer ambiguity if meet minfix count */
+                    if (++rtk->nfix>=rtk->opt.minfix) {
+                        if (rtk->opt.modear==ARMODE_FIXHOLD) 
+                            holdamb(rtk,xa);
+                        /* switch to kinematic after qualify for hold if in static-start mode */
+                        if (rtk->opt.mode==PMODE_STATIC_START) 
+                            rtk->opt.mode=PMODE_KINEMA;
+                    }
+                    stat=SOLQ_FIX;
                 }
-                stat=SOLQ_FIX;
             }
         }
-    }
     }
 
     /* save solution status (fixed or float) */
