@@ -1153,7 +1153,8 @@ typedef struct {        /* RTK control/result type */
     double *xa,*Pa;     /* fixed states and their covariance */
     int nfix;           /* number of continuous fixes of ambiguity */
 	double com_bias;    /* phase bias common between all sats (used to be distributed to all sats */
-    ambc_t ambc[MAXSAT]; /* ambibuity control */
+    char holdamb;       /* set if fix-and-hold has occurred at least once */
+    ambc_t ambc[MAXSAT]; /* ambiguity control */
     ssat_t ssat[MAXSAT]; /* satellite status */
     int neb;            /* bytes in error message buffer */
     char errbuf[MAXERRMSG]; /* error message buffer */

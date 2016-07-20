@@ -1489,6 +1489,7 @@ static void holdamb(rtk_t *rtk, const double *xa)
     double dd,sum;
     
     trace(3,"holdamb :\n");
+    rtk->holdamb=1;  /* set flag to indicate hold has occurred */
     
     v=mat(nb,1); H=zeros(nb,rtk->nx);
     
@@ -1514,7 +1515,8 @@ static void holdamb(rtk_t *rtk, const double *xa)
             nv++;
         }
     }
-    if (nv>=rtk->opt.minholdsats-1) {  /* nv=sat pairs, so subtract 1 */
+    /* return if less than min sats for hold */
+    if (nv<rtk->opt.minholdsats-1) return;  /* nv=sat pairs, so subtract 1 */
 
         R=zeros(nv,nv);
         for (i=0;i<nv;i++) R[i+i*nv]=VAR_HOLDAMB;
@@ -1523,9 +1525,7 @@ static void holdamb(rtk_t *rtk, const double *xa)
         if ((info=filter(rtk->x,rtk->P,H,v,R,rtk->nx,nv))) {
             errmsg(rtk,"filter error (info=%d)\n",info);
         }
-        free(R);
-    }
-    free(v); free(H);
+    free(R);free(v); free(H);
 
     /* skip glonass/sbs icbias update if not enabled */
     if (rtk->opt.glomodear!=3) return;
@@ -1737,7 +1737,7 @@ static int relpos(rtk_t *rtk, const obsd_t *obs, int nu, int nr,
     int i,j,f,n=nu+nr,ns,ny,nv,sat[MAXSAT],iu[MAXSAT],ir[MAXSAT],niter;
     int info,vflg[MAXOBS*NFREQ*2+1],svh[MAXOBS*2];
     int stat=rtk->opt.mode<=PMODE_DGPS?SOLQ_DGPS:SOLQ_FLOAT;
-    int nf=opt->ionoopt==IONOOPT_IFLC?1:opt->nf,gps1,glo1,gps2,glo2,result,rerun;
+    int nf=opt->ionoopt==IONOOPT_IFLC?1:opt->nf,gps1=0,glo1=0,gps2,glo2,result,rerun;
     
     trace(3,"relpos  : nx=%d nu=%d nr=%d\n",rtk->nx,nu,nr);
     
@@ -1885,33 +1885,35 @@ static int relpos(rtk_t *rtk, const obsd_t *obs, int nu, int nr,
     }
     /* else resolve integer ambiguity by LAMBDA */
     else if (stat!=SOLQ_NONE) {
-        
-        /* for inital ambiguity resolution attempt, include all enabled sats 
-               bias and xa are fixed solution outputs and are only updated if the ambiguities are resolved */
-        gps1=1;    /* always enable gps for initial pass */
-        glo1=rtk->opt.glomodear>0?1:0;
-        result=resamb_LAMBDA(rtk,bias,xa,gps1,glo1,glo1);
-        ratio1=rtk->sol.ratio;
-        /* reject bad satellites if AR filtering enabled */
-        if (rtk->opt.arfilter>0) {
-            /* if results are much poorer than previous epoch, remove new sats */
-            rerun=0;
-            if (result>=0 && rtk->sol.ratio<rtk->opt.thresar[0]*2 && rtk->sol.ratio<rtk->sol.prev_ratio/2.0) {
-                trace(3,"low ratio: check for new sat\n");
-                for (i=0;i<ns;i++) for (f=0;f<nf;f++) {
-                    if (!rtk->ssat[sat[i]-1].vsat[f]) continue;
-                    if (rtk->ssat[sat[i]-1].lock[f]==1) { /* new sat */
-                        trace(3,"lock %d:%d: %6.2f\n",sat[i],f,rtk->ssat[sat[i]-1].lock[f]);
-                        rtk->ssat[sat[i]-1].lock[f]=-rtk->opt.minlock/4;  /* delay use of this sat */
-                        rerun=1;
+        /* skip first try if GLO fix-and-hold enabled and IC biases haven't been set yet */
+        if (rtk->opt.glomodear!=3 || rtk->holdamb) {  
+            /* for inital ambiguity resolution attempt, include all enabled sats 
+                   bias and xa are fixed solution outputs and are only updated if the ambiguities are resolved */
+            gps1=1;    /* always enable gps for initial pass */
+            glo1=rtk->opt.glomodear>0?1:0;
+            result=resamb_LAMBDA(rtk,bias,xa,gps1,glo1,glo1);
+            ratio1=rtk->sol.ratio;
+            /* reject bad satellites if AR filtering enabled */
+            if (rtk->opt.arfilter>0) {
+                /* if results are much poorer than previous epoch, remove new sats */
+                rerun=0;
+                if (result>=0 && rtk->sol.ratio<rtk->opt.thresar[0]*2 && rtk->sol.ratio<rtk->sol.prev_ratio/2.0) {
+                    trace(3,"low ratio: check for new sat\n");
+                    for (i=0;i<ns;i++) for (f=0;f<nf;f++) {
+                        if (!rtk->ssat[sat[i]-1].vsat[f]) continue;
+                        if (rtk->ssat[sat[i]-1].lock[f]==1) { /* new sat */
+                            trace(3,"lock %d:%d: %6.2f\n",sat[i],f,rtk->ssat[sat[i]-1].lock[f]);
+                            rtk->ssat[sat[i]-1].lock[f]=-rtk->opt.minlock/4;  /* delay use of this sat */
+                            rerun=1;
+                        }
                     }
                 }
-            }
-            rtk->sol.prev_ratio=ratio1;
-            /* rerun if filter removed any sats */
-            if (rerun) {
-                trace(3,"rerun AR with new sat removed\n");
-                result=resamb_LAMBDA(rtk,bias,xa,gps1,glo1,glo1);
+                rtk->sol.prev_ratio=ratio1;
+                /* rerun if filter removed any sats */
+                if (rerun) {
+                    trace(3,"rerun AR with new sat removed\n");
+                    result=resamb_LAMBDA(rtk,bias,xa,gps1,glo1,glo1);
+                }
             }
         }
         
@@ -2023,6 +2025,7 @@ extern void rtkinit(rtk_t *rtk, const prcopt_t *opt)
         rtk->ambc[i]=ambc0;
         rtk->ssat[i]=ssat0;
     }
+    rtk->holdamb=0;
     for (i=0;i<MAXERRMSG;i++) rtk->errbuf[i]=0;
     rtk->opt=*opt;
 }
