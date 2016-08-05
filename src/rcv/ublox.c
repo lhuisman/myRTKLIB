@@ -220,10 +220,12 @@ static int decode_rxmrawx(raw_t *raw)
 {
     gtime_t time;
     double tow,cp1,pr1,tadj=0.0,toff=0.0,freq,tn;
-    int i,j,sys,prn,sat,n=0,nsat,week,tstat,lockt,halfc,fcn;
+    int i,j,sys,prn,sat,n=0,nsat,week,tstat,lockt,halfc,fcn,cpstd;
     char *q;
     unsigned char *p=raw->buff+6;
-    
+
+    #define STD_SLIP 4  /* carrier phase stdev threshold for cycle-slip */
+
     trace(4,"decode_rxmrawx: len=%d\n",raw->len);
     
     nsat=U1(p+11);
@@ -260,9 +262,11 @@ static int decode_rxmrawx(raw_t *raw)
             trace(2,"ubx rxmrawx sat number error: sys=%2d prn=%2d\n",sys,prn);
             continue;
         }
-        tstat=U1(p+30); /* tracking status */
+        cpstd=U1(p+28)&15;   /* carrier phase stdev */
+        tstat=U1(p+30);      /* tracking status */
         pr1=tstat&1?R8(p  ):0.0;
-        cp1=tstat&2?R8(p+8):0.0;
+        /* indicate phase ok if locked and std<=slip threshold */
+        cp1=tstat&2&&cpstd<=STD_SLIP?R8(p+8):0.0;
         if (cp1==-0.5) cp1=0.0; /* invalid phase */
         raw->obs.data[n].sat=sat;
         raw->obs.data[n].time=time;
@@ -279,7 +283,8 @@ static int decode_rxmrawx(raw_t *raw)
         }
         raw->obs.data[n].D[0]=R4(p+16);
         raw->obs.data[n].SNR[0]=U1(p+26)*4;
-        raw->obs.data[n].LLI[0]=0;
+        /* indicate slip occurred if phase std>=slip threshold */
+        raw->obs.data[n].LLI[0]=cpstd>=STD_SLIP?1:0;
         raw->obs.data[n].code[0]=
             sys==SYS_CMP?CODE_L1I:(sys==SYS_GAL?CODE_L1X:CODE_L1C);
         
