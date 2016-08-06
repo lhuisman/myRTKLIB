@@ -1354,7 +1354,7 @@ extern int outnmea_gsv(unsigned char *buff, const sol_t *sol,
 extern int outprcopts(unsigned char *buff, const prcopt_t *opt)
 {
     const int sys[]={SYS_GPS,SYS_GLO,SYS_GAL,SYS_QZS,SYS_SBS,0};
-    const char *s1[]={"single","dgps","kinematic","static","moving-base","fixed",
+    const char *s1[]={"single","dgps","kinematic","static","static-start","moving-base","fixed",
                  "ppp-kinematic","ppp-static","ppp-fixed",""};
     const char *s2[]={"L1","L1+L2","L1+L2+L5","L1+L2+L5+L6","L1+L2+L5+L6+L7",
                       "L1+L2+L5+L6+L7+L8",""};
@@ -1366,7 +1366,7 @@ extern int outprcopts(unsigned char *buff, const prcopt_t *opt)
                       "broadcast+ssr com","qzss lex",""};
     const char *s7[]={"gps","glonass","galileo","qzss","sbas",""};
     const char *s8[]={"off","continuous","instantaneous","fix and hold",""};
-    const char *s9[]={"off","on","auto calib","external calib",""};
+    const char *s9[]={"off","on","auto calib","fix and hold","external calib",""};
     int i;
     char *p=(char *)buff;
     
