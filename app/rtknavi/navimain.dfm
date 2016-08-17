@@ -5,9 +5,9 @@ object MainForm: TMainForm
   Caption = 'RTKNAVI'
   ClientHeight = 273
   ClientWidth = 566
-  Color = clBtnFace
-  Constraints.MaxHeight = 1200
-  Constraints.MaxWidth = 1600
+  Color = clWindow
+  Constraints.MaxHeight = 800
+  Constraints.MaxWidth = 1200
   Constraints.MinHeight = 311
   Constraints.MinWidth = 220
   Font.Charset = ANSI_CHARSET
@@ -51,7 +51,7 @@ object MainForm: TMainForm
       BevelOuter = bvNone
       Color = clWindow
       Constraints.MaxHeight = 768
-      Constraints.MaxWidth = 1024
+      Constraints.MaxWidth = 1200
       Constraints.MinHeight = 170
       Constraints.MinWidth = 182
       ParentBackground = False
@@ -262,6 +262,7 @@ object MainForm: TMainForm
           ParentFont = False
           TabOrder = 1
           OnClick = BtnSaveClick
+          ExplicitTop = 0
         end
       end
       object Panel212: TPanel
@@ -342,8 +343,8 @@ object MainForm: TMainForm
         Align = alLeft
         BevelOuter = bvNone
         Color = clWhite
-        Constraints.MaxHeight = 768
-        Constraints.MaxWidth = 1024
+        Constraints.MaxHeight = 1000
+        Constraints.MaxWidth = 1200
         Constraints.MinHeight = 170
         Constraints.MinWidth = 188
         TabOrder = 0
@@ -351,14 +352,14 @@ object MainForm: TMainForm
         object Disp1: TImage
           Left = 0
           Top = 0
-          Width = 1024
-          Height = 768
+          Width = 1200
+          Height = 1000
         end
         object Plot1: TImage
           Left = 0
           Top = 0
-          Width = 1024
-          Height = 768
+          Width = 1200
+          Height = 1000
           Visible = False
         end
         object BtnFreqType1: TSpeedButton
@@ -468,8 +469,8 @@ object MainForm: TMainForm
         Align = alClient
         BevelOuter = bvNone
         Color = clWhite
-        Constraints.MaxHeight = 768
-        Constraints.MaxWidth = 1024
+        Constraints.MaxHeight = 1000
+        Constraints.MaxWidth = 1200
         Constraints.MinHeight = 170
         Constraints.MinWidth = 188
         TabOrder = 1
@@ -1094,7 +1095,6 @@ object MainForm: TMainForm
       Align = alRight
       BevelOuter = bvNone
       TabOrder = 0
-      ExplicitLeft = 361
       object Image1: TImage
         Left = 63
         Top = 3
@@ -1226,6 +1226,7 @@ object MainForm: TMainForm
         Height = 14
         BevelInner = bvRaised
         BevelOuter = bvLowered
+        Color = clWindow
         ParentBackground = False
         TabOrder = 0
       end
@@ -1236,6 +1237,7 @@ object MainForm: TMainForm
         Height = 14
         BevelInner = bvRaised
         BevelOuter = bvLowered
+        Color = clWindow
         ParentBackground = False
         TabOrder = 1
       end
@@ -1246,6 +1248,7 @@ object MainForm: TMainForm
         Height = 14
         BevelInner = bvRaised
         BevelOuter = bvLowered
+        Color = clWindow
         ParentBackground = False
         TabOrder = 2
       end
@@ -1256,6 +1259,7 @@ object MainForm: TMainForm
         Height = 14
         BevelInner = bvRaised
         BevelOuter = bvLowered
+        Color = clWindow
         ParentBackground = False
         TabOrder = 3
       end
@@ -1266,6 +1270,7 @@ object MainForm: TMainForm
         Height = 14
         BevelInner = bvRaised
         BevelOuter = bvLowered
+        Color = clWindow
         ParentBackground = False
         TabOrder = 4
       end
@@ -1276,6 +1281,7 @@ object MainForm: TMainForm
         Height = 14
         BevelInner = bvRaised
         BevelOuter = bvLowered
+        Color = clWindow
         ParentBackground = False
         TabOrder = 5
       end
@@ -1286,6 +1292,7 @@ object MainForm: TMainForm
         Height = 14
         BevelInner = bvRaised
         BevelOuter = bvLowered
+        Color = clWindow
         ParentBackground = False
         TabOrder = 6
       end
@@ -1296,6 +1303,7 @@ object MainForm: TMainForm
         Height = 14
         BevelInner = bvRaised
         BevelOuter = bvLowered
+        Color = clWindow
         ParentBackground = False
         TabOrder = 7
       end
@@ -1306,6 +1314,7 @@ object MainForm: TMainForm
         Height = 14
         BevelInner = bvRaised
         BevelOuter = bvLowered
+        Color = clWindow
         ParentBackground = False
         TabOrder = 8
       end
@@ -1464,7 +1473,7 @@ object MainForm: TMainForm
     Left = 274
     Top = 91
     Bitmap = {
-      494C010102000400D80010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010102000400E40010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000001000000001002000000000000010
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

@@ -55,3 +55,22 @@ UPDATE HISTORY
                       add menu Map Layer of RTKPLOT
                       support solution status format as input of RTKPLOT
                       support solution status format as output of RTKNAVI
+2016/07/19  2.4.3 b13 support IRNSS
+                      support RINEX 3.03
+                      add src/rcv/cmr.c
+                      add half-cycle vaild check for ublox ubx-trk-meas
+                      add leap second before 2017/1/1 00:00:00
+                      support averaging single pos as base position
+2016/07/22  2.4.3 b14 fix a fatal bug for baseline analysis
+2016/07/29  2.4.3 b15 merge Qt port by JensReimann
+                      add output of received stream to tcp port for serial
+                      nename api compress() -> rtk_uncompress()
+                      nename api crc16()    -> rtk_crc16()
+                      nename api crc24q()   -> rtk_crc24q()
+                      nename api crc32()    -> rtk_crc32()
+2016/07/31  2.4.3 b16 fix several bugs
+                      improve draw speed of gis data in rtkplot
+                      add tcp output option of input stream from serial output
+                      add command of serial output
+                      add out-outsingle, out-maxsolstd options
+                      add commands for u-blox M8P

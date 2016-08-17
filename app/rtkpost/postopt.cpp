@@ -25,8 +25,9 @@ __fastcall TOptDialog::TOptDialog(TComponent* Owner)
     : TForm(Owner)
 {
     AnsiString label,s;
-    int freq[]={1,2,5,6,7,8};
+    int freq[]={1,2,5,6,7,8,9};
     int nglo=MAXPRNGLO,ngal=MAXPRNGAL,nqzs=MAXPRNQZS,ncmp=MAXPRNCMP;
+    int nirn=MAXPRNIRN;
     
 #if 0
     Freq->Items->Clear();
@@ -39,6 +40,7 @@ __fastcall TOptDialog::TOptDialog(TComponent* Owner)
     if (ngal<=0) NavSys3->Enabled=false;
     if (nqzs<=0) NavSys4->Enabled=false;
     if (ncmp<=0) NavSys6->Enabled=false;
+    if (nirn<=0) NavSys7->Enabled=false;
     UpdateEnable();
 }
 //---------------------------------------------------------------------------
@@ -404,6 +406,8 @@ void __fastcall TOptDialog::GetOpt(void)
 	FieldSep	 ->Text			=MainForm->FieldSep;
 	OutputHead	 ->ItemIndex	=MainForm->OutputHead;
 	OutputOpt	 ->ItemIndex	=MainForm->OutputOpt;
+	OutputSingle ->ItemIndex	=MainForm->OutputSingle;
+	MaxSolStd	 ->Text			=s.sprintf("%.2g",MainForm->MaxSolStd);
 	OutputDatum  ->ItemIndex	=MainForm->OutputDatum;
 	OutputHeight ->ItemIndex	=MainForm->OutputHeight;
 	OutputGeoid  ->ItemIndex	=MainForm->OutputGeoid;
@@ -525,6 +529,8 @@ void __fastcall TOptDialog::SetOpt(void)
 	MainForm->FieldSep	  	=FieldSep   ->Text;
 	MainForm->OutputHead  	=OutputHead ->ItemIndex;
 	MainForm->OutputOpt   	=OutputOpt  ->ItemIndex;
+	MainForm->OutputSingle 	=OutputSingle->ItemIndex;
+	MainForm->MaxSolStd 	=str2dbl(MaxSolStd->Text);
 	MainForm->OutputDatum 	=OutputDatum->ItemIndex;
 	MainForm->OutputHeight	=OutputHeight->ItemIndex;
 	MainForm->OutputGeoid 	=OutputGeoid->ItemIndex;
@@ -621,6 +627,7 @@ void __fastcall TOptDialog::LoadOpt(AnsiString file)
 	NavSys4	     ->Checked		=prcopt.navsys&SYS_QZS;
 	NavSys5	     ->Checked		=prcopt.navsys&SYS_SBS;
 	NavSys6	     ->Checked		=prcopt.navsys&SYS_CMP;
+	NavSys7	     ->Checked		=prcopt.navsys&SYS_IRN;
 	PosOpt1	     ->Checked		=prcopt.posopt[0];
 	PosOpt2	     ->Checked		=prcopt.posopt[1];
 	PosOpt3	     ->Checked		=prcopt.posopt[2];
@@ -657,6 +664,8 @@ void __fastcall TOptDialog::LoadOpt(AnsiString file)
 	FieldSep	 ->Text			=solopt.sep;
 	OutputHead	 ->ItemIndex	=solopt.outhead;
 	OutputOpt	 ->ItemIndex	=solopt.outopt;
+	OutputSingle ->ItemIndex    =prcopt.outsingle;
+	MaxSolStd	 ->Text		    =s.sprintf("%.2g",solopt.maxsolstd);
 	OutputDatum  ->ItemIndex	=solopt.datum;
 	OutputHeight ->ItemIndex	=solopt.height;
 	OutputGeoid  ->ItemIndex	=solopt.geoid;
@@ -762,7 +771,8 @@ void __fastcall TOptDialog::SaveOpt(AnsiString file)
 					  (NavSys3->Checked?SYS_GAL:0)|
 					  (NavSys4->Checked?SYS_QZS:0)|
 					  (NavSys5->Checked?SYS_SBS:0)|
-					  (NavSys6->Checked?SYS_CMP:0);
+					  (NavSys6->Checked?SYS_CMP:0)|
+					  (NavSys7->Checked?SYS_IRN:0);
 	prcopt.posopt[0]=PosOpt1	->Checked;
 	prcopt.posopt[1]=PosOpt2	->Checked;
 	prcopt.posopt[2]=PosOpt3	->Checked;
@@ -800,6 +810,8 @@ void __fastcall TOptDialog::SaveOpt(AnsiString file)
 	strcpy(solopt.sep,FieldSep_Text.c_str());
 	solopt.outhead	=OutputHead	 ->ItemIndex;
 	solopt.outopt	=OutputOpt	 ->ItemIndex;
+	prcopt.outsingle=OutputSingle->ItemIndex;
+	solopt.maxsolstd=str2dbl(MaxSolStd->Text);
 	solopt.datum	=OutputDatum ->ItemIndex;
 	solopt.height	=OutputHeight->ItemIndex;
 	solopt.geoid	=OutputGeoid ->ItemIndex;
@@ -901,6 +913,7 @@ void __fastcall TOptDialog::UpdateEnable(void)
 	TimeDecimal    ->Enabled=SolFormat->ItemIndex<3;
 	LatLonFormat   ->Enabled=SolFormat->ItemIndex==0;
 	FieldSep       ->Enabled=SolFormat->ItemIndex<3;
+	OutputSingle   ->Enabled=PosMode->ItemIndex!=0;
 	OutputDatum    ->Enabled=SolFormat->ItemIndex==0;
 	OutputHeight   ->Enabled=SolFormat->ItemIndex==0;
 	OutputGeoid    ->Enabled=SolFormat->ItemIndex==0&&OutputHeight->ItemIndex==1;

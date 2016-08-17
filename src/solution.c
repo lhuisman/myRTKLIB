@@ -41,6 +41,7 @@
 *                            fix bug on satellite id of $GAGSA
 *           2016/01/17  1.14 support reading NMEA GxZDA
 *                            ignore NMEA talker ID
+*           2016/07/30  1.15 suppress output if std is over opt->maxsolstd
 *-----------------------------------------------------------------------------*/
 #include <ctype.h>
 #include "rtklib.h"
@@ -570,17 +571,17 @@ static int decode_sol(char *buff, const solopt_t *opt, sol_t *sol, double *rb)
     
     trace(4,"decode_sol: buff=%s\n",buff);
     
-    if (!strncmp(buff,COMMENTH,1)) { /* reference position */
-        if (!strstr(buff,"ref pos")&&!strstr(buff,"slave pos")) return 0;
-        if (!(p=strchr(buff,':'))) return 0;
-        decode_refpos(p+1,opt,rb);
-        return 0;
-    }
     if (test_nmea(buff)) { /* decode nmea */
         return decode_nmea(buff,sol);
     }
     else if (test_solstat(buff)) { /* decode solution status */
         return decode_solsss(buff,sol);
+    }
+    if (!strncmp(buff,COMMENTH,1)) { /* reference position */
+        if (!strstr(buff,"ref pos")&&!strstr(buff,"slave pos")) return 0;
+        if (!(p=strchr(buff,':'))) return 0;
+        decode_refpos(p+1,opt,rb);
+        return 0;
     }
     /* decode position record */
     return decode_solpos(buff,opt,sol);
@@ -840,13 +841,17 @@ extern sol_t *getsol(solbuf_t *solbuf, int index)
 extern void initsolbuf(solbuf_t *solbuf, int cyclic, int nmax)
 {
     gtime_t time0={0};
+    int i;
     
     trace(3,"initsolbuf: cyclic=%d nmax=%d\n",cyclic,nmax);
     
-    solbuf->n=solbuf->nmax=solbuf->start=solbuf->end=0;
+    solbuf->n=solbuf->nmax=solbuf->start=solbuf->end=solbuf->nb=0;
     solbuf->cyclic=cyclic;
     solbuf->time=time0;
     solbuf->data=NULL;
+    for (i=0;i<3;i++) {
+        solbuf->rb[i]=0.0;
+    }
     if (cyclic) {
         if (nmax<=2) nmax=2;
         if (!(solbuf->data=malloc(sizeof(sol_t)*nmax))) {
@@ -1473,6 +1478,14 @@ extern int outsolheads(unsigned char *buff, const solopt_t *opt)
     }
     return p-(char *)buff;
 }
+/* std-dev of soltuion -------------------------------------------------------*/
+static double sol_std(const sol_t *sol)
+{
+    /* approximate as max std-dev of 3-axis std-devs */
+    if (sol->qr[0]>sol->qr[1]&&sol->qr[0]>sol->qr[2]) return SQRT(sol->qr[0]);
+    if (sol->qr[1]>sol->qr[2]) return SQRT(sol->qr[1]);
+    return SQRT(sol->qr[2]);
+}
 /* output solution body --------------------------------------------------------
 * output solution body to buffer
 * args   : unsigned char *buff IO output buffer
@@ -1493,6 +1506,10 @@ extern int outsols(unsigned char *buff, const sol_t *sol, const double *rb,
     
     trace(3,"outsols :\n");
     
+    /* suppress output if std is over opt->maxsolstd */
+    if (opt->maxsolstd>0.0&&sol_std(sol)>opt->maxsolstd) {
+        return 0;
+    }
     if (opt->posf==SOLF_NMEA) {
         if (opt->nmeaintv[0]<0.0) return 0;
         if (!screent(sol->time,ts,ts,opt->nmeaintv[0])) return 0;
@@ -1541,6 +1558,10 @@ extern int outsolexs(unsigned char *buff, const sol_t *sol, const ssat_t *ssat,
     
     trace(3,"outsolexs:\n");
     
+    /* suppress output if std is over opt->maxsolstd */
+    if (opt->maxsolstd>0.0&&sol_std(sol)>opt->maxsolstd) {
+        return 0;
+    }
     if (opt->posf==SOLF_NMEA) {
         if (opt->nmeaintv[1]<0.0) return 0;
         if (!screent(sol->time,ts,ts,opt->nmeaintv[1])) return 0;

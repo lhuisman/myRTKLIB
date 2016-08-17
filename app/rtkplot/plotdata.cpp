@@ -94,6 +94,7 @@ void __fastcall TPlot::ReadSol(TStrings *files, int sel)
     
     UpdateTime();
     UpdatePlot();
+    UpdateEnable();
 }
 // read solution status -----------------------------------------------------
 void __fastcall TPlot::ReadSolStat(TStrings *files, int sel)
@@ -176,6 +177,7 @@ void __fastcall TPlot::ReadObs(TStrings *files)
     UpdateObsType();
     UpdateTime();
     UpdatePlot();
+    UpdateEnable();
 }
 // read observation data rinex ----------------------------------------------
 int __fastcall TPlot::ReadObsRnx(TStrings *files, obs_t *obs, nav_t *nav,
@@ -285,6 +287,7 @@ void __fastcall TPlot::ReadNav(TStrings *files)
     ReadWaitEnd();
     
     UpdatePlot();
+    UpdateEnable();
 }
 // read elevation mask data -------------------------------------------------
 void __fastcall TPlot::ReadElMaskData(AnsiString file)
@@ -317,8 +320,9 @@ void __fastcall TPlot::ReadElMaskData(AnsiString file)
     }
     fclose(fp);
     UpdatePlot();
+    UpdateEnable();
 }
-// generate vsibility data ----------------------------------------------------
+// generate visibility data ---------------------------------------------------
 void __fastcall TPlot::GenVisData(void)
 {
     gtime_t time,ts,te;
@@ -392,14 +396,18 @@ void __fastcall TPlot::GenVisData(void)
     UpdateObsType();
     UpdateTime();
     UpdatePlot();
+    UpdateEnable();
 }
 // read map image data ------------------------------------------------------
 void __fastcall TPlot::ReadMapData(AnsiString file)
 {
     TJPEGImage *image=new TJPEGImage;
     AnsiString s;
+    double pos[3];
     
     trace(3,"ReadMapData\n");
+    
+    ShowMsg(s.sprintf("reading map image... %s",file.c_str()));
     
     try {
         image->LoadFromFile(file);
@@ -416,12 +424,19 @@ void __fastcall TPlot::ReadMapData(AnsiString file)
     delete image;
     
     ReadMapTag(file);
-    
-    BtnShowMap->Down=true;
+    if (norm(OPos,3)<=0.0&&(MapLat!=0.0||MapLon!=0.0)) {
+        pos[0]=MapLat*D2R;
+        pos[1]=MapLon*D2R;
+        pos[2]=0.0;
+        pos2ecef(pos,OPos);
+    }
+    BtnShowImg->Down=true;
     
     MapAreaDialog->UpdateField();
     UpdateOrigin();
     UpdatePlot();
+    UpdateEnable();
+    ShowMsg("");
 }
 // resample image pixel -----------------------------------------------------
 #define ResPixelNN(img1,x,y,b1,pix) {\
@@ -602,6 +617,8 @@ void __fastcall TPlot::ReadSkyData(AnsiString file)
     
     trace(3,"ReadSkyData\n");
     
+    ShowMsg(s.sprintf("reading sky image... %s",file.c_str()));
+    
     try {
         image->LoadFromFile(file);
     }
@@ -631,7 +648,8 @@ void __fastcall TPlot::ReadSkyData(AnsiString file)
     
     ReadSkyTag(file+".tag");
     
-    BtnShowMap->Down=true;
+    ShowMsg("");
+    BtnShowImg->Down=true;
     
     UpdateSky();
 }
@@ -667,13 +685,18 @@ void __fastcall TPlot::ReadMapTag(AnsiString file)
 void __fastcall TPlot::ReadShapeFile(TStrings *files)
 {
     UnicodeString name;
+    AnsiString s;
+    double pos[3];
     char path[1024];
     int i,j;
+    
+    ReadWaitStart();
     
     gis_free(&Gis);
     
     for (i=0;i<files->Count&&i<MAXMAPLAYER;i++) {
         strcpy(path,U2A(files->Strings[i]).c_str());
+        ShowMsg(s.sprintf("reading shapefile... %s",path));
         gis_read(path,&Gis,i);
         
         name=files->Strings[i];
@@ -685,20 +708,34 @@ void __fastcall TPlot::ReadShapeFile(TStrings *files)
         }
         strcpy(Gis.name[i],U2A(name).c_str());
     }
-    BtnShowPoint->Down=true;
+    ReadWaitEnd();
+    ShowMsg("");
     
+    BtnShowMap->Down=true;
+    
+    if (norm(OPos,3)<=0.0) {
+        pos[0]=(Gis.bound[0]+Gis.bound[1])/2.0;
+        pos[1]=(Gis.bound[2]+Gis.bound[3])/2.0;
+        pos[2]=0.0;
+        pos2ecef(pos,OPos);
+    }
     UpdateOrigin();
     UpdatePlot();
+    UpdateEnable();
 }
 // read waypoint ------------------------------------------------------------
 void __fastcall TPlot::ReadWaypoint(AnsiString file)
 {
-    UTF8String str,label1(L"<ogr:–¼Ì>"),label2(L"<ogr:“_–¼Ì>");
+    UTF8String label1(L"<ogr:–¼Ì>"),label2(L"<ogr:“_–¼Ì>");
+    AnsiString s;
     FILE *fp;
     char buff[1024],name[256]="",*p;
     double pos[3]={0};
     
     if (!(fp=fopen(file.c_str(),"r"))) return;
+    
+    ReadWaitStart();
+    ShowMsg(s.sprintf("reading waypoint... %s",file.c_str()));
     
     NWayPnt=0;
     
@@ -723,20 +760,25 @@ void __fastcall TPlot::ReadWaypoint(AnsiString file)
             PntPos[NWayPnt][0]=pos[0];
             PntPos[NWayPnt][1]=pos[1];
             PntPos[NWayPnt][2]=pos[2];
-            str=name;
-            PntName[NWayPnt++]=str;
+            PntName[NWayPnt++]=name; // UTF-8
             pos[0]=pos[1]=pos[2]=0.0;
             name[0]='\0';
         }
     }
     fclose(fp);
+    
+    ReadWaitEnd();
+    ShowMsg("");
+    
+    BtnShowMap->Down=true;
+    
     UpdatePlot();
+    UpdateEnable();
     PntDialog->SetPoint();
 }
 // save waypoint ------------------------------------------------------------
 void __fastcall TPlot::SaveWaypoint(AnsiString file)
 {
-    UTF8String str_utf8;
     FILE *fp;
     int i;
     
@@ -751,8 +793,8 @@ void __fastcall TPlot::SaveWaypoint(AnsiString file)
         if (PntPos[i][2]!=0.0) {
             fprintf(fp," <ele>%.4f</ele>\n",PntPos[i][2]);
         }
-        str_utf8=PntName[i];
-        fprintf(fp," <name>%s</name>\n",str_utf8.c_str());
+        UTF8String str(PntName[i]);
+        fprintf(fp," <name>%s</name>\n",str); // UTF-8
         fprintf(fp,"</wpt>\n");
     }
     fprintf(fp,"%s\n",TAILGPX);
@@ -975,6 +1017,7 @@ void __fastcall TPlot::Connect(void)
     UpdateEnable();
     UpdateTime();
     UpdatePlot();
+    UpdateEnable();
 }
 // disconnect from external sources -----------------------------------------
 void __fastcall TPlot::Disconnect(void)
@@ -1003,6 +1046,7 @@ void __fastcall TPlot::Disconnect(void)
     }
     UpdateTime();
     UpdatePlot();
+    UpdateEnable();
 }
 // check observation data types ---------------------------------------------
 int __fastcall TPlot::CheckObs(AnsiString file)
@@ -1300,6 +1344,7 @@ void __fastcall TPlot::Clear(void)
     
     UpdateTime();
     UpdatePlot();
+    UpdateEnable();
 }
 // reload data --------------------------------------------------------------
 void __fastcall TPlot::Reload(void)

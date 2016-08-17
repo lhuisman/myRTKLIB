@@ -44,6 +44,10 @@
 *                           enable option -TADJ for RXM-RAWX
 *           2016/05/25 1.18 fix bug on crc-buffer-overflow by decoding galileo
 *                           navigation data
+*           2016/07/04 1.19 add half-cycle vaild check for ubx-trk-meas
+*           2016/07/29 1.20 support RXM-CFG-TMODE3 (0x06 0x71) for M8P
+*                           crc24q() -> rtk_crc24q()
+*                           check week number zero for ubx-rxm-raw and rawx
 *-----------------------------------------------------------------------------*/
 #include "rtklib.h"
 
@@ -171,6 +175,10 @@ static int decode_rxmraw(raw_t *raw)
     week=U2(p+4);
     time=gpst2time(week,tow*0.001);
     
+    if (week==0) {
+        trace(2,"ubx rxmraw week=0 error: len=%d nsat=%d\n",raw->len,nsat);
+        return -1;
+    }
     /* time tag adjustment */
     if (tadj>0.0) {
         tn=time2gpst(time,&week)/tadj;
@@ -220,7 +228,11 @@ static int decode_rxmrawx(raw_t *raw)
 {
     gtime_t time;
     double tow,cp1,pr1,tadj=0.0,toff=0.0,freq,tn;
+<<<<<<< HEAD
     int i,j,sys,prn,sat,n=0,nsat,week,tstat,lockt,halfc,fcn,cpstd;
+=======
+    int i,j,sys,prn,sat,n=0,nsat,week,tstat,lockt,slip,halfv,halfc,fcn;
+>>>>>>> refs/remotes/tomojitakasu/rtklib_2.4.3
     char *q;
     unsigned char *p=raw->buff+6;
 
@@ -237,6 +249,10 @@ static int decode_rxmrawx(raw_t *raw)
     week=U2(p+8);
     time=gpst2time(week,tow);
     
+    if (week==0) {
+        trace(2,"ubx rxmrawx week=0 error: len=%d nsat=%d\n",raw->len,nsat);
+        return -1;
+    }
     if (raw->outtype) {
         sprintf(raw->msgtype,"UBX RXM-RAWX  (%4d): time=%s nsat=%d",raw->len,
                 time_str(time,2),U1(p+11));
@@ -289,14 +305,16 @@ static int decode_rxmrawx(raw_t *raw)
             sys==SYS_CMP?CODE_L1I:(sys==SYS_GAL?CODE_L1X:CODE_L1C);
         
         lockt=U2(p+24);    /* lock time count (ms) */
+        slip=lockt==0||lockt<raw->lockt[sat-1][0]?1:0;
+        halfv=tstat&4?1:0; /* half cycle valid */
         halfc=tstat&8?1:0; /* half cycle subtracted from phase */
         
         if (cp1!=0.0) { /* carrier-phase valid */
             
             /* LLI: bit1=loss-of-lock,bit2=half-cycle-invalid */
-            raw->obs.data[n].LLI[0]|=lockt==0||lockt<raw->lockt[sat-1][0]?1:0;
+            raw->obs.data[n].LLI[0]|=slip;
             raw->obs.data[n].LLI[0]|=halfc!=raw->halfc[sat-1][0]?1:0;
-            raw->obs.data[n].LLI[0]|=tstat&4?0:2;
+            raw->obs.data[n].LLI[0]|=halfv?0:2;
             raw->lockt[sat-1][0]=lockt;
             raw->halfc[sat-1][0]=halfc;
         }
@@ -561,10 +579,14 @@ static int decode_trkmeas(raw_t *raw)
         raw->obs.data[n].SNR[0]=(unsigned char)(snr*4.0);
         raw->obs.data[n].code[0]=sys==SYS_CMP?CODE_L1I:CODE_L1C;
         raw->obs.data[n].LLI[0]=raw->lockt[sat-1][1]>0.0?1:0;
+<<<<<<< HEAD
         if (sys==SYS_SBS)     /* half cycle valid flag */
              raw->obs.data[n].LLI[0]|=lock2>142?0:2;
         else
             raw->obs.data[n].LLI[0]|=flag&0x80?0:2;
+=======
+        raw->obs.data[n].LLI[0]|=flag&0x80?0:2; /* half-cycle valid */
+>>>>>>> refs/remotes/tomojitakasu/rtklib_2.4.3
         raw->lockt[sat-1][1]=0.0;
         
         for (j=1;j<NFREQ+NEXOBS;j++) {
@@ -749,7 +771,7 @@ static int decode_enav(raw_t *raw, int sat, int off)
     /* test crc (4(pad) + 114 + 82 bits) */
     for (i=0,j=  4;i<15;i++,j+=8) setbitu(crc_buff,j,8,getbitu(buff   ,i*8,8));
     for (i=0,j=118;i<11;i++,j+=8) setbitu(crc_buff,j,8,getbitu(buff+16,i*8,8));
-    if (crc24q(crc_buff,25)!=getbitu(buff+16,82,24)) {
+    if (rtk_crc24q(crc_buff,25)!=getbitu(buff+16,82,24)) {
         trace(2,"ubx rawsfrbx gal page crc error: sat=%2d\n",sat);
         return -1;
     }
@@ -1131,6 +1153,7 @@ extern int input_ubxf(raw_t *raw, FILE *fp)
 *            "CFG-RINV  flag data ..."
 *            "CFG-SMGR  ..."
 *            "CFG-TMODE2 ..."
+*            "CFG-TMODE3 ..."
 *            "CFG-TPS   ..."
 *            "CFG-TXSLOT ..."
 *          unsigned char *buff O binary message
@@ -1145,13 +1168,13 @@ extern int gen_ubx(const char *msg, unsigned char *buff)
         "PRT","USB","MSG","NMEA","RATE","CFG","TP","NAV2","DAT","INF",
         "RST","RXM","ANT","FXN","SBAS","LIC","TM","TM2","TMODE","EKF",
         "GNSS","ITFM","LOGFILTER","NAV5","NAVX5","ODO","PM2","PWR","RINV","SMGR",
-        "TMODE2","TPS","TXSLOT",""
+        "TMODE2","TMODE3","TPS","TXSLOT",""
     };
     const unsigned char id[]={
         0x00,0x1B,0x01,0x17,0x08,0x09,0x07,0x1A,0x06,0x02,
         0x04,0x11,0x13,0x0E,0x16,0x80,0x10,0x19,0x1D,0x12,
         0x3E,0x39,0x47,0x24,0x23,0x1E,0x3B,0x57,0x34,0x62,
-        0x36,0x31,0x53
+        0x36,0x71,0x31,0x53
     };
     const int prm[][32]={
         {FU1,FU1,FU2,FU4,FU4,FU2,FU2,FU2,FU2},    /* PRT */
@@ -1188,6 +1211,7 @@ extern int gen_ubx(const char *msg, unsigned char *buff)
         {FU1,FU1},                                /* RINV */
         {FU1,FU1,FU2,FU2,FU1,FU1,FU2,FU2,FU2,FU2,FU4}, /* SMGR */
         {FU1,FU1,FU2,FI4,FI4,FI4,FU4,FU4,FU4},    /* TMODE2 */
+        {FU1,FU1,FU2,FI4,FI4,FI4,FU4,FU4,FU4},    /* TMODE3 */
         {FU1,FU1,FU1,FU1,FI2,FI2,FU4,FU4,FU4,FU4,FI4,FU4}, /* TPS */
         {FU1,FU1,FU1,FU1,FU4,FU4,FU4,FU4,FU4}     /* TXSLOT */
     };

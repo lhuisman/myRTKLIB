@@ -71,12 +71,15 @@ __published:
 	TCheckBox *RnxFile;
 	TLabel *Label12;
 	TEdit *RnxCode;
-	TCheckBox *ScanObs;
 	TCheckBox *OutIono;
 	TCheckBox *OutTime;
 	TCheckBox *OutLeaps;
 	TCheckBox *AutoPos;
 	TButton *BtnMask;
+	TCheckBox *Nav7;
+	TCheckBox *Freq7;
+	TCheckBox *ScanObs;
+	TCheckBox *HalfCyc;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall BtnOkClick(TObject *Sender);
 	void __fastcall RnxFileClick(TObject *Sender);

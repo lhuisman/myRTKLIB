@@ -398,7 +398,7 @@ void __fastcall TMainForm::BtnPlotClick(TObject *Sender)
 // callback on button-options -----------------------------------------------
 void __fastcall TMainForm::BtnOptClick(TObject *Sender)
 {
-    int i,chgmoni=0;
+    int i,chgmoni=0,panelstack=PanelStack;
     
     trace(3,"BtnOptClick\n");
     
@@ -426,7 +426,6 @@ void __fastcall TMainForm::BtnOptClick(TObject *Sender)
     OptDialog->TLEFileF   =TLEFileF;
     OptDialog->TLESatFileF=TLESatFileF;
     OptDialog->LocalDirectory=LocalDirectory;
-    OptDialog->InitRestart=InitRestart;
     
     OptDialog->SvrCycle   =SvrCycle;
     OptDialog->TimeoutTime=TimeoutTime;
@@ -478,7 +477,6 @@ void __fastcall TMainForm::BtnOptClick(TObject *Sender)
     TLEFileF   =OptDialog->TLEFileF;
     TLESatFileF=OptDialog->TLESatFileF;
     LocalDirectory=OptDialog->LocalDirectory;
-    InitRestart=OptDialog->InitRestart;
     
     SvrCycle   =OptDialog->SvrCycle;
     TimeoutTime=OptDialog->TimeoutTime;
@@ -495,11 +493,14 @@ void __fastcall TMainForm::BtnOptClick(TObject *Sender)
     if (MoniPort!=OptDialog->MoniPort) chgmoni=1;
     MoniPort   =OptDialog->MoniPort;
     PanelStack =OptDialog->PanelStack;
-    
     PosFont->Assign(OptDialog->PosFont);
     UpdateFont();
+    if (panelstack==0&&PanelStack==1) {
+        Panel21->Width=170;
+        Panel221->Width=170;
+        Panel222->Width=170;
+    }
     UpdatePanel();
-    
     if (SolBuffSize!=OptDialog->SolBuffSize) {
         SolBuffSize=OptDialog->SolBuffSize;
         InitSolBuff();
@@ -1176,7 +1177,7 @@ void __fastcall TMainForm::SvrStop(void)
     ScbSol      ->Enabled=true;
     BtnStop     ->Visible=false;
     MenuStop    ->Enabled=false;
-    Svr->Color=clBtnFace;
+    Svr->Color=clWindow;
     SetTrayIcon(1);
     
     LabelTime->Font->Color=clGray;
@@ -1230,7 +1231,7 @@ void __fastcall TMainForm::TimerTimer(TObject *Sender)
     else {
         IndSol->Color=clWhite;
         Solution->Font->Color=clGray;
-        Svr->Color=rtksvr.state?clGreen:clBtnFace;
+        Svr->Color=rtksvr.state?clGreen:clWindow;
     }
     if (!(++n%5)) UpdatePlot();
     UpdateStr();
@@ -1435,7 +1436,7 @@ void __fastcall TMainForm::UpdatePos(void)
 // update stream status indicators ------------------------------------------
 void __fastcall TMainForm::UpdateStr(void)
 {
-    TColor color[]={clRed,clBtnFace,CLORANGE,clGreen,clLime};
+    TColor color[]={clRed,clWindow,CLORANGE,clGreen,clLime};
     TPanel *ind[MAXSTRRTK]={Str1,Str2,Str3,Str4,Str5,Str6,Str7,Str8};
     int i,sstat[MAXSTRRTK]={0};
     char msg[MAXSTRMSG]="";
@@ -2299,6 +2300,7 @@ void __fastcall TMainForm::LoadOpt(void)
     PrcOpt.posopt[4]=ini->ReadInteger("prcopt", "posopt5",         0);
     PrcOpt.posopt[5]=ini->ReadInteger("prcopt", "posopt6",         0);
     PrcOpt.maxaveep =ini->ReadInteger("prcopt", "maxaveep",     3600);
+    PrcOpt.initrst  =ini->ReadInteger("prcopt", "initrst",         1);
     
     BaselineC       =ini->ReadInteger("prcopt", "baselinec",       0);
     Baseline[0]     =ini->ReadFloat  ("prcopt", "baseline1",     0.0);
@@ -2313,6 +2315,8 @@ void __fastcall TMainForm::LoadOpt(void)
     strcpy(SolOpt.sep,s.c_str());
     SolOpt.outhead  =ini->ReadInteger("solopt", "outhead",         0);
     SolOpt.outopt   =ini->ReadInteger("solopt", "outopt",          0);
+    PrcOpt.outsingle=ini->ReadInteger("prcopt", "outsingle",       0);
+    SolOpt.maxsolstd=ini->ReadFloat  ("solopt", "maxsolstd",     0.0);
     SolOpt.datum    =ini->ReadInteger("solopt", "datum",           0);
     SolOpt.height   =ini->ReadInteger("solopt", "height",          0);
     SolOpt.geoid    =ini->ReadInteger("solopt", "geoid",           0);
@@ -2336,7 +2340,6 @@ void __fastcall TMainForm::LoadOpt(void)
     TLEFileF        =ini->ReadString ("setting","tlefile",        "");
     TLESatFileF     =ini->ReadString ("setting","tlesatfile",     "");
     LocalDirectory  =ini->ReadString ("setting","localdirectory","C:\\Temp");
-    InitRestart     =ini->ReadInteger("setting","initrestart",     0);
     
     SvrCycle        =ini->ReadInteger("setting","svrcycle",       10);
     TimeoutTime     =ini->ReadInteger("setting","timeouttime", 10000);
@@ -2378,6 +2381,8 @@ void __fastcall TMainForm::LoadOpt(void)
     TrkScale2       =ini->ReadInteger("setting","trkscale2",       5);
     BLMode1         =ini->ReadInteger("setting","blmode1",         0);
     BLMode2         =ini->ReadInteger("setting","blmode2",         0);
+    MarkerName      =ini->ReadString ("setting","markername",     "");
+    MarkerComment   =ini->ReadString ("setting","markercomment",  "");
     
     for (i=0;i<3;i++) {
         RovAntDel[i]=ini->ReadFloat("setting",s.sprintf("rovantdel_%d",i),0.0);
@@ -2514,6 +2519,7 @@ void __fastcall TMainForm::SaveOpt(void)
     ini->WriteInteger("prcopt", "posopt5",    PrcOpt.posopt[4]   );
     ini->WriteInteger("prcopt", "posopt6",    PrcOpt.posopt[5]   );
     ini->WriteInteger("prcopt", "maxaveep",   PrcOpt.maxaveep    );
+    ini->WriteInteger("prcopt", "initrst",    PrcOpt.initrst     );
     
     ini->WriteFloat  ("prcopt", "baselinec",  BaselineC          );
     ini->WriteFloat  ("prcopt", "baseline1",  Baseline[0]        );
@@ -2527,6 +2533,8 @@ void __fastcall TMainForm::SaveOpt(void)
     ini->WriteString ("solopt", "sep",        SolOpt.sep         );
     ini->WriteInteger("solopt", "outhead",    SolOpt.outhead     );
     ini->WriteInteger("solopt", "outopt",     SolOpt.outopt      );
+    ini->WriteInteger("prcopt", "outsingle",  PrcOpt.outsingle   );
+    ini->WriteFloat  ("solopt", "maxsolstd",  SolOpt.maxsolstd   );
     ini->WriteInteger("solopt", "datum",      SolOpt.datum       );
     ini->WriteInteger("solopt", "height",     SolOpt.height      );
     ini->WriteInteger("solopt", "geoid",      SolOpt.geoid       );
@@ -2550,7 +2558,6 @@ void __fastcall TMainForm::SaveOpt(void)
     ini->WriteString ("setting","tlefile",    TLEFileF           );
     ini->WriteString ("setting","tlesatfile", TLESatFileF        );
     ini->WriteString ("setting","localdirectory",LocalDirectory  );
-    ini->WriteInteger("setting","initrestart",InitRestart        );
     
     ini->WriteInteger("setting","svrcycle",   SvrCycle           );
     ini->WriteInteger("setting","timeouttime",TimeoutTime        );
@@ -2592,6 +2599,8 @@ void __fastcall TMainForm::SaveOpt(void)
     ini->WriteInteger("setting","trkscale2",  TrkScale2          );
     ini->WriteInteger("setting","blmode1",    BLMode1            );
     ini->WriteInteger("setting","blmode2",    BLMode2            );
+    ini->WriteString ("setting","markername", MarkerName         );
+    ini->WriteString ("setting","markercomment",MarkerComment    );
     
     for (i=0;i<3;i++) {
         ini->WriteFloat("setting",s.sprintf("rovantdel_%d",i),RovAntDel[i]);
@@ -2643,8 +2652,12 @@ void __fastcall TMainForm::SaveOpt(void)
 void __fastcall TMainForm::BtnMarkClick(TObject *Sender)
 {
 	MarkDialog->PosMode=rtksvr.rtk.opt.mode;
+	MarkDialog->Marker=MarkerName;
+	MarkDialog->Comment=MarkerComment;
 	if (MarkDialog->ShowModal()!=mrOk) return;
 	rtksvr.rtk.opt.mode=MarkDialog->PosMode;
+	MarkerName=MarkDialog->Marker;
+	MarkerComment=MarkDialog->Comment;
 }
 //---------------------------------------------------------------------------
 

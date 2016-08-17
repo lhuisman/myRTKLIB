@@ -20,6 +20,8 @@
 *           2016/01/23  1.10 enable septentrio
 *           2016/01/26  1.11 fix bug on station position by -p option (#126)
 *                            add option -px
+*           2016/07/01  1.12 support CMR/CMR+
+*           2016/07/23  1.13 add option -c1 -c2 -c3 -c4
 *-----------------------------------------------------------------------------*/
 #include <signal.h>
 #include <unistd.h>
@@ -79,6 +81,7 @@ static const char *help[]={
 "    binex        : BINEX (only in)",
 "    rt17         : Trimble RT17 (only in)",
 "    sbf          : Septentrio SBF (only in)",
+"    cmr          : CMR/CMR+ (only in)",
 "",
 " -msg \"type[(tint)][,type[(tint)]...]\"",
 "                   rtcm message types and output intervals (s)",
@@ -88,7 +91,11 @@ static const char *help[]={
 " -r  msec          reconnect interval (ms) [10000]",
 " -n  msec          nmea request cycle (m) [0]",
 " -f  sec           file swap margin (s) [30]",
-" -c  file          receiver commands file [no]",
+" -c  file          input commands file [no]",
+" -c1 file          output 1 commands file [no]",
+" -c2 file          output 2 commands file [no]",
+" -c3 file          output 3 commands file [no]",
+" -c4 file          output 4 commands file [no]",
 " -p  lat lon hgt   station position (latitude/longitude/height) (deg,m)",
 " -px x y z         station position (x/y/z-ecef) (m)",
 " -a  antinfo       antenna info (separated by ,)",
@@ -133,6 +140,7 @@ static void decodefmt(char *path, int *fmt)
         else if (!strcmp(p,"#binex")) *fmt=STRFMT_BINEX;
         else if (!strcmp(p,"#rt17" )) *fmt=STRFMT_RT17;
         else if (!strcmp(p,"#sbf"  )) *fmt=STRFMT_SEPT;
+        else if (!strcmp(p,"#cmr"  )) *fmt=STRFMT_CMR;
         else return;
         *p='\0';
     }
@@ -188,11 +196,12 @@ static void readcmd(const char *file, char *cmd, int type)
 /* str2str -------------------------------------------------------------------*/
 int main(int argc, char **argv)
 {
-    static char cmd[MAXRCVCMD]="";
+    static char cmd_strs[MAXSTR][MAXRCVCMD]={"","","","",""};
     const char ss[]={'E','-','W','C','C'};
     strconv_t *conv[MAXSTR]={NULL};
     double pos[3],stapos[3]={0},stadel[3]={0};
-    char *paths[MAXSTR],s[MAXSTR][MAXSTRPATH]={{0}},*cmdfile="";
+    char *paths[MAXSTR],s[MAXSTR][MAXSTRPATH]={{0}};
+    char *cmdfile[MAXSTR]={"","","","",""},*cmds[MAXSTR];
     char *local="",*proxy="",*msg="1004,1019",*opt="",buff[256],*p;
     char strmsg[MAXSTRMSG]="",*antinfo="",*rcvinfo="";
     char *ant[]={"","",""},*rcv[]={"","",""};
@@ -200,8 +209,10 @@ int main(int argc, char **argv)
     int types[MAXSTR]={STR_FILE,STR_FILE},stat[MAXSTR]={0},byte[MAXSTR]={0};
     int bps[MAXSTR]={0},fmts[MAXSTR]={0},sta=0;
     
-    for (i=0;i<MAXSTR;i++) paths[i]=s[i];
-    
+    for (i=0;i<MAXSTR;i++) {
+        paths[i]=s[i];
+        cmds[i]=cmd_strs[i];
+    }
     for (i=1;i<argc;i++) {
         if (!strcmp(argv[i],"-in")&&i+1<argc) {
             if (!decodepath(argv[++i],types,paths[0],fmts)) return -1;
@@ -234,7 +245,11 @@ int main(int argc, char **argv)
         else if (!strcmp(argv[i],"-r"  )&&i+1<argc) opts[1]=atoi(argv[++i]);
         else if (!strcmp(argv[i],"-n"  )&&i+1<argc) opts[5]=atoi(argv[++i]);
         else if (!strcmp(argv[i],"-f"  )&&i+1<argc) opts[6]=atoi(argv[++i]);
-        else if (!strcmp(argv[i],"-c"  )&&i+1<argc) cmdfile=argv[++i];
+        else if (!strcmp(argv[i],"-c"  )&&i+1<argc) cmdfile[0]=argv[++i];
+        else if (!strcmp(argv[i],"-c1" )&&i+1<argc) cmdfile[1]=argv[++i];
+        else if (!strcmp(argv[i],"-c2" )&&i+1<argc) cmdfile[2]=argv[++i];
+        else if (!strcmp(argv[i],"-c3" )&&i+1<argc) cmdfile[3]=argv[++i];
+        else if (!strcmp(argv[i],"-c4" )&&i+1<argc) cmdfile[4]=argv[++i];
         else if (!strcmp(argv[i],"-a"  )&&i+1<argc) antinfo=argv[++i];
         else if (!strcmp(argv[i],"-i"  )&&i+1<argc) rcvinfo=argv[++i];
         else if (!strcmp(argv[i],"-l"  )&&i+1<argc) local=argv[++i];
@@ -287,10 +302,11 @@ int main(int argc, char **argv)
     strsetdir(local);
     strsetproxy(proxy);
     
-    if (*cmdfile) readcmd(cmdfile,cmd,0);
-    
+    for (i=0;i<MAXSTR;i++) {
+        if (*cmdfile[i]) readcmd(cmdfile[i],cmds[i],0);
+    }
     /* start stream server */
-    if (!strsvrstart(&strsvr,opts,types,paths,conv,*cmd?cmd:NULL,stapos)) {
+    if (!strsvrstart(&strsvr,opts,types,paths,conv,cmds,stapos)) {
         fprintf(stderr,"stream server start error\n");
         return -1;
     }
@@ -307,10 +323,11 @@ int main(int argc, char **argv)
         
         sleepms(dispint);
     }
-    if (*cmdfile) readcmd(cmdfile,cmd,1);
-    
+    for (i=0;i<MAXSTR;i++) {
+        if (*cmdfile[i]) readcmd(cmdfile[i],cmds[i],1);
+    }
     /* stop stream server */
-    strsvrstop(&strsvr,*cmd?cmd:NULL);
+    strsvrstop(&strsvr,cmds);
     
     for (i=0;i<n;i++) {
         strconvfree(conv[i]);

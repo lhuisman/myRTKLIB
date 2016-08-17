@@ -60,6 +60,7 @@ void __fastcall TConvOptDialog::FormShow(TObject *Sender)
 	for (int i=0;i<6;i++) CodeMask[i]=MainWindow->CodeMask[i];
 	AutoPos->Checked=MainWindow->AutoPos;
 	ScanObs->Checked=MainWindow->ScanObs;
+	HalfCyc->Checked=MainWindow->HalfCyc;
 	OutIono->Checked=MainWindow->OutIono;
 	OutTime->Checked=MainWindow->OutTime;
 	OutLeaps->Checked=MainWindow->OutLeaps;
@@ -70,6 +71,7 @@ void __fastcall TConvOptDialog::FormShow(TObject *Sender)
 	Nav4->Checked=MainWindow->NavSys&SYS_QZS;
 	Nav5->Checked=MainWindow->NavSys&SYS_SBS;
 	Nav6->Checked=MainWindow->NavSys&SYS_CMP;
+	Nav7->Checked=MainWindow->NavSys&SYS_IRN;
 	Obs1->Checked=MainWindow->ObsType&OBSTYPE_PR;
 	Obs2->Checked=MainWindow->ObsType&OBSTYPE_CP;
 	Obs3->Checked=MainWindow->ObsType&OBSTYPE_DOP;
@@ -80,6 +82,7 @@ void __fastcall TConvOptDialog::FormShow(TObject *Sender)
 	Freq4->Checked=MainWindow->FreqType&FREQTYPE_L6;
 	Freq5->Checked=MainWindow->FreqType&FREQTYPE_L7;
 	Freq6->Checked=MainWindow->FreqType&FREQTYPE_L8;
+	Freq7->Checked=MainWindow->FreqType&FREQTYPE_L9;
 	ExSats->Text=MainWindow->ExSats;
 	TraceLevel->ItemIndex=MainWindow->TraceLevel;
 	
@@ -115,6 +118,7 @@ void __fastcall TConvOptDialog::BtnOkClick(TObject *Sender)
 	for (int i=0;i<6;i++) MainWindow->CodeMask[i]=CodeMask[i];
 	MainWindow->AutoPos=AutoPos->Checked;
 	MainWindow->ScanObs=ScanObs->Checked;
+	MainWindow->HalfCyc=HalfCyc->Checked;
 	MainWindow->OutIono=OutIono->Checked;
 	MainWindow->OutTime=OutTime->Checked;
 	MainWindow->OutLeaps=OutLeaps->Checked;
@@ -126,6 +130,7 @@ void __fastcall TConvOptDialog::BtnOkClick(TObject *Sender)
 	if (Nav4->Checked) navsys|=SYS_QZS;
 	if (Nav5->Checked) navsys|=SYS_SBS;
 	if (Nav6->Checked) navsys|=SYS_CMP;
+	if (Nav7->Checked) navsys|=SYS_IRN;
 	if (Obs1->Checked) obstype|=OBSTYPE_PR;
 	if (Obs2->Checked) obstype|=OBSTYPE_CP;
 	if (Obs3->Checked) obstype|=OBSTYPE_DOP;
@@ -136,6 +141,7 @@ void __fastcall TConvOptDialog::BtnOkClick(TObject *Sender)
 	if (Freq4->Checked) freqtype|=FREQTYPE_L6;
 	if (Freq5->Checked) freqtype|=FREQTYPE_L7;
 	if (Freq6->Checked) freqtype|=FREQTYPE_L8;
+	if (Freq7->Checked) freqtype|=FREQTYPE_L9;
 	MainWindow->NavSys=navsys;
 	MainWindow->ObsType=obstype;
 	MainWindow->FreqType=freqtype;
@@ -168,12 +174,14 @@ void __fastcall TConvOptDialog::BtnMaskClick(TObject *Sender)
 	if (Nav4->Checked) CodeOptDialog->NavSys|=SYS_QZS;
 	if (Nav5->Checked) CodeOptDialog->NavSys|=SYS_SBS;
 	if (Nav6->Checked) CodeOptDialog->NavSys|=SYS_CMP;
+	if (Nav7->Checked) CodeOptDialog->NavSys|=SYS_IRN;
 	if (Freq1->Checked) CodeOptDialog->FreqType|=FREQTYPE_L1;
 	if (Freq2->Checked) CodeOptDialog->FreqType|=FREQTYPE_L2;
 	if (Freq3->Checked) CodeOptDialog->FreqType|=FREQTYPE_L5;
 	if (Freq4->Checked) CodeOptDialog->FreqType|=FREQTYPE_L6;
 	if (Freq5->Checked) CodeOptDialog->FreqType|=FREQTYPE_L7;
 	if (Freq6->Checked) CodeOptDialog->FreqType|=FREQTYPE_L8;
+	if (Freq7->Checked) CodeOptDialog->FreqType|=FREQTYPE_L9;
 	CodeOptDialog->ShowModal();
 }
 //---------------------------------------------------------------------------
@@ -187,4 +195,5 @@ void __fastcall TConvOptDialog::UpdateEnable(void)
 	AppPos2->Enabled=AutoPos->Checked;
 }
 //---------------------------------------------------------------------------
+
 

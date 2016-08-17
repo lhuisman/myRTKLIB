@@ -17,11 +17,8 @@ void __fastcall TPlot::UpdatePlot(void)
 {
     trace(3,"UpdatePlot\n");
     
-    UpdateEnable();
     UpdateInfo();
     Refresh();
-    Refresh_GEView();
-    Refresh_GMView();
 }
 // refresh plot -------------------------------------------------------------
 void __fastcall TPlot::Refresh(void)
@@ -78,7 +75,7 @@ void __fastcall TPlot::DrawTrk(int level)
     sol_t *sol;
     TPoint p1,p2;
     TColor color;
-    double xt,yt,sx,sy,opos[3],pnt[3],rr[3];
+    double xt,yt,sx,sy,opos[3],pnt[3],rr[3],enu[3],cent[3];
     int i,j,index,sel=!BtnSol1->Down&&BtnSol2->Down?1:0,p=0;
     
     trace(3,"DrawTrk: level=%d\n",level);
@@ -99,10 +96,10 @@ void __fastcall TPlot::DrawTrk(int level)
             delete pos2;
         }
     }
-    if (!BtnSol12->Down&&BtnShowMap->Down) { // image
+    if (!BtnSol12->Down&&BtnShowImg->Down) { // image
         DrawTrkImage(level);
     }
-    if (BtnShowPoint->Down) { // map
+    if (BtnShowMap->Down) { // map
         DrawTrkMap(level);
     }
     if (level) { // center +
@@ -121,12 +118,13 @@ void __fastcall TPlot::DrawTrk(int level)
     }
     if (norm(OPos,3)>0.0) {
         ecef2pos(OPos,opos);
-        header="ORI="+LatLonStr(opos,9)+s.sprintf(" %.4fm",opos[2]);
+        header="ORI="+LatLonStr(opos,9);
+        header+=s.sprintf(" %.4fm",opos[2]);
     }
     if (BtnSol1->Down) {
         pos=SolToPos(SolData,-1,QFlag->ItemIndex,0);
         DrawTrkPnt(pos,level,0);
-        if (BtnShowPoint->Down) {
+        if (BtnShowMap->Down&&norm(SolData[0].rb,3)>1E-3) {
             DrawTrkPos(SolData[0].rb,0,8,CColor[2],"Base Station 1");
         }
         DrawTrkStat(pos,header,p++);
@@ -136,7 +134,7 @@ void __fastcall TPlot::DrawTrk(int level)
     if (BtnSol2->Down) {
         pos=SolToPos(SolData+1,-1,QFlag->ItemIndex,0);
         DrawTrkPnt(pos,level,1);
-        if (BtnShowPoint->Down) {
+        if (BtnShowMap->Down&&norm(SolData[1].rb,3)>1E-3) {
             DrawTrkPos(SolData[1].rb,0,8,CColor[2],"Base Station 2");
         }
         DrawTrkStat(pos,header,p++);
@@ -216,7 +214,7 @@ void __fastcall TPlot::DrawTrk(int level)
         delete pos1;
         delete pos2;
     }
-    if (BtnShowPoint->Down) {
+    if (BtnShowMap->Down) {
         for (i=0;i<NWayPnt;i++) {
             pnt[0]=PntPos[i][0]*D2R;
             pnt[1]=PntPos[i][1]*D2R;
@@ -251,11 +249,24 @@ void __fastcall TPlot::DrawTrk(int level)
         DrawLabel(GraphT,p2,label,0,1);
     }
     if (!level) { // center +
-        GraphT->GetPos(p1,p2);
-        p1.x=(p1.x+p2.x)/2;
-        p1.y=(p1.y+p2.y)/2;
+        GraphT->GetCent(xt,yt);
+        GraphT->ToPoint(xt,yt,p1);
         DrawMark(GraphT,p1,5,CColor[2],20,0);
     }
+    // update geview and gmview center
+    if (level&&norm(OPos,3)>0.0) {
+        GraphT->GetCent(xt,yt);
+        GraphT->ToPoint(xt,yt,p1);
+        GraphT->ToPos(p1,enu[0],enu[1]);
+        ecef2pos(OPos,opos);
+        enu2ecef(opos,enu,rr);
+        for (i=0;i<3;i++) rr[i]+=OPos[i];
+        ecef2pos(rr,cent);
+        
+        GoogleEarthView->SetCent(cent[0]*R2D,cent[1]*R2D);
+        GoogleMapView->SetCent(cent[0]*R2D,cent[1]*R2D);
+    }
+    Refresh_GEView();
 }
 // draw map-image on track-plot ---------------------------------------------
 void __fastcall TPlot::DrawTrkImage(int level)
@@ -283,35 +294,67 @@ void __fastcall TPlot::DrawTrkImage(int level)
     TRect r(p1,p2);
     c->StretchDraw(r,MapImage);
 }
+// check in boundrary --------------------------------------------------------
+#define P_IN_B(pos,bound) \
+    (pos[0]>=bound[0]&&pos[0]<=bound[1]&&pos[1]>=bound[2]&&pos[1]<=bound[3])
+
+#define B_IN_B(bound1,bound2) \
+    (bound1[0]<=bound2[1]&&bound1[1]>=bound2[0]&&bound1[2]<=bound2[3]&&bound1[3]>=bound2[2])
+
 // draw gis-map on track-plot -----------------------------------------------
 void __fastcall TPlot::DrawTrkMap(int level)
 {
     gisd_t *data;
+    gis_pnt_t *pnt;
+    gis_poly_t *poly;
+    gis_polygon_t *polygon;
     gtime_t time={0};
     TColor color;
     TPoint *p,p1;
-    double xyz[3],S;
+    double xyz[3],S,xl[2],yl[2],enu[6][3]={{0}},opos[3],pos[3],rr[3];
+    double bound[4]={PI/2.0,-PI/2.0,PI,-PI};
     int i,j,n,m;
     
     trace(3,"DrawTrkMap: level=%d\n",level);
     
+    // get map boundary
+    GraphT->GetLim(xl,yl);
+    enu[0][0]=xl[0]; enu[0][1]=yl[0];
+    enu[1][0]=xl[1]; enu[1][1]=yl[0];
+    enu[2][0]=xl[0]; enu[2][1]=yl[1];
+    enu[3][0]=xl[1]; enu[3][1]=yl[1];
+    enu[4][0]=(xl[0]+xl[1])/2.0; enu[4][1]=yl[0];
+    enu[5][0]=(xl[0]+xl[1])/2.0; enu[5][1]=yl[1];
+    ecef2pos(OPos,opos);
+    for (i=0;i<6;i++) {
+        enu2ecef(opos,enu[i],rr);
+        for (j=0;j<3;j++) rr[j]+=OPos[j];
+        ecef2pos(rr,pos);
+        if (pos[0]<bound[0]) bound[0]=pos[0]; // min lat
+        if (pos[0]>bound[1]) bound[1]=pos[0]; // max lat
+        if (pos[1]<bound[2]) bound[2]=pos[1]; // min lon
+        if (pos[1]>bound[3]) bound[3]=pos[1]; // max lon
+    }
     for (i=MAXMAPLAYER-1;i>=0;i--) {
         if (!Gis.flag[i]) continue;
         
         for (data=Gis.data[i];data;data=data->next) {
             if (data->type==1) { // point
-                PosToXyz(time,((gis_pnt_t *)data->data)->pos,0,xyz);
+                pnt=(gis_pnt_t *)data->data;
+                if (!P_IN_B(pnt->pos,bound)) continue;
+                PosToXyz(time,pnt->pos,0,xyz);
                 GraphT->ToPoint(xyz[0],xyz[1],p1);
                 DrawMark(GraphT,p1,1,CColor[2],6,0);
                 DrawMark(GraphT,p1,0,CColor[2],2,0);
             }
             else if (level&&data->type==2) { // polyline
-                if ((n=((gis_poly_t *)data->data)->npnt)<=0) {
+                poly=(gis_poly_t *)data->data;
+                if ((n=poly->npnt)<=0||!B_IN_B(poly->bound,bound)) {
                     continue;
                 }
                 p=new TPoint [n];
                 for (j=m=0;j<n;j++) {
-                    PosToXyz(time,((gis_poly_t *)data->data)->pos+j*3,0,xyz);
+                    PosToXyz(time,poly->pos+j*3,0,xyz);
                     GraphT->ToPoint(xyz[0],xyz[1],p1);
                     if (m==0||p1.x!=p[m-1].x||p1.y!=p[m-1].y) {
                         p[m++]=p1;
@@ -321,12 +364,13 @@ void __fastcall TPlot::DrawTrkMap(int level)
                 delete [] p;
             }
             else if (level&&data->type==3) { // polygon
-                if ((n=((gis_polygon_t *)data->data)->npnt)<=0) {
+                polygon=(gis_polygon_t *)data->data;
+                if ((n=polygon->npnt)<=0||!B_IN_B(polygon->bound,bound)) {
                     continue;
                 }
                 p=new TPoint [n];
                 for (j=m=0;j<n;j++) {
-                    PosToXyz(time,((gis_polygon_t *)data->data)->pos+j*3,0,xyz);
+                    PosToXyz(time,polygon->pos+j*3,0,xyz);
                     GraphT->ToPoint(xyz[0],xyz[1],p1);
                     if (m==0||p1.x!=p[m-1].x||p1.y!=p[m-1].y) {
                         p[m++]=p1;
@@ -361,7 +405,7 @@ void __fastcall TPlot::DrawTrkPnt(const TIMEPOS *pos, int level, int style)
     }
     if (level&&PlotStyle<2) {
         color=new TColor [pos->n];
-        if (BtnShowMap->Down) {
+        if (BtnShowImg->Down) {
             for (i=0;i<pos->n;i++) color[i]=CColor[0];
             GraphT->DrawMarks(pos->x,pos->y,color,pos->n,0,MarkSize+2,0);
         }
@@ -1079,7 +1123,7 @@ void __fastcall TPlot::DrawSky(int level)
     GraphS->GetLim(xl,yl);
     r=(xl[1]-xl[0]<yl[1]-yl[0]?xl[1]-xl[0]:yl[1]-yl[0])*0.45;
     
-    if (BtnShowMap->Down) {
+    if (BtnShowImg->Down) {
         DrawSkyImage(level);
     }
     if (BtnShowSkyplot->Down) {
@@ -1535,7 +1579,7 @@ void __fastcall TPlot::DrawSnr(int level)
             }
             if (level&&i==1&&nrms[i]>0&&ShowStats&&!BtnShowTrack->Down) {
                 ave[i]=ave[i]/nrms[i];
-                rms[i]=sqrt(rms[i]/nrms[i]);
+                rms[i]=SQRT(rms[i]/nrms[i]);
                 GraphG[i]->GetPos(p1,p2);
                 p1.x=p2.x-8; p1.y+=3;
                 DrawLabel(GraphG[i],p1,s.sprintf("AVE=%.4fm RMS=%.4fm",ave[i],
@@ -1713,7 +1757,7 @@ void __fastcall TPlot::DrawSnrE(int level)
         }
         if (btn[1]->Down&&nrms>0&&!BtnShowTrack->Down) {
             ave=ave/nrms;
-            rms=sqrt(rms/nrms);
+            rms=SQRT(rms/nrms);
             GraphE[1]->GetPos(p1,p2);
             p1.x=p2.x-8; p1.y+=6;
             DrawLabel(GraphE[1],p1,s.sprintf("AVE=%.4fm RMS=%.4fm",ave,rms),2,2);
@@ -1735,7 +1779,7 @@ void __fastcall TPlot::DrawMpS(int level)
     GraphS->GetLim(xl,yl);
     r=(xl[1]-xl[0]<yl[1]-yl[0]?xl[1]-xl[0]:yl[1]-yl[0])*0.45;
     
-    if (BtnShowMap->Down) {
+    if (BtnShowImg->Down) {
         DrawSkyImage(level);
     }
     if (BtnShowSkyplot->Down) {
@@ -1971,11 +2015,12 @@ void __fastcall TPlot::DrawMark(TGraph *g, TPoint p, int mark, TColor color,
 {
     g->DrawMark(p,mark,color,CColor[0],size,rot);
 }
-// refresh google earth view --------------------------------------------------
+// refresh google earth/map view --------------------------------------------
 void __fastcall TPlot::Refresh_GEView(void)
 {
     AnsiString func;
     TIMEPOS *vel;
+    TPoint p;
     sol_t *sol;
     double pos[3]={0},heading,ddeg;
     int i,opts[12],sel=!BtnSol1->Down&&BtnSol2->Down?1:0;
@@ -2059,7 +2104,7 @@ void __fastcall TPlot::Refresh_GEView(void)
         GoogleEarthView->HideTrack(2);
     }
     // update points
-    if (BtnShowPoint->Down) {
+    if (BtnShowMap->Down) {
         GoogleEarthView->ShowPoint();
     }
     else {

@@ -700,7 +700,7 @@ void __fastcall TMainWindow::ConvertFile(void)
     int i,format,sat;
     char file[1024]="",*ofile[7],ofile_[7][1024]={""},msg[256],*p;
     char buff[256],tstr[32];
-    double RNXVER[]={2.10,2.11,2.12,3.00,3.01,3.02};
+    double RNXVER[]={2.10,2.11,2.12,3.00,3.01,3.02,3.03};
     FILE *fp;
     
     for (i=0;i<7;i++) ofile[i]=ofile_[i];
@@ -719,6 +719,7 @@ void __fastcall TMainWindow::ConvertFile(void)
         else if (!strcmp(p,".bnx"  )) format=STRFMT_BINEX;
         else if (!strcmp(p,".binex")) format=STRFMT_BINEX;
         else if (!strcmp(p,".rt17" )) format=STRFMT_RT17;
+        else if (!strcmp(p,".cmr"  )) format=STRFMT_CMR;
         else if (!strcmp(p,".obs"  )) format=STRFMT_RINEX;
         else if (!strcmp(p,".OBS"  )) format=STRFMT_RINEX;
         else if (!strcmp(p,".nav"  )) format=STRFMT_RINEX;
@@ -752,9 +753,10 @@ void __fastcall TMainWindow::ConvertFile(void)
     }
     rnxopt.rnxver=RNXVER[RnxVer];
     
-    if (format==STRFMT_RTCM2||format==STRFMT_RTCM3||format==STRFMT_RT17) {
+    if (format==STRFMT_RTCM2||format==STRFMT_RTCM3||format==STRFMT_RT17||
+        format==STRFMT_CMR) {
         
-        // input start date/time for rtcm 2 ro rtcm 3
+        // input start date/time for rtcm 2, rtcm 3, RT17 or CMR
         StartDialog->FileName=file;
         if (StartDialog->ShowModal()!=mrOk) return;
         rnxopt.trtcm=StartDialog->Time;
@@ -801,6 +803,7 @@ void __fastcall TMainWindow::ConvertFile(void)
     for (i=0;i<6;i++) strcpy(rnxopt.mask[i],CodeMask[i].c_str());
     rnxopt.autopos=AutoPos;
     rnxopt.scanobs=ScanObs;
+    rnxopt.halfcyc=HalfCyc;
     rnxopt.outiono=OutIono;
     rnxopt.outtime=OutTime;
     rnxopt.outleaps=OutLeaps;
@@ -915,6 +918,7 @@ void __fastcall TMainWindow::LoadOpt(void)
     CodeMask[5]         =ini->ReadString ("opt","codemask_6",mask);
     AutoPos             =ini->ReadInteger("opt","autopos",     0);
     ScanObs             =ini->ReadInteger("opt","scanobs",     0);
+    HalfCyc             =ini->ReadInteger("opt","halfcyc",     0);
     OutIono             =ini->ReadInteger("opt","outiono",     0);
     OutTime             =ini->ReadInteger("opt","outtime",     0);
     OutLeaps            =ini->ReadInteger("opt","outleaps",    0);
@@ -1005,6 +1009,7 @@ void __fastcall TMainWindow::SaveOpt(void)
     ini->WriteString ("opt","codemask_6", CodeMask[5]);
     ini->WriteInteger("opt","autopos",    AutoPos);
     ini->WriteInteger("opt","scanobs",    ScanObs);
+    ini->WriteInteger("opt","halfcyc",    HalfCyc);
     ini->WriteInteger("opt","outiono",    OutIono);
     ini->WriteInteger("opt","outtime",    OutTime);
     ini->WriteInteger("opt","outleaps",   OutLeaps);
