@@ -228,11 +228,7 @@ static int decode_rxmrawx(raw_t *raw)
 {
     gtime_t time;
     double tow,cp1,pr1,tadj=0.0,toff=0.0,freq,tn;
-<<<<<<< HEAD
-    int i,j,sys,prn,sat,n=0,nsat,week,tstat,lockt,halfc,fcn,cpstd;
-=======
-    int i,j,sys,prn,sat,n=0,nsat,week,tstat,lockt,slip,halfv,halfc,fcn;
->>>>>>> refs/remotes/tomojitakasu/rtklib_2.4.3
+    int i,j,sys,prn,sat,n=0,nsat,week,tstat,lockt,slip,halfv,halfc,fcn,cpstd;
     char *q;
     unsigned char *p=raw->buff+6;
 
@@ -579,14 +575,10 @@ static int decode_trkmeas(raw_t *raw)
         raw->obs.data[n].SNR[0]=(unsigned char)(snr*4.0);
         raw->obs.data[n].code[0]=sys==SYS_CMP?CODE_L1I:CODE_L1C;
         raw->obs.data[n].LLI[0]=raw->lockt[sat-1][1]>0.0?1:0;
-<<<<<<< HEAD
         if (sys==SYS_SBS)     /* half cycle valid flag */
              raw->obs.data[n].LLI[0]|=lock2>142?0:2;
         else
             raw->obs.data[n].LLI[0]|=flag&0x80?0:2;
-=======
-        raw->obs.data[n].LLI[0]|=flag&0x80?0:2; /* half-cycle valid */
->>>>>>> refs/remotes/tomojitakasu/rtklib_2.4.3
         raw->lockt[sat-1][1]=0.0;
         
         for (j=1;j<NFREQ+NEXOBS;j++) {

@@ -1429,11 +1429,8 @@ static int ddmat(rtk_t *rtk, double *D,int gps,int glo,int sbs)
             
             /* look for first valid sat (i=state index, i-k=sat index) */
             for (i=k;i<k+MAXSAT;i++) {
-<<<<<<< HEAD
                 /* skip if sat not active */
-=======
 #if 0
->>>>>>> refs/remotes/tomojitakasu/rtklib_2.4.3
                 if (rtk->x[i]==0.0||!test_sys(rtk->ssat[i-k].sys,m)||
                     !rtk->ssat[i-k].vsat[f]) {
 #else
@@ -1546,13 +1543,13 @@ static void holdamb(rtk_t *rtk, const double *xa)
     /* return if less than min sats for hold */
     if (nv<rtk->opt.minholdsats-1) return;  /* nv=sat pairs, so subtract 1 */
 
-        R=zeros(nv,nv);
-        for (i=0;i<nv;i++) R[i+i*nv]=VAR_HOLDAMB;
+    R=zeros(nv,nv);
+    for (i=0;i<nv;i++) R[i+i*nv]=VAR_HOLDAMB;
         
-        /* update states with constraints */
-        if ((info=filter(rtk->x,rtk->P,H,v,R,rtk->nx,nv))) {
-            errmsg(rtk,"filter error (info=%d)\n",info);
-        }
+    /* update states with constraints */
+    if ((info=filter(rtk->x,rtk->P,H,v,R,rtk->nx,nv))) {
+        errmsg(rtk,"filter error (info=%d)\n",info);
+    }
     free(R);free(v); free(H);
 
     /* skip glonass/sbs icbias update if not enabled */
