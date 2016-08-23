@@ -38,6 +38,7 @@
 *           2015/07/22 1.20 fix bug on base station position setting
 *           2016/07/30 1.21 suppress single solution if !prcopt.outsingle
 *                           fix bug on slip detection of backward filter
+*           2016/08/20 1.22 fix bug on ddres() function
 *-----------------------------------------------------------------------------*/
 #include <stdarg.h>
 #include "rtklib.h"
@@ -1211,15 +1212,17 @@ static int ddres(rtk_t *rtk, const nav_t *nav, double dt, const double *x,
                 if (!test_sys(sysj,m)) continue;
                 if (!validobs(iu[j],ir[j],f,nf,y)) continue;
             
-                ff=f%nf;
-                lami=nav->lam[sat[i]-1][ff];
-                lamj=nav->lam[sat[j]-1][ff];
-                if (lami<=0.0||lamj<=0.0) continue;
-                if (H) Hi=H+nv*rtk->nx;
+            ff=f%nf;
+            lami=nav->lam[sat[i]-1][ff];
+            lamj=nav->lam[sat[j]-1][ff];
+            if (lami<=0.0||lamj<=0.0) continue;
+            if (H) {
+                Hi=H+nv*rtk->nx;
+                for (k=0;k<rtk->nx;k++) Hi[k]=0.0;
             
-                /* double-differenced measurements from 2 receivers and 2 sats in meters */
-                v[nv]=(y[f+iu[i]*nf*2]-y[f+ir[i]*nf*2])-
-                      (y[f+iu[j]*nf*2]-y[f+ir[j]*nf*2]);
+            /* double-differenced measurements from 2 receivers and 2 sats in meters */
+            v[nv]=(y[f+iu[i]*nf*2]-y[f+ir[i]*nf*2])-
+                  (y[f+iu[j]*nf*2]-y[f+ir[j]*nf*2]);
             
                 /* partial derivatives by rover position, combine unit vectors from two sats */
                 if (H) {
@@ -1644,7 +1647,7 @@ static int resamb_LAMBDA(rtk_t *rtk, double *bias, double *xa,int gps,int glo,in
     trace(3,"N(0)="); tracemat(3,y+na,1,nb,10,3);
     
     /* lambda/mlambda integer least-square estimation */
-    /* return best integer solutions
+    /* return best integer solutions */
     /* b are best integer solutions, s are residuals */
     if (!(info=lambda(nb,2,y+na,Qb,b,s))) {
         
@@ -1941,6 +1944,7 @@ static int relpos(rtk_t *rtk, const obsd_t *obs, int nu, int nr,
                 }
             }
         }
+        else result=0;
         
         /* if fix-and-hold gloarmode enabled, re-run AR with final gps/glo settings if differ from above */
         if (rtk->opt.glomodear==3) {
