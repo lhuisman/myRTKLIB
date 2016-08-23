@@ -297,7 +297,7 @@ static int decode_rxmrawx(raw_t *raw)
         raw->obs.data[n].D[0]=R4(p+16);
         raw->obs.data[n].SNR[0]=U1(p+26)*4;
         /* indicate slip occurred if phase std>=slip threshold */
-        raw->obs.data[n].LLI[0]=cpstd>=STD_SLIP?1:0;
+        raw->obs.data[n].LLI[0]=cpstd>=CPSTD_VALID?1:0;
         raw->obs.data[n].code[0]=
             sys==SYS_CMP?CODE_L1I:(sys==SYS_GAL?CODE_L1X:CODE_L1C);
         
