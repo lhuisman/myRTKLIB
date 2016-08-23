@@ -1219,6 +1219,7 @@ static int ddres(rtk_t *rtk, const nav_t *nav, double dt, const double *x,
             if (H) {
                 Hi=H+nv*rtk->nx;
                 for (k=0;k<rtk->nx;k++) Hi[k]=0.0;
+            }
             
             /* double-differenced measurements from 2 receivers and 2 sats in meters */
             v[nv]=(y[f+iu[i]*nf*2]-y[f+ir[i]*nf*2])-
