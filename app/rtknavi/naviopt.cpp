@@ -416,6 +416,7 @@ void __fastcall TOptDialog::GetOpt(void)
 	GloAmbRes	 ->ItemIndex=PrcOpt.glomodear;
 	BdsAmbRes	 ->ItemIndex=PrcOpt.bdsmodear;
 	ValidThresAR ->Text     =s.sprintf("%.1f",PrcOpt.thresar[0]);
+	ARThres1	 ->Text     =s.sprintf("%.4f",PrcOpt.thresar[1]);
 	OutCntResetAmb->Text    =s.sprintf("%d",  PrcOpt.maxout);
 	LockCntFixAmb->Text     =s.sprintf("%d",  PrcOpt.minlock);
 	FixCntHoldAmb->Text     =s.sprintf("%d",  PrcOpt.minfix);
@@ -427,7 +428,10 @@ void __fastcall TOptDialog::GetOpt(void)
 	SlipThres	 ->Text     =s.sprintf("%.3f",PrcOpt.thresslip);
 	ARIter		 ->Text     =s.sprintf("%d",  PrcOpt.armaxiter);
 	NumIter		 ->Text     =s.sprintf("%d",  PrcOpt.niter);
+	MinFixSats	 ->Text     =s.sprintf("%d",  PrcOpt.minfixsats);
+	MinHoldSats	 ->Text     =s.sprintf("%d",  PrcOpt.minholdsats);
 	SyncSol		 ->ItemIndex=PrcOpt.syncsol;
+	ARFilter	 ->ItemIndex=PrcOpt.arfilter;
 	ExSatsE		 ->Text     =ExSats;
 	NavSys1		 ->Checked  =PrcOpt.navsys&SYS_GPS;
 	NavSys2		 ->Checked  =PrcOpt.navsys&SYS_GLO;
@@ -552,8 +556,12 @@ void __fastcall TOptDialog::SetOpt(void)
 	PrcOpt.maxinno   =str2dbl(RejectThres->Text);
 	PrcOpt.thresslip =str2dbl(SlipThres  ->Text);
 	PrcOpt.armaxiter =ARIter      ->Text.ToInt();
+	PrcOpt.minfixsats =MinFixSats ->Text.ToInt();
+	PrcOpt.minholdsats =MinHoldSats->Text.ToInt();
+	PrcOpt.thresar[1] =str2dbl(ARThres1->Text);
 	PrcOpt.niter     =NumIter     ->Text.ToInt();
 	PrcOpt.syncsol   =SyncSol     ->ItemIndex;
+	PrcOpt.arfilter  =ARFilter    ->ItemIndex;
 	ExSats			 =ExSatsE	  ->Text;
 	PrcOpt.navsys    =0;
 	if (NavSys1->Checked) PrcOpt.navsys|=SYS_GPS;
@@ -731,6 +739,7 @@ void __fastcall TOptDialog::LoadOpt(AnsiString file)
 	GloAmbRes	 ->ItemIndex	=prcopt.glomodear;
 	BdsAmbRes	 ->ItemIndex	=prcopt.bdsmodear;
 	ValidThresAR ->Text			=s.sprintf("%.1f",prcopt.thresar[0]);
+	ARThres1	 ->Text         =s.sprintf("%.4f",prcopt.thresar[1]);
 	OutCntResetAmb->Text		=s.sprintf("%d"  ,prcopt.maxout   );
 	FixCntHoldAmb->Text			=s.sprintf("%d"  ,prcopt.minfix   );
 	LockCntFixAmb->Text			=s.sprintf("%d"  ,prcopt.minlock  );
@@ -741,8 +750,11 @@ void __fastcall TOptDialog::LoadOpt(AnsiString file)
 	RejectThres  ->Text			=s.sprintf("%.1f",prcopt.maxinno  );
 	SlipThres	 ->Text			=s.sprintf("%.3f",prcopt.thresslip);
 	ARIter		 ->Text			=s.sprintf("%d",  prcopt.armaxiter);
+	MinFixSats	 ->Text         =s.sprintf("%d",  prcopt.minfixsats);
+	MinHoldSats	 ->Text         =s.sprintf("%d",  prcopt.minholdsats);
 	NumIter		 ->Text			=s.sprintf("%d",  prcopt.niter    );
 	SyncSol		 ->ItemIndex	=prcopt.syncsol;
+	ARFilter	 ->ItemIndex	=prcopt.arfilter;
 	BaselineLen	 ->Text			=s.sprintf("%.3f",prcopt.baseline[0]);
 	BaselineSig	 ->Text			=s.sprintf("%.3f",prcopt.baseline[1]);
 	BaselineConst->Checked		=prcopt.baseline[0]>0.0;
@@ -904,6 +916,7 @@ void __fastcall TOptDialog::SaveOpt(AnsiString file)
 	prcopt.glomodear=GloAmbRes	->ItemIndex;
 	prcopt.bdsmodear=BdsAmbRes	->ItemIndex;
 	prcopt.thresar[0]=str2dbl(ValidThresAR->Text);
+	prcopt.thresar[1]=str2dbl(ARThres1->Text);
 	prcopt.maxout	=str2dbl(OutCntResetAmb->Text);
 	prcopt.minfix	=str2dbl(FixCntHoldAmb->Text);
 	prcopt.minlock	=str2dbl(LockCntFixAmb->Text);
@@ -914,8 +927,11 @@ void __fastcall TOptDialog::SaveOpt(AnsiString file)
 	prcopt.maxinno	=str2dbl(RejectThres->Text);
 	prcopt.thresslip=str2dbl(SlipThres	->Text);
 	prcopt.armaxiter=str2dbl(ARIter		->Text);
+	prcopt.minfixsats=str2dbl(MinFixSats		->Text);
+	prcopt.minholdsats=str2dbl(MinHoldSats		->Text);
 	prcopt.niter	=str2dbl(NumIter	->Text);
 	prcopt.syncsol	=SyncSol->ItemIndex;
+	prcopt.arfilter	=ARFilter->ItemIndex;
 	if (prcopt.mode==PMODE_MOVEB&&BaselineConst->Checked) {
 		prcopt.baseline[0]=str2dbl(BaselineLen->Text);
 		prcopt.baseline[1]=str2dbl(BaselineSig->Text);
@@ -1017,8 +1033,12 @@ void __fastcall TOptDialog::UpdateEnable(void)
 	MaxAgeDiff     ->Enabled=rel;
 	RejectThres    ->Enabled=rel||ppp;
 	ARIter         ->Enabled=ppp;
+	MinFixSats     ->Enabled=ar||ppp;
+	MinHoldSats    ->Enabled=ar||ppp;
+	ARThres1       ->Enabled=ar||ppp;
 	NumIter        ->Enabled=rel||ppp;
 	SyncSol        ->Enabled=rel||ppp;
+	ARFilter       ->Enabled=ar||ppp;
 	BaselineConst  ->Enabled=PosMode->ItemIndex==PMODE_MOVEB;
 	BaselineLen    ->Enabled=BaselineConst->Checked&&PosMode->ItemIndex==PMODE_MOVEB;
 	BaselineSig    ->Enabled=BaselineConst->Checked&&PosMode->ItemIndex==PMODE_MOVEB;

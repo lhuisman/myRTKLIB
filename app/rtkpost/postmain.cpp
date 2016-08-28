@@ -803,6 +803,7 @@ int __fastcall TMainForm::GetOption(prcopt_t &prcopt, solopt_t &solopt,
 {
     char buff[1024],id[32],*p;
     int sat,ex;
+    int ppp=PosMode>=PMODE_PPP_KINEMA;
     
     // processing options
     prcopt.mode     =PosMode;
@@ -830,6 +831,9 @@ int __fastcall TMainForm::GetOption(prcopt_t &prcopt, solopt_t &solopt,
     prcopt.tidecorr =TideCorr;
     prcopt.armaxiter=ARIter;
     prcopt.niter    =NumIter;
+    prcopt.minfixsats=MinFixSats;
+    prcopt.minholdsats=MinHoldSats;
+    prcopt.arfilter=ARFilter;
     prcopt.intpref  =IntpRefObs;
     prcopt.sbassatsel=SbasSat;
     prcopt.eratio[0]=MeasErrR1;
@@ -845,7 +849,10 @@ int __fastcall TMainForm::GetOption(prcopt_t &prcopt, solopt_t &solopt,
     prcopt.prn[4]   =PrNoise5;
     prcopt.sclkstab =SatClkStab;
     prcopt.thresar[0]=ValidThresAR;
-    prcopt.thresar[1]=ThresAR2;
+    if (ppp)
+        prcopt.thresar[1]=ThresAR2;
+    else
+        prcopt.thresar[1]=MaxPosVarAR;
     prcopt.thresar[2]=ThresAR3;
     prcopt.elmaskar =ElMaskAR*D2R;
     prcopt.elmaskhold=ElMaskHold*D2R;
@@ -1205,6 +1212,10 @@ void __fastcall TMainForm::LoadOpt(void)
     RejectGdop         =ini->ReadFloat  ("opt","rejectgdop",  30.0);
     ARIter             =ini->ReadInteger("opt","ariter",         1);
     NumIter            =ini->ReadInteger("opt","numiter",        1);
+    MinFixSats         =ini->ReadInteger("opt","minfixsats",     2);
+    MinHoldSats        =ini->ReadInteger("opt","minholdsats",    2);
+    MaxPosVarAR        =ini->ReadFloat  ("opt","maxposvarar", 0.99);
+    ARFilter           =ini->ReadInteger("opt","arfilter",       0);
     CodeSmooth         =ini->ReadInteger("opt","codesmooth",     0);
     BaseLine[0]        =ini->ReadFloat  ("opt","baselinelen",  0.0);
     BaseLine[1]        =ini->ReadFloat  ("opt","baselinesig",  0.0);
@@ -1415,6 +1426,10 @@ void __fastcall TMainForm::SaveOpt(void)
     ini->WriteFloat  ("opt","rejectthres", RejectThres );
     ini->WriteInteger("opt","ariter",      ARIter      );
     ini->WriteInteger("opt","numiter",     NumIter     );
+    ini->WriteInteger("opt","minfixsats",  MinFixSats  );
+    ini->WriteInteger("opt","minholdsats", MinHoldSats );
+    ini->WriteFloat  ("opt","maxposvarar", MaxPosVarAR );
+    ini->WriteInteger("opt","arfilter",    ARFilter    );
     ini->WriteInteger("opt","codesmooth",  CodeSmooth  );
     ini->WriteFloat  ("opt","baselinelen", BaseLine[0] );
     ini->WriteFloat  ("opt","baselinesig", BaseLine[1] );

@@ -1621,7 +1621,7 @@ static int resamb_LAMBDA(rtk_t *rtk, double *bias, double *xa,int gps,int glo,in
     /* skip AR if AR threshold too small or position variance too large */
     if (rtk->opt.mode<=PMODE_DGPS||rtk->opt.modear==ARMODE_OFF||
         rtk->opt.thresar[0]<1.0 || rtk->P[0]>=rtk->opt.thresar[1]) {
-        errmsg(rtk,"position variance too large\n");
+        errmsg(rtk,"position variance too large:  %.4f\n",rtk->P[0]);
         return 0;
     }
     /* Create single to double-difference transformation matrix (D')

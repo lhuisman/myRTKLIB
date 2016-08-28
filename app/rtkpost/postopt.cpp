@@ -395,6 +395,10 @@ void __fastcall TOptDialog::GetOpt(void)
 	SlipThres	 ->Text			=s.sprintf("%.3f",MainForm->SlipThres);
 	ARIter		 ->Text			=s.sprintf("%d",  MainForm->ARIter);
 	NumIter		 ->Text			=s.sprintf("%d",  MainForm->NumIter);
+	MinFixSats	 ->Text         =s.sprintf("%d",  MainForm->MinFixSats);
+	MinHoldSats	 ->Text         =s.sprintf("%d",  MainForm->MinHoldSats);
+	MaxPosVarAR	 ->Text         =s.sprintf("%.4f",MainForm->MaxPosVarAR);
+	ARFilter	 ->ItemIndex    =MainForm->ARFilter;
 	BaselineLen	 ->Text			=s.sprintf("%.3f",MainForm->BaseLine[0]);
 	BaselineSig	 ->Text			=s.sprintf("%.3f",MainForm->BaseLine[1]);
 	BaselineConst->Checked		=MainForm->BaseLineConst;
@@ -518,6 +522,10 @@ void __fastcall TOptDialog::SetOpt(void)
 	MainForm->SlipThres   	=str2dbl(SlipThres  ->Text);
 	MainForm->ARIter	  	=ARIter		  ->Text.ToInt();
 	MainForm->NumIter	  	=NumIter	  ->Text.ToInt();
+	MainForm->MinFixSats	=MinFixSats	  ->Text.ToInt();
+	MainForm->MinHoldSats	=MinHoldSats  ->Text.ToInt();
+    MainForm->ARFilter      =ARFilter   ->ItemIndex;
+	MainForm->MaxPosVarAR	=str2dbl(MaxPosVarAR->Text);
 	MainForm->BaseLine[0]  	=str2dbl(BaselineLen->Text);
 	MainForm->BaseLine[1]  	=str2dbl(BaselineSig->Text);
 	MainForm->BaseLineConst	=BaselineConst->Checked;
@@ -591,6 +599,9 @@ void __fastcall TOptDialog::SetOpt(void)
 //---------------------------------------------------------------------------
 void __fastcall TOptDialog::LoadOpt(AnsiString file)
 {
+
+int ppp=PosMode->ItemIndex>=PMODE_PPP_KINEMA;
+
 	TEdit *editu[]={RovPos1,RovPos2,RovPos3};
 	TEdit *editr[]={RefPos1,RefPos2,RefPos3};
 	AnsiString s;
@@ -640,7 +651,10 @@ void __fastcall TOptDialog::LoadOpt(AnsiString file)
 	GloAmbRes	 ->ItemIndex	=prcopt.glomodear;
 	BdsAmbRes	 ->ItemIndex	=prcopt.bdsmodear;
 	ValidThresAR ->Text			=s.sprintf("%.3g",prcopt.thresar[0]);
-	ThresAR2	 ->Text			=s.sprintf("%.9g",prcopt.thresar[1]);
+    if (ppp)
+        ThresAR2	 ->Text		=s.sprintf("%.9g",prcopt.thresar[1]);
+    else
+        MaxPosVarAR	 ->Text     =s.sprintf("%.4f",prcopt.thresar[1]);
 	ThresAR3	 ->Text			=s.sprintf("%.3g",prcopt.thresar[2]);
 	OutCntResetAmb->Text		=s.sprintf("%d"  ,prcopt.maxout   );
 	FixCntHoldAmb->Text			=s.sprintf("%d"  ,prcopt.minfix   );
@@ -652,6 +666,9 @@ void __fastcall TOptDialog::LoadOpt(AnsiString file)
 	RejectThres  ->Text			=s.sprintf("%.1f",prcopt.maxinno  );
 	SlipThres	 ->Text			=s.sprintf("%.3f",prcopt.thresslip);
 	ARIter		 ->Text			=s.sprintf("%d",  prcopt.armaxiter);
+	MinFixSats	 ->Text         =s.sprintf("%d",  prcopt.minfixsats);
+	MinHoldSats	 ->Text         =s.sprintf("%d",  prcopt.minholdsats);
+	ARFilter	 ->ItemIndex	=prcopt.arfilter;
 	NumIter		 ->Text			=s.sprintf("%d",  prcopt.niter    );
 	BaselineLen	 ->Text			=s.sprintf("%.3f",prcopt.baseline[0]);
 	BaselineSig	 ->Text			=s.sprintf("%.3f",prcopt.baseline[1]);
@@ -727,6 +744,9 @@ void __fastcall TOptDialog::LoadOpt(AnsiString file)
 //---------------------------------------------------------------------------
 void __fastcall TOptDialog::SaveOpt(AnsiString file)
 {
+
+int ppp=PosMode->ItemIndex>=PMODE_PPP_KINEMA;
+
 	AnsiString ExSats_Text=ExSats->Text,FieldSep_Text=FieldSep->Text;
 	AnsiString RovAnt_Text=RovAnt->Text,RefAnt_Text=RefAnt->Text;
 	AnsiString SatPcvFile_Text=SatPcvFile->Text;
@@ -785,7 +805,10 @@ void __fastcall TOptDialog::SaveOpt(AnsiString file)
 	prcopt.glomodear=GloAmbRes	->ItemIndex;
 	prcopt.bdsmodear=BdsAmbRes	->ItemIndex;
 	prcopt.thresar[0]=str2dbl(ValidThresAR->Text);
-	prcopt.thresar[1]=str2dbl(ThresAR2->Text);
+    if (ppp)
+	    prcopt.thresar[1]=str2dbl(ThresAR2->Text);
+    else
+	    prcopt.thresar[1]=str2dbl(MaxPosVarAR->Text);
 	prcopt.thresar[2]=str2dbl(ThresAR3->Text);
 	prcopt.maxout	=str2dbl(OutCntResetAmb->Text);
 	prcopt.minfix	=str2dbl(FixCntHoldAmb->Text);
@@ -797,6 +820,9 @@ void __fastcall TOptDialog::SaveOpt(AnsiString file)
 	prcopt.maxinno	=str2dbl(RejectThres->Text);
 	prcopt.thresslip=str2dbl(SlipThres	->Text);
 	prcopt.armaxiter=str2dbl(ARIter		->Text);
+	prcopt.minfixsats=str2dbl(MinFixSats->Text);
+	prcopt.minholdsats=str2dbl(MinHoldSats->Text);
+	prcopt.arfilter	=ARFilter->ItemIndex;
 	prcopt.niter	=str2dbl(NumIter	->Text);
 	if (prcopt.mode==PMODE_MOVEB&&BaselineConst->Checked) {
 		prcopt.baseline[0]=str2dbl(BaselineLen->Text);
@@ -886,7 +912,7 @@ void __fastcall TOptDialog::UpdateEnable(void)
 	PosOpt3        ->Enabled=ppp;
 	PosOpt4        ->Enabled=ppp;
 	PosOpt6        ->Enabled=ppp;
-	
+
 	AmbRes         ->Enabled=ar;
 	GloAmbRes      ->Enabled=ar&&AmbRes->ItemIndex>0&&NavSys2->Checked;
 	BdsAmbRes      ->Enabled=ar&&AmbRes->ItemIndex>0&&NavSys6->Checked;
@@ -903,6 +929,10 @@ void __fastcall TOptDialog::UpdateEnable(void)
 	RejectThres    ->Enabled=rel||ppp;
 	ARIter         ->Enabled=ppp;
 	NumIter        ->Enabled=rel||ppp;
+	MinFixSats     ->Enabled=ar;
+	MinHoldSats    ->Enabled=ar;
+	MaxPosVarAR    ->Enabled=ar&&!ppp;
+	ARFilter       ->Enabled=ar;
 	BaselineConst  ->Enabled=PosMode->ItemIndex==PMODE_MOVEB;
 	BaselineLen    ->Enabled=BaselineConst->Checked&&PosMode->ItemIndex==PMODE_MOVEB;
 	BaselineSig    ->Enabled=BaselineConst->Checked&&PosMode->ItemIndex==PMODE_MOVEB;

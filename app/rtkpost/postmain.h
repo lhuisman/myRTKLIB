@@ -182,7 +182,7 @@ public:
 	
 	// options
 	int PosMode,Freq,Solution,DynamicModel,IonoOpt,TropOpt,RcvBiasEst;
-	int ARIter,NumIter,CodeSmooth,TideCorr;
+	int ARIter,MinFixSats,MinHoldSats,ARFilter,NumIter,CodeSmooth,TideCorr;
 	int OutCntResetAmb,FixCntHoldAmb,LockCntFixAmb,RovPosType,RefPosType;
 	int SatEphem,NavSys;
 	int RovAntPcv,RefAntPcv,AmbRes,GloAmbRes,BdsAmbRes;
@@ -197,7 +197,7 @@ public:
 	double SatClkStab,RovAntE,RovAntN,RovAntU,RefAntE,RefAntN,RefAntU;
 	double PrNoise1,PrNoise2,PrNoise3,PrNoise4,PrNoise5;
 	double ValidThresAR,ElMaskAR,ElMaskHold,SlipThres;
-	double ThresAR2,ThresAR3;
+	double ThresAR2,ThresAR3,MaxPosVarAR;
 	double RovPos[3],RefPos[3],BaseLine[2];
 	double MaxSolStd;
 	snrmask_t SnrMask;

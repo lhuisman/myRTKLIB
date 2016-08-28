@@ -225,6 +225,12 @@ __published:
 	TCheckBox *NavSys7;
 	TComboBox *OutputSingle;
 	TEdit *MaxSolStd;
+    TLabel *Label49;
+    TLabel *Label50;
+    TEdit *MinFixSats;
+    TEdit *MinHoldSats;
+    TEdit *MaxPosVarAR;
+    TComboBox *ARFilter;
 	void __fastcall BtnOkClick(TObject *Sender);
 	void __fastcall RovAntPcvClick(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);
