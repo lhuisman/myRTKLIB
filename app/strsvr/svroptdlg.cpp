@@ -32,6 +32,7 @@ void __fastcall TSvrOptDialog::FormShow(TObject *Sender)
 	AvePeriodRate->Text=s.sprintf("%d",SvrOpt[2]);
 	SvrBuffSize->Text=s.sprintf("%d",SvrOpt[3]);
 	SvrCycle->Text=s.sprintf("%d",SvrOpt[4]);
+	RelayMsg->ItemIndex=RelayBack;
 	NmeaCycle->Text=s.sprintf("%d",SvrOpt[5]);
 	FileSwapMarginE->Text=s.sprintf("%d",FileSwapMargin);
 	if (norm(AntPos,3)>0.0) {
@@ -56,7 +57,8 @@ void __fastcall TSvrOptDialog::FormShow(TObject *Sender)
 	AntOff1->Text=s.sprintf("%.4f",AntOff[0]);
 	AntOff2->Text=s.sprintf("%.4f",AntOff[1]);
 	AntOff3->Text=s.sprintf("%.4f",AntOff[2]);
-	
+	SrcTblFileF->Text=SrcTblFile;
+	LogFileF->Text=LogFile;
 	UpdateEnable();
 }
 //---------------------------------------------------------------------------
@@ -70,6 +72,7 @@ void __fastcall TSvrOptDialog::BtnOkClick(TObject *Sender)
 	SvrOpt[4]=SvrCycle->Text.ToInt();
 	SvrOpt[5]=NmeaCycle->Text.ToInt();
 	FileSwapMargin=FileSwapMarginE->Text.ToInt();
+	RelayBack=RelayMsg->ItemIndex;
 	pos[0]=str2dbl(AntPos1->Text)*D2R;
 	pos[1]=str2dbl(AntPos2->Text)*D2R;
 	pos[2]=str2dbl(AntPos3->Text);
@@ -90,6 +93,8 @@ void __fastcall TSvrOptDialog::BtnOkClick(TObject *Sender)
 	AntOff[0]=str2dbl(AntOff1->Text);
 	AntOff[1]=str2dbl(AntOff2->Text);
 	AntOff[2]=str2dbl(AntOff3->Text);
+	SrcTblFile=SrcTblFileF->Text;
+	LogFile=LogFileF->Text;
 }
 //---------------------------------------------------------------------------
 void __fastcall TSvrOptDialog::BtnPosClick(TObject *Sender)
@@ -146,3 +151,20 @@ void __fastcall TSvrOptDialog::StaInfoSelClick(TObject *Sender)
 	UpdateEnable();
 }
 //---------------------------------------------------------------------------
+void __fastcall TSvrOptDialog::BtnSrcTblFileClick(TObject *Sender)
+{
+	OpenDialog->Title="NTRIP Source Table File";
+	OpenDialog->FileName=SrcTblFileF->Text;
+	if (!OpenDialog->Execute()) return;
+	SrcTblFileF->Text=OpenDialog->FileName;
+}
+//---------------------------------------------------------------------------
+void __fastcall TSvrOptDialog::BtnLogFileClick(TObject *Sender)
+{
+	OpenDialog->Title="Log File";
+	OpenDialog->FileName=LogFileF->Text;
+	if (!OpenDialog->Execute()) return;
+	LogFileF->Text=OpenDialog->FileName;
+}
+//---------------------------------------------------------------------------
+

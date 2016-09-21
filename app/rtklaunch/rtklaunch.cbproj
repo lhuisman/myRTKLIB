@@ -58,6 +58,7 @@
         <Base>true</Base>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base)'!=''">
+        <UsingDelphiRTL>true</UsingDelphiRTL>
         <ILINK_LinkwithZLib>false</ILINK_LinkwithZLib>
         <ILINK_LinkwithIndy>false</ILINK_LinkwithIndy>
         <ILINK_LinkwithMidas>false</ILINK_LinkwithMidas>
@@ -134,7 +135,6 @@
     <PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
         <Defines>NDEBUG;$(Defines)</Defines>
-        <Debugger_RunParams>-tray -mkl</Debugger_RunParams>
         <Icon_MainIcon>..\icon\rtk9.ico</Icon_MainIcon>
         <LinkPackageStatics>rtl.lib;vcl.lib</LinkPackageStatics>
         <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
@@ -149,6 +149,12 @@
             <DependentOn>launchmain.h</DependentOn>
             <BuildOrder>1</BuildOrder>
         </CppCompile>
+        <CppCompile Include="launchoptdlg.cpp">
+            <Form>LaunchOptDialog</Form>
+            <FormType>dfm</FormType>
+            <DependentOn>launchoptdlg.h</DependentOn>
+            <BuildOrder>3</BuildOrder>
+        </CppCompile>
         <CppCompile Include="rtklaunch.cpp">
             <BuildOrder>0</BuildOrder>
         </CppCompile>
@@ -156,6 +162,7 @@
             <BuildOrder>2</BuildOrder>
         </CppCompile>
         <FormResources Include="launchmain.dfm"/>
+        <FormResources Include="launchoptdlg.dfm"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

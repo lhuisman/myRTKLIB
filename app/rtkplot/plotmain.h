@@ -18,6 +18,7 @@
 #include <ExtDlgs.hpp>
 #include "SHDocVw_OCX.h"
 #include <Vcl.OleCtrls.hpp>
+#include <Vcl.FileCtrl.hpp>
 
 #define MAXNFILE    256                 // max number of solution files
 #define MAXSTRBUFF  1024                // max length of stream buffer
@@ -212,8 +213,6 @@ __published:
 	TOpenDialog *OpenElMaskDialog;
 	TOpenDialog *OpenMapPathDialog;
 	TOpenDialog *OpenMapDialog;
-	TMenuItem *MenuFileSel;
-	TMenuItem *N4;
 	TMenuItem *N14;
 	TMenuItem *MenuSaveDop;
 	TSaveDialog *SaveDialog;
@@ -253,6 +252,17 @@ __published:
 	TOpenDialog *OpenWaypointDialog;
 	TSaveDialog *SaveWaypointDialog;
 	TPanel *Panel3;
+	TPanel *PanelBrowse;
+	TSplitter *Splitter1;
+	TDriveComboBox *DriveSel;
+	TDirectoryListBox *DirSel;
+	TSplitter *Splitter2;
+	TFileListBox *FileList;
+	TComboBox *FileMask;
+	TMenuItem *MenuBrowse;
+	TPanel *StrStatus;
+	TSpeedButton *BtnShowGrid;
+	TMenuItem *MenuShowGrid;
 	
 	void __fastcall FormCreate			(TObject *Sender);
 	void __fastcall FormShow			(TObject *Sender);
@@ -342,7 +352,6 @@ __published:
 	void __fastcall MouseWheel			(TObject *Sender, TShiftState Shift,
 										 int WheelDelta, TPoint &MousePos, bool &Handled);
 	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
-	void __fastcall MenuFileSelClick(TObject *Sender);
 	void __fastcall MenuSaveDopClick(TObject *Sender);
 	void __fastcall MenuSaveImageClick(TObject *Sender);
 	void __fastcall MenuGEClick(TObject *Sender);
@@ -370,6 +379,12 @@ __published:
 	void __fastcall MenuOpenWaypointClick(TObject *Sender);
 	void __fastcall MenuSaveWaypointClick(TObject *Sender);
 	void __fastcall DispDblClick(TObject *Sender);
+	void __fastcall FileMaskChange(TObject *Sender);
+	void __fastcall FileListClick(TObject *Sender);
+	void __fastcall Splitter1Moved(TObject *Sender);
+	void __fastcall MenuBrowseClick(TObject *Sender);
+	void __fastcall MenuShowGridClick(TObject *Sender);
+	void __fastcall BtnShowGridClick(TObject *Sender);
 
 
 protected:

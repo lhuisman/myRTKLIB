@@ -250,12 +250,6 @@
 				<DependentOn>conndlg.h</DependentOn>
 				<BuildOrder>1</BuildOrder>
 			</CppCompile>
-			<CppCompile Include="fileseldlg.cpp">
-				<BuildOrder>45</BuildOrder>
-				<Form>FileSelDialog</Form>
-				<DependentOn>fileseldlg.h</DependentOn>
-				<BuildOrder>15</BuildOrder>
-			</CppCompile>
 			<CppCompile Include="geview.cpp">
 				<Form>GoogleEarthView</Form>
 				<FormType>dfm</FormType>
@@ -454,7 +448,6 @@
 			<FormResources Include="..\appcmn\console.dfm"/>
 			<FormResources Include="..\appcmn\ftpoptdlg.dfm"/>
 			<FormResources Include="..\appcmn\fileoptdlg.dfm"/>
-			<FormResources Include="conndlg.dfm"/>
 			<FormResources Include="pntdlg.dfm"/>
 			<FormResources Include="plotopt.dfm"/>
 			<FormResources Include="plotmain.dfm"/>
@@ -462,7 +455,7 @@
 			<FormResources Include="satdlg.dfm"/>
 			<FormResources Include="gmview.dfm"/>
 			<FormResources Include="geview.dfm"/>
-			<FormResources Include="fileseldlg.dfm"/>
+			<FormResources Include="conndlg.dfm"/>
 			<FormResources Include="mapdlg.dfm"/>
 			<BuildConfiguration Include="Release">
 				<Key>Cfg_2</Key>
