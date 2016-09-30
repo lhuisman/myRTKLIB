@@ -907,7 +907,8 @@ typedef struct {        /* solution type */
     unsigned char ns;   /* number of valid satellites */
     float age;          /* age of differential (s) */
     float ratio;        /* AR ratio factor for valiation */
-	float prev_ratio;   /* previous AR ratio factor for valiation */
+    float prev_ratio1;   /* previous initial AR ratio factor for validation */
+    float prev_ratio2;   /* previous final AR ratio factor for validation */
     float thres;        /* AR ratio threshold for valiation */
 } sol_t;
 
@@ -1026,11 +1027,11 @@ typedef struct {        /* processing options type */
     int glomodear;      /* GLONASS AR mode (0:off,1:on,2:auto cal,3:ext cal) */
     int gpsmodear;      /* GPS AR mode (0:off,1:on) */
     int bdsmodear;      /* BeiDou AR mode (0:off,1:on) */
-	int arfilter;      /* AR filtering to reject bad sats (0:off,1:on) */
+    int arfilter;       /* AR filtering to reject bad sats (0:off,1:on) */
     int maxout;         /* obs outage count to reset bias */
     int minlock;        /* min lock count to fix ambiguity */
-	int minfixsats;     /* min sats to fix integer ambiguities */
-	int minholdsats;    /* min sats to hold integer ambiguities */
+    int minfixsats;     /* min sats to fix integer ambiguities */
+    int minholdsats;    /* min sats to hold integer ambiguities */
     int minfix;         /* min fix count to hold ambiguity */
     int armaxiter;      /* max iteration to resolve ambiguity */
     int ionoopt;        /* ionosphere option (IONOOPT_???) */

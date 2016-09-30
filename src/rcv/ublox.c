@@ -261,7 +261,7 @@ static int decode_rxmrawx(raw_t *raw)
     if ((q=strstr(raw->opt,"-TADJ="))) {
         sscanf(q,"-TADJ=%lf",&tadj);
     }
-    /* slip theshold of std-dev of carreir-phase (-STD_SLIP) */
+    /* slip theshold of std-dev of carrier-phase (-STD_SLIP) */
     if ((q=strstr(raw->opt,"-STD_SLIP="))) {
         sscanf(q,"-STD_SLIP=%d",&std_slip);
     }
@@ -313,11 +313,21 @@ static int decode_rxmrawx(raw_t *raw)
         if (std_slip>0) {
             slip|=(cpstd>=std_slip)?1:0; /* slip by std-dev of cp */
         }
-        halfv=tstat&4?1:0; /* half cycle valid */
+        if (sys==SYS_SBS) { /* half-cycle valid */
+            halfv=lockt>15000?1:0;
+        }
+        else {
+            halfv=tstat&4?1:0; /* half cycle valid */
+        }
         halfc=tstat&8?1:0; /* half cycle subtracted from phase */
-        
+
+#if 0 /* for debug */
+        trace(2,"cpstd=%d sys=%d prn=%3d tstat=%02X lock=%4d ts=%s\n",
+              cpstd,sys,prn,tstat,lockt,time_str(time,3));
+#endif
+
         if (cp1!=0.0) { /* carrier-phase valid */
-            
+
             /* LLI: bit1=loss-of-lock,bit2=half-cycle-invalid */
             raw->obs.data[n].LLI[0]|=slip;
             raw->obs.data[n].LLI[0]|=halfc!=raw->halfc[sat-1][0]?1:0;
