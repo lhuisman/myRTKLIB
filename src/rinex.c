@@ -706,6 +706,7 @@ static int decode_obsdata(FILE *fp, char *buff, double ver, int mask,
     sigind_t *ind;
     double val[MAXOBSTYPE]={0};
     unsigned char lli[MAXOBSTYPE]={0};
+    unsigned char qual[MAXOBSTYPE]={0};
     char satid[8]="";
     int i,j,n,m,stat=1,p[MAXOBSTYPE],k[16],l[16];
     
@@ -740,13 +741,14 @@ static int decode_obsdata(FILE *fp, char *buff, double ver, int mask,
         if (stat) {
             val[i]=str2num(buff,j,14)+ind->shift[i];
             lli[i]=(unsigned char)str2num(buff,j+14,1)&3;
+            qual[i]=(unsigned char)str2num(buff,j+15,1);
         }
     }
     if (!stat) return 0;
     
     for (i=0;i<NFREQ+NEXOBS;i++) {
         obs->P[i]=obs->L[i]=0.0; obs->D[i]=0.0f;
-        obs->SNR[i]=obs->LLI[i]=obs->code[i]=0;
+        obs->SNR[i]=obs->LLI[i]=obs->qualL[i]=obs->qualP[i]=obs->code[i]=0;
     }
     /* assign position in obs data */
     for (i=n=m=0;i<ind->n;i++) {
@@ -798,8 +800,14 @@ static int decode_obsdata(FILE *fp, char *buff, double ver, int mask,
     for (i=0;i<ind->n;i++) {
         if (p[i]<0||val[i]==0.0) continue;
         switch (ind->type[i]) {
-            case 0: obs->P[p[i]]=val[i]; obs->code[p[i]]=ind->code[i]; break;
-            case 1: obs->L[p[i]]=val[i]; obs->LLI [p[i]]=lli[i];       break;
+            case 0: obs->P[p[i]]=val[i];
+                    obs->code[p[i]]=ind->code[i];
+                    obs->qualP[p[i]]=qual[i];
+                    break;
+            case 1: obs->L[p[i]]=val[i];
+                    obs->LLI[p[i]]=lli[i];
+                    obs->qualL[p[i]]=qual[i];
+                    break;
             case 2: obs->D[p[i]]=(float)val[i];                        break;
             case 3: obs->SNR[p[i]]=(unsigned char)(val[i]*4.0+0.5);    break;
         }
@@ -1963,11 +1971,12 @@ extern int outrnxobsh(FILE *fp, const rnxopt_t *opt, const nav_t *nav)
     return fprintf(fp,"%-60.60s%-20s\n","","END OF HEADER")!=EOF;
 }
 /* output obs data field -----------------------------------------------------*/
-static void outrnxobsf(FILE *fp, double obs, int lli)
+static void outrnxobsf(FILE *fp, double obs, int lli, int qual)
 {
     if (obs==0.0||obs<=-1E9||obs>=1E9) fprintf(fp,"              ");
     else fprintf(fp,"%14.3f",obs);
-    if (lli<=0) fprintf(fp,"  "); else fprintf(fp,"%1.1d ",lli);
+    if (lli<=0) fprintf(fp," "); else fprintf(fp,"%1.1d",lli);
+    if (qual<=0) fprintf(fp," "); else fprintf(fp,"%1.1x",qual);
 }
 /* search obs data index -----------------------------------------------------*/
 static int obsindex(double ver, int sys, const unsigned char *code,
@@ -2100,16 +2109,16 @@ extern int outrnxobsb(FILE *fp, const rnxopt_t *opt, const obsd_t *obs, int n,
             /* search obs data index */
             if ((k=obsindex(opt->rnxver,sys,obs[ind[i]].code,opt->tobs[m][j],
                             mask))<0) {
-                outrnxobsf(fp,0.0,-1);
+                outrnxobsf(fp,0.0,-1,-1);
                 continue;
             }
             /* output field */
             switch (opt->tobs[m][j][0]) {
                 case 'C':
-                case 'P': outrnxobsf(fp,obs[ind[i]].P[k],-1); break;
-                case 'L': outrnxobsf(fp,obs[ind[i]].L[k],obs[ind[i]].LLI[k]); break;
-                case 'D': outrnxobsf(fp,obs[ind[i]].D[k],-1); break;
-                case 'S': outrnxobsf(fp,obs[ind[i]].SNR[k]*0.25,-1); break;
+                case 'P': outrnxobsf(fp,obs[ind[i]].P[k],-1,obs[ind[i]].qualP[k]); break;
+                case 'L': outrnxobsf(fp,obs[ind[i]].L[k],obs[ind[i]].LLI[k],obs[ind[i]].qualL[k]); break;
+                case 'D': outrnxobsf(fp,obs[ind[i]].D[k],-1,-1); break;
+                case 'S': outrnxobsf(fp,obs[ind[i]].SNR[k]*0.25,-1,-1); break;
             }
         }
         if (opt->rnxver>2.99&&fprintf(fp,"\n")==EOF) return 0;

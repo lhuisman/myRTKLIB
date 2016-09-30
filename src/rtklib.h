@@ -521,6 +521,8 @@ typedef struct {        /* observation data record */
     unsigned char SNR [NFREQ+NEXOBS]; /* signal strength (0.25 dBHz) */
     unsigned char LLI [NFREQ+NEXOBS]; /* loss of lock indicator */
     unsigned char code[NFREQ+NEXOBS]; /* code indicator (CODE_???) */
+    unsigned char qualL[NFREQ+NEXOBS]; /* quality of carrier phase measurement */
+    unsigned char qualP[NFREQ+NEXOBS]; /* quality of pseudorange measurement */
     double L[NFREQ+NEXOBS]; /* observation data carrier-phase (cycle) */
     double P[NFREQ+NEXOBS]; /* observation data pseudorange (m) */
     float  D[NFREQ+NEXOBS]; /* observation data doppler frequency (Hz) */
