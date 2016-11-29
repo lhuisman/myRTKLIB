@@ -302,7 +302,7 @@ extern int rtkoutstat(rtk_t *rtk, char *buff)
                        rtk->sol.stat,i+1,rtk->x[j],xa[0]);
         }
     }
-    return p-buff;
+    return (int)(p-buff);
 }
 /* swap solution status file -------------------------------------------------*/
 static void swapsolstat(void)
@@ -1409,7 +1409,7 @@ static double intpres(gtime_t time, const obsd_t *obs, int n, const nav_t *nav,
 /* single to double-difference transformation matrix (D') --------------------*/
 static int ddmat(rtk_t *rtk, double *D,int gps,int glo,int sbs)
 {
-    int i,j,k,m,f,nb=0,nx=rtk->nx,na=rtk->na,nf=NF(&rtk->opt);
+    int i,j,k,m,f,nb=0,nx=rtk->nx,na=rtk->na,nf=NF(&rtk->opt),nofix;
     double fix[MAXSAT],ref[MAXSAT];
     
     trace(3,"ddmat: gps=%d/%d glo=%d/%d sbs=%d\n",gps,rtk->opt.gpsmodear,glo,rtk->opt.glomodear,sbs);
@@ -1424,9 +1424,8 @@ static int ddmat(rtk_t *rtk, double *D,int gps,int glo,int sbs)
     for (m=0;m<4;m++) { /* m=0:gps/qzs/sbs,1:glo,2:gal,3:bds */
         
         /* skip if ambiguity resolution turned off for this sys */
-        if (m==0&&gps==0) continue;
-        if (m==1&&glo==0) continue;
-        if (m==3&&rtk->opt.bdsmodear==0) continue;
+        nofix=(m==0&&rtk->opt.gpsmodear==0)||(m==1&&rtk->opt.glomodear==0)||(m==3&&rtk->opt.bdsmodear==0);        
+
         
         /* step through freqs */ 
         for (f=0,k=na;f<nf;f++,k+=MAXSAT) {
@@ -1445,7 +1444,7 @@ static int ddmat(rtk_t *rtk, double *D,int gps,int glo,int sbs)
                 }
                 /* set sat to use for fixing ambiguity if meets criteria */
                 if (rtk->ssat[i-k].lock[f]>=0&&!(rtk->ssat[i-k].slip[f]&2)&&
-                    rtk->ssat[i-k].azel[1]>=rtk->opt.elmaskar) {
+                    rtk->ssat[i-k].azel[1]>=rtk->opt.elmaskar&&!nofix) {
                     rtk->ssat[i-k].fix[f]=2; /* fix */
                     break;/* break out of loop if find good sat */
                 }
@@ -1462,7 +1461,7 @@ static int ddmat(rtk_t *rtk, double *D,int gps,int glo,int sbs)
                 if (sbs==0 && satsys(j-k+1,NULL)==SYS_SBS) continue; 
                 if (rtk->ssat[j-k].lock[f]>=0&&!(rtk->ssat[j-k].slip[f]&2)&&
                     rtk->ssat[i-k].vsat[f]&&
-                    rtk->ssat[j-k].azel[1]>=rtk->opt.elmaskar) {
+                    rtk->ssat[j-k].azel[1]>=rtk->opt.elmaskar&&!nofix) {
                     /* set D coeffs to subtract sat j from sat i */
                     D[i+(na+nb)*nx]= 1.0;
                     D[j+(na+nb)*nx]=-1.0;
