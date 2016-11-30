@@ -234,7 +234,7 @@ static int decode_rxmrawx(raw_t *raw)
 {
     gtime_t time;
     double tow,cp1,pr1,tadj=0.0,toff=0.0,freq,tn;
-    int i,j,sys,prn,sat,n=0,nsat,week,tstat,lockt,slip,halfv,halfc,fcn;
+    int i,j,sys,prn,sat,n=0,nsat,week,tstat,lockt,halfv,halfc,fcn;
     int cpstd,prstd,std_slip=0;
     char *q;
     unsigned char *p=raw->buff+6;
@@ -262,7 +262,7 @@ static int decode_rxmrawx(raw_t *raw)
     if ((q=strstr(raw->opt,"-TADJ="))) {
         sscanf(q,"-TADJ=%lf",&tadj);
     }
-    /* slip theshold of std-dev of carrier-phase (-STD_SLIP) */
+    /* slip threshold of std-dev of carrier-phase (-STD_SLIP) */
     if ((q=strstr(raw->opt,"-STD_SLIP="))) {
         sscanf(q,"-STD_SLIP=%d",&std_slip);
     }
@@ -507,15 +507,25 @@ static int decode_trkmeas(raw_t *raw)
     static double adrs[MAXSAT]={0};
     gtime_t time;
     double ts,tr=-1.0,t,tau,utc_gpst,snr,adr,dop;
-    int i,j,n=0,nch,sys,prn,sat,qi,frq,flag,lock1,lock2,week;
+    int i,j,n=0,nch,sys,prn,sat,qi,frq,flag,lock1,lock2,week,fw=0;
     unsigned char *p=raw->buff+6;
-    
+    char *q;
+    /* adjustment to code measurement in meters, based on GLONASS freq,
+       values based on difference between TRK_MEAS values and  RXM-RAWX values */
+    const char P_adj_fw2[]={ 0, 0, 0, 0, 1, 3, 2, 0,-4,-3,-9,-8,-7,-4, 0};  /* fw 2.30 */
+    const char P_adj_fw3[]={11,13,13,14,14,13,12,10, 8, 6, 5, 5, 5, 7, 0};  /* fw 3.01 */
+
     trace(4,"decode_trkmeas: len=%d\n",raw->len);
     
     if (raw->outtype) {
         sprintf(raw->msgtype,"UBX TRK-MEAS  (%4d):",raw->len);
     }
     if (!raw->time.time) return 0;
+
+    /* trk meas code adjust (-TRKM_ADJ) */
+    if ((q=strstr(raw->opt,"-TRKM_ADJ="))) {
+        sscanf(q,"-TRKM_ADJ=%d",&fw);
+    }
     
     /* number of channels */
     nch=U1(p+2);
@@ -609,7 +619,12 @@ static int decode_trkmeas(raw_t *raw)
             raw->obs.data[n].LLI[0]|=flag&0x80?0:2;
         }
         raw->lockt[sat-1][1]=0.0;
-        
+        /* adjust code measurements for GLONASS sats */
+        if (sys==SYS_GLO&&frq>=-7&&frq<=7) {
+            if (fw==2) raw->obs.data[n].P[0]+=(double)P_adj_fw2[frq+7];
+            if (fw==3) raw->obs.data[n].P[0]+=(double)P_adj_fw3[frq+7];
+        }
+
         for (j=1;j<NFREQ+NEXOBS;j++) {
             raw->obs.data[n].L[j]=raw->obs.data[n].P[j]=0.0;
             raw->obs.data[n].D[j]=0.0;
