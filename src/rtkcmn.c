@@ -1134,14 +1134,18 @@ extern int filter(double *x, double *P, const double *H, const double *v,
     double *x_,*xp_,*P_,*Pp_,*H_;
     int i,j,k,info,*ix;
     
+    /* create list of non-zero states */
     ix=imat(n,1); for (i=k=0;i<n;i++) if (x[i]!=0.0&&P[i+i*n]>0.0) ix[k++]=i;
     x_=mat(k,1); xp_=mat(k,1); P_=mat(k,k); Pp_=mat(k,k); H_=mat(k,m);
+    /* compress array by removing zero elements to save computation time */
     for (i=0;i<k;i++) {
         x_[i]=x[ix[i]];
         for (j=0;j<k;j++) P_[i+j*k]=P[ix[i]+ix[j]*n];
         for (j=0;j<m;j++) H_[i+j*k]=H[ix[i]+j*n];
     }
+    /* do kalman filter state update on compressed arrays */
     info=filter_(x_,P_,H_,v,R,k,m,xp_,Pp_);
+    /* copy values from compressed arrays back to full arrays */
     for (i=0;i<k;i++) {
         x[ix[i]]=xp_[i];
         for (j=0;j<k;j++) P[ix[i]+ix[j]*n]=Pp_[i+j*k];
