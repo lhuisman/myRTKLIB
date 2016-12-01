@@ -1424,8 +1424,7 @@ static int ddmat(rtk_t *rtk, double *D,int gps,int glo,int sbs)
     for (m=0;m<4;m++) { /* m=0:gps/qzs/sbs,1:glo,2:gal,3:bds */
         
         /* skip if ambiguity resolution turned off for this sys */
-        nofix=(m==0&&rtk->opt.gpsmodear==0)||(m==1&&rtk->opt.glomodear==0)||(m==3&&rtk->opt.bdsmodear==0);        
-
+        nofix=(m==0&&gps==0)||(m==1&&glo==0)||(m==3&&rtk->opt.bdsmodear==0);;        
         
         /* step through freqs */ 
         for (f=0,k=na;f<nf;f++,k+=MAXSAT) {
