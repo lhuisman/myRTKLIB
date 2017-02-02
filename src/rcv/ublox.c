@@ -298,7 +298,7 @@ static int decode_rxmrawx(raw_t *raw)
         raw->obs.data[n].qualP[0]=prstd;
         
         /* offset by time tag adjustment */
-        if (toff!=0.0) {
+        if (toff!=0.0&&cp1!=0) {
             fcn=(int)U1(p+23)-7;
             freq=sys==SYS_CMP?FREQ1_CMP:
                  (sys==SYS_GLO?FREQ1_GLO+DFRQ1_GLO*fcn:FREQ1);
