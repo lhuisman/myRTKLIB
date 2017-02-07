@@ -284,6 +284,8 @@ static int decode_rxmrawx(raw_t *raw)
             continue;
         }
         prstd=U1(p+27)&15; /* pseudorange std-dev */
+        prstd=1<<(prstd>=5?prstd-5:0); /* prstd=2^(x-5) */
+        prstd=prstd<=9?prstd:9;  /* limit to 9 to fit RINEX format */
         cpstd=U1(p+28)&15; /* carrier-phase std-dev */
         tstat=U1(p+30); /* tracking status */
         pr1=tstat&1?R8(p  ):0.0;

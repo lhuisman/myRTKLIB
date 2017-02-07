@@ -404,7 +404,7 @@ static double gfobs_L1L5(const obsd_t *obs, int i, int j, const double *lam)
 }
 /* single-differenced measurement error variance -----------------------------*/
 static double varerr(int sat, int sys, double el, double bl, double dt, int f,
-                     const prcopt_t *opt)
+                     const prcopt_t *opt, const obsd_t *obs)
 {
     double a,b,c=opt->err[3]*bl/1E4,d=CLIGHT*opt->sclkstab*dt,fact=1.0;
     double sinel=sin(el);
@@ -422,7 +422,11 @@ static double varerr(int sat, int sys, double el, double bl, double dt, int f,
         if (sys==SYS_SBS) {a*=EFACT_SBS; b*=EFACT_SBS;}
     }
     else { /* normal error model */
-        if (f>=nf) fact=opt->eratio[f-nf];
+        if (opt->rcvstds) {
+            /* include err ratio and measurement std (P or L) from receiver */
+            if (f>=nf) fact=opt->eratio[f-nf]*obs->qualP[f-nf];
+            else fact=obs->qualL[f];
+        } else if (f>=nf) fact=opt->eratio[f-nf]; /* use err ratio only */
         if (fact<=0.0)  fact=opt->eratio[0];
         fact*=sys==SYS_GLO?EFACT_GLO:(sys==SYS_SBS?EFACT_SBS:EFACT_GPS);
         a=fact*opt->err[1];
@@ -1153,7 +1157,7 @@ static int test_sys(int sys, int m)
         O H = linearized translation from innovations to states (az/el to sats)
         O R = measurement error covariances
         O vflg = bit encoded list of sats used for each double diff  */
-static int ddres(rtk_t *rtk, const nav_t *nav, double dt, const double *x,
+static int ddres(rtk_t *rtk, const nav_t *nav, const obsd_t *obs, double dt, const double *x,
                  const double *P, const int *sat, double *y, double *e,
                  double *azel, const int *iu, const int *ir, int ns, double *v,
                  double *H, double *R, int *vflg)
@@ -1212,18 +1216,18 @@ static int ddres(rtk_t *rtk, const nav_t *nav, double dt, const double *x,
                 if (!test_sys(sysj,m)) continue;
                 if (!validobs(iu[j],ir[j],f,nf,y)) continue;
             
-            ff=f%nf;
-            lami=nav->lam[sat[i]-1][ff];
-            lamj=nav->lam[sat[j]-1][ff];
-            if (lami<=0.0||lamj<=0.0) continue;
-            if (H) {
-                Hi=H+nv*rtk->nx;
-                for (k=0;k<rtk->nx;k++) Hi[k]=0.0;
-            }
+                ff=f%nf;
+                lami=nav->lam[sat[i]-1][ff];
+                lamj=nav->lam[sat[j]-1][ff];
+                if (lami<=0.0||lamj<=0.0) continue;
+                if (H) {
+                    Hi=H+nv*rtk->nx;
+                    for (k=0;k<rtk->nx;k++) Hi[k]=0.0;
+                }
             
-            /* double-differenced measurements from 2 receivers and 2 sats in meters */
-            v[nv]=(y[f+iu[i]*nf*2]-y[f+ir[i]*nf*2])-
-                  (y[f+iu[j]*nf*2]-y[f+ir[j]*nf*2]);
+                /* double-differenced measurements from 2 receivers and 2 sats in meters */
+                v[nv]=(y[f+iu[i]*nf*2]-y[f+ir[i]*nf*2])-
+                      (y[f+iu[j]*nf*2]-y[f+ir[j]*nf*2]);
             
                 /* partial derivatives by rover position, combine unit vectors from two sats */
                 if (H) {
@@ -1315,9 +1319,9 @@ static int ddres(rtk_t *rtk, const nav_t *nav, double dt, const double *x,
                     continue;
                 }
                 /* single-differenced measurement error variances */
-                Ri[nv]=varerr(sat[i],sysi,azel[1+iu[i]*2],bl,dt,f,opt);
-                Rj[nv]=varerr(sat[j],sysj,azel[1+iu[j]*2],bl,dt,f,opt);
-            
+                Ri[nv]=varerr(sat[i],sysi,azel[1+iu[i]*2],bl,dt,f,opt,&obs[iu[i]]);
+                Rj[nv]=varerr(sat[j],sysj,azel[1+iu[j]*2],bl,dt,f,opt,&obs[iu[j]]);
+
                 /* set valid data flags */
                 if (opt->mode>PMODE_DGPS) {
                     if (f<nf) rtk->ssat[sat[i]-1].vsat[f]=rtk->ssat[sat[j]-1].vsat[f]=1;
@@ -1424,7 +1428,7 @@ static int ddmat(rtk_t *rtk, double *D,int gps,int glo,int sbs)
     for (m=0;m<4;m++) { /* m=0:gps/qzs/sbs,1:glo,2:gal,3:bds */
         
         /* skip if ambiguity resolution turned off for this sys */
-        nofix=(m==0&&gps==0)||(m==1&&glo==0)||(m==3&&rtk->opt.bdsmodear==0);;        
+        nofix=(m==0&&gps==0)||(m==1&&glo==0)||(m==3&&rtk->opt.bdsmodear==0);        
         
         /* step through freqs */ 
         for (f=0,k=na;f<nf;f++,k+=MAXSAT) {
@@ -1564,7 +1568,7 @@ static void holdamb(rtk_t *rtk, const double *xa)
         i=-1;sum=0;
         for (j=nv=0;j<MAXSAT;j++) {
             /* check if valid GLONASS sat */
-            if (test_sys(rtk->ssat[j].sys,1)&&rtk->ssat[j].lock[f]>=0) {
+            if (test_sys(rtk->ssat[j].sys,1)&&rtk->ssat[j].vsat[f]&&rtk->ssat[j].lock[f]>=0) {
                 if (i<0) {
                     i=j;  /* use first valid sat for reference sat */
                     index[nv++]=j;
@@ -1586,7 +1590,7 @@ static void holdamb(rtk_t *rtk, const double *xa)
         i=-1;sum=0;
         for (j=nv=0;j<MAXSAT;j++) {
             /* check if valid GPS/SBS sat */
-            if (test_sys(rtk->ssat[j].sys,0)&&rtk->ssat[j].lock[f]>=0) {
+            if (test_sys(rtk->ssat[j].sys,0)&&rtk->ssat[j].vsat[f]&&rtk->ssat[j].lock[f]>=0) {
                 if (i<0) {
                     i=j;  /* use first valid GPS sat for reference sat */
                     index[nv++]=j;
@@ -1610,17 +1614,22 @@ static int resamb_LAMBDA(rtk_t *rtk, double *bias, double *xa,int gps,int glo,in
 {
     prcopt_t *opt=&rtk->opt;
     int i,j,ny,nb,info,nx=rtk->nx,na=rtk->na;
-    double *D,*DP,*y,*Qy,*b,*db,*Qb,*Qab,*QQ,s[2];
+    double *D,*DP,*y,*Qy,*b,*db,*Qb,*Qab,*QQ,s[2],var=0;
     
     trace(3,"resamb_LAMBDA : nx=%d\n",nx);
-    trace(3,"P[0]=%.6f\n",rtk->P[0]);
     
     rtk->sol.ratio=0.0;
     
-    /* skip AR if AR threshold too small or position variance too large */
     if (rtk->opt.mode<=PMODE_DGPS||rtk->opt.modear==ARMODE_OFF||
-        rtk->opt.thresar[0]<1.0 || rtk->P[0]>=rtk->opt.thresar[1]) {
-        errmsg(rtk,"position variance too large:  %.4f\n",rtk->P[0]);
+        rtk->opt.thresar[0]<1.0) { 
+        return 0;
+    }
+    /* skip AR if position variance too high to avoid false fix */
+    for (i=0;i<3;i++) var+=rtk->P[i+i*rtk->nx];
+    var=var/3.0; /* maintain compatibility with previous code */ 
+    trace(3,"posvar=%.6f\n",var);
+    if (var>rtk->opt.thresar[1]) {
+        errmsg(rtk,"position variance too large:  %.4f\n",var);
         return 0;
     }
     /* Create single to double-difference transformation matrix (D')
@@ -1704,6 +1713,107 @@ static int resamb_LAMBDA(rtk_t *rtk, double *bias, double *xa,int gps,int glo,in
     
     return nb; /* number of ambiguities */
 }
+
+/* resolve integer ambiguity by LAMBDA using partial fix techniques and multiple attempts -----------------------*/
+static int manage_amb_LAMBDA(rtk_t *rtk, double *bias, double *xa, const int *sat, int nf, int ns) 
+{
+    int i,f,lockc,ar=0,excflag=0,excsats[MAXOBS];
+    int gps1=-1,glo1=-1,gps2,glo2,result,rerun,dly;
+    float ratio1;
+
+    trace(3,"prevRatios= %.3f %.3f\n",rtk->sol.prev_ratio1,rtk->sol.prev_ratio2);
+
+    /* find and count sats available for AR */
+    for (i=0;i<ns;i++) {
+        if (rtk->ssat[sat[i]-1].vsat[0]&&rtk->ssat[sat[i]-1].lock[0]>=0) {
+            if (rtk->ssat[sat[i]-1].sys==SYS_GPS) 
+                excsats[ar++]=i; 
+            else if (rtk->ssat[sat[i]-1].sys==SYS_GLO||rtk->ssat[sat[i]-1].sys==SYS_SBS) {
+                if (rtk->opt.glomodear==1||(rtk->opt.glomodear==3&&rtk->holdamb))
+                    excsats[ar++]=i;
+            }
+        }
+    }
+
+    /* if no fix on previous sample and enough sats, exclude next sat in list */
+    trace(3,"numsatforAR: %d\n",ar);
+    if (rtk->sol.prev_ratio2<rtk->opt.thresar[0]&&ar>=rtk->opt.mindropsats) {
+        if (rtk->excsat<ar) {
+            i=sat[excsats[rtk->excsat]];
+            lockc=rtk->ssat[i-1].lock[0];  /* save lock count */
+            /* remove sat from AR long enough to enable hold if stays fixed */
+            rtk->ssat[i-1].lock[0]=-rtk->opt.minfix;
+            trace(3,"AR: exclude sat %d\n",i);
+            excflag=1;
+        } else rtk->excsat=0; /* exclude none and reset to beginning of list */
+    }
+
+    /* skip first try if GLO fix-and-hold enabled and IC biases haven't been set yet */
+    if (rtk->opt.glomodear!=3 || rtk->holdamb) {  
+        /* for inital ambiguity resolution attempt, include all enabled sats 
+                bias and xa are fixed solution outputs and are only updated if the ambiguities are resolved */
+        gps1=1;    /* always enable gps for initial pass */
+        glo1=rtk->opt.glomodear>0?1:0;
+        /* first attempt to resolve ambiguities */
+        result=resamb_LAMBDA(rtk,bias,xa,gps1,glo1,glo1);
+        ratio1=rtk->sol.ratio;
+        /* reject bad satellites if AR filtering enabled */
+        if (rtk->opt.arfilter) {
+            rerun=0;
+            /* if results are much poorer than previous epoch or dropped below ar ratio thresh, remove new sats */
+            if (result>=0 && ((rtk->sol.ratio<rtk->opt.thresar[0]*1.1 && rtk->sol.ratio<rtk->sol.prev_ratio1/2.0) ||
+                (rtk->sol.ratio<rtk->opt.thresar[0] && rtk->sol.prev_ratio2>=rtk->opt.thresar[0]))) {
+                trace(3,"low ratio: check for new sat\n");
+                dly=2;
+                for (i=0;i<ns;i++) for (f=0;f<nf;f++) {
+                    if (!rtk->ssat[sat[i]-1].vsat[f]) continue;
+                    if (rtk->ssat[sat[i]-1].lock[f]==0||rtk->ssat[sat[i]-1].lock[f]==1) { /* new sat */
+                        trace(3,"lock %d:%d: %d\n",sat[i],f,rtk->ssat[sat[i]-1].lock[f]);
+                        rtk->ssat[sat[i]-1].lock[f]=-rtk->opt.minlock-dly;  /* delay use of this sat with stagger */
+                        dly+=2;  /* stagger next try of new sats */
+                        rerun=1;
+                    }
+                }
+            }
+            /* rerun if filter removed any sats */
+            if (rerun) {
+                trace(3,"rerun AR with new sat removed\n");
+                /* try again with new sats removed */
+                result=resamb_LAMBDA(rtk,bias,xa,gps1,glo1,glo1);
+            }
+        }
+        rtk->sol.prev_ratio1=ratio1;
+    }
+    else {
+        ratio1=0;  
+        result=0;
+    }
+        
+    /* if fix-and-hold gloarmode enabled, re-run AR with final gps/glo settings if differ from above */
+    if (rtk->opt.glomodear==3) {
+        /* turn off gloarmode if no fix*/
+        glo2=rtk->sol.ratio<rtk->opt.thresar[0]?0:1;
+        /* turn off gpsmode if not enabled and got good fix (used for debug and eval only) */
+        gps2=rtk->opt.gpsmodear==0&&rtk->sol.ratio>=rtk->opt.thresar[0]?0:1;  
+
+        /* if modes changed since initial AR run or haven't run yet,re-run with new modes */
+        if (glo1!=glo2||gps1!=gps2)
+            result=resamb_LAMBDA(rtk,bias,xa,gps2,glo2,glo2);
+    }
+    
+    rtk->sol.prev_ratio1=ratio1>0?ratio1:rtk->sol.ratio;
+    rtk->sol.prev_ratio2=rtk->sol.ratio;
+
+    /* restore excluded sat if still no fix */
+    if (excflag&&rtk->sol.ratio<rtk->opt.thresar[0]) {
+        i=sat[excsats[rtk->excsat++]];
+        rtk->ssat[i-1].lock[0]=lockc;
+        trace(3,"AR: restore sat %d\n",i);
+    }
+
+    return result;
+}
+
 /* validation of solution ----------------------------------------------------*/
 static int valpos(rtk_t *rtk, const double *v, const double *R, const int *vflg,
                   int nv, double thres)
@@ -1761,11 +1871,10 @@ static int relpos(rtk_t *rtk, const obsd_t *obs, int nu, int nr,
     prcopt_t *opt=&rtk->opt;
     gtime_t time=obs[0].time;
     double *rs,*dts,*var,*y,*e,*azel,*v,*H,*R,*xp,*Pp,*xa,*bias,dt;
-    float ratio1;
-    int i,j,f,n=nu+nr,ns,ny,nv,sat[MAXSAT],iu[MAXSAT],ir[MAXSAT],niter,dly;
+    int i,j,f,n=nu+nr,ns,ny,nv,sat[MAXSAT],iu[MAXSAT],ir[MAXSAT],niter;
     int info,vflg[MAXOBS*NFREQ*2+1],svh[MAXOBS*2];
     int stat=rtk->opt.mode<=PMODE_DGPS?SOLQ_DGPS:SOLQ_FLOAT;
-    int nf=opt->ionoopt==IONOOPT_IFLC?1:opt->nf,gps1=0,glo1=0,gps2,glo2,result,rerun;
+    int nf=opt->ionoopt==IONOOPT_IFLC?1:opt->nf;
     
     trace(3,"relpos  : nx=%d nu=%d nr=%d\n",rtk->nx,nu,nr);
     
@@ -1856,7 +1965,7 @@ static int relpos(rtk_t *rtk, const obsd_t *obs, int nu, int nr,
                 O H = partial derivatives
                 O R = double diff measurement error covariances
                 O vflg = list of sats used for dd  */
-        if ((nv=ddres(rtk,nav,dt,xp,Pp,sat,y,e,azel,iu,ir,ns,v,H,R,vflg))<1) {
+        if ((nv=ddres(rtk,nav,obs,dt,xp,Pp,sat,y,e,azel,iu,ir,ns,v,H,R,vflg))<1) {
             errmsg(rtk,"no double-differenced residual\n");
             stat=SOLQ_NONE;
             break;
@@ -1877,7 +1986,7 @@ static int relpos(rtk_t *rtk, const obsd_t *obs, int nu, int nr,
     if (stat!=SOLQ_NONE&&zdres(0,obs,nu,rs,dts,svh,nav,xp,opt,0,y,e,azel)) {
         
         /* calc double diff residuals again after kalman filter update for float solution */
-        nv=ddres(rtk,nav,dt,xp,Pp,sat,y,e,azel,iu,ir,ns,v,NULL,R,vflg);
+        nv=ddres(rtk,nav,obs,dt,xp,Pp,sat,y,e,azel,iu,ir,ns,v,NULL,R,vflg);
         
         /* validation of float solution, always returns 1, msg to trace file if large residual */
         if (valpos(rtk,v,R,vflg,nv,4.0)) {
@@ -1917,68 +2026,14 @@ static int relpos(rtk_t *rtk, const obsd_t *obs, int nu, int nr,
     }
     /* else resolve integer ambiguity by LAMBDA */
     else if (stat!=SOLQ_NONE) {
-        trace(3,"prevRatios= %.3f %.3f\n",rtk->sol.prev_ratio1,rtk->sol.prev_ratio2);
-        /* skip first try if GLO fix-and-hold enabled and IC biases haven't been set yet */
-        if (rtk->opt.glomodear!=3 || rtk->holdamb) {  
-            /* for inital ambiguity resolution attempt, include all enabled sats 
-                   bias and xa are fixed solution outputs and are only updated if the ambiguities are resolved */
-            gps1=1;    /* always enable gps for initial pass */
-            glo1=rtk->opt.glomodear>0?1:0;
-            result=resamb_LAMBDA(rtk,bias,xa,gps1,glo1,glo1);
-            ratio1=rtk->sol.ratio;
-            /* reject bad satellites if AR filtering enabled */
-            if (rtk->opt.arfilter>0) {
-                /* if results are much poorer than previous epoch or dropped below ar ratio thresh, remove new sats */
-                rerun=0;
-                if (result>=0 && ((rtk->sol.ratio<rtk->opt.thresar[0]*1.1 && rtk->sol.ratio<rtk->sol.prev_ratio1/2.0) ||
-                    (rtk->sol.ratio<rtk->opt.thresar[0] && rtk->sol.prev_ratio2>=rtk->opt.thresar[0]))) {
-                    trace(3,"low ratio: check for new sat\n");
-                    dly=2;
-                    for (i=0;i<ns;i++) for (f=0;f<nf;f++) {
-                        if (!rtk->ssat[sat[i]-1].vsat[f]) continue;
-                        if (rtk->ssat[sat[i]-1].lock[f]==0||rtk->ssat[sat[i]-1].lock[f]==1) { /* new sat */
-                            trace(3,"lock %d:%d: %d\n",sat[i],f,rtk->ssat[sat[i]-1].lock[f]);
-                            rtk->ssat[sat[i]-1].lock[f]=-rtk->opt.minlock/4-dly;  /* delay use of this sat with stagger */
-                            dly+=2;  /* stagger next try of new sats */
-                            rerun=1;
-                        }
-                    }
-                }
-                /* rerun if filter removed any sats */
-                if (rerun) {
-                    trace(3,"rerun AR with new sat removed\n");
-                    result=resamb_LAMBDA(rtk,bias,xa,gps1,glo1,glo1);
-                }
-            }
-            rtk->sol.prev_ratio1=ratio1;
-        }
-        else {
-            ratio1=0;  
-            result=0;
-        }
-        
-        /* if fix-and-hold gloarmode enabled, re-run AR with final gps/glo settings if differ from above */
-        if (rtk->opt.glomodear==3) {
-            /* turn off gloarmode if no fix or not enabled */
-            glo2=rtk->opt.glomodear==0||rtk->sol.ratio<rtk->opt.thresar[0]?0:1;
-            /* turn off gpsmode if not enabled and got good fix (used for debug and eval only) */
-            gps2=rtk->opt.gpsmodear==0&&rtk->sol.ratio>=rtk->opt.thresar[0]?0:1;  
-
-            /* if modes changed since initial AR run,re-run with new modes */
-            if (glo1!=glo2||gps1!=gps2)
-                result=resamb_LAMBDA(rtk,bias,xa,gps2,glo2,glo2);
-        }
-    
-        rtk->sol.prev_ratio1=ratio1>0?ratio1:rtk->sol.ratio;
-        rtk->sol.prev_ratio2=rtk->sol.ratio;
-
         /* if valid fixed solution, process it */
-        if (result>1) {
+        if (manage_amb_LAMBDA(rtk,bias,xa,sat,nf,ns)>1) {
+    
             /* find zero-diff residuals for fixed solution */
             if (zdres(0,obs,nu,rs,dts,svh,nav,xa,opt,0,y,e,azel)) {
                 
                 /* post-fit residuals for fixed solution (xa includes fixed phase biases, rtk->xa does not) */
-                nv=ddres(rtk,nav,dt,xa,NULL,sat,y,e,azel,iu,ir,ns,v,NULL,R,vflg);
+                nv=ddres(rtk,nav,obs,dt,xa,NULL,sat,y,e,azel,iu,ir,ns,v,NULL,R,vflg);
                 
                 /* validation of fixed solution, always returns valid */
                 if (valpos(rtk,v,R,vflg,nv,4.0)) {
@@ -1988,8 +2043,10 @@ static int relpos(rtk_t *rtk, const obsd_t *obs, int nu, int nr,
                         if (rtk->opt.modear==ARMODE_FIXHOLD) 
                             holdamb(rtk,xa);
                         /* switch to kinematic after qualify for hold if in static-start mode */
-                        if (rtk->opt.mode==PMODE_STATIC_START) 
+                        if (rtk->opt.mode==PMODE_STATIC_START) {
                             rtk->opt.mode=PMODE_KINEMA;
+                            trace(3,"Fix and hold complete: switch to kinematic mode\n");
+                            }
                     }
                     stat=SOLQ_FIX;
                 }
@@ -2069,8 +2126,10 @@ extern void rtkinit(rtk_t *rtk, const prcopt_t *opt)
         rtk->ssat[i]=ssat0;
     }
     rtk->holdamb=0;
+    rtk->excsat=0;
     for (i=0;i<MAXERRMSG;i++) rtk->errbuf[i]=0;
     rtk->opt=*opt;
+    rtk->initial_mode=rtk->opt.mode;
 }
 /* free rtk control ------------------------------------------------------------
 * free memory for rtk control struct
@@ -2178,7 +2237,18 @@ extern int rtkpos(rtk_t *rtk, const obsd_t *obs, int n, const nav_t *nav)
         }
     }
     if (time.time!=0) rtk->tt=timediff(rtk->sol.time,time);
-    
+        
+    /* return to static start if long delay without rover data */
+    if (fabs(rtk->tt)>300&&rtk->initial_mode==PMODE_STATIC_START) {
+        rtk->opt.mode=PMODE_STATIC_START;
+        for (i=0;i<3;i++) initx(rtk,rtk->sol.rr[i],VAR_POS,i);
+        if (rtk->opt.dynamics) {
+            for (i=3;i<6;i++) initx(rtk,1E-6,VAR_VEL,i);
+            for (i=6;i<9;i++) initx(rtk,1E-6,VAR_ACC,i);
+        }
+        trace(3,"No data for > 5 min: switch back to static mode:\n");
+    }
+
     /* single point positioning */
     if (opt->mode==PMODE_SINGLE) {
         outsolstat(rtk,nav);

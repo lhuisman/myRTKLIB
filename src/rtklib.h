@@ -58,7 +58,7 @@ extern "C" {
 
 #define VER_RTKLIB  "2.4.3 demo5"             /* library version */
 
-#define PATCH_LEVEL "b26"               /* patch level */
+#define PATCH_LEVEL "b26a"               /* patch level */
 
 #define COPYRIGHT_RTKLIB \
             "Copyright (C) 2007-2016 T.Takasu\nAll rights reserved."
@@ -513,10 +513,17 @@ extern "C" {
 
 /* type definitions ----------------------------------------------------------*/
 
+#ifdef WIN32
 typedef struct {        /* time struct */
     time_t time;        /* time (s) expressed by standard time_t */
     double sec;         /* fraction of second under 1 s */
 } gtime_t;
+#else
+typedef struct {        /* time struct */
+    time_t time;        /* time (s) expressed by standard time_t */
+    __attribute__ ((aligned (8)))double sec; /* fraction of second under 1 s */
+} gtime_t;
+#endif /*WIN32*/
 
 typedef struct {        /* observation data record */
     gtime_t time;       /* receiver sampling time (GPST) */
@@ -1037,6 +1044,8 @@ typedef struct {        /* processing options type */
     int minlock;        /* min lock count to fix ambiguity */
     int minfixsats;     /* min sats to fix integer ambiguities */
     int minholdsats;    /* min sats to hold integer ambiguities */
+    int mindropsats;    /* min sats to drop sats in AR */
+    int rcvstds;        /* use stdev estimates from receiver to adjust measurement variances */
     int minfix;         /* min fix count to hold ambiguity */
     int armaxiter;      /* max iteration to resolve ambiguity */
     int ionoopt;        /* ionosphere option (IONOOPT_???) */
@@ -1199,6 +1208,7 @@ typedef struct {        /* RTK control/result type */
     double *x, *P;      /* float states and their covariance */
     double *xa,*Pa;     /* fixed states and their covariance */
     int nfix;           /* number of continuous fixes of ambiguity */
+    int excsat;         /* index of next satellite to be excluded for partial ambiguity resolution */
 	double com_bias;    /* phase bias common between all sats (used to be distributed to all sats */
     char holdamb;       /* set if fix-and-hold has occurred at least once */
     ambc_t ambc[MAXSAT]; /* ambiguity control */
@@ -1206,6 +1216,7 @@ typedef struct {        /* RTK control/result type */
     int neb;            /* bytes in error message buffer */
     char errbuf[MAXERRMSG]; /* error message buffer */
     prcopt_t opt;       /* processing options */
+    int initial_mode;   /* initial positioning mode */
 } rtk_t;
 
 typedef struct half_cyc_tag {  /* half-cycle correction list type */

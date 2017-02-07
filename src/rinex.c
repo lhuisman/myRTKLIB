@@ -806,11 +806,11 @@ static int decode_obsdata(FILE *fp, char *buff, double ver, int mask,
         switch (ind->type[i]) {
             case 0: obs->P[p[i]]=val[i];
                     obs->code[p[i]]=ind->code[i];
-                    obs->qualP[p[i]]=qual[i];
+                    obs->qualP[p[i]]=qual[i]>0?qual[i]:1;
                     break;
             case 1: obs->L[p[i]]=val[i];
                     obs->LLI[p[i]]=lli[i];
-                    obs->qualL[p[i]]=qual[i];
+                    obs->qualL[p[i]]=qual[i]>0?qual[i]:1;
                     break;
             case 2: obs->D[p[i]]=(float)val[i];                        break;
             case 3: obs->SNR[p[i]]=(unsigned char)(val[i]*4.0+0.5);    break;
