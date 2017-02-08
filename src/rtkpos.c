@@ -1549,7 +1549,10 @@ static void holdamb(rtk_t *rtk, const double *xa)
         }
     }
     /* return if less than min sats for hold */
-    if (nv<rtk->opt.minholdsats-1) return;  /* nv=sat pairs, so subtract 1 */
+    if (nv<rtk->opt.minholdsats-1) { /* nv=sat pairs, so subtract 1 */
+        free(v); free(H);
+        return;
+    }
 
     R=zeros(nv,nv);
     for (i=0;i<nv;i++) R[i+i*nv]=VAR_HOLDAMB;
