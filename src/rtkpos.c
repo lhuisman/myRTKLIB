@@ -63,9 +63,6 @@ static const char rcsid[]="$Id:$";
 #define GAP_RESION  120      /* gap to reset ionosphere parameters (epochs) */
 #define MAXACC      30.0     /* max accel for doppler slip detection (m/s^2) */
 
-#define VAR_HOLDAMB 0.001    /* variance used for GPS sats to hold ambiguity (cycle^2) */
-#define GAIN_HOLDAMB 0.01    /* gain used for GLO and SBAS sats to adjust ambiguity (cycle^2) */
-
 #define TTOL_MOVEB  (1.0+2*DTTOL)
                              /* time sync tolerance for moving-baseline (s) */
 
@@ -74,7 +71,7 @@ static const char rcsid[]="$Id:$";
 #define NP(opt)     ((opt)->dynamics==0?3:9)
 #define NI(opt)     ((opt)->ionoopt!=IONOOPT_EST?0:MAXSAT)
 #define NT(opt)     ((opt)->tropopt<TROPOPT_EST?0:((opt)->tropopt<TROPOPT_ESTG?2:6))
-#define NL(opt)     ((opt)->glomodear!=2?0:NFREQGLO)
+#define NL(opt)     ((opt)->glomodear!=GLO_ARMODE_AUTOCAL?0:NFREQGLO)
 #define NB(opt)     ((opt)->mode<=PMODE_DGPS?0:MAXSAT*NF(opt))
 #define NR(opt)     (NP(opt)+NI(opt)+NT(opt)+NL(opt))
 #define NX(opt)     (NR(opt)+NB(opt))
@@ -294,7 +291,7 @@ extern int rtkoutstat(rtk_t *rtk, char *buff)
         }
     }
     /* receiver h/w bias */
-    if (est&&rtk->opt.glomodear==2) {
+    if (est&&rtk->opt.glomodear==GLO_ARMODE_AUTOCAL) {
         for (i=0;i<nfreq;i++) {
             j=IL(i,&rtk->opt);
             xa[0]=j<rtk->na?rtk->xa[j]:0.0;
@@ -888,7 +885,7 @@ static void udstate(rtk_t *rtk, const obsd_t *obs, const int *sat,
         udtrop(rtk,tt,bl);
     }
     /* temporal update of receiver h/w bias */
-    if (rtk->opt.glomodear==2&&(rtk->opt.navsys&SYS_GLO)) {
+    if (rtk->opt.glomodear==GLO_ARMODE_AUTOCAL&&(rtk->opt.navsys&SYS_GLO)) {
         udrcvbias(rtk,tt);
     }
     /* temporal update of phase-bias */
@@ -1278,13 +1275,13 @@ static int ddres(rtk_t *rtk, const nav_t *nav, const obsd_t *obs, double dt, con
     
                 /* adjust double-difference for glonass sats */
                 if (sysi==SYS_GLO&&sysj==SYS_GLO) {
-                    if (rtk->opt.glomodear==2 && ff<NFREQGLO) {
+                    if (rtk->opt.glomodear==GLO_ARMODE_AUTOCAL && ff<NFREQGLO) {
                         /* auto-cal method */
                         df=(CLIGHT/lami-CLIGHT/lamj)/1E6; /* freq-difference (MHz) */
                         v[nv]-=df*x[IL(ff,opt)];
                         if (H) Hi[IL(ff,opt)]=df;
                     }
-                    else if (rtk->opt.glomodear==3 && ff<NFREQGLO) {
+                    else if (rtk->opt.glomodear==GLO_ARMODE_FIXHOLD && ff<NFREQGLO) {
                         /* fix-and-hold method */
                         icb=rtk->ssat[sat[i]-1].icbias[f]*lami - rtk->ssat[sat[j]-1].icbias[f]*lamj;
                         v[nv]-=icb;
@@ -1297,7 +1294,7 @@ static int ddres(rtk_t *rtk, const nav_t *nav, const obsd_t *obs, double dt, con
                 
                 /* adjust double-difference for sbas sats */
                 if (sysj==SYS_SBS&&sysi==SYS_GPS) {
-                    if (rtk->opt.glomodear==3 && ff<NFREQ) {
+                    if (rtk->opt.glomodear==GLO_ARMODE_FIXHOLD && ff<NFREQ) {
                         /* fix-and-hold method */
                         icb=rtk->ssat[sat[i]-1].icbias[f]*lami - rtk->ssat[sat[j]-1].icbias[f]*lamj;
                         v[nv]-=icb;
@@ -1481,8 +1478,8 @@ static int ddmat(rtk_t *rtk, double *D,int gps,int glo,int sbs)
     trace(5,"D=\n"); tracemat(5,D,nx,na+nb,2,0);
 
     if (nb>0) {
-        trace(3,"refSats=");tracemat(3,ref,1,nb,2,0);
-        trace(3,"fixSats=");tracemat(3,fix,1,nb,2,0);
+        trace(3,"refSats=");tracemat(3,ref,1,nb,3,0);
+        trace(3,"fixSats=");tracemat(3,fix,1,nb,3,0);
     }
     return nb;
 }
@@ -1522,7 +1519,6 @@ static void holdamb(rtk_t *rtk, const double *xa)
     double dd,sum;
     
     trace(3,"holdamb :\n");
-    rtk->holdamb=1;  /* set flag to indicate hold has occurred */
     
     v=mat(nb,1); H=zeros(nb,rtk->nx);
     
@@ -1539,8 +1535,8 @@ static void holdamb(rtk_t *rtk, const double *xa)
         /* use ambiguity resolution results to generate a set of pseudo-innovations
                 to feed to kalman filter based on error between fixed and float solutions */
         for (i=1;i<n;i++) {
-                /* phase-biases are single diff, so subtract errors to get 
-                    double diff: v(nv)=err(i)-err(0) */
+            /* phase-biases are single diff, so subtract errors to get
+                 double diff: v(nv)=err(i)-err(0) */
             v[nv]=(xa[index[0]]-xa[index[i]])-(rtk->x[index[0]]-rtk->x[index[i]]);
             
             H[index[0]+nv*rtk->nx]= 1.0;
@@ -1548,14 +1544,16 @@ static void holdamb(rtk_t *rtk, const double *xa)
             nv++;
         }
     }
-    /* return if less than min sats for hold */
-    if (nv<rtk->opt.minholdsats-1) { /* nv=sat pairs, so subtract 1 */
+    /* return if less than min sats for hold (skip if fix&hold for GLONASS only) */
+    if (rtk->opt.modear==ARMODE_FIXHOLD&&nv<rtk->opt.minholdsats-1) { /* nv=sat pairs, so subtract 1 */
+        trace(3,"holdamb: not enough sats to hold ambiguity\n");
         free(v); free(H);
         return;
     }
-
+    
+    rtk->holdamb=1;  /* set flag to indicate hold has occurred */
     R=zeros(nv,nv);
-    for (i=0;i<nv;i++) R[i+i*nv]=VAR_HOLDAMB;
+    for (i=0;i<nv;i++) R[i+i*nv]=rtk->opt.varholdamb;
         
     /* update states with constraints */
     if ((info=filter(rtk->x,rtk->P,H,v,R,rtk->nx,nv))) {
@@ -1564,7 +1562,7 @@ static void holdamb(rtk_t *rtk, const double *xa)
     free(R);free(v); free(H);
 
     /* skip glonass/sbs icbias update if not enabled */
-    if (rtk->opt.glomodear!=3) return;
+    if (rtk->opt.glomodear!=GLO_ARMODE_FIXHOLD) return;
 
     /* Move fractional part of bias from phase-bias into ic bias for GLONASS sats (both in cycles) */
     for (f=0;f<nf;f++) {
@@ -1579,7 +1577,7 @@ static void holdamb(rtk_t *rtk, const double *xa)
                 else {  /* adjust the rest */
                     /* find phase-bias difference */
                     dd=rtk->x[IB(j+1,f,&rtk->opt)]-rtk->x[IB(i+1,f,&rtk->opt)];
-                    dd=GAIN_HOLDAMB*(dd-ROUND(dd));  /* throwout integer part of answer and multiply by filter gain */
+                    dd=rtk->opt.gainholdamb*(dd-ROUND(dd));  /* throwout integer part of answer and multiply by filter gain */
                     rtk->x[IB(j+1,f,&rtk->opt)]-=dd;  /* remove fractional part from phase bias */
                     rtk->ssat[j].icbias[f]+=dd;       /* and move to IC bias */
                     sum+=dd;
@@ -1602,7 +1600,7 @@ static void holdamb(rtk_t *rtk, const double *xa)
                     if (rtk->ssat[j].sys!=SYS_SBS) continue;
                     /* find phase-bias difference */
                     dd=rtk->x[IB(j+1,f,&rtk->opt)]-rtk->x[IB(i+1,f,&rtk->opt)];
-                    dd=GAIN_HOLDAMB*(dd-ROUND(dd));  /* throwout integer part of answer and multiply by filter gain */
+                    dd=rtk->opt.gainholdamb*(dd-ROUND(dd));  /* throwout integer part of answer and multiply by filter gain */
                     rtk->x[IB(j+1,f,&rtk->opt)]-=dd;  /* remove fractional part from phase bias diff */
                     rtk->ssat[j].icbias[f]+=dd;       /* and move to IC bias */
                     sum+=dd;
@@ -1732,7 +1730,7 @@ static int manage_amb_LAMBDA(rtk_t *rtk, double *bias, double *xa, const int *sa
             if (rtk->ssat[sat[i]-1].sys==SYS_GPS) 
                 excsats[ar++]=i; 
             else if (rtk->ssat[sat[i]-1].sys==SYS_GLO||rtk->ssat[sat[i]-1].sys==SYS_SBS) {
-                if (rtk->opt.glomodear==1||(rtk->opt.glomodear==3&&rtk->holdamb))
+                if (rtk->opt.glomodear==GLO_ARMODE_ON||(rtk->opt.glomodear==GLO_ARMODE_FIXHOLD&&rtk->holdamb))
                     excsats[ar++]=i;
             }
         }
@@ -1752,11 +1750,11 @@ static int manage_amb_LAMBDA(rtk_t *rtk, double *bias, double *xa, const int *sa
     }
 
     /* skip first try if GLO fix-and-hold enabled and IC biases haven't been set yet */
-    if (rtk->opt.glomodear!=3 || rtk->holdamb) {  
+    if (rtk->opt.glomodear!=GLO_ARMODE_FIXHOLD || rtk->holdamb) {  
         /* for inital ambiguity resolution attempt, include all enabled sats 
                 bias and xa are fixed solution outputs and are only updated if the ambiguities are resolved */
         gps1=1;    /* always enable gps for initial pass */
-        glo1=rtk->opt.glomodear>0?1:0;
+        glo1=rtk->opt.glomodear>GLO_ARMODE_OFF?1:0;
         /* first attempt to resolve ambiguities */
         result=resamb_LAMBDA(rtk,bias,xa,gps1,glo1,glo1);
         ratio1=rtk->sol.ratio;
@@ -1793,7 +1791,7 @@ static int manage_amb_LAMBDA(rtk_t *rtk, double *bias, double *xa, const int *sa
     }
         
     /* if fix-and-hold gloarmode enabled, re-run AR with final gps/glo settings if differ from above */
-    if (rtk->opt.glomodear==3) {
+    if (rtk->opt.glomodear==GLO_ARMODE_FIXHOLD) {
         /* turn off gloarmode if no fix*/
         glo2=rtk->sol.ratio<rtk->opt.thresar[0]?0:1;
         /* turn off gpsmode if not enabled and got good fix (used for debug and eval only) */
@@ -2043,7 +2041,7 @@ static int relpos(rtk_t *rtk, const obsd_t *obs, int nu, int nr,
                     
                     /* hold integer ambiguity if meet minfix count */
                     if (++rtk->nfix>=rtk->opt.minfix) {
-                        if (rtk->opt.modear==ARMODE_FIXHOLD) 
+                        if (rtk->opt.modear==ARMODE_FIXHOLD||rtk->opt.glomodear==GLO_ARMODE_FIXHOLD) 
                             holdamb(rtk,xa);
                         /* switch to kinematic after qualify for hold if in static-start mode */
                         if (rtk->opt.mode==PMODE_STATIC_START) {
@@ -2290,6 +2288,8 @@ extern int rtkpos(rtk_t *rtk, const obsd_t *obs, int n, const nav_t *nav)
         
         /* time-synchronized position of base station */
         for (i=0;i<3;i++) rtk->rb[i]+=rtk->rb[i+3]*rtk->sol.age;
+    
+    trace(3,"base pos: "); tracemat(3,rtk->rb,1,3,13,4);
     }
     else {
         rtk->sol.age=(float)timediff(obs[0].time,obs[nu].time);

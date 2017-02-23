@@ -2461,6 +2461,7 @@ void __fastcall TMainForm::LoadOpt(void)
     PrcOpt.armaxiter=ini->ReadInteger("prcopt", "ariter",          1);
     PrcOpt.minfixsats=ini->ReadInteger("prcopt", "minfixsats",     2);
     PrcOpt.minholdsats=ini->ReadInteger("prcopt", "minholdsats",   2);
+    PrcOpt.mindropsats=ini->ReadInteger("prcopt", "mindropsats",  20);
     PrcOpt.niter    =ini->ReadInteger("prcopt", "niter",           1);
     PrcOpt.eratio[0]=ini->ReadFloat  ("prcopt", "eratio0",     100.0);
     PrcOpt.eratio[1]=ini->ReadFloat  ("prcopt", "eratio1",     100.0);
@@ -2482,8 +2483,11 @@ void __fastcall TMainForm::LoadOpt(void)
     PrcOpt.maxtdiff =ini->ReadFloat  ("prcopt", "maxtdiff",     30.0);
     PrcOpt.maxgdop  =ini->ReadFloat  ("prcopt", "maxgdop",      30.0);
     PrcOpt.maxinno  =ini->ReadFloat  ("prcopt", "maxinno",      30.0);
+    PrcOpt.varholdamb=ini->ReadFloat ("prcopt", "varholdamb",  0.001);
+    PrcOpt.gainholdamb=ini->ReadFloat("prcopt", "gainholdamb",  0.01);
     PrcOpt.syncsol  =ini->ReadInteger("prcopt", "syncsol",         0);
     PrcOpt.arfilter =ini->ReadInteger("prcopt", "arfilter",        0);
+    PrcOpt.rcvstds  =ini->ReadInteger("prcopt", "rcvstds",        0);
     ExSats          =ini->ReadString ("prcopt", "exsats",         "");
     PrcOpt.navsys   =ini->ReadInteger("prcopt", "navsys",    SYS_GPS);
     PrcOpt.posopt[0]=ini->ReadInteger("prcopt", "posopt1",         0);
@@ -2706,6 +2710,7 @@ void __fastcall TMainForm::SaveOpt(void)
     ini->WriteInteger("prcopt", "ariter",     PrcOpt.armaxiter   );
     ini->WriteInteger("prcopt", "minfixsats", PrcOpt.minfixsats  );
     ini->WriteInteger("prcopt", "minholdsats",PrcOpt.minholdsats );
+    ini->WriteInteger("prcopt", "mindropsats",PrcOpt.mindropsats );
     ini->WriteInteger("prcopt", "niter",      PrcOpt.niter       );
     ini->WriteFloat  ("prcopt", "eratio0",    PrcOpt.eratio[0]   );
     ini->WriteFloat  ("prcopt", "eratio1",    PrcOpt.eratio[1]   );
@@ -2727,8 +2732,11 @@ void __fastcall TMainForm::SaveOpt(void)
     ini->WriteFloat  ("prcopt", "maxtdiff",   PrcOpt.maxtdiff    );
     ini->WriteFloat  ("prcopt", "maxgdop",    PrcOpt.maxgdop     );
     ini->WriteFloat  ("prcopt", "maxinno",    PrcOpt.maxinno     );
+    ini->WriteFloat  ("prcopt", "varholdamb", PrcOpt.varholdamb  );
+    ini->WriteFloat  ("prcopt", "gainholdamb",PrcOpt.gainholdamb );
     ini->WriteInteger("prcopt", "syncsol",    PrcOpt.syncsol     );
     ini->WriteInteger("prcopt", "arfilter",   PrcOpt.arfilter    );
+    ini->WriteInteger("prcopt", "rcvstds",    PrcOpt.rcvstds     );
     ini->WriteString ("prcopt", "exsats",     ExSats             );
     ini->WriteInteger("prcopt", "navsys",     PrcOpt.navsys      );
     ini->WriteInteger("prcopt", "posopt1",    PrcOpt.posopt[0]   );

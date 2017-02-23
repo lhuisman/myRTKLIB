@@ -58,7 +58,7 @@ extern "C" {
 
 #define VER_RTKLIB  "2.4.3 demo5"             /* library version */
 
-#define PATCH_LEVEL "b26a"               /* patch level */
+#define PATCH_LEVEL "b26b"               /* patch level */
 
 #define COPYRIGHT_RTKLIB \
             "Copyright (C) 2007-2016 T.Takasu\nAll rights reserved."
@@ -396,6 +396,11 @@ extern "C" {
 #define ARMODE_FIXHOLD 3                /* AR mode: fix and hold */
 #define ARMODE_WLNL 4                   /* AR mode: wide lane/narrow lane */
 #define ARMODE_TCAR 5                   /* AR mode: triple carrier ar */
+
+#define GLO_ARMODE_OFF  0               /* GLO AR mode: off */
+#define GLO_ARMODE_ON 1                 /* GLO AR mode: on */
+#define GLO_ARMODE_AUTOCAL 2            /* GLO AR mode: autocal */
+#define GLO_ARMODE_FIXHOLD 3            /* GLO AR mode: fix and hold */
 
 #define SBSOPT_LCORR 1                  /* SBAS option: long term correction */
 #define SBSOPT_FCORR 2                  /* SBAS option: fast correction */
@@ -1073,6 +1078,8 @@ typedef struct {        /* processing options type */
     double elmaskar;    /* elevation mask of AR for rising satellite (deg) */
     double elmaskhold;  /* elevation mask to hold ambiguity (deg) */
     double thresslip;   /* slip threshold of geometry-free phase (m) */
+    double varholdamb;  /* variance for fix-and-hold psuedo measurements (cycle^2) */
+    double gainholdamb; /* gain used for GLO and SBAS sats to adjust ambiguity */
     double maxtdiff;    /* max difference of time (sec) */
     double maxinno;     /* reject threshold of innovation (m) */
     double maxgdop;     /* reject threshold of gdop */

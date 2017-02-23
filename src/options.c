@@ -94,6 +94,8 @@ EXPORT opt_t sysopts[]={
     {"pos2-arthres2",   1,  (void *)&prcopt_.thresar[2], ""     },
     {"pos2-arthres3",   1,  (void *)&prcopt_.thresar[3], ""     },
     {"pos2-arthres4",   1,  (void *)&prcopt_.thresar[4], ""     },
+    {"pos2-varholdamb", 1,  (void *)&prcopt_.varholdamb, "cyc^2"},
+    {"pos2-gainholdamb",1,  (void *)&prcopt_.gainholdamb,""     },
     {"pos2-arlockcnt",  0,  (void *)&prcopt_.minlock,    ""     },
 	{"pos2-minfixsats", 0,  (void *)&prcopt_.minfixsats, ""     },
 	{"pos2-minholdsats",0,  (void *)&prcopt_.minholdsats,""     },
