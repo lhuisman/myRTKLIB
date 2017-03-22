@@ -1289,7 +1289,7 @@ extern int outnmea_gsv(unsigned char *buff, const sol_t *sol,
                 if (satsys(sats[k],&prn)==SYS_SBS) prn+=33-MINPRNSBS;
                 az =ssat[sats[k]-1].azel[0]*R2D; if (az<0.0) az+=360.0;
                 el =ssat[sats[k]-1].azel[1]*R2D;
-                snr=ssat[sats[k]-1].snr[0]*0.25;
+                snr=ssat[sats[k]-1].snr_rover[0]*0.25;
                 p+=sprintf(p,",%02d,%02.0f,%03.0f,%02.0f",prn,el,az,snr);
             }
             else p+=sprintf(p,",,,,");
@@ -1314,7 +1314,7 @@ extern int outnmea_gsv(unsigned char *buff, const sol_t *sol,
                 satsys(sats[k],&prn); prn+=64; /* 65-99 */
                 az =ssat[sats[k]-1].azel[0]*R2D; if (az<0.0) az+=360.0;
                 el =ssat[sats[k]-1].azel[1]*R2D;
-                snr=ssat[sats[k]-1].snr[0]*0.25;
+                snr=ssat[sats[k]-1].snr_rover[0]*0.25;
                 p+=sprintf(p,",%02d,%02.0f,%03.0f,%02.0f",prn,el,az,snr);
             }
             else p+=sprintf(p,",,,,");
@@ -1339,7 +1339,7 @@ extern int outnmea_gsv(unsigned char *buff, const sol_t *sol,
                 satsys(sats[k],&prn); /* 1-36 */
                 az =ssat[sats[k]-1].azel[0]*R2D; if (az<0.0) az+=360.0;
                 el =ssat[sats[k]-1].azel[1]*R2D;
-                snr=ssat[sats[k]-1].snr[0]*0.25;
+                snr=ssat[sats[k]-1].snr_rover[0]*0.25;
                 p+=sprintf(p,",%02d,%02.0f,%03.0f,%02.0f",prn,el,az,snr);
             }
             else p+=sprintf(p,",,,,");
