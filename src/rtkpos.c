@@ -50,6 +50,7 @@ static const char rcsid[]="$Id:$";
 #define SQR(x)      ((x)*(x))
 #define SQRT(x)     ((x)<=0.0?0.0:sqrt(x))
 #define MIN(x,y)    ((x)<=(y)?(x):(y))
+#define MAX(x,y)    ((x)>=(y)?(x):(y))
 #define ROUND(x)    (int)floor((x)+0.5)
 
 #define VAR_POS     SQR(30.0) /* initial variance of receiver pos (m^2) */
@@ -358,7 +359,7 @@ static void outsolstat(rtk_t *rtk,const nav_t *nav)
         for (j=0;j<nfreq;j++) {
             fprintf(fp_stat,"$SAT,%d,%.3f,%s,%d,%.1f,%.1f,%.4f,%.4f,%d,%.0f,%d,%d,%d,%d,%d,%d,%.2f,%.6f,%.5f,%.5f\n",
                     week,tow,id,j+1,ssat->azel[0]*R2D,ssat->azel[1]*R2D,
-                    ssat->resp[j],ssat->resc[j],ssat->vsat[j],ssat->snr[j]*0.25,
+                    ssat->resp[j],ssat->resc[j],ssat->vsat[j],ssat->snr_rover[j]*0.25,
                     ssat->fix[j],ssat->slip[j]&3,ssat->lock[j],ssat->outc[j],
                     ssat->slipc[j],ssat->rejc[j],rtk->x[k],rtk->P[k+k*rtk->nx],
                     nav->lam[i][j],ssat->icbias[j]);
@@ -399,37 +400,60 @@ static double gfobs_L1L5(const obsd_t *obs, int i, int j, const double *lam)
     double pi=sdobs(obs,i,j,0)*lam[0],pj=sdobs(obs,i,j,2)*lam[2];
     return pi==0.0||pj==0.0?0.0:pi-pj;
 }
+
 /* single-differenced measurement error variance -----------------------------*/
-static double varerr(int sat, int sys, double el, double bl, double dt, int f,
-                     const prcopt_t *opt, const obsd_t *obs)
+static double varerr(int sat, int sys, double el, double snr_rover, double snr_base, 
+                     double bl, double dt, int f, const prcopt_t *opt)
 {
-    double a,b,c=opt->err[3]*bl/1E4,d=CLIGHT*opt->sclkstab*dt,fact=1.0;
-    double sinel=sin(el);
-    int i=sys==SYS_GLO?1:(sys==SYS_GAL?2:0),nf=NF(opt);
+    double a, b, c = opt->err[3] * bl / 1E4; 
+    double snr_max = opt->err[5];
+    double d = CLIGHT * opt->sclkstab * dt;
+    double fact = 1.0;
+    double sinel = sin(el);
+    int i, nf = NF(opt);
+    
+    switch (sys) {
+        case SYS_GPS: i = 0; break;
+        case SYS_GLO: i = 1; break;
+        case SYS_GAL: i = 2; break;
+        default:      i = 0; break;
+    }
     
     /* extended error model, not currently used */
-    if (f>=nf&&opt->exterr.ena[0]) { /* code */
-        a=opt->exterr.cerr[i][  (f-nf)*2];
-        b=opt->exterr.cerr[i][1+(f-nf)*2];
-        if (sys==SYS_SBS) {a*=EFACT_SBS; b*=EFACT_SBS;}
+    if ( (f >= nf) && (opt->exterr.ena[0]) ) { /* code */
+        a = opt->exterr.cerr[i][(f - nf) * 2];
+        b = opt->exterr.cerr[i][1 + (f - nf) * 2];
+        if (sys == SYS_SBS) { a *= EFACT_SBS; b *= EFACT_SBS; }
     }
-    else if (f<nf&&opt->exterr.ena[1]) { /* phase */
-        a=opt->exterr.perr[i][  f*2];
-        b=opt->exterr.perr[i][1+f*2];
-        if (sys==SYS_SBS) {a*=EFACT_SBS; b*=EFACT_SBS;}
+    else if ( (f < nf) && (opt->exterr.ena[1]) ) { /* phase */
+        a = opt->exterr.perr[i][f * 2];
+        b = opt->exterr.perr[i][1 + f * 2];
+        if (sys == SYS_SBS) {a *= EFACT_SBS; b *= EFACT_SBS;}
     }
     else { /* normal error model */
-        if (opt->rcvstds) {
-            /* include err ratio and measurement std (P or L) from receiver */
-            if (f>=nf) fact=opt->eratio[f-nf]*obs->qualP[f-nf];
-            else fact=obs->qualL[f];
-        } else if (f>=nf) fact=opt->eratio[f-nf]; /* use err ratio only */
-        if (fact<=0.0)  fact=opt->eratio[0];
-        fact*=sys==SYS_GLO?EFACT_GLO:(sys==SYS_SBS?EFACT_SBS:EFACT_GPS);
-        a=fact*opt->err[1];
-        b=fact*opt->err[2];
+        if (f >= nf) fact = opt->eratio[f - nf];
+        if (fact <= 0.0) fact = opt->eratio[0];
+        switch (sys) {
+            case SYS_GPS: fact *= EFACT_GPS; break;
+            case SYS_GLO: fact *= EFACT_GLO; break;
+            case SYS_SBS: fact *= EFACT_SBS; break;
+            default:      fact *= EFACT_GPS; break;
+        }
+        
+        a = fact * opt->err[1];
+        b = fact * opt->err[2];
     }
-    return 2.0*(opt->ionoopt==IONOOPT_IFLC?3.0:1.0)*(a*a+b*b/sinel/sinel+c*c)+d*d;
+    
+    /* note: SQR(3.0) is approximated scale factor for error variance 
+       in the case of iono-free combination */
+    fact = (opt->ionoopt == IONOOPT_IFLC) ? SQR(3.0) : 1.0;
+    switch (opt->weightmode) {
+        case WEIGHTOPT_ELEVATION: return fact * 2.0 * ( SQR(a) + SQR(b / sinel) + SQR(c) ) + SQR(d);
+        case WEIGHTOPT_SNR      : return fact * ( SQR(a) * 
+                                                  (pow(10, 0.1 * MAX(snr_max - snr_rover, 0)) + 
+                                                   pow(10, 0.1 * MAX(snr_max - snr_base,  0))) + SQR(c) ) + SQR(d);
+        default: return 0;
+    }
 }
 /* baseline length -----------------------------------------------------------*/
 static double baseline(const double *ru, const double *rb, double *dr)
@@ -876,7 +900,10 @@ static void udstate(rtk_t *rtk, const obsd_t *obs, const int *sat,
     udpos(rtk,tt);
     
     /* temporal update of ionospheric parameters */
-    if (rtk->opt.ionoopt>=IONOOPT_EST) {
+    if ( (rtk->opt.ionoopt == IONOOPT_EST) || (rtk->opt.ionoopt == IONOOPT_TEC) || 
+         (rtk->opt.ionoopt == IONOOPT_QZS) || (rtk->opt.ionoopt == IONOOPT_LEX) ||
+         (rtk->opt.ionoopt == IONOOPT_STEC) ) 
+    {
         bl=baseline(rtk->x,rtk->rb,dr);
         udion(rtk,tt,bl,sat,ns);
     }
@@ -1154,7 +1181,7 @@ static int test_sys(int sys, int m)
         O H = linearized translation from innovations to states (az/el to sats)
         O R = measurement error covariances
         O vflg = bit encoded list of sats used for each double diff  */
-static int ddres(rtk_t *rtk, const nav_t *nav, const obsd_t *obs, double dt, const double *x,
+static int ddres(rtk_t *rtk, const nav_t *nav, double dt, const double *x,
                  const double *P, const int *sat, double *y, double *e,
                  double *azel, const int *iu, const int *ir, int ns, double *v,
                  double *H, double *R, int *vflg)
@@ -1182,7 +1209,10 @@ static int ddres(rtk_t *rtk, const nav_t *nav, const obsd_t *obs, double dt, con
            - only used if kalman filter contains states for ION and TROP delays
            ususally insignificant for short baselines (<10km)*/
     for (i=0;i<ns;i++) {
-        if (opt->ionoopt>=IONOOPT_EST) {
+        if ( (rtk->opt.ionoopt == IONOOPT_EST) || (rtk->opt.ionoopt == IONOOPT_TEC) || 
+             (rtk->opt.ionoopt == IONOOPT_QZS) || (rtk->opt.ionoopt == IONOOPT_LEX) ||
+             (rtk->opt.ionoopt == IONOOPT_STEC) )  
+        {
             im[i]=(ionmapf(posu,azel+iu[i]*2)+ionmapf(posr,azel+ir[i]*2))/2.0;
         }
         if (opt->tropopt>=TROPOPT_EST) {
@@ -1199,7 +1229,7 @@ static int ddres(rtk_t *rtk, const nav_t *nav, const obsd_t *obs, double dt, con
             /* find reference satellite with highest elevation, set to i */
             for (i=-1,j=0;j<ns;j++) {
                 sysi=rtk->ssat[sat[j]-1].sys;
-                    if (!test_sys(sysi,m) || sysi==SYS_SBS) continue;
+                if (!test_sys(sysi,m) || sysi==SYS_SBS) continue;
                 if (!validobs(iu[j],ir[j],f,nf,y)) continue;
                 if (i<0||azel[1+iu[j]*2]>=azel[1+iu[i]*2]) i=j;
             }
@@ -1226,6 +1256,7 @@ static int ddres(rtk_t *rtk, const nav_t *nav, const obsd_t *obs, double dt, con
                 v[nv]=(y[f+iu[i]*nf*2]-y[f+ir[i]*nf*2])-
                       (y[f+iu[j]*nf*2]-y[f+ir[j]*nf*2]);
             
+                      
                 /* partial derivatives by rover position, combine unit vectors from two sats */
                 if (H) {
                     for (k=0;k<3;k++) {
@@ -1316,9 +1347,15 @@ static int ddres(rtk_t *rtk, const nav_t *nav, const obsd_t *obs, double dt, con
                     continue;
                 }
                 /* single-differenced measurement error variances */
-                Ri[nv]=varerr(sat[i],sysi,azel[1+iu[i]*2],bl,dt,f,opt,&obs[iu[i]]);
-                Rj[nv]=varerr(sat[j],sysj,azel[1+iu[j]*2],bl,dt,f,opt,&obs[iu[j]]);
-
+                Ri[nv] = varerr(sat[i], sysi, azel[1+iu[i]*2], 
+                                0.25 * rtk->ssat[sat[i]-1].snr_rover[ff],
+                                0.25 * rtk->ssat[sat[i]-1].snr_base[ff],
+                                bl, dt, f, opt);
+                Rj[nv] = varerr(sat[j], sysj, azel[1+iu[j]*2], 
+                                0.25 * rtk->ssat[sat[j]-1].snr_rover[ff],
+                                0.25 * rtk->ssat[sat[j]-1].snr_base[ff],
+                                bl, dt, f, opt);
+            
                 /* set valid data flags */
                 if (opt->mode>PMODE_DGPS) {
                     if (f<nf) rtk->ssat[sat[i]-1].vsat[f]=rtk->ssat[sat[j]-1].vsat[f]=1;
@@ -1892,8 +1929,12 @@ static int relpos(rtk_t *rtk, const obsd_t *obs, int nu, int nr,
 
     /* init satellite status arrays */
     for (i=0;i<MAXSAT;i++) {
-        rtk->ssat[i].sys=satsys(i+1,NULL);                                  /* gps system */
-        for (j=0;j<NFREQ;j++) rtk->ssat[i].vsat[j]=rtk->ssat[i].snr[j]=0;   /* valid satellite */
+        rtk->ssat[i].sys=satsys(i+1,NULL);                                        /* gps system */
+        for (j=0;j<NFREQ;j++) {
+            rtk->ssat[i].vsat[j]=0;                                               /* valid satellite */
+            rtk->ssat[i].snr_rover[j]=0;
+            rtk->ssat[i].snr_base[j] =0;
+        }
     }
     /* compute satellite positions, velocities and clocks */
     satposs(time,obs,n,nav,opt->sateph,rs,dts,var,svh);
@@ -1923,6 +1964,13 @@ static int relpos(rtk_t *rtk, const obsd_t *obs, int nu, int nr,
     udstate(rtk,obs,sat,iu,ir,ns,nav);
     
     trace(4,"x(0)="); tracemat(4,rtk->x,1,NR(opt),13,4);
+    
+    for (i=0;i<ns;i++) for (j=0;j<nf;j++) {
+        
+        /* snr of base and rover receiver */
+        rtk->ssat[sat[i]-1].snr_rover[j]=obs[iu[i]].SNR[j];
+        rtk->ssat[sat[i]-1].snr_base[j] =obs[ir[i]].SNR[j]; 
+    }
     
     /* initialize Pp,xa to zero, xp to rtk->x */
     xp=mat(rtk->nx,1); Pp=zeros(rtk->nx,rtk->nx); xa=mat(rtk->nx,1);
@@ -1966,7 +2014,7 @@ static int relpos(rtk_t *rtk, const obsd_t *obs, int nu, int nr,
                 O H = partial derivatives
                 O R = double diff measurement error covariances
                 O vflg = list of sats used for dd  */
-        if ((nv=ddres(rtk,nav,obs,dt,xp,Pp,sat,y,e,azel,iu,ir,ns,v,H,R,vflg))<1) {
+        if ((nv=ddres(rtk,nav,dt,xp,Pp,sat,y,e,azel,iu,ir,ns,v,H,R,vflg))<1) {
             errmsg(rtk,"no double-differenced residual\n");
             stat=SOLQ_NONE;
             break;
@@ -1987,7 +2035,7 @@ static int relpos(rtk_t *rtk, const obsd_t *obs, int nu, int nr,
     if (stat!=SOLQ_NONE&&zdres(0,obs,nu,rs,dts,svh,nav,xp,opt,0,y,e,azel)) {
         
         /* calc double diff residuals again after kalman filter update for float solution */
-        nv=ddres(rtk,nav,obs,dt,xp,Pp,sat,y,e,azel,iu,ir,ns,v,NULL,R,vflg);
+        nv=ddres(rtk,nav,dt,xp,Pp,sat,y,e,azel,iu,ir,ns,v,NULL,R,vflg);
         
         /* validation of float solution, always returns 1, msg to trace file if large residual */
         if (valpos(rtk,v,R,vflg,nv,4.0)) {
@@ -2034,7 +2082,7 @@ static int relpos(rtk_t *rtk, const obsd_t *obs, int nu, int nr,
             if (zdres(0,obs,nu,rs,dts,svh,nav,xa,opt,0,y,e,azel)) {
                 
                 /* post-fit residuals for fixed solution (xa includes fixed phase biases, rtk->xa does not) */
-                nv=ddres(rtk,nav,obs,dt,xa,NULL,sat,y,e,azel,iu,ir,ns,v,NULL,R,vflg);
+                nv=ddres(rtk,nav,dt,xa,NULL,sat,y,e,azel,iu,ir,ns,v,NULL,R,vflg);
                 
                 /* validation of fixed solution, always returns valid */
                 if (valpos(rtk,v,R,vflg,nv,4.0)) {
@@ -2079,11 +2127,6 @@ static int relpos(rtk_t *rtk, const obsd_t *obs, int nu, int nr,
         if (obs[i].L[j]==0.0) continue;
         rtk->ssat[obs[i].sat-1].pt[obs[i].rcv-1][j]=obs[i].time;
         rtk->ssat[obs[i].sat-1].ph[obs[i].rcv-1][j]=obs[i].L[j];
-    }
-    for (i=0;i<ns;i++) for (j=0;j<nf;j++) {
-        
-        /* output snr of rover receiver */
-        rtk->ssat[sat[i]-1].snr[j]=obs[iu[i]].SNR[j];
     }
     for (i=0;i<MAXSAT;i++) for (j=0;j<nf;j++) {
         /* Don't lose track of which sats were used to try and resolve the ambiguities */
