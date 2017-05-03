@@ -419,7 +419,7 @@ static double varerr(int sat, int sys, double el, double bl, double dt, int f,
         if (sys==SYS_SBS) {a*=EFACT_SBS; b*=EFACT_SBS;}
     }
     else { /* normal error model */
-        if (opt->rcvstds) {
+        if (opt->rcvstds&& obs->qualL[f]!='\0'&&obs->qualP[f-nf]!='\0') {
             /* include err ratio and measurement std (P or L) from receiver */
             if (f>=nf) fact=opt->eratio[f-nf]*obs->qualP[f-nf];
             else fact=obs->qualL[f];
