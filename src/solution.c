@@ -1490,6 +1490,7 @@ static double sol_std(const sol_t *sol)
     if (sol->qr[1]>sol->qr[2]) return SQRT(sol->qr[1]);
     return SQRT(sol->qr[2]);
 }
+
 /* output solution body --------------------------------------------------------
 * output solution body to buffer
 * args   : unsigned char *buff IO output buffer
