@@ -580,7 +580,7 @@ static int scan_obstype(int format, char **files, int nf, rnxopt_t *opt,
 static void set_obstype(int format, rnxopt_t *opt)
 {
     /* default supported codes for {GPS,GLO,GAL,QZS,SBS,CMP,IRN} */
-    static const unsigned char codes_rtcm2[NOUTFILE][8]={ /* rtcm2 */
+    static const unsigned char codes_rtcm2[7][8]={ /* rtcm2 */
         {CODE_L1C,CODE_L1P,CODE_L2C,CODE_L2P},
         {CODE_L1C,CODE_L1P,CODE_L2C,CODE_L2P},
         {0},
@@ -589,7 +589,7 @@ static void set_obstype(int format, rnxopt_t *opt)
         {0},
         {0}
     };
-    static const unsigned char codes_rtcm3[NOUTFILE][8]={ /* rtcm3 */
+    static const unsigned char codes_rtcm3[7][8]={ /* rtcm3 */
         {CODE_L1C,CODE_L1W,CODE_L2W,CODE_L2X,CODE_L5X},
         {CODE_L1C,CODE_L1P,CODE_L2C,CODE_L2P},
         {CODE_L1X,CODE_L5X,CODE_L7X,CODE_L8X},
@@ -598,7 +598,7 @@ static void set_obstype(int format, rnxopt_t *opt)
         {CODE_L1I,CODE_L7I},
         {0}
     };
-    static const unsigned char codes_oem3[NOUTFILE][8]={ /* novatel oem3 */
+    static const unsigned char codes_oem3[7][8]={ /* novatel oem3 */
         {CODE_L1C,CODE_L2P},
         {0},
         {0},
@@ -607,7 +607,7 @@ static void set_obstype(int format, rnxopt_t *opt)
         {0},
         {0}
     };
-    static const unsigned char codes_oem4[NOUTFILE][8]={ /* novatel oem6 */
+    static const unsigned char codes_oem4[7][8]={ /* novatel oem6 */
         {CODE_L1C,CODE_L1P,CODE_L2D,CODE_L2X,CODE_L5Q},
         {CODE_L1C,CODE_L2C,CODE_L2P},
         {CODE_L1B,CODE_L1C,CODE_L5Q,CODE_L7Q,CODE_L8Q},
@@ -616,7 +616,7 @@ static void set_obstype(int format, rnxopt_t *opt)
         {CODE_L1I,CODE_L7I},
         {0}
     };
-    static const unsigned char codes_cres[NOUTFILE][8]={ /* hemisphere */
+    static const unsigned char codes_cres[7][8]={ /* hemisphere */
         {CODE_L1C,CODE_L2P},
         {CODE_L1C,CODE_L2P},
         {0},
@@ -625,7 +625,7 @@ static void set_obstype(int format, rnxopt_t *opt)
         {0},
         {0}
     };
-    static const unsigned char codes_javad[NOUTFILE][8]={ /* javad */
+    static const unsigned char codes_javad[7][8]={ /* javad */
         {CODE_L1C,CODE_L1W,CODE_L1X,CODE_L2X,CODE_L2W,CODE_L5X},
         {CODE_L1C,CODE_L1P,CODE_L2C,CODE_L2P},
         {CODE_L1X,CODE_L5X,CODE_L7X,CODE_L8X,CODE_L6X},
@@ -634,7 +634,7 @@ static void set_obstype(int format, rnxopt_t *opt)
         {CODE_L1I,CODE_L7I},
         {0}
     };
-    static const unsigned char codes_rinex[NOUTFILE][32]={ /* rinex and binex */
+    static const unsigned char codes_rinex[7][32]={ /* rinex and binex */
         {CODE_L1C,CODE_L1P,CODE_L1W,CODE_L1Y,CODE_L1M,CODE_L1N,CODE_L1S,CODE_L1L,
          CODE_L2C,CODE_L2D,CODE_L2S,CODE_L2L,CODE_L2X,CODE_L2P,CODE_L2W,CODE_L2Y,
          CODE_L2M,CODE_L2N,CODE_L5I,CODE_L5Q,CODE_L5X},
@@ -649,25 +649,25 @@ static void set_obstype(int format, rnxopt_t *opt)
          CODE_L6X},
         {CODE_L5A,CODE_L5B,CODE_L5C,CODE_L5X,CODE_L9A,CODE_L9B,CODE_L9C,CODE_L9X}
     };
-    static const unsigned char codes_rt17[NOUTFILE][8]={ /* rt17 */
+    static const unsigned char codes_rt17[7][8]={ /* rt17 */
         {CODE_L1C,CODE_L1P,CODE_L2C,CODE_L2P,CODE_L2W},
         {0},
         {0},
         {0},
         {0},
         {0},
-        {0},
+        {0}
     };
-    static const unsigned char codes_cmr[NOUTFILE][8]={ /* cmr */
+    static const unsigned char codes_cmr[7][8]={ /* cmr */
         {CODE_L1C,CODE_L1P,CODE_L2C,CODE_L2P,CODE_L2W},
         {CODE_L1C,CODE_L1P,CODE_L2C,CODE_L2P},
         {0},
         {0},
         {0},
         {0},
-        {0},
+        {0}
     };
-    static const unsigned char codes_other[NOUTFILE][8]={ /* others */
+    static const unsigned char codes_other[7][8]={ /* others */
         {CODE_L1C},
         {CODE_L1C},
         {CODE_L1C},
@@ -680,8 +680,8 @@ static void set_obstype(int format, rnxopt_t *opt)
     int i;
     
     trace(3,"set_obstype: format=%d\n",format);
-    
-    for (i=0;i<NOUTFILE;i++) {
+
+    for (i=0;i<7;i++) {
         switch (format) {
             case STRFMT_RTCM2: codes=codes_rtcm2[i]; break;
             case STRFMT_RTCM3: codes=codes_rtcm3[i]; break;

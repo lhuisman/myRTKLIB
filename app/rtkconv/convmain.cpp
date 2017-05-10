@@ -454,7 +454,7 @@ void __fastcall TMainWindow::BtnInFileViewClick(TObject *Sender)
 		!strcmp(ext+3,"g"  )||!strcmp(ext+3,"G"  )||!strcmp(ext+3,"h" )||
 		!strcmp(ext+3,"H"  )||!strcmp(ext+3,"q"  )||!strcmp(ext+3,"Q" )||
 		!strcmp(ext+3,"l"  )||!strcmp(ext+3,"L"  )||!strcmp(ext+3,"c" )||
-        !strcmp(ext+3,"C"  )) {
+        !strcmp(ext+3,"C"  )||!strcmp(ext+3,"i"  )||!strcmp(ext+3,"I" )) {
 		viewer->Show();
 		viewer->Read(RepPath(InFile_Text));
 	}
@@ -831,6 +831,8 @@ void __fastcall TMainWindow::ConvertFile(void)
 		else if (!strcmp(p+3,"L"   )) format=STRFMT_RINEX;
 		else if (!strcmp(p+3,"c"   )) format=STRFMT_RINEX;
 		else if (!strcmp(p+3,"C"   )) format=STRFMT_RINEX;
+		else if (!strcmp(p+3,"i"   )) format=STRFMT_RINEX;
+		else if (!strcmp(p+3,"I"   )) format=STRFMT_RINEX;
 		else {
 			showmsg("file format can not be recognized");
 			return;
@@ -859,11 +861,11 @@ void __fastcall TMainWindow::ConvertFile(void)
 	if (OutFile5->Enabled&&OutFileEna5->Checked) strcpy(ofile[4],OutFile5_Text.c_str());
 	if (OutFile6->Enabled&&OutFileEna6->Checked) strcpy(ofile[5],OutFile6_Text.c_str());
 	if (OutFile7->Enabled&&OutFileEna7->Checked) strcpy(ofile[6],OutFile7_Text.c_str());
-	if (OutFile8->Enabled&&OutFileEna8->Checked) strcpy(ofile[7],OutFile7_Text.c_str());
-	if (OutFile9->Enabled&&OutFileEna9->Checked) strcpy(ofile[8],OutFile8_Text.c_str());
+	if (OutFile8->Enabled&&OutFileEna8->Checked) strcpy(ofile[7],OutFile8_Text.c_str());
+	if (OutFile9->Enabled&&OutFileEna9->Checked) strcpy(ofile[8],OutFile9_Text.c_str());
 	
 	// check overwrite output file
-	for (i=0;i<9;i++) {
+	for (i=0;i<8;i++) {
 		if (!*ofile[i]||!(fp=fopen(ofile[i],"r"))) continue;
 		fclose(fp);
 		ConfDialog->Label2->Caption=ofile[i];
