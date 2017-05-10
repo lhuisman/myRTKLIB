@@ -49,18 +49,6 @@ static int            I4(unsigned char *p) {int            i; memcpy(&i,p,4); re
 static float          R4(unsigned char *p) {float          r; memcpy(&r,p,4); return r;}
 static double         R8(unsigned char *p) {double         r; memcpy(&r,p,8); return r;}
 
-/* ura values (ref [3] 20.3.3.3.1.1) -----------------------------------------*/
-static const double ura_eph[]={
-    2.4,3.4,4.85,6.85,9.65,13.65,24.0,48.0,96.0,192.0,384.0,768.0,1536.0,
-    3072.0,6144.0,0.0
-};
-/* ura value (m) to ura index ------------------------------------------------*/
-static int uraindex(double value)
-{
-    int i;
-    for (i=0;i<15;i++) if (ura_eph[i]>=value) break;
-    return i;
-}
 /* decode NVS xf5-raw: raw measurement data ----------------------------------*/
 static int decode_xf5raw(raw_t *raw)
 {
@@ -211,7 +199,7 @@ static int decode_gpsephem(int sat, raw_t *raw)
     eph.f2     = R4(&puiTmp[114]) * 1e+3;
     eph.f1     = R4(&puiTmp[118]);
     eph.f0     = R4(&puiTmp[122]) * 1e-3;
-    eph.sva    = uraindex(I2(&puiTmp[126]));
+    eph.sva    = uraindex(I2(&puiTmp[126]),SYS_GPS);
     eph.iode   = I2(&puiTmp[128]);
     eph.iodc   = I2(&puiTmp[130]);
     eph.code   = I2(&puiTmp[132]);

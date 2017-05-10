@@ -1409,6 +1409,7 @@ typedef void fatalfunc_t(const char *); /* fatal callback function type */
 /* global variables ----------------------------------------------------------*/
 extern const double chisqr[];        /* chi-sqr(n) table (alpha=0.001) */
 extern const double lam_carr[];      /* carrier wave length (m) {L1,L2,...} */
+extern const double ura_value[];     /* user range accuracy translation table */
 extern const prcopt_t prcopt_default; /* default positioning options */
 extern const solopt_t solopt_default; /* default solution output options */
 extern const sbsigpband_t igpband1[9][8]; /* SBAS IGP band 0-8 */
@@ -1615,6 +1616,8 @@ EXPORT int  input_rnxctr(rnxctr_t *rnx, FILE *fp);
 EXPORT double eph2clk (gtime_t time, const eph_t  *eph);
 EXPORT double geph2clk(gtime_t time, const geph_t *geph);
 EXPORT double seph2clk(gtime_t time, const seph_t *seph);
+EXPORT double uravalue(int ura, int sys);
+EXPORT int uraindex(double value, int sys);
 EXPORT void eph2pos (gtime_t time, const eph_t  *eph,  double *rs, double *dts,
                      double *var);
 EXPORT void geph2pos(gtime_t time, const geph_t *geph, double *rs, double *dts,
