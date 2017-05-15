@@ -338,6 +338,14 @@ static const unsigned int tbl_CRC24Q[]={
     0xE37B16,0x6537ED,0x69AE1B,0xEFE2E0,0x709DF7,0xF6D10C,0xFA48FA,0x7C0401,
     0x42FA2F,0xC4B6D4,0xC82F22,0x4E63D9,0xD11CCE,0x575035,0x5BC9C3,0xDD8538
 };
+const double ura_value[]={              /* ura max values */
+    2.4,3.4,4.85,6.85,9.65,13.65,24.0,48.0,96.0,192.0,384.0,768.0,1536.0,
+    3072.0,6144.0
+};
+static const double ura_nominal[]={     /* ura nominal values */
+    2.0,2.8,4.0,5.7,8.0,11.3,16.0,32.0,64.0,128.0,256.0,512.0,1024.0,
+    2048.0,4096.0,8192.0
+};
 /* function prototypes -------------------------------------------------------*/
 #ifdef MKL
 #define LAPACK
@@ -2610,6 +2618,41 @@ static void uniqseph(nav_t *nav)
     nav->nsmax=nav->ns;
     
     trace(4,"uniqseph: ns=%d\n",nav->ns);
+}
+/* ura index to ura nominal value (m) ----------------------------------------*/
+extern double uravalue(int ura, int sys)
+{
+    if (sys==SYS_GAL) {
+        if (ura>0 && ura<50)
+            return ura/100.0;
+        else if (ura>=50 && ura<75)
+            return (50.0+2.0*(ura-50.0))/100.0;
+        else if (ura>=75 && ura<100)
+            return (100.0+4.0*(ura-75.0))/100.0;
+        else if (ura>=100 && ura<=125)
+            return (200.0+16.0*(ura-100.0))/100.0;
+        else
+            return 6.0;
+    } else
+        return 0<=ura&&ura<15?ura_nominal[ura]:8192.0;
+}
+extern int uraindex(double value, int sys)
+{
+    int i;
+
+    if (sys==SYS_GAL) {
+        if (value>0 && value<0.5)
+            i=(int)(value*100+0.5);
+        else if (value>=0.5 && value<1.0)
+            i=50+(int)((value-0.5)/2*100+0.5);
+        else if (value>=1.0 && value<2.0)
+            i=75+(int)((value-1.0)/4*100);
+        else if (value>=2.0 && value<6.0)
+            i=100+(int)((value-2.0)/16*100+0.5);
+        else i=125;
+    } else
+        for (i=0;i<15;i++) if (ura_value[i]>=value) break;
+    return i;
 }
 /* unique ephemerides ----------------------------------------------------------
 * unique ephemerides in navigation data and update carrier wave length

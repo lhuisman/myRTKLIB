@@ -111,10 +111,6 @@ static const char obscodes[]="CLDS";    /* obs type codes */
 
 static const char frqcodes[]="1256789"; /* frequency codes */
 
-static const double ura_nominal[]={     /* ura nominal values */
-    2.0,2.8,4.0,5.7,8.0,11.3,16.0,32.0,64.0,128.0,256.0,512.0,1024.0,
-    2048.0,4096.0,8192.0
-};
 /* type definition -----------------------------------------------------------*/
 typedef struct {                        /* signal index type */
     int n;                              /* number of index */
@@ -177,23 +173,6 @@ static int sat2code(int sat, char *code)
         default: return 0;
     }
     return 1;
-}
-/* ura index to ura nominal value (m) ----------------------------------------*/
-extern double uravalue(int ura, int sys)
-{
-    if (sys==SYS_GAL) {
-        if (ura>0 && ura<50)
-            return ura/100.0;
-        else if (ura>=50 && ura<75)
-            return (50.0+2.0*(ura-50.0))/100.0;
-        else if (ura>=75 && ura<100)
-            return (100.0+4.0*(ura-75.0))/100.0;
-        else if (ura>=100 && ura<=125)
-            return (200.0+16.0*(ura-100.0))/100.0;
-        else
-            return 6.0;
-    } else
-        return 0<=ura&&ura<15?ura_nominal[ura]:8192.0;
 }
 /* initialize station parameter ----------------------------------------------*/
 static void init_sta(sta_t *sta)

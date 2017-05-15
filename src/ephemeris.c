@@ -58,10 +58,6 @@
 #include "rtklib.h"
 
 static const char rcsid[]="$Id:$";
-const double ura_value[]={
-    2.4,3.4,4.85,6.85,9.65,13.65,24.0,48.0,96.0,192.0,384.0,768.0,1536.0,
-    3072.0,6144.0
-};
 
 /* constants and macros ------------------------------------------------------*/
 
@@ -100,24 +96,6 @@ static double var_uraeph(int ura, int sys)
         return SQR(uravalue(ura,sys));
     else
         return ura<0||14<ura?SQR(6144.0):SQR(ura_value[ura]);
-}
-extern int uraindex(double value, int sys)
-{
-    int i;
-
-    if (sys==SYS_GAL) {
-        if (value>0 && value<0.5)
-            i=(int)(value*100+0.5);
-        else if (value>=0.5 && value<1.0)
-            i=50+(int)((value-0.5)/2*100+0.5);
-        else if (value>=1.0 && value<2.0)
-            i=75+(int)((value-1.0)/4*100);
-        else if (value>=2.0 && value<6.0)
-            i=100+(int)((value-2.0)/16*100+0.5);
-        else i=125;
-    } else
-        for (i=0;i<15;i++) if (ura_value[i]>=value) break;
-    return i;
 }
 /* variance by ura ssr (ref [4]) ---------------------------------------------*/
 static double var_urassr(int ura)
