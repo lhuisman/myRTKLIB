@@ -352,10 +352,10 @@ static void outsolstat(rtk_t *rtk,const nav_t *nav)
     /* write residuals and status */
     for (i=0;i<MAXSAT;i++) {
         ssat=rtk->ssat+i;
-        k=IB(i+1,0,&rtk->opt);
         if (!ssat->vs) continue;
         satno2id(i+1,id);
         for (j=0;j<nfreq;j++) {
+            k=IB(i+1,j,&rtk->opt);
             fprintf(fp_stat,"$SAT,%d,%.3f,%s,%d,%.1f,%.1f,%.4f,%.4f,%d,%.0f,%d,%d,%d,%d,%d,%d,%.2f,%.6f,%.5f,%.5f\n",
                     week,tow,id,j+1,ssat->azel[0]*R2D,ssat->azel[1]*R2D,
                     ssat->resp[j],ssat->resc[j],ssat->vsat[j],ssat->snr[j]*0.25,
@@ -1718,20 +1718,22 @@ static int resamb_LAMBDA(rtk_t *rtk, double *bias, double *xa,int gps,int glo,in
 /* resolve integer ambiguity by LAMBDA using partial fix techniques and multiple attempts -----------------------*/
 static int manage_amb_LAMBDA(rtk_t *rtk, double *bias, double *xa, const int *sat, int nf, int ns) 
 {
-    int i,f,lockc,ar=0,excflag=0,excsats[MAXOBS];
+    int i,f,lockc[NFREQ],ar=0,excflag=0,excsats[MAXOBS];
     int gps1=-1,glo1=-1,gps2,glo2,result,rerun,dly;
     float ratio1;
 
     trace(3,"prevRatios= %.3f %.3f\n",rtk->sol.prev_ratio1,rtk->sol.prev_ratio2);
 
     /* find and count sats available for AR */
-    for (i=0;i<ns;i++) {
-        if (rtk->ssat[sat[i]-1].vsat[0]&&rtk->ssat[sat[i]-1].lock[0]>=0) {
-            if (rtk->ssat[sat[i]-1].sys==SYS_GPS) 
-                excsats[ar++]=i; 
-            else if (rtk->ssat[sat[i]-1].sys==SYS_GLO||rtk->ssat[sat[i]-1].sys==SYS_SBS) {
-                if (rtk->opt.glomodear==GLO_ARMODE_ON||(rtk->opt.glomodear==GLO_ARMODE_FIXHOLD&&rtk->holdamb))
-                    excsats[ar++]=i;
+    for (f=0;f<nf;f++) {
+        for (i=0;i<ns;i++) {
+            if (rtk->ssat[sat[i]-1].vsat[f]&&rtk->ssat[sat[i]-1].lock[f]>=0) {
+                if (rtk->ssat[sat[i]-1].sys==SYS_GPS) 
+                    excsats[ar++]=i; 
+                else if (rtk->ssat[sat[i]-1].sys==SYS_GLO||rtk->ssat[sat[i]-1].sys==SYS_SBS) {
+                    if (rtk->opt.glomodear==GLO_ARMODE_ON||(rtk->opt.glomodear==GLO_ARMODE_FIXHOLD&&rtk->holdamb))
+                        excsats[ar++]=i;
+                }
             }
         }
     }
@@ -1741,9 +1743,11 @@ static int manage_amb_LAMBDA(rtk_t *rtk, double *bias, double *xa, const int *sa
     if (rtk->sol.prev_ratio2<rtk->opt.thresar[0]&&ar>=rtk->opt.mindropsats) {
         if (rtk->excsat<ar) {
             i=sat[excsats[rtk->excsat]];
-            lockc=rtk->ssat[i-1].lock[0];  /* save lock count */
+            for (f=0;f<nf;f++) {
+                lockc[f]=rtk->ssat[i-1].lock[f];  /* save lock count */
             /* remove sat from AR long enough to enable hold if stays fixed */
-            rtk->ssat[i-1].lock[0]=-rtk->opt.minfix;
+                rtk->ssat[i-1].lock[f]=-rtk->opt.minfix;
+            }
             trace(3,"AR: exclude sat %d\n",i);
             excflag=1;
         } else rtk->excsat=0; /* exclude none and reset to beginning of list */
@@ -1808,7 +1812,7 @@ static int manage_amb_LAMBDA(rtk_t *rtk, double *bias, double *xa, const int *sa
     /* restore excluded sat if still no fix */
     if (excflag&&rtk->sol.ratio<rtk->opt.thresar[0]) {
         i=sat[excsats[rtk->excsat++]];
-        rtk->ssat[i-1].lock[0]=lockc;
+        for (f=0;f<nf;f++) rtk->ssat[i-1].lock[f]=lockc[f];
         trace(3,"AR: restore sat %d\n",i);
     }
 
