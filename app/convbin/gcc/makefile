@@ -17,7 +17,7 @@ all  : convbin
 
 convbin    : convbin.o rtkcmn.o rinex.o sbas.o preceph.o rcvraw.o convrnx.o
 convbin    : rtcm.o rtcm2.o rtcm3.o rtcm3e.o pntpos.o ephemeris.o ionex.o
-convbin    : novatel.o ss2.o ublox.o crescent.o skytraq.o gw10.o javad.o nvs.o
+convbin    : novatel.o swiftnav.o tersus.o ublox.o crescent.o skytraq.o gw10.o javad.o nvs.o
 convbin    : binex.o rt17.o qzslex.o septentrio.o cmr.o
 
 convbin.o  : ../convbin.c
@@ -50,8 +50,10 @@ ephemeris.o: $(SRC)/ephemeris.c
 	$(CC) -c $(CFLAGS) $(SRC)/ephemeris.c
 novatel.o  : $(SRC)/rcv/novatel.c
 	$(CC) -c $(CFLAGS) $(SRC)/rcv/novatel.c
-ss2.o      : $(SRC)/rcv/ss2.c
-	$(CC) -c $(CFLAGS) $(SRC)/rcv/ss2.c
+swiftnav.o : $(SRC)/rcv/swiftnav.c
+	$(CC) -c $(CFLAGS) $(SRC)/rcv/swiftnav.c
+tersus.o   : $(SRC)/rcv/tersus.c
+	$(CC) -c $(CFLAGS) $(SRC)/rcv/tersus.c
 ublox.o    : $(SRC)/rcv/ublox.c
 	$(CC) -c $(CFLAGS) $(SRC)/rcv/ublox.c
 crescent.o : $(SRC)/rcv/crescent.c
@@ -90,7 +92,8 @@ pntpos.o   : $(SRC)/rtklib.h
 ephemeris.o: $(SRC)/rtklib.h
 ionex.o    : $(SRC)/rtklib.h
 novatel.o  : $(SRC)/rtklib.h
-ss2.o      : $(SRC)/rtklib.h
+swiftnav.o : $(SRC)/rtklib.h
+tersus.o   : $(SRC)/rtklib.h
 ublox.o    : $(SRC)/rtklib.h
 crescent.o : $(SRC)/rtklib.h
 skytraq.o  : $(SRC)/rtklib.h

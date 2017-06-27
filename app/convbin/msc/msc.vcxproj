@@ -104,6 +104,7 @@
     <ClCompile Include="..\..\..\src\rcv\rcvlex.c" />
     <ClCompile Include="..\..\..\src\rcv\rt17.c" />
     <ClCompile Include="..\..\..\src\rcv\septentrio.c" />
+    <ClCompile Include="..\..\..\src\rcv\swiftnav.c" />
     <ClCompile Include="..\..\..\src\rtcm3e.c" />
     <ClCompile Include="..\convbin.c" />
     <ClCompile Include="..\..\..\src\convrnx.c" />
@@ -121,7 +122,6 @@
     <ClCompile Include="..\..\..\src\rtkcmn.c" />
     <ClCompile Include="..\..\..\src\sbas.c" />
     <ClCompile Include="..\..\..\src\rcv\skytraq.c" />
-    <ClCompile Include="..\..\..\src\rcv\ss2.c" />
     <ClCompile Include="..\..\..\src\rcv\ublox.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

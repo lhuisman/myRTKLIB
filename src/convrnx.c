@@ -667,6 +667,15 @@ static void set_obstype(int format, rnxopt_t *opt)
         {0},
         {0}
     };
+    static const unsigned char codes_sbp[7][8]={ /* Swift */
+        {CODE_L1C,CODE_L2S},
+        {CODE_L1C},
+        {CODE_L1C},
+        {CODE_L1C},
+        {CODE_L1C},
+        {CODE_L1I},
+        {0}
+    };
     static const unsigned char codes_other[7][8]={ /* others */
         {CODE_L1C},
         {CODE_L1C},
@@ -688,6 +697,7 @@ static void set_obstype(int format, rnxopt_t *opt)
             case STRFMT_OEM4 : codes=codes_oem4 [i]; break;
             case STRFMT_OEM3 : codes=codes_oem3 [i]; break;
             case STRFMT_CRES : codes=codes_cres [i]; break;
+            case STRFMT_SBP  : codes=codes_sbp  [i]; break;
             case STRFMT_JAVAD: codes=codes_javad[i]; break;
             case STRFMT_BINEX: codes=codes_rinex[i]; break;
             case STRFMT_RT17 : codes=codes_rt17 [i]; break;

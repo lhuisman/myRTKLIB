@@ -220,7 +220,7 @@ const char *formatstrs[32]={    /* stream format strings */
     "NovAtel OEM6",             /*  2 */
     "NovAtel OEM3",             /*  3 */
     "u-blox",                   /*  4 */
-    "Superstar II",             /*  5 */
+    "Swift Navigation SBP",     /*  5 */
     "Hemisphere",               /*  6 */
     "SkyTraq",                  /*  7 */
     "GW10",                     /*  8 */

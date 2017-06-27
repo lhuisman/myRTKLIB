@@ -802,7 +802,7 @@ void __fastcall TMainWindow::ConvertFile(void)
 		else if (!strcmp(p,".rtcm3")) format=STRFMT_RTCM3;
 		else if (!strcmp(p,".gps"  )) format=STRFMT_OEM4;
 		else if (!strcmp(p,".ubx"  )) format=STRFMT_UBX;
-		else if (!strcmp(p,".log"  )) format=STRFMT_SS2;
+		else if (!strcmp(p,".sbp"  )) format=STRFMT_SBP;
 		else if (!strcmp(p,".bin"  )) format=STRFMT_CRES;
 		else if (!strcmp(p,".jps"  )) format=STRFMT_JAVAD;
 		else if (!strcmp(p,".bnx"  )) format=STRFMT_BINEX;

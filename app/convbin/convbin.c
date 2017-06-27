@@ -64,7 +64,7 @@ static const char *help[]={
 " NovAtel OEMV/4,OEMStar: RANGECMPB, RANGEB, RAWEPHEMB, IONUTCB, RAWWASSFRAMEB",
 " NovAtel OEM3          : RGEB, REGD, REPB, FRMB, IONB, UTCB",
 " u-blox LEA-4T/5T/6T   : RXM-RAW, RXM-SFRB",
-" NovAtel Superstar II  : ID#20, ID#21, ID#22, ID#23, ID#67",
+" Swift Piksi Multi     : ",
 " Hemisphere            : BIN76, BIN80, BIN94, BIN95, BIN96",
 " SkyTraq S1315F        : msg0xDD, msg0xE0, msg0xDC",
 " GW10                  : msg0x08, msg0x03, msg0x27, msg0x20",
@@ -95,7 +95,7 @@ static const char *help[]={
 "                  nov  = NovAtel OEMV/4/6,OEMStar",
 "                  oem3 = NovAtel OEM3",
 "                  ubx  = ublox LEA-4T/5T/6T/7T/M8T",
-"                  ss2  = NovAtel Superstar II",
+"                  sbp  = Swift Navigation SBP",
 "                  hemis= Hemisphere Eclipse/Crescent",
 "                  stq  = SkyTraq S1315F",
 "                  javad= Javad",
@@ -140,7 +140,7 @@ static const char *help[]={
 "     -s sfile     output SBAS message file",
 "     -trace level output trace level [off]",
 "",
-" If any output file specified, default output files (<file>.obs,",
+" If no output file specified, default output files (<file>.obs,",
 " <file>.nav, <file>.gnav, <file>.hnav, <file>.qnav, <file>.lnav and",
 " <file>.sbs) are used.",
 "",
@@ -150,7 +150,7 @@ static const char *help[]={
 "     *.rtcm3       RTCM 3",
 "     *.gps         NovAtel OEMV/4/6,OEMStar",
 "     *.ubx         u-blox LEA-4T/5T/6T/7T/M8T",
-"     *.log         NovAtel Superstar II",
+"     *.sbp         Swift Navigation SBP",
 "     *.bin         Hemisphere Eclipse/Crescent",
 "     *.stq         SkyTraq S1315F",
 "     *.jps         Javad",
@@ -484,7 +484,7 @@ static int cmdopts(int argc, char **argv, rnxopt_t *opt, char **ifile,
         else if (!strcmp(fmt,"nov"  )) format=STRFMT_OEM4;
         else if (!strcmp(fmt,"oem3" )) format=STRFMT_OEM3;
         else if (!strcmp(fmt,"ubx"  )) format=STRFMT_UBX;
-        else if (!strcmp(fmt,"ss2"  )) format=STRFMT_SS2;
+        else if (!strcmp(fmt,"sbp"  )) format=STRFMT_SBP;
         else if (!strcmp(fmt,"hemis")) format=STRFMT_CRES;
         else if (!strcmp(fmt,"stq"  )) format=STRFMT_STQ;
         else if (!strcmp(fmt,"javad")) format=STRFMT_JAVAD;
@@ -503,7 +503,7 @@ static int cmdopts(int argc, char **argv, rnxopt_t *opt, char **ifile,
         else if (!strcmp(p,".rtcm3"))  format=STRFMT_RTCM3;
         else if (!strcmp(p,".gps"  ))  format=STRFMT_OEM4;
         else if (!strcmp(p,".ubx"  ))  format=STRFMT_UBX;
-        else if (!strcmp(p,".log"  ))  format=STRFMT_SS2;
+        else if (!strcmp(p,".sbp"  ))  format=STRFMT_SBP;
         else if (!strcmp(p,".bin"  ))  format=STRFMT_CRES;
         else if (!strcmp(p,".stq"  ))  format=STRFMT_STQ;
         else if (!strcmp(p,".jps"  ))  format=STRFMT_JAVAD;
