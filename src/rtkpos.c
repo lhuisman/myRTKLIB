@@ -30,7 +30,7 @@
 *           2014/05/26 1.13 support beidou and galileo
 *                           add output of gal-gps and bds-gps time offset
 *           2014/05/28 1.14 fix bug on memory exception with many sys and freq
-*           2014/08/26 1.15 add functino to swap sol-stat file with keywords
+*           2014/08/26 1.15 add function to swap sol-stat file with keywords
 *           2014/10/21 1.16 fix bug on beidou amb-res with pos2-bdsarmode=0
 *           2014/11/08 1.17 fix bug on ar-degradation by unhealthy satellites
 *           2015/03/23 1.18 residuals referenced to reference satellite
@@ -494,7 +494,7 @@ static void udpos(rtk_t *rtk, double tt)
         for (i=0;i<3;i++) initx(rtk,rtk->sol.rr[i],VAR_POS,i);
         return;
     }
-    /* check variance of estimated postion */
+    /* check variance of estimated position */
     for (i=0;i<3;i++) var+=rtk->P[i+i*rtk->nx]; var/=3.0;
     
     if (var>VAR_POS) {
@@ -1180,7 +1180,7 @@ static int ddres(rtk_t *rtk, const nav_t *nav, const obsd_t *obs, double dt, con
     }
     /* compute factors of ionospheric and tropospheric delay
            - only used if kalman filter contains states for ION and TROP delays
-           ususally insignificant for short baselines (<10km)*/
+           usually insignificant for short baselines (<10km)*/
     for (i=0;i<ns;i++) {
         if (opt->ionoopt>=IONOOPT_EST) {
             im[i]=(ionmapf(posu,azel+iu[i]*2)+ionmapf(posr,azel+ir[i]*2))/2.0;
@@ -1840,7 +1840,7 @@ static int valpos(rtk_t *rtk, const double *v, const double *R, const int *vflg,
         sat2=(vflg[i]>> 8)&0xFF;
         type=(vflg[i]>> 4)&0xF;
         freq=vflg[i]&0xF;
-        stype=type==0?"L":(type==1?"L":"C");
+        stype=type==0?"L":(type==1?"P":"C");
         errmsg(rtk,"large residual (sat=%2d-%2d %s%d v=%6.3f sig=%.3f)\n",
               sat1,sat2,stype,freq+1,v[i],SQRT(R[i+i*nv]));
     }
@@ -2222,7 +2222,7 @@ extern int rtkpos(rtk_t *rtk, const obsd_t *obs, int n, const nav_t *nav)
     trace(4,"obs=\n"); traceobs(4,obs,n);
     /*trace(5,"nav=\n"); tracenav(5,nav);*/
     
-    /* set base staion position */
+    /* set base station position */
     if (opt->refpos<=POSOPT_RINEX&&opt->mode!=PMODE_SINGLE&&
         opt->mode!=PMODE_MOVEB) {
         for (i=0;i<6;i++) rtk->rb[i]=i<3?opt->rb[i]:0.0;

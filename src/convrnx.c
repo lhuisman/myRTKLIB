@@ -616,6 +616,15 @@ static void set_obstype(int format, rnxopt_t *opt)
         {CODE_L1I,CODE_L7I},
         {0}
     };
+    static const unsigned char codes_trs[7][8]={ /* tersus */
+        {CODE_L1C,CODE_L2D},
+        {CODE_L1C,CODE_L2P},
+        {CODE_L1B,CODE_L1C,CODE_L5Q,CODE_L7Q,CODE_L8Q},
+        {CODE_L1C,CODE_L2X,CODE_L5Q},
+        {CODE_L1C,CODE_L5I},
+        {CODE_L1I,CODE_L7I},
+        {0}
+    };
     static const unsigned char codes_cres[7][8]={ /* hemisphere */
         {CODE_L1C,CODE_L2P},
         {CODE_L1C,CODE_L2P},
@@ -679,7 +688,7 @@ static void set_obstype(int format, rnxopt_t *opt)
     static const unsigned char codes_other[7][8]={ /* others */
         {CODE_L1C},
         {CODE_L1C},
-        {CODE_L1C},
+        {CODE_L1X},
         {CODE_L1C},
         {CODE_L1C},
         {CODE_L1I},
@@ -703,6 +712,7 @@ static void set_obstype(int format, rnxopt_t *opt)
             case STRFMT_RT17 : codes=codes_rt17 [i]; break;
             case STRFMT_CMR  : codes=codes_cmr  [i]; break;
             case STRFMT_RINEX: codes=codes_rinex[i]; break;
+            case STRFMT_TERSUS: codes=codes_trs [i]; break;
             default:           codes=codes_other[i]; break;
         }
         /* set observation types in rinex option */

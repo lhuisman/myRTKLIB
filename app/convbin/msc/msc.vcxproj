@@ -105,6 +105,7 @@
     <ClCompile Include="..\..\..\src\rcv\rt17.c" />
     <ClCompile Include="..\..\..\src\rcv\septentrio.c" />
     <ClCompile Include="..\..\..\src\rcv\swiftnav.c" />
+    <ClCompile Include="..\..\..\src\rcv\tersus.c" />
     <ClCompile Include="..\..\..\src\rtcm3e.c" />
     <ClCompile Include="..\convbin.c" />
     <ClCompile Include="..\..\..\src\convrnx.c" />
