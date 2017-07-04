@@ -81,7 +81,7 @@ static const char *help[]={
 "    nov          : NovAtel OEMV/4/6,OEMStar (only in)",
 "    oem3         : NovAtel OEM3 (only in)",
 "    ubx          : ublox LEA-4T/5T/6T (only in)",
-"    ss2          : NovAtel Superstar II (only in)",
+"    swiftnav     : SwiftNav Piksi Multi",
 "    hemis        : Hemisphere Eclipse/Crescent (only in)",
 "    stq          : SkyTraq S1315F (only in)",
 "    gw10         : Furuno GW10 (only in)",
@@ -150,7 +150,7 @@ static void decodefmt(char *path, int *fmt)
         else if (!strcmp(p,"#nov"  )) *fmt=STRFMT_OEM4;
         else if (!strcmp(p,"#oem3" )) *fmt=STRFMT_OEM3;
         else if (!strcmp(p,"#ubx"  )) *fmt=STRFMT_UBX;
-        else if (!strcmp(p,"#ss2"  )) *fmt=STRFMT_SS2;
+        else if (!strcmp(p,"#swift")) *fmt=STRFMT_SBP;
         else if (!strcmp(p,"#hemis")) *fmt=STRFMT_CRES;
         else if (!strcmp(p,"#stq"  )) *fmt=STRFMT_STQ;
         else if (!strcmp(p,"#gw10" )) *fmt=STRFMT_GW10;
