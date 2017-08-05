@@ -315,7 +315,7 @@ static int decode_rxmrawx(raw_t *raw)
         /* indicate slip occurred if phase std>=slip threshold */
         raw->obs.data[n].LLI[0]=0;
         raw->obs.data[n].code[0]=
-        sys==SYS_CMP?CODE_L1I:(sys==SYS_GAL?CODE_L1C:CODE_L1C);
+        sys==SYS_CMP?CODE_L1I:(sys==SYS_GAL?CODE_L1X:CODE_L1C);
         
         lockt=U2(p+24);    /* lock time count (ms) */
         if (lockt==0||lockt<raw->lockt[sat-1][0]) raw->lockt[sat-1][1]=1;

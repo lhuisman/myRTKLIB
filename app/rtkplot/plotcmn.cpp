@@ -188,6 +188,7 @@ TIMEPOS * __fastcall TPlot::SolToNsat(solbuf_t *sol, int index, int qflag)
         ns->x[ns->n]=data->ns;
         ns->y[ns->n]=data->age;
         ns->z[ns->n]=data->ratio;
+        ns->zs[ns->n]=data->thres;
         ns->q[ns->n]=data->stat;
         ns->n++;
         
