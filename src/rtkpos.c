@@ -845,8 +845,7 @@ static void udbias(rtk_t *rtk, double tt, const obsd_t *obs, const int *sat,
                     if (rtk->x[IB(i,f,&rtk->opt)]!=0.0) {
                         lami=nav->lam[i-1][f];
                         rtk->x[IB(i,f,&rtk->opt)]+=offset/lami/j;
-            }
-        }
+                    }
             }
             rtk->com_bias=0;
         }
@@ -860,7 +859,7 @@ static void udbias(rtk_t *rtk, double tt, const obsd_t *obs, const int *sat,
             lami=nav->lam[sat[i]-1][f];
             sysi=rtk->ssat[sat[i]-1].sys;
             initx(rtk,(bias[i]-rtk->com_bias)/lami,SQR(rtk->opt.std[0]),IB(sat[i],f,&rtk->opt));
-            trace(3,"     sat=%3d: init phase\n",sat[i]);
+            trace(3,"     sat=%3d: init phase=%.3f\n",sat[i],(bias[i]-rtk->com_bias)/lami);
             rtk->ssat[sat[i]-1].lock[f]=-rtk->opt.minlock;
         }
         free(bias);
@@ -1331,9 +1330,9 @@ static int ddres(rtk_t *rtk, const nav_t *nav, const obsd_t *obs, double dt, con
                 }
     
                 icb=rtk->ssat[sat[i]-1].icbias[frq]*lami - rtk->ssat[sat[j]-1].icbias[frq]*lamj;
-                trace(3,"sat=%3d-%3d %s%d v=%13.3f R=%9.6f %9.6f icb=%9.6f lock=%6d\n",sat[i],
+                trace(3,"sat=%3d-%3d %s%d v=%13.3f R=%9.6f %9.6f icb=%9.3f lock=%5d x=%9.3f\n",sat[i],
                         sat[j],code?"P":"L",frq+1,v[nv],Ri[nv],Rj[nv],icb,
-                        rtk->ssat[sat[j]-1].lock[frq]);
+                        rtk->ssat[sat[j]-1].lock[frq],rtk->x[IB(sat[j],frq,&rtk->opt)]);
             
                 vflg[nv++]=(sat[i]<<16)|(sat[j]<<8)|((code?1:0)<<4)|(frq);
                 nb[b]++;
@@ -1438,7 +1437,7 @@ static int ddmat(rtk_t *rtk, double *D,int gps,int glo,int sbs)
             for (i=k;i<k+MAXSAT;i++) {
                 /* skip if sat not active */
                 if (rtk->x[i]==0.0||!test_sys(rtk->ssat[i-k].sys,m)||
-                    !rtk->ssat[i-k].vsat[f]||!rtk->ssat[i-k].half[f]) {
+                    !rtk->ssat[i-k].vsat[f]) {
                     continue;
                 }
                 /* set sat to use for fixing ambiguity if meets criteria */
