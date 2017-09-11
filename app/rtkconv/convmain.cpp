@@ -904,6 +904,7 @@ void __fastcall TMainWindow::ConvertFile(void)
 	rnxopt.outtime=OutTime;
 	rnxopt.outleaps=OutLeaps;
 	rnxopt.sep_nav=SepNav;
+	rnxopt.ttol=TimeTol;
 	
 	strcpy(buff,ExSats.c_str());
 	for (p=strtok(buff," ");p;p=strtok(NULL," ")) {
@@ -1021,6 +1022,7 @@ void __fastcall TMainWindow::LoadOpt(void)
 	OutTime				=ini->ReadInteger("opt","outtime",	   0);
 	OutLeaps			=ini->ReadInteger("opt","outleaps",    0);
 	SepNav				=ini->ReadInteger("opt","sepnav",	   0);
+	TimeTol				=ini->ReadFloat  ("opt","timetol", 0.005);
 	
 	TimeStartF ->Checked=ini->ReadInteger("set","timestartf",  0);
 	TimeEndF   ->Checked=ini->ReadInteger("set","timeendf",    0);
@@ -1119,6 +1121,7 @@ void __fastcall TMainWindow::SaveOpt(void)
 	ini->WriteInteger("opt","outtime",	  OutTime);
 	ini->WriteInteger("opt","outleaps",   OutLeaps);
 	ini->WriteInteger("opt","sepnav",	  SepNav);
+	ini->WriteFloat  ("opt","timetol",	  TimeTol);
 	
 	ini->WriteInteger("set","timestartf", TimeStartF ->Checked);
 	ini->WriteInteger("set","timeendf",   TimeEndF	 ->Checked);
