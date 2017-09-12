@@ -43,12 +43,10 @@
 #include <stdarg.h>
 #include "rtklib.h"
 
-static const char rcsid[]="$Id:$";
-
 /* constants/macros ----------------------------------------------------------*/
 
 #define SQR(x)      ((x)*(x))
-#define SQRT(x)     ((x)<=0.0?0.0:sqrt(x))
+#define SQRT(x)     ((x)<=0.0||(x)!=(x)?0.0:sqrt(x))
 #define MIN(x,y)    ((x)<=(y)?(x):(y))
 #define ROUND(x)    (int)floor((x)+0.5)
 
@@ -469,8 +467,8 @@ static int selsat(const obsd_t *obs, double *azel, int nu, int nr,
 /* temporal update of position/velocity/acceleration -------------------------*/
 static void udpos(rtk_t *rtk, double tt)
 {
-    double *F,*FP,*xp,pos[3],Q[9]={0},Qv[9],var=0.0;
-    int i,j;
+    double *F,*P,*FP,*x,*xp,pos[3],Q[9]={0},Qv[9],var=0.0;
+    int i,j,*ix,nx;
     
     trace(3,"udpos   : tt=%.3f\n",tt);
     
@@ -496,7 +494,8 @@ static void udpos(rtk_t *rtk, double tt)
         return;
     }
     /* check variance of estimated position */
-    for (i=0;i<3;i++) var+=rtk->P[i+i*rtk->nx]; var/=3.0;
+    for (i=0;i<3;i++) var+=rtk->P[i+i*rtk->nx];
+    var/=3.0;
     
     if (var>VAR_POS) {
         /* reset position with large variance */
@@ -506,40 +505,50 @@ static void udpos(rtk_t *rtk, double tt)
         trace(2,"reset rtk position due to large variance: var=%.3f\n",var);
         return;
     }
+    /* generate valid state index */
+    ix=imat(rtk->nx,1);
+    for (i=nx=0;i<rtk->nx;i++) {
+        if (rtk->x[i]!=0.0&&rtk->P[i+i*rtk->nx]>0.0) ix[nx++]=i;
+    }
+    if (nx<9) {
+        free(ix);
+        return;
+    }
+    /* state transition of position/velocity/acceleration */
+    F=eye(nx); P=mat(nx,nx); FP=mat(nx,nx); x=mat(nx,1); xp=mat(nx,1);
 
-    /**** calculate state transition of position/velocity/acceleration ****/
-    /* x=Fx, P=FPF' */
-    F=eye(9);  xp=mat(9,1); FP=mat(rtk->nx,rtk->nx);
+    for (i=0;i<6;i++) {
+        F[i+(i+3)*nx]=tt;
+    }
+    for (i=0;i<3;i++) {
+        F[i+(i+6)*nx]=SQR(tt)/2.0;
+    }
+    for (i=0;i<nx;i++) {
+        x[i]=rtk->x[ix[i]];
+        for (j=0;j<nx;j++) {
+            P[i+j*nx]=rtk->P[ix[i]+ix[j]*rtk->nx];
+        }
+    }
+    /* x=F*x, P=F*P*F+Q */
+    matmul("NN",nx,1,nx,1.0,F,x,0.0,xp);
+    matmul("NN",nx,nx,nx,1.0,F,P,0.0,FP);
+    matmul("NT",nx,nx,nx,1.0,FP,F,0.0,P);
 
-    /* generate F matrix to update position and velocity */
-    for (i=0;i<6;i++)
-        F[i+(i+3)*9]=tt;
-
-    /* x=F*x, only calculate pos/vel/acc states to save time, the rest are unchanged */
-    matmul("NN",9,1,9,1.0,F,rtk->x,0.0,xp);
-    matcpy(rtk->x,xp,9,1);
-    
-    /* P=F*P, only calc non-zero off diaganol terms to save time */
-    matcpy(FP,rtk->P,rtk->nx,rtk->nx);
-    for (j=0;j<rtk->nx;j++) 
-        for (i=0;i<6;i++) 
-            FP[i+j*rtk->nx]+=rtk->P[i+3+j*rtk->nx]*tt;
-    
-    /* P=FP*F', only calc non-zero off diaganol terms to save time  */
-    matcpy(rtk->P,FP,rtk->nx,rtk->nx);
-    for (j=0;j<rtk->nx;j++) 
-        for (i=0;i<6;i++) 
-            rtk->P[j+i*rtk->nx]+=rtk->P[j+(i+3)*rtk->nx]*tt;
-
-    /* set diag elements of accel terms of covar matrix of system noise to
-       process noise inputs (x,y=accelh z=accelv) */
-    Q[0]=Q[4]=SQR(rtk->opt.prn[3]); Q[8]=SQR(rtk->opt.prn[4]);
+    for (i=0;i<nx;i++) {
+        rtk->x[ix[i]]=xp[i];
+        for (j=0;j<nx;j++) {
+            rtk->P[ix[i]+ix[j]*rtk->nx]=P[i+j*nx];
+        }
+    }
+    /* process noise added to only acceleration */
+    Q[0]=Q[4]=SQR(rtk->opt.prn[3])*fabs(tt);
+    Q[8]=SQR(rtk->opt.prn[4])*fabs(tt);
     ecef2pos(rtk->x,pos);
     covecef(pos,Q,Qv);
     for (i=0;i<3;i++) for (j=0;j<3;j++) {
         rtk->P[i+6+(j+6)*rtk->nx]+=Qv[i+j*3];
     }
-    free(F); free(FP); free(xp);
+    free(ix); free(F); free(P); free(FP); free(x); free(xp);
 }
 /* temporal update of ionospheric parameters ---------------------------------*/
 static void udion(rtk_t *rtk, double tt, double bl, const int *sat, int ns)
@@ -547,7 +556,7 @@ static void udion(rtk_t *rtk, double tt, double bl, const int *sat, int ns)
     double el,fact;
     int i,j;
     
-    trace(3,"udion   : tt=%.1f bl=%.0f ns=%d\n",tt,bl,ns);
+    trace(3,"udion   : tt=%.3f bl=%.0f ns=%d\n",tt,bl,ns);
     
     for (i=1;i<=MAXSAT;i++) {
         j=II(i,&rtk->opt);
@@ -565,7 +574,7 @@ static void udion(rtk_t *rtk, double tt, double bl, const int *sat, int ns)
             /* elevation dependent factor of process noise */
             el=rtk->ssat[sat[i]-1].azel[1];
             fact=cos(el);
-            rtk->P[j+j*rtk->nx]+=SQR(rtk->opt.prn[1]*bl/1E4*fact)*tt;
+            rtk->P[j+j*rtk->nx]+=SQR(rtk->opt.prn[1]*bl/1E4*fact)*fabs(tt);
         }
     }
 }
@@ -574,7 +583,7 @@ static void udtrop(rtk_t *rtk, double tt, double bl)
 {
     int i,j,k;
     
-    trace(3,"udtrop  : tt=%.1f\n",tt);
+    trace(3,"udtrop  : tt=%.3f\n",tt);
     
     for (i=0;i<2;i++) {
         j=IT(i,&rtk->opt);
@@ -587,11 +596,11 @@ static void udtrop(rtk_t *rtk, double tt, double bl)
             }
         }
         else {
-            rtk->P[j+j*rtk->nx]+=SQR(rtk->opt.prn[2])*tt;
+            rtk->P[j+j*rtk->nx]+=SQR(rtk->opt.prn[2])*fabs(tt);
             
             if (rtk->opt.tropopt>=TROPOPT_ESTG) {
                 for (k=0;k<2;k++) {
-                    rtk->P[++j*(1+rtk->nx)]+=SQR(rtk->opt.prn[2]*0.3)*fabs(rtk->tt);
+                    rtk->P[++j*(1+rtk->nx)]+=SQR(rtk->opt.prn[2]*0.3)*fabs(tt);
                 }
             }
         }
@@ -602,7 +611,7 @@ static void udrcvbias(rtk_t *rtk, double tt)
 {
     int i,j;
     
-    trace(3,"udrcvbias: tt=%.1f\n",tt);
+    trace(3,"udrcvbias: tt=%.3f\n",tt);
     
     for (i=0;i<NFREQGLO;i++) {
         j=IL(i,&rtk->opt);
@@ -615,7 +624,7 @@ static void udrcvbias(rtk_t *rtk, double tt)
             initx(rtk,rtk->xa[j],rtk->Pa[j+j*rtk->na],j);
         }
         else {
-            rtk->P[j+j*rtk->nx]+=SQR(PRN_HWBIAS)*tt;
+            rtk->P[j+j*rtk->nx]+=SQR(PRN_HWBIAS)*fabs(tt);
         }
     }
 }
@@ -629,8 +638,10 @@ static void detslp_ll(rtk_t *rtk, const obsd_t *obs, int i, int rcv)
     
     for (f=0;f<rtk->opt.nf;f++) {
         
-        if (obs[i].L[f]==0.0) continue;
-        
+        if (obs[i].L[f]==0.0||
+            fabs(timediff(obs[i].time,rtk->ssat[sat-1].pt[rcv-1][f]))<DTTOL) {
+            continue;
+        }
         /* restore previous LLI */
         if (rcv==1) LLI=getbitu(&rtk->ssat[sat-1].slip[f],0,2); /* rover */
         else        LLI=getbitu(&rtk->ssat[sat-1].slip[f],2,2); /* base  */
@@ -683,7 +694,7 @@ static void detslp_gf_L1L2(rtk_t *rtk, const obsd_t *obs, int i, int j,
         rtk->ssat[sat-1].slip[0]|=1;
         rtk->ssat[sat-1].slip[1]|=1;
         
-        errmsg(rtk,"slip detected (sat=%2d GF_L1_L2=%.3f %.3f)\n",sat,g0,g1);
+        errmsg(rtk,"slip detected GF2_jump (sat=%2d GF_L1_L2=%.3f %.3f)\n",sat,g0,g1);
     }
 }
 /* detect cycle slip by L1-L5 geometry free phase jump -----------------------*/
@@ -704,7 +715,7 @@ static void detslp_gf_L1L5(rtk_t *rtk, const obsd_t *obs, int i, int j,
         rtk->ssat[sat-1].slip[0]|=1;
         rtk->ssat[sat-1].slip[2]|=1;
         
-        errmsg(rtk,"slip detected (sat=%2d GF_L1_L5=%.3f %.3f)\n",sat,g0,g1);
+        errmsg(rtk,"slip detected GF5_jump (sat=%2d GF_L1_L5=%.3f %.3f)\n",sat,g0,g1);
     }
 }
 /* detect cycle slip by doppler and phase difference -------------------------*/
@@ -748,7 +759,7 @@ static void udbias(rtk_t *rtk, double tt, const obsd_t *obs, const int *sat,
     double cp,pr,cp1,cp2,pr1,pr2,*bias,offset,lami,lam1,lam2,C1,C2;
     int i,j,f,slip,reset,nf=NF(&rtk->opt),sysi;
     
-    trace(3,"udbias  : tt=%.1f ns=%d\n",tt,ns);
+    trace(3,"udbias  : tt=%.3f ns=%d\n",tt,ns);
     
     for (i=0;i<ns;i++) {
         
@@ -784,6 +795,7 @@ static void udbias(rtk_t *rtk, double tt, const obsd_t *obs, const int *sat,
                 initx(rtk,0.0,0.0,IB(i,f,&rtk->opt));
                 trace(3,"udbias : obs outage counter overflow (sat=%3d L%d n=%d)\n",
                       i,f+1,rtk->ssat[i-1].outc[f]);
+                rtk->ssat[i-1].outc[f]=0;
             }
             if (rtk->opt.modear!=ARMODE_INST&&reset) {
                 rtk->ssat[i-1].lock[f]=-rtk->opt.minlock;
@@ -792,7 +804,7 @@ static void udbias(rtk_t *rtk, double tt, const obsd_t *obs, const int *sat,
         /* reset phase-bias state if detecting cycle slip */
         for (i=0;i<ns;i++) {
             j=IB(sat[i],f,&rtk->opt);
-            rtk->P[j+j*rtk->nx]+=rtk->opt.prn[0]*rtk->opt.prn[0]*tt;
+            rtk->P[j+j*rtk->nx]+=rtk->opt.prn[0]*rtk->opt.prn[0]*fabs(tt);
             slip=rtk->ssat[sat[i]-1].slip[f];
             if (rtk->opt.ionoopt==IONOOPT_IFLC) slip|=rtk->ssat[sat[i]-1].slip[1];
             if (rtk->opt.modear==ARMODE_INST||!(slip&1)) continue;
@@ -869,7 +881,7 @@ static void udbias(rtk_t *rtk, double tt, const obsd_t *obs, const int *sat,
 static void udstate(rtk_t *rtk, const obsd_t *obs, const int *sat,
                     const int *iu, const int *ir, int ns, const nav_t *nav)
 {
-    double tt=fabs(rtk->tt),bl,dr[3];
+    double tt=rtk->tt,bl,dr[3];
     
     trace(3,"udstate : ns=%d\n",ns);
     
@@ -1061,7 +1073,11 @@ static int constbl(rtk_t *rtk, const double *x, const double *P, double *v,
     
     /* time-adjusted baseline vector and length */
     for (i=0;i<3;i++) {
+#if 0
         xb[i]=rtk->rb[i]+rtk->rb[i+3]*rtk->sol.age;
+#else
+        xb[i]=rtk->rb[i];
+#endif
         b[i]=x[i]-xb[i];
     }
     bb=norm(b,3);
@@ -1847,7 +1863,7 @@ static int valpos(rtk_t *rtk, const double *v, const double *R, const int *vflg,
         }
         else {
             trace(3,"valpos : validation ok (%s nv=%d np=%d vv=%.2f cs=%.2f)\n",
-                  rtk->tstr,nv,NP(opt),vv,chisqr[nv-NP(opt)-1]);
+                  time_str(rtk->sol.time,2),nv,NP(opt),vv,chisqr[nv-NP(opt)-1]);
         }
     }
 #endif
@@ -2056,6 +2072,16 @@ static int relpos(rtk_t *rtk, const obsd_t *obs, int nu, int nr,
         rtk->sol.qr[3]=(float)rtk->Pa[1];
         rtk->sol.qr[4]=(float)rtk->Pa[1+2*rtk->na];
         rtk->sol.qr[5]=(float)rtk->Pa[2];
+        
+        if (rtk->opt.dynamics) { /* velocity and covariance */
+            for (i=3;i<6;i++) {
+                rtk->sol.rr[i]=rtk->xa[i];
+                rtk->sol.qv[i-3]=(float)rtk->Pa[i+i*rtk->na];
+    }
+            rtk->sol.qv[3]=(float)rtk->Pa[4+3*rtk->na];
+            rtk->sol.qv[4]=(float)rtk->Pa[5+4*rtk->na];
+            rtk->sol.qv[5]=(float)rtk->Pa[5+3*rtk->na];
+        }
     }
     else {  /* float solution */
         for (i=0;i<3;i++) {
@@ -2065,6 +2091,16 @@ static int relpos(rtk_t *rtk, const obsd_t *obs, int nu, int nr,
         rtk->sol.qr[3]=(float)rtk->P[1];
         rtk->sol.qr[4]=(float)rtk->P[1+2*rtk->nx];
         rtk->sol.qr[5]=(float)rtk->P[2];
+        
+        if (rtk->opt.dynamics) { /* velocity and covariance */
+            for (i=3;i<6;i++) {
+                rtk->sol.rr[i]=rtk->x[i];
+                rtk->sol.qv[i-3]=(float)rtk->P[i+i*rtk->nx];
+            }
+            rtk->sol.qv[3]=(float)rtk->P[4+3*rtk->nx];
+            rtk->sol.qv[4]=(float)rtk->P[5+4*rtk->nx];
+            rtk->sol.qv[5]=(float)rtk->P[5+3*rtk->nx];
+        }
         rtk->nfix=0;
     }
     for (i=0;i<n;i++) for (j=0;j<nf;j++) {

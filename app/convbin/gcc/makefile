@@ -52,8 +52,6 @@ novatel.o  : $(SRC)/rcv/novatel.c
 	$(CC) -c $(CFLAGS) $(SRC)/rcv/novatel.c
 swiftnav.o : $(SRC)/rcv/swiftnav.c
 	$(CC) -c $(CFLAGS) $(SRC)/rcv/swiftnav.c
-tersus.o   : $(SRC)/rcv/tersus.c
-	$(CC) -c $(CFLAGS) $(SRC)/rcv/tersus.c
 ublox.o    : $(SRC)/rcv/ublox.c
 	$(CC) -c $(CFLAGS) $(SRC)/rcv/ublox.c
 crescent.o : $(SRC)/rcv/crescent.c
@@ -76,6 +74,8 @@ septentrio.o: $(SRC)/rcv/septentrio.c
 	$(CC) -c $(CFLAGS) $(SRC)/rcv/septentrio.c
 cmr.o      : $(SRC)/rcv/cmr.c
 	$(CC) -c $(CFLAGS) $(SRC)/rcv/cmr.c
+tersus.o   : $(SRC)/rcv/tersus.c
+	$(CC) -c $(CFLAGS) $(SRC)/rcv/tersus.c
 
 convbin.o  : $(SRC)/rtklib.h
 rtkcmn.o   : $(SRC)/rtklib.h
@@ -93,7 +93,6 @@ ephemeris.o: $(SRC)/rtklib.h
 ionex.o    : $(SRC)/rtklib.h
 novatel.o  : $(SRC)/rtklib.h
 swiftnav.o : $(SRC)/rtklib.h
-tersus.o   : $(SRC)/rtklib.h
 ublox.o    : $(SRC)/rtklib.h
 crescent.o : $(SRC)/rtklib.h
 skytraq.o  : $(SRC)/rtklib.h
@@ -105,6 +104,7 @@ rt17.o     : $(SRC)/rtklib.h
 qzslex.o   : $(SRC)/rtklib.h
 septentrio.o: $(SRC)/rtklib.h
 cmr.o      : $(SRC)/rtklib.h
+tersus.o   : $(SRC)/rtklib.h
 
 DATDIR = ../../../test/data/rcvraw
 

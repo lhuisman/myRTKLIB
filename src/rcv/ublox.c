@@ -54,6 +54,7 @@
 *           2017/04/11 1.23 (char *) -> (signed char *)
 *                           fix bug on week handover in decode_trkmeas/trkd5()
 *                           fix bug on prn for geo in decode_cnav()
+*           2017/06/10 1.24 output half-cycle-subtracted flag
 *-----------------------------------------------------------------------------*/
 #include "rtklib.h"
 
@@ -86,8 +87,6 @@
 #define CPSTD_VALID 5           /* std-dev threshold of carrier-phase valid */
 
 #define ROUND(x)    (int)floor((x)+0.5)
-
-static const char rcsid[]="$Id: ublox.c,v 1.2 2008/07/14 00:05:05 TTAKA Exp $";
 
 /* get fields (little-endian) ------------------------------------------------*/
 #define U1(p) (*((unsigned char *)(p)))
@@ -241,7 +240,7 @@ static int decode_rxmrawx(raw_t *raw)
     int cpstd,prstd,std_slip=0;
     char *q;
     unsigned char *p=raw->buff+6;
-
+    
     trace(4,"decode_rxmrawx: len=%d\n",raw->len);
     
     nsat=U1(p+11);
@@ -315,7 +314,7 @@ static int decode_rxmrawx(raw_t *raw)
         /* indicate slip occurred if phase std>=slip threshold */
         raw->obs.data[n].LLI[0]=0;
         raw->obs.data[n].code[0]=
-        sys==SYS_CMP?CODE_L1I:(sys==SYS_GAL?CODE_L1X:CODE_L1C);
+            sys==SYS_CMP?CODE_L1I:(sys==SYS_GAL?CODE_L1X:CODE_L1C);
         
         lockt=U2(p+24);    /* lock time count (ms) */
         if (lockt==0||lockt<raw->lockt[sat-1][0]) raw->lockt[sat-1][1]=1;
@@ -337,11 +336,17 @@ static int decode_rxmrawx(raw_t *raw)
 #endif
 
         if (cp1!=0.0) { /* carrier-phase valid */
-
+            
             /* LLI: bit1=loss-of-lock,bit2=half-cycle-invalid */
-            raw->obs.data[n].LLI[0]|=raw->lockt[sat-1][1]>0.0?1:0;
+            raw->obs.data[n].LLI[0]|=raw->lockt[sat-1][1]>0.0?LLI_SLIP:0;
+#if 1
             raw->obs.data[n].LLI[0]|=halfc!=raw->halfc[sat-1][0]?1:0;
-            raw->obs.data[n].LLI[0]|=halfv?0:2;
+#elif 0
+            raw->obs.data[n].LLI[0]|=halfc?LLI_HALFA:0; /* half-cycle subtraced */
+#else
+            raw->obs.data[n].LLI[0]|=halfc?LLI_HALFS:0; /* half-cycle subtraced */
+#endif
+            raw->obs.data[n].LLI[0]|=halfv?0:LLI_HALFC;
             raw->halfc[sat-1][0]=halfc;
             raw->lockt[sat-1][1]=0.0;
         }
@@ -519,7 +524,7 @@ static int decode_trkmeas(raw_t *raw)
        values based on difference between TRK_MEAS values and  RXM-RAWX values */
     const char P_adj_fw2[]={ 0, 0, 0, 0, 1, 3, 2, 0,-4,-3,-9,-8,-7,-4, 0};  /* fw 2.30 */
     const char P_adj_fw3[]={11,13,13,14,14,13,12,10, 8, 6, 5, 5, 5, 7, 0};  /* fw 3.01 */
-
+    
     trace(4,"decode_trkmeas: len=%d\n",raw->len);
     
     if (raw->outtype) {
@@ -577,7 +582,7 @@ static int decode_trkmeas(raw_t *raw)
         ts=I8(p+24)*P2_32/1000.0;
         if      (sys==SYS_CMP) ts+=14.0;             /* bdt  -> gpst */
         else if (sys==SYS_GLO) ts-=10800.0+utc_gpst; /* glot -> gpst */
-
+        
         /* signal travel time */
         tau=tr-ts;
         if      (tau<-302400.0) tau+=604800.0;
@@ -629,7 +634,6 @@ static int decode_trkmeas(raw_t *raw)
             if (fw==2) raw->obs.data[n].P[0]+=(double)P_adj_fw2[frq+7];
             if (fw==3) raw->obs.data[n].P[0]+=(double)P_adj_fw3[frq+7];
         }
-
         for (j=1;j<NFREQ+NEXOBS;j++) {
             raw->obs.data[n].L[j]=raw->obs.data[n].P[j]=0.0;
             raw->obs.data[n].D[j]=0.0;
