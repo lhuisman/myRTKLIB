@@ -520,8 +520,11 @@ static void udpos(rtk_t *rtk, double tt)
     for (i=0;i<6;i++) {
         F[i+(i+3)*nx]=tt;
     }
-    for (i=0;i<3;i++) {
-        F[i+(i+6)*nx]=SQR(tt)/2.0;
+    /* include accel terms if filter is converged */
+    if (var<rtk->opt.thresar[1]) {
+        for (i=0;i<3;i++) {
+            F[i+(i+6)*nx]=SQR(tt)/2.0;
+        }
     }
     for (i=0;i<nx;i++) {
         x[i]=rtk->x[ix[i]];
