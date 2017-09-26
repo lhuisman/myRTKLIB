@@ -508,15 +508,11 @@ static void udpos(rtk_t *rtk, double tt)
     /* generate valid state index */
     ix=imat(rtk->nx,1);
     for (i=nx=0;i<rtk->nx;i++) {
-        if (rtk->x[i]!=0.0&&rtk->P[i+i*rtk->nx]>0.0) ix[nx++]=i;
-    }
-    if (nx<9) {
-        free(ix);
-        return;
+        if (i<9||(rtk->x[i]!=0.0&&rtk->P[i+i*rtk->nx]>0.0)) ix[nx++]=i;
     }
     /* state transition of position/velocity/acceleration */
     F=eye(nx); P=mat(nx,nx); FP=mat(nx,nx); x=mat(nx,1); xp=mat(nx,1);
-
+    
     for (i=0;i<6;i++) {
         F[i+(i+3)*nx]=tt;
     }
@@ -526,6 +522,7 @@ static void udpos(rtk_t *rtk, double tt)
             F[i+(i+6)*nx]=SQR(tt)/2.0;
         }
     }
+    else trace(3,"pos var too high for accel term\n");
     for (i=0;i<nx;i++) {
         x[i]=rtk->x[ix[i]];
         for (j=0;j<nx;j++) {
@@ -536,7 +533,7 @@ static void udpos(rtk_t *rtk, double tt)
     matmul("NN",nx,1,nx,1.0,F,x,0.0,xp);
     matmul("NN",nx,nx,nx,1.0,F,P,0.0,FP);
     matmul("NT",nx,nx,nx,1.0,FP,F,0.0,P);
-
+    
     for (i=0;i<nx;i++) {
         rtk->x[ix[i]]=xp[i];
         for (j=0;j<nx;j++) {

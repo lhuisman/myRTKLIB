@@ -988,7 +988,7 @@ static int readrnxobs(FILE *fp, gtime_t ts, gtime_t te, double tint,
     unsigned char slips[MAXSAT][NFREQ]={{0}};
     int i,n,flag=0,stat=0;
     
-    trace(4,"readrnxobs: rcv=%d ver=%.2f tsys=%d\n",rcv,ver,tsys);
+    trace(4,"readrnxobs: rcv=%d ver=%.2f tsys=%d\n",rcv,ver,*tsys);
     
     if (!obs||rcv>MAXRCV) return 0;
     
@@ -1964,10 +1964,12 @@ extern int outrnxobsh(FILE *fp, const rnxopt_t *opt, const nav_t *nav)
 /* output obs data field -----------------------------------------------------*/
 static void outrnxobsf(FILE *fp, double obs, int lli, int qual)
 {
-    if (obs==0.0||obs<=-1E9||obs>=1E9) 
+    if (obs==0.0||obs<=-1E9||obs>=1E9) {
         fprintf(fp,"              ");
-    else
+    }
+    else {
         fprintf(fp,"%14.3f",obs);
+    }
     if (lli<0||!(lli&(LLI_SLIP|LLI_HALFC|LLI_BOCTRK))) {
         fprintf(fp," ");
     }
