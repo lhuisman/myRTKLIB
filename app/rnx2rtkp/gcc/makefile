@@ -9,7 +9,14 @@ OPTS    = -DTRACE -DENAGLO  -DENAGAL -DENACMP  -DNFREQ=3
 
 # for no lapack
 CFLAGS  = -Wall -O3 -ansi -pedantic -Wno-unused-but-set-variable -I$(SRC) $(OPTS) -g
-LDLIBS  = -lm -lrt
+
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S), Darwin)
+	LDLIBS  = -lm
+else
+	LDLIBS  = -lm -lrt
+endif
+
 #LDLIBS  = ../../../lib/iers/gcc/iers.a -lgfortran -lm -lrt
 
 #CFLAGS  = -Wall -O3 -ansi -pedantic -Wno-unused-but-set-variable -I$(SRC) -DLAPACK $(OPTS)
@@ -168,4 +175,3 @@ prof :
 
 install :
 	cp rnx2rtkp $(BINDIR)
-

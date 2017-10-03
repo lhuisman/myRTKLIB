@@ -10,7 +10,13 @@ CTARGET=
 #OPTION = -DENAGLO -DENAGAL -DENAQZS -DENACMP -DENAIRN -DTRACE -DNFREQ=3 -DNEXOBS=3
 OPTION = -DENAGLO -DENAGAL -DENAQZS -DENACMP -DENAIRN -DTRACE -DNFREQ=3 -DNEXOBS=3 -DSVR_REUSEADDR
 CFLAGS = -Wall -O3 -ansi -pedantic -Wno-unused-but-set-variable -I$(SRC) $(OPTION) $(CTARGET) -g
-LDLIBS  = -lm -lrt -lpthread
+
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S), Darwin)
+	LDLIBS  = -lm -lpthread
+else
+	LDLIBS  = -lm -lrt -lpthread
+endif
 
 all        : str2str
 str2str    : str2str.o stream.o rtkcmn.o solution.o sbas.o geoid.o
@@ -125,4 +131,3 @@ test6:
 
 clean:
 	rm -f str2str str2str.exe *.o *.out *.trace
-

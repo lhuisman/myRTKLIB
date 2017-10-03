@@ -8,7 +8,13 @@ SRC    = ../../../src
 CTARGET= -DENAGLO -DENAQZS -DENACMP -DENAGAL -DENAIRN -DNFREQ=3 -DSVR_REUSEADDR
 
 CFLAGS = -Wall -O3 -ansi -pedantic -Wno-unused-but-set-variable -I$(SRC) -I.. -DTRACE $(CTARGET) -g
-LDLIBS  = -lm -lrt -lpthread
+
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S), Darwin)
+	LDLIBS  = -lm -lpthread
+else
+	LDLIBS  = -lm -lrt -lpthread
+endif
 
 all        : rtkrcv
 rtkrcv     : rtkrcv.o vt.o rtkcmn.o rtksvr.o rtkpos.o geoid.o solution.o lambda.o
@@ -147,4 +153,3 @@ test3:
 
 clean:
 	rm -f rtkrcv rtkrcv.exe rtkrcv.nav *.o *.out *.trace
-
