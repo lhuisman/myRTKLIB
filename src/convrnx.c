@@ -776,7 +776,7 @@ static void set_obstype(int format, rnxopt_t *opt)
     };
     static const unsigned char codes_sbp[NSATSYS][8]={ /* Swift */
         {CODE_L1C,CODE_L2S},
-        {CODE_L1C},
+        {CODE_L1C,CODE_L2C},
         {CODE_L1C},
         {CODE_L1C},
         {CODE_L1C},
