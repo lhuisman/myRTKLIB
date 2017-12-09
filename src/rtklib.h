@@ -1056,7 +1056,7 @@ typedef struct {        /* processing options type */
     int sateph;         /* satellite ephemeris/clock (EPHOPT_???) */
     int modear;         /* AR mode (0:off,1:continuous,2:instantaneous,3:fix and hold,4:ppp-ar) */
     int glomodear;      /* GLONASS AR mode (0:off,1:on,2:auto cal,3:ext cal) */
-    int gpsmodear;      /* GPS AR mode (0:off,1:on) */
+    int gpsmodear;      /* GPS AR mode, debug/learning only (0:off,1:on) */
     int bdsmodear;      /* BeiDou AR mode (0:off,1:on) */
     int arfilter;       /* AR filtering to reject bad sats (0:off,1:on) */
     int maxout;         /* obs outage count to reset bias */
@@ -1064,8 +1064,8 @@ typedef struct {        /* processing options type */
     int minfixsats;     /* min sats to fix integer ambiguities */
     int minholdsats;    /* min sats to hold integer ambiguities */
     int mindropsats;    /* min sats to drop sats in AR */
-    int rcvstds;        /* use stdev estimates from receiver to adjust measurement variances */
     int minfix;         /* min fix count to hold ambiguity */
+    int rcvstds;        /* use stdev estimates from receiver to adjust measurement variances */
     int armaxiter;      /* max iteration to resolve ambiguity */
     int ionoopt;        /* ionosphere option (IONOOPT_???) */
     int tropopt;        /* troposphere option (TROPOPT_???) */

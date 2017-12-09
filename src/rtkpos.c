@@ -404,25 +404,27 @@ static double varerr(int sat, int sys, double el, double bl, double dt, int f,
 {
     double a,b,c=opt->err[3]*bl/1E4,d=CLIGHT*opt->sclkstab*dt,fact=1.0;
     double sinel=sin(el);
-    int i=sys==SYS_GLO?1:(sys==SYS_GAL?2:0),nf=NF(opt);
+    int i=sys==SYS_GLO?1:(sys==SYS_GAL?2:0),nf=NF(opt),frq,code;
+
+    frq=f%nf;code=f<nf?0:1;
     
     /* extended error model, not currently used */
-    if (f>=nf&&opt->exterr.ena[0]) { /* code */
-        a=opt->exterr.cerr[i][  (f-nf)*2];
-        b=opt->exterr.cerr[i][1+(f-nf)*2];
+    if (code&&opt->exterr.ena[0]) { /* code */
+        a=opt->exterr.cerr[i][  frq*2];
+        b=opt->exterr.cerr[i][1+frq*2];
         if (sys==SYS_SBS) {a*=EFACT_SBS; b*=EFACT_SBS;}
     }
-    else if (f<nf&&opt->exterr.ena[1]) { /* phase */
-        a=opt->exterr.perr[i][  f*2];
-        b=opt->exterr.perr[i][1+f*2];
+    else if (!code&&opt->exterr.ena[1]) { /* phase */
+        a=opt->exterr.perr[i][  frq*2];
+        b=opt->exterr.perr[i][1+frq*2];
         if (sys==SYS_SBS) {a*=EFACT_SBS; b*=EFACT_SBS;}
     }
     else { /* normal error model */
-        if (opt->rcvstds&& obs->qualL[f]!='\0'&&obs->qualP[f-nf]!='\0') {
+        if (opt->rcvstds&& obs->qualL[frq]!='\0'&&obs->qualP[frq]!='\0') {
             /* include err ratio and measurement std (P or L) from receiver */
-            if (f>=nf) fact=opt->eratio[f-nf]*obs->qualP[f-nf];
-            else fact=obs->qualL[f];
-        } else if (f>=nf) fact=opt->eratio[f-nf]; /* use err ratio only */
+            if (code) fact=opt->eratio[frq]*obs->qualP[frq];
+            else fact=obs->qualL[frq];
+        } else if (code) fact=opt->eratio[frq]; /* use err ratio only */
         if (fact<=0.0)  fact=opt->eratio[0];
         fact*=sys==SYS_GLO?EFACT_GLO:(sys==SYS_SBS?EFACT_SBS:EFACT_GPS);
         a=fact*opt->err[1];
