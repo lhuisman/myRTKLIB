@@ -40,6 +40,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		Application->CreateForm(__classid(TStrMonDialog), &StrMonDialog);
 		Application->CreateForm(__classid(TTextViewer), &TextViewer);
 		Application->CreateForm(__classid(TViewerOptDialog), &ViewerOptDialog);
+		Application->CreateForm(__classid(TConfDialog), &ConfDialog);
 		Application->Run();
 	}
 	catch (Exception &exception)

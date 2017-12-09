@@ -225,6 +225,7 @@ void __fastcall TPlot::FormShow(TObject *Sender)
     
     for (i=1;i<argc;i++) {
         if      (!strcmp(argv[i],"-r" )) OpenRaw=1;
+        else if (!strcmp(argv[i],"-i" )&&i+1<argc);
         else if (!strcmp(argv[i],"-p" )&&i+1<argc) path1=argv[++i];
         else if (!strcmp(argv[i],"-p1")&&i+1<argc) path1=argv[++i];
         else if (!strcmp(argv[i],"-p2")&&i+1<argc) path2=argv[++i];
