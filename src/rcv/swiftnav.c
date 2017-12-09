@@ -345,7 +345,12 @@ static int decode_msgobs(raw_t *raw){
     uSatId      = p[15];
     uBandCode   = p[16];
 
-    /* phase polarity flip option (-INVCP) */
+    /* Check for RAIM exclusion */
+    if ( (uFlags & 0x80) && (NULL == strstr(raw->opt, "OBSALL")) ) {
+      continue;
+    }
+
+    /* phase polarity flip option (INVCP) */
     if (strstr(raw->opt, "INVCP")) {
       dCarrPhase = -dCarrPhase;
     }
@@ -394,7 +399,7 @@ static int decode_msgobs(raw_t *raw){
       raw->obuf.data[ii].L[uFreq]    =
         ((uFlags & 0x2) || (uLockInfo>0)) ? dCarrPhase : 0.0;
       raw->obuf.data[ii].D[uFreq]    =
-         (uFlags & 0x8) ?                   dDoppler   : 0.0;
+         (uFlags & 0x8) ?                   (float)dDoppler : 0.0f;
       raw->obuf.data[ii].SNR[uFreq]  = uCN0;
       raw->obuf.data[ii].code[uFreq] = uCode;
 
@@ -625,7 +630,7 @@ static int decode_glonav(raw_t *raw) {
 
   geph.frq    = (int) puiTmp[118] - 8;
 
-  if (!strstr(raw->opt,"-EPHALL")) {
+  if (!strstr(raw->opt,"EPHALL")) {
     if (geph.iode==raw->nav.geph[prn-1].iode) return 0; /* unchanged */
   }
 
@@ -877,6 +882,7 @@ extern int input_sbpjsonf(raw_t *raw, FILE *fp)
 
   pcPayloadBeg = (uint8_t*) strchr((char*)pcTmp,        '\"')+1;
   pcPayloadEnd = (uint8_t*) strchr((char*)pcPayloadBeg, '\"')-1;
+  if ((NULL == pcPayloadBeg) || (NULL == pcPayloadEnd)) return 0;
   uPayloadSize = pcPayloadEnd - pcPayloadBeg + 1;
   pcPayloadEnd[1] = 0;
   /* fprintf(stderr, "%4d: %s\n", uPayloadSize, pcPayloadBeg); */
