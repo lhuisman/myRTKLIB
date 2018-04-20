@@ -1876,6 +1876,7 @@ EXPORT int  strsvrstart(strsvr_t *svr, int *opts, int *strs, char **paths,
                         strconv_t **conv, char **cmds, char **cmds_priodic,
                         const double *nmeapos);
 EXPORT void strsvrstop (strsvr_t *svr, char **cmds);
+EXPORT void strsvrstopold (strsvr_t *svr, char *cmds);
 EXPORT void strsvrstat (strsvr_t *svr, int *stat, int *byte, int *bps, char *msg);
 EXPORT strconv_t *strconvnew(int itype, int otype, const char *msgs, int staid,
                              int stasel, const char *opt);
