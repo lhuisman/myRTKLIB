@@ -54,6 +54,7 @@
 #include "ui_navimain.h"
 #include "navimain.h"
 #include "graph.h"
+#include "locale.h"
 
 MainWindow *mainForm;
 

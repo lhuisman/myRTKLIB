@@ -16,6 +16,10 @@ linux{
     RTKLIB =../../src/libRTKLib.a
     LIBS += -lpng $${RTKLIB}
 }
+macx{
+    RTKLIB =../../src/libRTKLib.a
+    LIBS+= $${RTKLIB}
+}
 win32 {
     CONFIG(debug) {
         RTKLIB = ../../src/debug/libRTKLib.a

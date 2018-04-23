@@ -39,6 +39,7 @@
 #include "refdlg.h"
 #include "console.h"
 #include "svrmain.h"
+#include "locale.h"
 
 //---------------------------------------------------------------------------
 
