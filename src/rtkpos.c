@@ -2315,7 +2315,7 @@ extern int rtkpos(rtk_t *rtk, const obsd_t *obs, int n, const nav_t *nav)
         }
         rtk->sol.age=(float)timediff(rtk->sol.time,solb.time);
         
-        if (fabs(rtk->sol.age)>TTOL_MOVEB) {
+        if (fabs(rtk->sol.age)>MIN(TTOL_MOVEB,opt->maxtdiff)) {
             errmsg(rtk,"time sync error for moving-base (age=%.1f)\n",rtk->sol.age);
             return 0;
         }
