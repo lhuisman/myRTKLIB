@@ -38,6 +38,7 @@
 #include "staoptdlg.h"
 #include "timedlg.h"
 #include "viewer.h"
+#include "locale.h"
 
 #include <cstdio>
 
