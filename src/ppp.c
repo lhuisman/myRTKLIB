@@ -368,7 +368,7 @@ static void corr_meas(const obsd_t *obs, const nav_t *nav, const double *azel,
 {
     const double *lam=nav->lam[obs->sat-1];
     double C1,C2;
-    int i,sys;
+    int i,sys,ix;
     
     sys=satsys(obs->sat,NULL);
     
@@ -380,36 +380,27 @@ static void corr_meas(const obsd_t *obs, const nav_t *nav, const double *azel,
         /* antenna phase center and phase windup correction */
         L[i]=obs->L[i]*lam[i]-dants[i]-dantr[i]-phw*lam[i];
         P[i]=obs->P[i]       -dants[i]-dantr[i];
-        
-        /* P1-C1,P2-C2 dcb correction (C1->P1,C2->P2) */
-        if (obs->code[i]==CODE_L1C) {
-            if (opt->sateph==EPHOPT_SSRAPC||opt->sateph==EPHOPT_SSRCOM) {
-                if (sys==SYS_GPS)
-                    P[i]+=(nav->ssr[obs->sat-1].cbias[0]-nav->ssr[obs->sat-1].cbias[2]); /* ssr correction */
-                else if (sys==SYS_GLO)
-                    P[i]+=(nav->ssr[obs->sat-1].cbias[0]-nav->ssr[obs->sat-1].cbias[1]); /* ssr correction */
-            } else P[i]+=nav->cbias[obs->sat-1][1];   /* use P1-C1 correction from dcb file */
+
+        if (opt->sateph==EPHOPT_SSRAPC||opt->sateph==EPHOPT_SSRCOM) {
+            /* use SSR code correction */
+            if (sys==SYS_GPS)
+                ix=(i==0?CODE_L1W-1:CODE_L2W-1);
+            else if (sys==SYS_GLO)
+                ix=(i==0?CODE_L1P-1:CODE_L2P-1);
+            P[i]+=(nav->ssr[obs->sat-1].cbias[obs->code[i]-1]-nav->ssr[obs->sat-1].cbias[ix]); /* ssr correction */
         }
-        else if (obs->code[i]==CODE_L2C||obs->code[i]==CODE_L2L) {
-            if (opt->sateph==EPHOPT_SSRAPC||opt->sateph==EPHOPT_SSRCOM) {
-                if (sys==SYS_GPS)
-                    P[i]+=(nav->ssr[obs->sat-1].cbias[13]-nav->ssr[obs->sat-1].cbias[19]); /* ssr correction */
-                else if (sys==SYS_GLO)
-                   P[i]+=(nav->ssr[obs->sat-1].cbias[13]-nav->ssr[obs->sat-1].cbias[18]); /* ssr correction */
-            } else P[i]+=nav->cbias[obs->sat-1][2];   /* use P1-C1 correction from dcb file */
-        }
-        else if (obs->code[i]==CODE_L2S) {  /* code bias for SwiftNav L2C */
-            if (opt->sateph==EPHOPT_SSRAPC||opt->sateph==EPHOPT_SSRCOM) {
-                P[i]+=(nav->ssr[obs->sat-1].cbias[15]-nav->ssr[obs->sat-1].cbias[19]);
-            } else P[i]+=nav->cbias[obs->sat-1][2];   /* use P1-C1 correction from dcb file */
-        }
-        else if (obs->code[i]==CODE_L2X) {  /* code bias for ComNav L2C */
-            if (opt->sateph==EPHOPT_SSRAPC||opt->sateph==EPHOPT_SSRCOM) {
-                P[i]+=(nav->ssr[obs->sat-1].cbias[17]-nav->ssr[obs->sat-1].cbias[19]);
-            } else P[i]+=nav->cbias[obs->sat-1][2];   /* use P1-C1 correction from dcb file*/
-#if 0
-            L[i]-=0.25*lam[i]; /* 1/4 cycle-shift */
-#endif
+        else {
+            /* P1-C1,P2-C2 dcb correction (C1->P1,C2->P2) */
+            if (obs->code[i]==CODE_L1C) {
+                P[i]+=nav->cbias[obs->sat-1][1];
+            }
+            else if (obs->code[i]==CODE_L2C||obs->code[i]==CODE_L2X||
+                     obs->code[i]==CODE_L2L||obs->code[i]==CODE_L2S) {
+                P[i]+=nav->cbias[obs->sat-1][2];
+    #if 0
+                L[i]-=0.25*lam[i]; /* 1/4 cycle-shift */
+    #endif
+            }
         }
     }
     /* iono-free LC */
