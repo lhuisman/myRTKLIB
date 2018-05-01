@@ -53,11 +53,9 @@
 #define VAR_POS     SQR(30.0) /* initial variance of receiver pos (m^2) */
 #define VAR_VEL     SQR(10.0) /* initial variance of receiver vel ((m/s)^2) */
 #define VAR_ACC     SQR(10.0) /* initial variance of receiver acc ((m/ss)^2) */
-#define VAR_HWBIAS  SQR(1.0)  /* initial variance of h/w bias ((m/MHz)^2) */
 #define VAR_GRA     SQR(0.001) /* initial variance of gradient (m^2) */
 #define INIT_ZWD    0.15     /* initial zwd (m) */
 
-#define PRN_HWBIAS  1E-6     /* process noise of h/w bias (m/MHz/sqrt(s)) */
 #define GAP_RESION  120      /* gap to reset ionosphere parameters (epochs) */
 #define MAXACC      30.0     /* max accel for doppler slip detection (m/s^2) */
 
@@ -612,6 +610,7 @@ static void udtrop(rtk_t *rtk, double tt, double bl)
 static void udrcvbias(rtk_t *rtk, double tt)
 {
     int i,j;
+    double mhz2m;
     
     trace(3,"udrcvbias: tt=%.3f\n",tt);
     
@@ -619,14 +618,15 @@ static void udrcvbias(rtk_t *rtk, double tt)
         j=IL(i,&rtk->opt);
         
         if (rtk->x[j]==0.0) {
-            initx(rtk,1E-6,VAR_HWBIAS,j);
+            mhz2m=1e6/(i==0?DFRQ1_GLO:DFRQ2_GLO);
+            initx(rtk,rtk->opt.thresar[2]*mhz2m,rtk->opt.thresar[3],j);
         }
         /* hold to fixed solution */
         else if (rtk->nfix>=rtk->opt.minfix&&rtk->sol.ratio>rtk->sol.thres) {
             initx(rtk,rtk->xa[j],rtk->Pa[j+j*rtk->na],j);
         }
         else {
-            rtk->P[j+j*rtk->nx]+=SQR(PRN_HWBIAS)*fabs(tt);
+            rtk->P[j+j*rtk->nx]+=SQR(rtk->opt.thresar[4])*fabs(tt);
         }
     }
 }

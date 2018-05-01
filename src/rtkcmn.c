@@ -193,12 +193,12 @@ const prcopt_t prcopt_default={ /* defaults processing options */
     0,1,0,0,0,0,                /* rcvstds,armaxiter,estion,esttrop,dynamics,tidecorr */
     1,0,0,0,0,                  /* niter,codesmooth,intpref,sbascorr,sbassatsel */
     0,0,                        /* rovpos,refpos */
-    {100.0,100.0},              /* eratio[] */
+    {100.0,100.0,100.0},        /* eratio[] */
     {100.0,0.003,0.003,0.0,1.0}, /* err[] */
     {30.0,0.03,0.3},            /* std[] */
     {1E-4,1E-3,1E-4,1E-1,1E-2,0.0}, /* prn[] */
     5E-12,                      /* sclkstab */
-    {3.0,0.9999,0.25,0.1,0.05}, /* thresar */
+    {3.0,0.25,1E-5,1E-4,0.0,0.0,0.0,0.0}, /* thresar */
     0.0,0.0,0.05,.001,.01,      /* elmaskar,elmaskhold,thresslip,varholdamb,gainholdamb */
     30.0,30.0,30.0,             /* maxtdif,maxinno,maxgdop */
     {0},{0},{0},                /* baseline,ru,rb */
