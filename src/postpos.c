@@ -817,7 +817,7 @@ static int antpos(prcopt_t *opt, int rcvno, const obs_t *obs, const nav_t *nav,
     else if (postype==POSOPT_RINEX) { /* get from rinex header */
         if (norm(stas[rcvno==1?0:1].pos,3)<=0.0) {
             showmsg("error : no position in rinex header");
-            trace(1,"no position position in rinex header\n");
+            trace(1,"no position in rinex header\n");
             return 0;
         }
         /* antenna delta */

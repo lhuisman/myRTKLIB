@@ -736,47 +736,45 @@ static int decode_obsdata(FILE *fp, char *buff, double ver, int mask,
     /* assign position in obs data */
     for (i=n=m=0;i<ind->n;i++) {
         
-        p[i]=ver<=2.11?ind->frq[i]-1:ind->pos[i];
+        p[i]=ind->frq[i]-1;
         
         if (ind->type[i]==0&&p[i]==0) k[n++]=i; /* C1? index */
         if (ind->type[i]==0&&p[i]==1) l[m++]=i; /* C2? index */
     }
-    if (ver<=2.11) {
         
-        /* if multiple codes (C1/P1,C2/P2), select higher priority */
-        if (n>=2) {
-            if (val[k[0]]==0.0&&val[k[1]]==0.0) {
-                p[k[0]]=-1; p[k[1]]=-1;
-            }
-            else if (val[k[0]]!=0.0&&val[k[1]]==0.0) {
-                p[k[0]]=0; p[k[1]]=-1;
-            }
-            else if (val[k[0]]==0.0&&val[k[1]]!=0.0) {
-                p[k[0]]=-1; p[k[1]]=0;
-            }
-            else if (ind->pri[k[1]]>ind->pri[k[0]]) {
-                p[k[1]]=0; p[k[0]]=NEXOBS<1?-1:NFREQ;
-            }
-            else {
-                p[k[0]]=0; p[k[1]]=NEXOBS<1?-1:NFREQ;
-            }
+    /* if multiple codes (C1/P1,C2/P2), select higher priority */
+    if (n>=2) {
+        if (val[k[0]]==0.0&&val[k[1]]==0.0) {
+            p[k[0]]=-1; p[k[1]]=-1;
         }
-        if (m>=2) {
-            if (val[l[0]]==0.0&&val[l[1]]==0.0) {
-                p[l[0]]=-1; p[l[1]]=-1;
-            }
-            else if (val[l[0]]!=0.0&&val[l[1]]==0.0) {
-                p[l[0]]=1; p[l[1]]=-1;
-            }
-            else if (val[l[0]]==0.0&&val[l[1]]!=0.0) {
-                p[l[0]]=-1; p[l[1]]=1; 
-            }
-            else if (ind->pri[l[1]]>ind->pri[l[0]]) {
-                p[l[1]]=1; p[l[0]]=NEXOBS<2?-1:NFREQ+1;
-            }
-            else {
-                p[l[0]]=1; p[l[1]]=NEXOBS<2?-1:NFREQ+1;
-            }
+        else if (val[k[0]]!=0.0&&val[k[1]]==0.0) {
+            p[k[0]]=0; p[k[1]]=-1;
+        }
+        else if (val[k[0]]==0.0&&val[k[1]]!=0.0) {
+            p[k[0]]=-1; p[k[1]]=0;
+        }
+        else if (ind->pri[k[1]]>ind->pri[k[0]]) {
+            p[k[1]]=0; p[k[0]]=NEXOBS<1?-1:NFREQ;
+        }
+        else {
+            p[k[0]]=0; p[k[1]]=NEXOBS<1?-1:NFREQ;
+        }
+    }
+    if (m>=2) {
+        if (val[l[0]]==0.0&&val[l[1]]==0.0) {
+            p[l[0]]=-1; p[l[1]]=-1;
+        }
+        else if (val[l[0]]!=0.0&&val[l[1]]==0.0) {
+            p[l[0]]=1; p[l[1]]=-1;
+        }
+        else if (val[l[0]]==0.0&&val[l[1]]!=0.0) {
+            p[l[0]]=-1; p[l[1]]=1; 
+        }
+        else if (ind->pri[l[1]]>ind->pri[l[0]]) {
+            p[l[1]]=1; p[l[0]]=NEXOBS<2?-1:NFREQ+1;
+        }
+        else {
+            p[l[0]]=1; p[l[1]]=NEXOBS<2?-1:NFREQ+1;
         }
     }
     /* save obs data */

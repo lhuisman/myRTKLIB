@@ -1602,7 +1602,7 @@ static int decode_ssr3(rtcm_t *rtcm, int sys)
                 cbias[codes[mode]-1]=(float)bias;
             }
             else {
-                trace(2,"rtcm3 %d not supported mode: mode=%d\n",type,mode);
+                trace(2,"rtcm3 %d not supported code: mode=%d\n",type,mode);
             }
         }
         if (!(sat=satno(sys,prn))) {

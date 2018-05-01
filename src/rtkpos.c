@@ -1092,7 +1092,7 @@ static int constbl(rtk_t *rtk, const double *x, const double *P, double *v,
     /* check nonlinearity */
     if (var>thres*thres*bb*bb) {
         trace(3,"constbl : equation nonlinear (bb=%.3f var=%.3f)\n",bb,var);
-        return 0;
+        /* return 0; */ /* threshold too strict for all use cases, report error but continue on */
     }
     /* constraint to baseline length */
     v[index]=rtk->opt.baseline[0]-bb;

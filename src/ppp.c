@@ -370,6 +370,8 @@ static void corr_meas(const obsd_t *obs, const nav_t *nav, const double *azel,
     double C1,C2;
     int i,sys;
     
+    sys=satsys(obs->sat,NULL);
+    
     for (i=0;i<NFREQ;i++) {
         L[i]=P[i]=0.0;
         if (lam[i]==0.0||obs->L[i]==0.0||obs->P[i]==0.0) continue;
@@ -381,11 +383,30 @@ static void corr_meas(const obsd_t *obs, const nav_t *nav, const double *azel,
         
         /* P1-C1,P2-C2 dcb correction (C1->P1,C2->P2) */
         if (obs->code[i]==CODE_L1C) {
-            P[i]+=nav->cbias[obs->sat-1][1];
+            if (opt->sateph==EPHOPT_SSRAPC||opt->sateph==EPHOPT_SSRCOM) {
+                if (sys==SYS_GPS)
+                    P[i]+=(nav->ssr[obs->sat-1].cbias[0]-nav->ssr[obs->sat-1].cbias[2]); /* ssr correction */
+                else if (sys==SYS_GLO)
+                    P[i]+=(nav->ssr[obs->sat-1].cbias[0]-nav->ssr[obs->sat-1].cbias[1]); /* ssr correction */
+            } else P[i]+=nav->cbias[obs->sat-1][1];   /* use P1-C1 correction from dcb file */
         }
-        else if (obs->code[i]==CODE_L2C||obs->code[i]==CODE_L2X||
-                 obs->code[i]==CODE_L2L||obs->code[i]==CODE_L2S) {
-            P[i]+=nav->cbias[obs->sat-1][2];
+        else if (obs->code[i]==CODE_L2C||obs->code[i]==CODE_L2L) {
+            if (opt->sateph==EPHOPT_SSRAPC||opt->sateph==EPHOPT_SSRCOM) {
+                if (sys==SYS_GPS)
+                    P[i]+=(nav->ssr[obs->sat-1].cbias[13]-nav->ssr[obs->sat-1].cbias[19]); /* ssr correction */
+                else if (sys==SYS_GLO)
+                   P[i]+=(nav->ssr[obs->sat-1].cbias[13]-nav->ssr[obs->sat-1].cbias[18]); /* ssr correction */
+            } else P[i]+=nav->cbias[obs->sat-1][2];   /* use P1-C1 correction from dcb file */
+        }
+        else if (obs->code[i]==CODE_L2S) {  /* code bias for SwiftNav L2C */
+            if (opt->sateph==EPHOPT_SSRAPC||opt->sateph==EPHOPT_SSRCOM) {
+                P[i]+=(nav->ssr[obs->sat-1].cbias[15]-nav->ssr[obs->sat-1].cbias[19]);
+            } else P[i]+=nav->cbias[obs->sat-1][2];   /* use P1-C1 correction from dcb file */
+        }
+        else if (obs->code[i]==CODE_L2X) {  /* code bias for ComNav L2C */
+            if (opt->sateph==EPHOPT_SSRAPC||opt->sateph==EPHOPT_SSRCOM) {
+                P[i]+=(nav->ssr[obs->sat-1].cbias[17]-nav->ssr[obs->sat-1].cbias[19]);
+            } else P[i]+=nav->cbias[obs->sat-1][2];   /* use P1-C1 correction from dcb file*/
 #if 0
             L[i]-=0.25*lam[i]; /* 1/4 cycle-shift */
 #endif
@@ -393,7 +414,6 @@ static void corr_meas(const obsd_t *obs, const nav_t *nav, const double *azel,
     }
     /* iono-free LC */
     *Lc=*Pc=0.0;
-    sys=satsys(obs->sat,NULL);
     i=(sys&(SYS_GAL|SYS_SBS))?2:1; /* L1/L2 or L1/L5 */
     if (lam[0]==0.0||lam[i]==0.0) return;
     
@@ -431,7 +451,7 @@ static void detslp_gf(rtk_t *rtk, const obsd_t *obs, int n, const nav_t *nav)
     double g0,g1;
     int i,j;
     
-    trace(3,"detslp_gf: n=%d\n",n);
+    trace(4,"detslp_gf: n=%d\n",n);
     
     for (i=0;i<n&&i<MAXOBS;i++) {
         
@@ -456,7 +476,7 @@ static void detslp_mw(rtk_t *rtk, const obsd_t *obs, int n, const nav_t *nav)
     double w0,w1;
     int i,j;
     
-    trace(3,"detslp_mw: n=%d\n",n);
+    trace(4,"detslp_mw: n=%d\n",n);
     
     for (i=0;i<n&&i<MAXOBS;i++) {
         if ((w1=mwmeas(obs+i,nav))==0.0) continue;
@@ -705,9 +725,10 @@ static void udbias_ppp(rtk_t *rtk, const obsd_t *obs, int n, const nav_t *nav)
                 slip[i]=rtk->ssat[sat-1].slip[f];
                 l=satsys(sat,NULL)==SYS_GAL?2:1;
                 lam=nav->lam[sat-1];
-                if (obs[i].P[0]==0.0||obs[i].P[l]==0.0||
-                    lam[0]==0.0||lam[l]==0.0||lam[f]==0.0) continue;
-                ion=(obs[i].P[0]-obs[i].P[l])/(1.0-SQR(lam[l]/lam[0]));
+                if (obs[i].P[0]==0.0||obs[i].P[l]==0.0||lam[0]==0.0||lam[l]==0.0||lam[f]==0.0)
+                    ion=0;
+                else
+                    ion=(obs[i].P[0]-obs[i].P[l])/(1.0-SQR(lam[l]/lam[0]));
                 bias[i]=L[f]-P[f]+2.0*ion*SQR(lam[f]/lam[0]);
             }
             if (rtk->x[j]==0.0||slip[i]||bias[i]==0.0) continue;
@@ -738,7 +759,7 @@ static void udbias_ppp(rtk_t *rtk, const obsd_t *obs, int n, const nav_t *nav)
             /* reset fix flags */
             for (k=0;k<MAXSAT;k++) rtk->ambc[sat-1].flags[k]=0;
             
-            trace(5,"udbias_ppp: sat=%2d bias=%.3f\n",sat,bias[i]);
+            trace(3,"udbias_ppp: sat=%2d bias=%.3f\n",sat,bias[i]);
         }
     }
 }
@@ -1029,7 +1050,7 @@ static int ppp_res(int post, const obsd_t *obs, int n, const double *rs,
                     vart+SQR(C)*vari+var_rs[i];
             if (sys==SYS_GLO&&j%2==1) var[nv]+=VAR_GLO_IFB;
             
-            trace(4,"%s sat=%2d %s%d res=%9.4f sig=%9.4f el=%4.1f\n",str,sat,
+            trace(3,"%s sat=%2d %s%d res=%9.4f sig=%9.4f el=%4.1f\n",str,sat,
                   j%2?"P":"L",j/2+1,v[nv],sqrt(var[nv]),azel[1+i*2]*R2D);
             
             /* reject satellite by pre-fit residuals */
