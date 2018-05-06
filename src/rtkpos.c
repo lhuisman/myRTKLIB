@@ -622,7 +622,7 @@ static void udrcvbias(rtk_t *rtk, double tt)
             initx(rtk,rtk->opt.thresar[2]*mhz2m,rtk->opt.thresar[3],j);
         }
         /* hold to fixed solution */
-        else if (rtk->nfix>=rtk->opt.minfix&&rtk->sol.ratio>rtk->sol.thres) {
+        else if (rtk->nfix>=rtk->opt.minfix) {
             initx(rtk,rtk->xa[j],rtk->Pa[j+j*rtk->na],j);
         }
         else {
@@ -1347,7 +1347,10 @@ static int ddres(rtk_t *rtk, const nav_t *nav, const obsd_t *obs, double dt, con
                     rtk->ssat[sat[i]-1].vsat[frq]=rtk->ssat[sat[j]-1].vsat[frq]=1;
                 }
     
-                icb=rtk->ssat[sat[i]-1].icbias[frq]*lami - rtk->ssat[sat[j]-1].icbias[frq]*lamj;
+                if (rtk->opt.glomodear==GLO_ARMODE_AUTOCAL)
+                    icb=(CLIGHT/lami-CLIGHT/lamj)/1E6*x[IL(frq,opt)];
+                else
+                    icb=rtk->ssat[sat[i]-1].icbias[frq]*lami - rtk->ssat[sat[j]-1].icbias[frq]*lamj;
                 trace(3,"sat=%3d-%3d %s%d v=%13.3f R=%9.6f %9.6f icb=%9.3f lock=%5d x=%9.3f\n",sat[i],
                         sat[j],code?"P":"L",frq+1,v[nv],Ri[nv],Rj[nv],icb,
                         rtk->ssat[sat[j]-1].lock[frq],rtk->x[IB(sat[j],frq,&rtk->opt)]);
