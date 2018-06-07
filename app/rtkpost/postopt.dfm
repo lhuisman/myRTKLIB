@@ -458,8 +458,6 @@ object OptDialog: TOptDialog
     object TabSheet2: TTabSheet
       Caption = 'Setting&2'
       ImageIndex = 1
-      ExplicitLeft = 6
-      ExplicitTop = 21
       object Label25: TLabel
         Left = 24
         Top = 7
@@ -515,13 +513,6 @@ object OptDialog: TOptDialog
         Width = 155
         Height = 13
         Caption = 'Max # of AR Iter/# of Filter Iter'
-      end
-      object LabelConf: TLabel
-        Left = 24
-        Top = 54
-        Width = 179
-        Height = 13
-        Caption = 'Min Confidence / Max FCB to Fix Amb'
       end
       object Label49: TLabel
         Left = 24
@@ -697,22 +688,6 @@ object OptDialog: TOptDialog
         TabOrder = 10
         Text = '30'
       end
-      object ThresAR2: TEdit
-        Left = 248
-        Top = 52
-        Width = 75
-        Height = 21
-        TabOrder = 18
-        Text = '0.99995'
-      end
-      object ThresAR3: TEdit
-        Left = 325
-        Top = 52
-        Width = 75
-        Height = 21
-        TabOrder = 19
-        Text = '0.20'
-      end
       object SyncSol: TComboBox
         Left = 325
         Top = 145
@@ -721,7 +696,7 @@ object OptDialog: TOptDialog
         Style = csDropDownList
         Enabled = False
         ItemIndex = 1
-        TabOrder = 20
+        TabOrder = 18
         Text = 'ON'
         OnChange = AmbResChange
         Items.Strings = (
@@ -756,7 +731,7 @@ object OptDialog: TOptDialog
         Top = 233
         Width = 75
         Height = 21
-        TabOrder = 21
+        TabOrder = 19
         Text = '3'
       end
       object MinHoldSats: TEdit
@@ -764,7 +739,7 @@ object OptDialog: TOptDialog
         Top = 233
         Width = 75
         Height = 21
-        TabOrder = 22
+        TabOrder = 20
         Text = '5'
       end
       object MaxPosVarAR: TEdit
@@ -772,7 +747,7 @@ object OptDialog: TOptDialog
         Top = 279
         Width = 75
         Height = 21
-        TabOrder = 23
+        TabOrder = 21
         Text = '0.004'
       end
       object ARFilter: TComboBox
@@ -782,7 +757,7 @@ object OptDialog: TOptDialog
         Height = 21
         Style = csDropDownList
         ItemIndex = 0
-        TabOrder = 24
+        TabOrder = 22
         Text = 'OFF'
         OnChange = AmbResChange
         Items.Strings = (
@@ -794,7 +769,7 @@ object OptDialog: TOptDialog
         Top = 302
         Width = 75
         Height = 21
-        TabOrder = 25
+        TabOrder = 23
         Text = '0.001'
       end
       object GainHoldAmb: TEdit
@@ -802,7 +777,7 @@ object OptDialog: TOptDialog
         Top = 302
         Width = 75
         Height = 21
-        TabOrder = 26
+        TabOrder = 24
         Text = '0.01'
       end
       object RcvStds: TComboBox
@@ -812,7 +787,7 @@ object OptDialog: TOptDialog
         Height = 21
         Style = csDropDownList
         ItemIndex = 0
-        TabOrder = 27
+        TabOrder = 25
         Text = 'OFF'
         OnChange = AmbResChange
         Items.Strings = (
@@ -824,7 +799,7 @@ object OptDialog: TOptDialog
         Top = 256
         Width = 75
         Height = 21
-        TabOrder = 28
+        TabOrder = 26
         Text = '20'
       end
     end

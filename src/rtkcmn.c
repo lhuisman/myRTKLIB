@@ -188,22 +188,23 @@ const double lam_carr[MAXFREQ]={ /* carrier wave length (m) */
 const prcopt_t prcopt_default={ /* defaults processing options */
     PMODE_SINGLE,0,2,SYS_GPS,   /* mode,soltype,nf,navsys */
     15.0*D2R,{{0,0}},           /* elmin,snrmask */
-    0,1,1,1,1,0,                /* sateph,modear,glomodear,gpsmodear,bdsmodear,arfilter */
-    5,0,2,2,20,10,              /* maxout,minlock,minfixsats,minholdsats,mindropsats,minfix */
-    0,1,0,0,0,0,                /* rcvstds,armaxiter,estion,esttrop,dynamics,tidecorr */
+    0,3,3,1,0,1,                /* sateph,modear,glomodear,gpsmodear,bdsmodear,arfilter */
+    20,5,4,5,10,20,             /* maxout,minlock,minfixsats,minholdsats,mindropsats,minfix */
+    0,1,0,0,1,0,                /* rcvstds,armaxiter,estion,esttrop,dynamics,tidecorr */
     1,0,0,0,0,                  /* niter,codesmooth,intpref,sbascorr,sbassatsel */
     0,0,                        /* rovpos,refpos */
-    {100.0,100.0,100.0},        /* eratio[] */
-    {100.0,0.003,0.003,0.0,1.0}, /* err[] */
+    {300.0,300.0,300.0},        /* eratio[] */
+    {100.0,0.003,0.003,0.0,1.0},/* err[] */
     {30.0,0.03,0.3},            /* std[] */
     {1E-4,1E-3,1E-4,1E-1,1E-2,0.0}, /* prn[] */
     5E-12,                      /* sclkstab */
     {3.0,0.25,0.0,1E-5,1E-4,0.0,0.0,0.0}, /* thresar */
-    0.0,0.0,0.05,.001,.01,      /* elmaskar,elmaskhold,thresslip,varholdamb,gainholdamb */
-    30.0,30.0,30.0,             /* maxtdif,maxinno,maxgdop */
+    0.0,0.0,0.05,0.1,0.01,      /* elmaskar,elmaskhold,thresslip,varholdamb,gainholdamb */
+    30.0,1000.0,30.0,           /* maxtdif,maxinno,maxgdop */
     {0},{0},{0},                /* baseline,ru,rb */
     {"",""},                    /* anttype */
-    {{0}},{{0}},{0}             /* antdel,pcv,exsats */
+    {{0}},{{0}},{0},            /* antdel,pcv,exsats */
+    1                           /* maxaveep */
 };
 const solopt_t solopt_default={ /* defaults solution output options */
     SOLF_LLH,TIMES_GPST,1,3,    /* posf,times,timef,timeu */

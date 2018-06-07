@@ -206,9 +206,6 @@ __published:
 	TButton *BtnExtOpt;
 	TLabel *Label12;
 	TEdit *RnxOpts2;
-	TEdit *ThresAR2;
-	TEdit *ThresAR3;
-	TLabel *LabelConf;
 	TLabel *Label9;
 	TCheckBox *PosOpt1;
 	TCheckBox *PosOpt3;

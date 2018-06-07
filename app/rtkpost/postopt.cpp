@@ -382,8 +382,6 @@ void __fastcall TOptDialog::GetOpt(void)
 	GloAmbRes	 ->ItemIndex	=MainForm->GloAmbRes;
 	BdsAmbRes	 ->ItemIndex	=MainForm->BdsAmbRes;
 	ValidThresAR ->Text			=s.sprintf("%.3g",MainForm->ValidThresAR);
-	ThresAR2     ->Text			=s.sprintf("%.8g",MainForm->ThresAR2);
-	ThresAR3     ->Text			=s.sprintf("%.3g",MainForm->ThresAR3);
 	OutCntResetAmb->Text		=s.sprintf("%d",MainForm->OutCntResetAmb);
 	FixCntHoldAmb->Text			=s.sprintf("%d",MainForm->FixCntHoldAmb);
 	LockCntFixAmb->Text			=s.sprintf("%d",MainForm->LockCntFixAmb);
@@ -512,8 +510,6 @@ void __fastcall TOptDialog::SetOpt(void)
 	MainForm->GloAmbRes	  	=GloAmbRes	->ItemIndex;
 	MainForm->BdsAmbRes	  	=BdsAmbRes	->ItemIndex;
 	MainForm->ValidThresAR	=str2dbl(ValidThresAR->Text);
-	MainForm->ThresAR2		=str2dbl(ThresAR2->Text);
-	MainForm->ThresAR3		=str2dbl(ThresAR3->Text);
 	MainForm->OutCntResetAmb=OutCntResetAmb->Text.ToInt();
 	MainForm->FixCntHoldAmb =FixCntHoldAmb->Text.ToInt();
 	MainForm->OutCntResetAmb=OutCntResetAmb->Text.ToInt();
@@ -659,11 +655,7 @@ int ppp=PosMode->ItemIndex>=PMODE_PPP_KINEMA;
 	GloAmbRes	 ->ItemIndex	=prcopt.glomodear;
 	BdsAmbRes	 ->ItemIndex	=prcopt.bdsmodear;
 	ValidThresAR ->Text			=s.sprintf("%.3g",prcopt.thresar[0]);
-    if (ppp)
-        ThresAR2	 ->Text		=s.sprintf("%.9g",prcopt.thresar[1]);
-    else
-        MaxPosVarAR	 ->Text     =s.sprintf("%.4f",prcopt.thresar[1]);
-	ThresAR3	 ->Text			=s.sprintf("%.3g",prcopt.thresar[2]);
+    MaxPosVarAR	 ->Text		    =s.sprintf("%.3g",prcopt.thresar[1]);
 	OutCntResetAmb->Text		=s.sprintf("%d"  ,prcopt.maxout   );
 	FixCntHoldAmb->Text			=s.sprintf("%d"  ,prcopt.minfix   );
 	LockCntFixAmb  ->Text		=s.sprintf("%d"  ,prcopt.minlock  );
@@ -817,11 +809,7 @@ int ppp=PosMode->ItemIndex>=PMODE_PPP_KINEMA;
 	prcopt.glomodear=GloAmbRes	->ItemIndex;
 	prcopt.bdsmodear=BdsAmbRes	->ItemIndex;
 	prcopt.thresar[0]=str2dbl(ValidThresAR->Text);
-    if (ppp)
-	    prcopt.thresar[1]=str2dbl(ThresAR2->Text);
-    else
-	    prcopt.thresar[1]=str2dbl(MaxPosVarAR->Text);
-	prcopt.thresar[2]=str2dbl(ThresAR3->Text);
+    prcopt.thresar[1]=str2dbl(MaxPosVarAR->Text);
 	prcopt.maxout	=str2dbl(OutCntResetAmb->Text);
 	prcopt.minfix	=str2dbl(FixCntHoldAmb->Text);
 	prcopt.minlock	=str2dbl(LockCntFixAmb->Text);
@@ -934,8 +922,6 @@ void __fastcall TOptDialog::UpdateEnable(void)
 	GloAmbRes      ->Enabled=ar&&AmbRes->ItemIndex>0&&NavSys2->Checked;
 	BdsAmbRes      ->Enabled=ar&&AmbRes->ItemIndex>0&&NavSys6->Checked;
 	ValidThresAR   ->Enabled=ar&&AmbRes->ItemIndex>=1&&AmbRes->ItemIndex<4;
-	ThresAR2	   ->Enabled=ar&&AmbRes->ItemIndex>=4;
-	ThresAR3	   ->Enabled=ar&&AmbRes->ItemIndex>=4;
 	LockCntFixAmb  ->Enabled=ar&&AmbRes->ItemIndex>=1;
 	ElMaskAR       ->Enabled=ar&&AmbRes->ItemIndex>=1;
 	OutCntResetAmb ->Enabled=ar||ppp;
