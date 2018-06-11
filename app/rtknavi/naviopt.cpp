@@ -416,7 +416,8 @@ void __fastcall TOptDialog::GetOpt(void)
 	GloAmbRes	 ->ItemIndex=PrcOpt.glomodear;
 	BdsAmbRes	 ->ItemIndex=PrcOpt.bdsmodear;
 	ValidThresAR ->Text     =s.sprintf("%.1f",PrcOpt.thresar[0]);
-	ARThres1	 ->Text     =s.sprintf("%.4f",PrcOpt.thresar[1]);
+	MaxPosVarAR  ->Text     =s.sprintf("%.3f",PrcOpt.thresar[1]);
+	GloHwBias    ->Text     =s.sprintf("%.3f",PrcOpt.thresar[2]);
 	OutCntResetAmb->Text    =s.sprintf("%d",  PrcOpt.maxout);
 	LockCntFixAmb->Text     =s.sprintf("%d",  PrcOpt.minlock);
 	FixCntHoldAmb->Text     =s.sprintf("%d",  PrcOpt.minfix);
@@ -550,6 +551,8 @@ void __fastcall TOptDialog::SetOpt(void)
 	PrcOpt.glomodear =GloAmbRes   ->ItemIndex;
 	PrcOpt.bdsmodear =BdsAmbRes   ->ItemIndex;
 	PrcOpt.thresar[0]=str2dbl(ValidThresAR->Text);
+	PrcOpt.thresar[1]=str2dbl(MaxPosVarAR->Text);
+    PrcOpt.thresar[2]=str2dbl(GloHwBias->Text);
 	PrcOpt.maxout    =OutCntResetAmb->Text.ToInt();
 	PrcOpt.minlock   =LockCntFixAmb->Text.ToInt();
 	PrcOpt.minfix    =FixCntHoldAmb->Text.ToInt();
@@ -565,7 +568,6 @@ void __fastcall TOptDialog::SetOpt(void)
 	PrcOpt.minfixsats =MinFixSats ->Text.ToInt();
 	PrcOpt.minholdsats =MinHoldSats->Text.ToInt();
 	PrcOpt.mindropsats =MinDropSats->Text.ToInt();
-	PrcOpt.thresar[1] =str2dbl(ARThres1->Text);
 	PrcOpt.niter     =NumIter     ->Text.ToInt();
 	PrcOpt.syncsol   =SyncSol     ->ItemIndex;
 	PrcOpt.arfilter  =ARFilter    ->ItemIndex;
@@ -747,7 +749,8 @@ void __fastcall TOptDialog::LoadOpt(AnsiString file)
 	GloAmbRes	 ->ItemIndex	=prcopt.glomodear;
 	BdsAmbRes	 ->ItemIndex	=prcopt.bdsmodear;
 	ValidThresAR ->Text			=s.sprintf("%.1f",prcopt.thresar[0]);
-	ARThres1	 ->Text         =s.sprintf("%.4f",prcopt.thresar[1]);
+	MaxPosVarAR  ->Text         =s.sprintf("%.3f",prcopt.thresar[1]);
+	GloHwBias    ->Text         =s.sprintf("%.3f",prcopt.thresar[2]);
 	OutCntResetAmb->Text		=s.sprintf("%d"  ,prcopt.maxout   );
 	FixCntHoldAmb->Text			=s.sprintf("%d"  ,prcopt.minfix   );
 	LockCntFixAmb->Text			=s.sprintf("%d"  ,prcopt.minlock  );
@@ -970,7 +973,8 @@ void __fastcall TOptDialog::SaveOpt(AnsiString file)
 	prcopt.glomodear=GloAmbRes	->ItemIndex;
 	prcopt.bdsmodear=BdsAmbRes	->ItemIndex;
 	prcopt.thresar[0]=str2dbl(ValidThresAR->Text);
-	prcopt.thresar[1]=str2dbl(ARThres1->Text);
+	prcopt.thresar[1]=str2dbl(MaxPosVarAR->Text);
+	prcopt.thresar[2]=str2dbl(GloHwBias->Text);
 	prcopt.maxout	=str2dbl(OutCntResetAmb->Text);
 	prcopt.minfix	=str2dbl(FixCntHoldAmb->Text);
 	prcopt.minlock	=str2dbl(LockCntFixAmb->Text);
@@ -1080,8 +1084,8 @@ void __fastcall TOptDialog::UpdateEnable(void)
 	GloAmbRes      ->Enabled=ar&&AmbRes->ItemIndex>0&&NavSys2->Checked;
 	BdsAmbRes      ->Enabled=ar&&AmbRes->ItemIndex>0&&NavSys6->Checked;
 	ValidThresAR   ->Enabled=ar&&AmbRes->ItemIndex>=1&&AmbRes->ItemIndex<4;
-	ThresAR2       ->Enabled=ar&&AmbRes->ItemIndex>=4;
-	ThresAR3       ->Enabled=ar&&AmbRes->ItemIndex>=4;
+	MaxPosVarAR    ->Enabled=ar&&!ppp;
+	GloHwBias      ->Enabled=ar&&GloAmbRes->ItemIndex==2;
 	LockCntFixAmb  ->Enabled=ar&&AmbRes->ItemIndex>=1;
 	ElMaskAR       ->Enabled=ar&&AmbRes->ItemIndex>=1;
 	OutCntResetAmb ->Enabled=ar||ppp;
@@ -1096,7 +1100,6 @@ void __fastcall TOptDialog::UpdateEnable(void)
 	MinFixSats     ->Enabled=ar||ppp;
 	MinHoldSats    ->Enabled=ar||ppp;
 	MinDropSats    ->Enabled=ar||ppp;
-	ARThres1       ->Enabled=ar||ppp;
 	NumIter        ->Enabled=rel||ppp;
 	SyncSol        ->Enabled=rel||ppp;
 	ARFilter       ->Enabled=ar||ppp;

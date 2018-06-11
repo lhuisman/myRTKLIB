@@ -893,7 +893,7 @@ int __fastcall TMainForm::GetOption(prcopt_t &prcopt, solopt_t &solopt,
     prcopt.sclkstab =SatClkStab;
     prcopt.thresar[0]=ValidThresAR;
     prcopt.thresar[1]=MaxPosVarAR;
-    prcopt.thresar[2]=ThresAR2;
+    prcopt.thresar[2]=GloHwBias;
     prcopt.thresar[3]=ThresAR3;
     prcopt.elmaskar =ElMaskAR*D2R;
     prcopt.elmaskhold=ElMaskHold*D2R;
@@ -1243,7 +1243,7 @@ void __fastcall TMainForm::LoadOpt(void)
     BdsAmbRes          =ini->ReadInteger("opt","bdsambres",      0);
     ValidThresAR       =ini->ReadFloat  ("opt","validthresar", 3.0);
     MaxPosVarAR        =ini->ReadFloat  ("opt","maxposvarar", 0.10);
-    ThresAR2           =ini->ReadFloat  ("opt","thresar2",    0.00);
+    GloHwBias          =ini->ReadFloat  ("opt","glohwbias",   0.00);
     ThresAR3           =ini->ReadFloat  ("opt","thresar3",    1E-5);
     ThresAR4           =ini->ReadFloat  ("opt","thresar4",    1E-4);
     LockCntFixAmb      =ini->ReadInteger("opt","lockcntfixamb",  0);
@@ -1463,7 +1463,7 @@ void __fastcall TMainForm::SaveOpt(void)
     ini->WriteInteger("opt","bdsambres",   BdsAmbRes   );
     ini->WriteFloat  ("opt","validthresar",ValidThresAR);
     ini->WriteFloat  ("opt","maxposvarar", MaxPosVarAR );
-    ini->WriteFloat  ("opt","thresar2",    ThresAR2    );
+    ini->WriteFloat  ("opt","glohwbias",   GloHwBias   );
     ini->WriteFloat  ("opt","thresar3",    ThresAR3    );
     ini->WriteFloat  ("opt","thresar4",    ThresAR4    );
     ini->WriteInteger("opt","lockcntfixamb",LockCntFixAmb);

@@ -203,9 +203,6 @@ __published:
 	TButton *BtnEOPFile;
 	TSpeedButton *BtnEOPView;
 	TComboBox *ElMask;
-	TEdit *ThresAR2;
-	TEdit *ThresAR3;
-	TLabel *Label12;
 	TCheckBox *PosOpt1;
 	TCheckBox *PosOpt2;
 	TCheckBox *PosOpt3;
@@ -242,6 +239,7 @@ __published:
     TEdit *GainHoldAmb;
     TLabel *Label51;
     TLabel *Label52;
+    TEdit *GloHwBias;
 	void __fastcall BtnOkClick(TObject *Sender);
 	void __fastcall RovAntPcvClick(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);

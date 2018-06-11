@@ -468,9 +468,9 @@ object OptDialog: TOptDialog
       object LabelRatio: TLabel
         Left = 24
         Top = 32
-        Width = 124
+        Width = 196
         Height = 13
-        Caption = 'Min Ratio to Fix Ambiguity'
+        Caption = 'Min Ratio to Fix Ambiguity / GLO HW Bias'
       end
       object Label13: TLabel
         Left = 25
@@ -562,7 +562,7 @@ object OptDialog: TOptDialog
       object ValidThresAR: TEdit
         Left = 248
         Top = 30
-        Width = 152
+        Width = 75
         Height = 21
         TabOrder = 3
         Text = '3.0'
@@ -801,6 +801,14 @@ object OptDialog: TOptDialog
         Height = 21
         TabOrder = 26
         Text = '20'
+      end
+      object GloHwBias: TEdit
+        Left = 325
+        Top = 30
+        Width = 75
+        Height = 21
+        TabOrder = 27
+        Text = '0.0'
       end
     end
     object TabSheet3: TTabSheet

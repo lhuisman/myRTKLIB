@@ -235,6 +235,7 @@ __published:
     TEdit *GainHoldAmb;
     TComboBox *RcvStds;
     TEdit *MinDropSats;
+    TEdit *GloHwBias;
 	void __fastcall BtnOkClick(TObject *Sender);
 	void __fastcall RovAntPcvClick(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);

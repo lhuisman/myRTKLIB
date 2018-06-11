@@ -62,7 +62,6 @@ object OptDialog: TOptDialog
     TabOrder = 4
     object TabSheet1: TTabSheet
       Caption = 'Setting&1'
-      ExplicitHeight = 284
       object Label3: TLabel
         Left = 24
         Top = 73
@@ -404,7 +403,6 @@ object OptDialog: TOptDialog
     object TabSheet2: TTabSheet
       Caption = 'Setting&2'
       ImageIndex = 1
-      ExplicitTop = 22
       object Label25: TLabel
         Left = 24
         Top = 7
@@ -415,9 +413,9 @@ object OptDialog: TOptDialog
       object Label24: TLabel
         Left = 24
         Top = 33
-        Width = 124
+        Width = 196
         Height = 13
-        Caption = 'Min Ratio to Fix Ambiguity'
+        Caption = 'Min Ratio to Fix Ambiguity / GLO HW Bias'
       end
       object Label13: TLabel
         Left = 24
@@ -460,13 +458,6 @@ object OptDialog: TOptDialog
         Width = 155
         Height = 13
         Caption = 'Max # of AR Iter/# of Filter Iter'
-      end
-      object Label12: TLabel
-        Left = 24
-        Top = 55
-        Width = 179
-        Height = 13
-        Caption = 'Min Confidence / Max FCB to Fix Amb'
       end
       object Label49: TLabel
         Left = 24
@@ -515,7 +506,7 @@ object OptDialog: TOptDialog
       object ValidThresAR: TEdit
         Left = 248
         Top = 30
-        Width = 152
+        Width = 75
         Height = 21
         TabOrder = 2
         Text = '3.0'
@@ -641,22 +632,6 @@ object OptDialog: TOptDialog
         TabOrder = 9
         Text = '30'
       end
-      object ThresAR2: TEdit
-        Left = 248
-        Top = 52
-        Width = 75
-        Height = 21
-        TabOrder = 18
-        Text = '0.9999'
-      end
-      object ThresAR3: TEdit
-        Left = 325
-        Top = 52
-        Width = 75
-        Height = 21
-        TabOrder = 19
-        Text = '0.20'
-      end
       object SyncSol: TComboBox
         Left = 325
         Top = 144
@@ -678,7 +653,7 @@ object OptDialog: TOptDialog
         Height = 21
         Style = csDropDownList
         ItemIndex = 0
-        TabOrder = 20
+        TabOrder = 18
         Text = 'OFF'
         OnChange = AmbResChange
         Items.Strings = (
@@ -698,7 +673,7 @@ object OptDialog: TOptDialog
         Top = 232
         Width = 75
         Height = 21
-        TabOrder = 21
+        TabOrder = 19
         Text = '3'
       end
       object MinHoldSats: TEdit
@@ -706,7 +681,7 @@ object OptDialog: TOptDialog
         Top = 232
         Width = 75
         Height = 21
-        TabOrder = 22
+        TabOrder = 20
         Text = '5'
       end
       object ARFilter: TComboBox
@@ -716,7 +691,7 @@ object OptDialog: TOptDialog
         Height = 21
         Style = csDropDownList
         ItemIndex = 0
-        TabOrder = 23
+        TabOrder = 21
         Text = 'OFF'
         OnChange = AmbResChange
         Items.Strings = (
@@ -728,7 +703,7 @@ object OptDialog: TOptDialog
         Top = 278
         Width = 75
         Height = 21
-        TabOrder = 24
+        TabOrder = 22
         Text = '0.999'
       end
       object RcvStds: TComboBox
@@ -738,7 +713,7 @@ object OptDialog: TOptDialog
         Height = 21
         Style = csDropDownList
         ItemIndex = 0
-        TabOrder = 25
+        TabOrder = 23
         Text = 'OFF'
         OnChange = AmbResChange
         Items.Strings = (
@@ -750,7 +725,7 @@ object OptDialog: TOptDialog
         Top = 255
         Width = 75
         Height = 21
-        TabOrder = 26
+        TabOrder = 24
         Text = '20'
       end
       object VarHoldAmb: TEdit
@@ -758,7 +733,7 @@ object OptDialog: TOptDialog
         Top = 301
         Width = 75
         Height = 21
-        TabOrder = 27
+        TabOrder = 25
         Text = '0.001'
       end
       object GainHoldAmb: TEdit
@@ -766,14 +741,23 @@ object OptDialog: TOptDialog
         Top = 301
         Width = 75
         Height = 21
-        TabOrder = 28
+        TabOrder = 26
         Text = '0.01'
+      end
+      object GloHwBias: TEdit
+        Left = 325
+        Top = 30
+        Width = 75
+        Height = 21
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 27
+        Text = '0.0'
       end
     end
     object TabSheet3: TTabSheet
       Caption = 'O&utput'
       ImageIndex = 2
-      ExplicitHeight = 284
       object LabelSolFormat: TLabel
         Left = 24
         Top = 7
@@ -1060,7 +1044,6 @@ object OptDialog: TOptDialog
     object TabSheet4: TTabSheet
       Caption = 'S&tatistics'
       ImageIndex = 3
-      ExplicitHeight = 284
       object Label29: TLabel
         Left = 34
         Top = 213
@@ -1240,7 +1223,6 @@ object OptDialog: TOptDialog
     object TabSheet5: TTabSheet
       Caption = '&Positions'
       ImageIndex = 4
-      ExplicitHeight = 284
       object Label4: TLabel
         Left = 12
         Top = 12
@@ -1557,7 +1539,6 @@ object OptDialog: TOptDialog
     object TabSheet7: TTabSheet
       Caption = '&Files'
       ImageIndex = 6
-      ExplicitHeight = 284
       object Label1: TLabel
         Left = 6
         Top = 93
@@ -1896,7 +1877,6 @@ object OptDialog: TOptDialog
     object TabSheet8: TTabSheet
       Caption = '&Misc'
       ImageIndex = 6
-      ExplicitHeight = 284
       object Label19: TLabel
         Left = 32
         Top = 7
