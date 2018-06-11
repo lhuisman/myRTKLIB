@@ -610,7 +610,6 @@ static void udtrop(rtk_t *rtk, double tt, double bl)
 static void udrcvbias(rtk_t *rtk, double tt)
 {
     int i,j;
-    double mhz2m;
     
     trace(3,"udrcvbias: tt=%.3f\n",tt);
     
@@ -618,8 +617,7 @@ static void udrcvbias(rtk_t *rtk, double tt)
         j=IL(i,&rtk->opt);
         
         if (rtk->x[j]==0.0) {
-            mhz2m=1e6/(i==0?DFRQ1_GLO:DFRQ2_GLO);
-            initx(rtk,rtk->opt.thresar[2]*mhz2m,rtk->opt.thresar[3],j);
+            initx(rtk,rtk->opt.thresar[2],rtk->opt.thresar[3],j);
         }
         /* hold to fixed solution */
         else if (rtk->nfix>=rtk->opt.minfix) {
@@ -1776,7 +1774,7 @@ static int manage_amb_LAMBDA(rtk_t *rtk, double *bias, double *xa, const int *sa
         if (rtk->opt.arfilter) {
             rerun=0;
             /* if results are much poorer than previous epoch or dropped below ar ratio thresh, remove new sats */
-            if (nb>=0 && ((rtk->sol.ratio<rtk->opt.thresar[0]*1.1 && rtk->sol.ratio<rtk->sol.prev_ratio1/2.0) ||
+            if (nb>=0 && ar>0 && ((rtk->sol.ratio<rtk->opt.thresar[0]*1.1 && rtk->sol.ratio<rtk->sol.prev_ratio1/2.0) ||
                 (rtk->sol.ratio<rtk->sol.thres && rtk->sol.prev_ratio2>=rtk->sol.thres))) {
                 trace(3,"low ratio: check for new sat\n");
                 dly=2;
