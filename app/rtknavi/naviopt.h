@@ -231,7 +231,7 @@ __published:
     TEdit *MinFixSats;
     TEdit *MinHoldSats;
     TComboBox *ARFilter;
-    TEdit *ARThres1;
+    TEdit *MaxPosVarAR;
     TLabel *Label50;
     TComboBox *RcvStds;
     TEdit *MinDropSats;

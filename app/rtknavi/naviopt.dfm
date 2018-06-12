@@ -698,13 +698,13 @@ object OptDialog: TOptDialog
           'OFF'
           'ON')
       end
-      object ARThres1: TEdit
+      object MaxPosVarAR: TEdit
         Left = 247
         Top = 278
         Width = 75
         Height = 21
         TabOrder = 22
-        Text = '0.999'
+        Text = '0.1'
       end
       object RcvStds: TComboBox
         Left = 325
