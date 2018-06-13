@@ -617,7 +617,8 @@ static void udrcvbias(rtk_t *rtk, double tt)
         j=IL(i,&rtk->opt);
         
         if (rtk->x[j]==0.0) {
-            initx(rtk,rtk->opt.thresar[2],rtk->opt.thresar[3],j);
+            /* add small offset to avoid initializing with zero */
+            initx(rtk,rtk->opt.thresar[2]+1e-6,rtk->opt.thresar[3],j);
         }
         /* hold to fixed solution */
         else if (rtk->nfix>=rtk->opt.minfix) {
@@ -1295,7 +1296,7 @@ static int ddres(rtk_t *rtk, const nav_t *nav, const obsd_t *obs, double dt, con
                 if (sysi==SYS_GLO&&sysj==SYS_GLO) {
                     if (rtk->opt.glomodear==GLO_ARMODE_AUTOCAL && frq<NFREQGLO) {
                         /* auto-cal method */
-                        df=(CLIGHT/lami-CLIGHT/lamj)/1E6; /* freq-difference (MHz) */
+                        df=(CLIGHT/lami-CLIGHT/lamj)/(f==0?DFRQ1_GLO:DFRQ2_GLO);
                         v[nv]-=df*x[IL(frq,opt)];
                         if (H) Hi[IL(frq,opt)]=df;
                     }
@@ -1346,7 +1347,7 @@ static int ddres(rtk_t *rtk, const nav_t *nav, const obsd_t *obs, double dt, con
                 }
     
                 if (rtk->opt.glomodear==GLO_ARMODE_AUTOCAL)
-                    icb=(CLIGHT/lami-CLIGHT/lamj)/1E6*x[IL(frq,opt)];
+                    icb=x[IL(frq,opt)];
                 else
                     icb=rtk->ssat[sat[i]-1].icbias[frq]*lami - rtk->ssat[sat[j]-1].icbias[frq]*lamj;
                 trace(3,"sat=%3d-%3d %s%d v=%13.3f R=%9.6f %9.6f icb=%9.3f lock=%5d x=%9.3f\n",sat[i],
