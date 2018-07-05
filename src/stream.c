@@ -333,7 +333,7 @@ static serial_t *openserial(const char *path, int mode, char *msg)
         300,600,1200,2400,4800,9600,19200,38400,57600,115200,230400
     };
     serial_t *serial;
-    int i,brate=9600,bsize=8,stopb=1,tcp_port=0;
+    int i,brate=115200,bsize=8,stopb=1,tcp_port=0;
     char *p,parity='N',dev[128],port[128],fctr[64]="",path_tcp[32],msg_tcp[128];
 #ifdef WIN32
     DWORD error,rw=0,siz=sizeof(COMMCONFIG);
@@ -3313,7 +3313,7 @@ extern void strsendcmd(stream_t *str, const char *cmd)
                 sleepms(ms);
             }
             else if (!strncmp(msg+1,"BRATE",5)) { /* set bitrate */
-                if (sscanf(msg+6,"%d",&brate)<1) brate=9600;
+                if (sscanf(msg+6,"%d",&brate)<1) brate=115200;
                 set_brate(str,brate);
                 sleepms(500);
             }

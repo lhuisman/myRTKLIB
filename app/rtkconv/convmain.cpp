@@ -978,7 +978,7 @@ void __fastcall TMainWindow::LoadOpt(void)
 	TIniFile *ini=new TIniFile(IniFile);
 	AnsiString mask="1111111111111111111111111111111111111111111111111111111";
 	
-	RnxVer				=ini->ReadInteger("opt","rnxver",	   0);
+	RnxVer				=ini->ReadInteger("opt","rnxver",	   6);
 	RnxFile				=ini->ReadInteger("opt","rnxfile",	   0);
 	RnxCode				=ini->ReadString ("opt","rnxcode","0000");
 	RunBy				=ini->ReadString ("opt","runby",	  "");
@@ -1002,7 +1002,7 @@ void __fastcall TMainWindow::LoadOpt(void)
 	Comment[0]			=ini->ReadString ("opt","comment0",   "");
 	Comment[1]			=ini->ReadString ("opt","comment1",   "");
 	RcvOption			=ini->ReadString ("opt","rcvoption",  "");
-	NavSys				=ini->ReadInteger("opt","navsys",	 0x3);
+	NavSys				=ini->ReadInteger("opt","navsys",	 0x5);
 	ObsType				=ini->ReadInteger("opt","obstype",	 0xF);
 	FreqType			=ini->ReadInteger("opt","freqtype",  0x3);
 	ExSats				=ini->ReadString ("opt","exsats",	  "");
@@ -1016,7 +1016,7 @@ void __fastcall TMainWindow::LoadOpt(void)
 	CodeMask[5]			=ini->ReadString ("opt","codemask_6",mask);
 	CodeMask[6]			=ini->ReadString ("opt","codemask_7",mask);
 	AutoPos				=ini->ReadInteger("opt","autopos",	   0);
-	ScanObs				=ini->ReadInteger("opt","scanobs",	   0);
+	ScanObs				=ini->ReadInteger("opt","scanobs",	   1);
 	HalfCyc				=ini->ReadInteger("opt","halfcyc",	   0);
 	OutIono				=ini->ReadInteger("opt","outiono",	   0);
 	OutTime				=ini->ReadInteger("opt","outtime",	   0);

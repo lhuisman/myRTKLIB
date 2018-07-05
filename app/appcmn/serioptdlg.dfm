@@ -86,7 +86,7 @@ object SerialOptDialog: TSerialOptDialog
     DropDownCount = 12
     ItemIndex = 5
     TabOrder = 3
-    Text = '9600'
+    Text = '115200'
     Items.Strings = (
       '300'
       '600'

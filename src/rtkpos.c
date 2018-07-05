@@ -2168,6 +2168,7 @@ extern void rtkinit(rtk_t *rtk, const prcopt_t *opt)
     rtk->opt=*opt;
     rtk->initial_mode=rtk->opt.mode;
     rtk->com_bias=0;
+    rtk->sol.thres=(float)opt->thresar[0];
 }
 /* free rtk control ------------------------------------------------------------
 * free memory for rtk control struct

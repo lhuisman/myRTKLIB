@@ -2596,12 +2596,12 @@ void __fastcall TMainForm::LoadOpt(void)
     FileSwapMargin  =ini->ReadInteger("setting","fswapmargin",    30);
     
     TimeSys         =ini->ReadInteger("setting","timesys",         0);
-    SolType         =ini->ReadInteger("setting","soltype",         0);
+    SolType         =ini->ReadInteger("setting","soltype",         3);
     PlotType1       =ini->ReadInteger("setting","plottype",        0);
-    PlotType2       =ini->ReadInteger("setting","plottype2",       0);
+    PlotType2       =ini->ReadInteger("setting","plottype2",       6);
     PlotType3       =ini->ReadInteger("setting","plottype3",       0);
     PlotType4       =ini->ReadInteger("setting","plottype4",       0);
-    PanelMode       =ini->ReadInteger("setting","panelmode",       0);
+    PanelMode       =ini->ReadInteger("setting","panelmode",       1);
     ProxyAddr       =ini->ReadString ("setting","proxyaddr",      "");
     MoniPort        =ini->ReadInteger("setting","moniport",DEFAULTPORT);
     PanelStack      =ini->ReadInteger("setting","panelstack",      0);
@@ -2656,8 +2656,8 @@ void __fastcall TMainForm::LoadOpt(void)
     
     if (PanelStack==0) {
         Panel21->Width=ini->ReadInteger("window","splitpos" ,185);
-        Panel22->Width=ini->ReadInteger("window","splitpos1",185);
-        Panel23->Width=ini->ReadInteger("window","splitpos2",185);
+        Panel22->Width=ini->ReadInteger("window","splitpos1",247);
+        Panel23->Width=ini->ReadInteger("window","splitpos2",262);
         Panel24->Width=ini->ReadInteger("window","splitpos3",185);
         Panel25->Width=ini->ReadInteger("window","splitpos4",185);
         Panel21->Height=185;
@@ -2668,8 +2668,8 @@ void __fastcall TMainForm::LoadOpt(void)
     }
     else {
         Panel21->Height=ini->ReadInteger("window","splitpos" ,185);
-        Panel22->Height=ini->ReadInteger("window","splitpos1",185);
-        Panel23->Height=ini->ReadInteger("window","splitpos2",185);
+        Panel22->Height=ini->ReadInteger("window","splitpos1",247);
+        Panel23->Height=ini->ReadInteger("window","splitpos2",262);
         Panel24->Height=ini->ReadInteger("window","splitpos3",185);
         Panel25->Height=ini->ReadInteger("window","splitpos4",185);
         Panel21->Width=185;
@@ -2677,8 +2677,8 @@ void __fastcall TMainForm::LoadOpt(void)
         Panel23->Width=185;
         Panel24->Width=185;
     }
-    Width         =ini->ReadInteger("window","width",   388);
-    Height        =ini->ReadInteger("window","height",  284);
+    Width         =ini->ReadInteger("window","width",   724);
+    Height        =ini->ReadInteger("window","height",  570);
     delete ini;
 }
 // save option to ini file --------------------------------------------------

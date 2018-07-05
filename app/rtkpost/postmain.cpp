@@ -895,6 +895,7 @@ int __fastcall TMainForm::GetOption(prcopt_t &prcopt, solopt_t &solopt,
     prcopt.thresar[1]=MaxPosVarAR;
     prcopt.thresar[2]=GloHwBias;
     prcopt.thresar[3]=ThresAR3;
+    prcopt.thresar[4]=ThresAR4;
     prcopt.elmaskar =ElMaskAR*D2R;
     prcopt.elmaskhold=ElMaskHold*D2R;
     prcopt.thresslip=SlipThres;
@@ -1306,10 +1307,10 @@ void __fastcall TMainForm::LoadOpt(void)
     RefPos[0]          =ini->ReadFloat  ("opt","refpos1",      0.0);
     RefPos[1]          =ini->ReadFloat  ("opt","refpos2",      0.0);
     RefPos[2]          =ini->ReadFloat  ("opt","refpos3",      0.0);
-    RovAntPcv          =ini->ReadInteger("opt","rovantpcv",      1);
-    RefAntPcv          =ini->ReadInteger("opt","refantpcv",      1);
-    RovAnt             =ini->ReadString ("opt","rovant",       "*");
-    RefAnt             =ini->ReadString ("opt","refant",       "*");
+    RovAntPcv          =ini->ReadInteger("opt","rovantpcv",      0);
+    RefAntPcv          =ini->ReadInteger("opt","refantpcv",      0);
+    RovAnt             =ini->ReadString ("opt","rovant",        "");
+    RefAnt             =ini->ReadString ("opt","refant",        "");
     RovAntE            =ini->ReadFloat  ("opt","rovante",      0.0);
     RovAntN            =ini->ReadFloat  ("opt","rovantn",      0.0);
     RovAntU            =ini->ReadFloat  ("opt","rovantu",      0.0);

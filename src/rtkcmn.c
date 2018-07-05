@@ -559,7 +559,7 @@ extern int testsnr(int base, int freq, double el, double snr,
     double minsnr,a;
     int i;
     
-    if (!mask->ena[base]||freq<0||freq>=NFREQ) return 0;
+    if (!mask->ena[base]||freq<0||freq>=NFREQ||snr==0) return 0;
     
     a=(el*R2D+5.0)/10.0;
     i=(int)floor(a); a-=i;

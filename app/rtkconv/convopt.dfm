@@ -534,6 +534,8 @@ object ConvOptDialog: TConvOptDialog
       Width = 71
       Height = 15
       Caption = 'GLO'
+      Checked = True
+      State = cbChecked
       TabOrder = 1
     end
     object Nav3: TCheckBox
