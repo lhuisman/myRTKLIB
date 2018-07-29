@@ -1425,7 +1425,10 @@ static double intpres(gtime_t time, const obsd_t *obs, int n, const nav_t *nav,
         for (j=0;j<nb;j++) if (obsb[j].sat==obs[i].sat) break;
         if (j>=nb) continue;
         for (k=0,p=y+i*nf*2,q=yb+j*nf*2;k<nf*2;k++,p++,q++) {
-            if (*p==0.0||*q==0.0) *p=0.0; else *p=(ttb*(*p)-tt*(*q))/(ttb-tt);
+            if (*p==0.0||*q==0.0||(obs[i].LLI[k%nf]&LLI_SLIP)||(obsb[j].LLI[k%nf]&LLI_SLIP)) 
+               *p=0.0; 
+            else 
+               *p=(ttb*(*p)-tt*(*q))/(ttb-tt);
         }
     }
     return fabs(ttb)>fabs(tt)?ttb:tt;
