@@ -58,10 +58,10 @@ extern "C" {
 
 #define VER_RTKLIB  "2.4.3 demo5"             /* library version */
 
-#define PATCH_LEVEL "b29c"               /* patch level */
+#define PATCH_LEVEL "b29d"               /* patch level */
 
 #define COPYRIGHT_RTKLIB \
-            "Copyright (C) 2007-2017 T.Takasu\nAll rights reserved."
+            "Copyright (C) 2007-2018 T.Takasu\nAll rights reserved."
 
 #define PI          3.1415926535897932  /* pi */
 #define D2R         (PI/180.0)          /* deg to rad */
@@ -252,7 +252,7 @@ extern "C" {
 #define MAXSTRRTK   8                   /* max number of stream in RTK server */
 #define MAXSBSMSG   32                  /* max number of SBAS msg in RTK server */
 #define MAXSOLMSG   8191                /* max length of solution message */
-#define MAXRAWLEN   4096                /* max length of receiver raw message */
+#define MAXRAWLEN   8192                /* max length of receiver raw message */
 #define MAXERRMSG   4096                /* max length of error/warning message */
 #define MAXANT      64                  /* max length of station name/antenna type */
 #define MAXSOLBUF   256                 /* max number of solution buffer */

@@ -1245,8 +1245,8 @@ void __fastcall TMainForm::LoadOpt(void)
     ValidThresAR       =ini->ReadFloat  ("opt","validthresar", 3.0);
     MaxPosVarAR        =ini->ReadFloat  ("opt","maxposvarar", 0.10);
     GloHwBias          =ini->ReadFloat  ("opt","glohwbias",   0.00);
-    ThresAR3           =ini->ReadFloat  ("opt","thresar3",    1E-5);
-    ThresAR4           =ini->ReadFloat  ("opt","thresar4",    1E-4);
+    ThresAR3           =ini->ReadFloat  ("opt","thresar3",    1E-7);
+    ThresAR4           =ini->ReadFloat  ("opt","thresar4",    1E-3);
     LockCntFixAmb      =ini->ReadInteger("opt","lockcntfixamb",  0);
     FixCntHoldAmb      =ini->ReadInteger("opt","fixcntholdamb", 20);
     ElMaskAR           =ini->ReadFloat  ("opt","elmaskar",    15.0);

@@ -498,7 +498,7 @@ static int cmdopts(int argc, char **argv, rnxopt_t *opt, char **ifile,
         if      (!strcmp(fmt,"rtcm2")) format=STRFMT_RTCM2;
         else if (!strcmp(fmt,"rtcm3")) format=STRFMT_RTCM3;
         else if (!strcmp(fmt,"nov"  )) format=STRFMT_OEM4;
-        else if (!strcmp(fmt,"oem3" )) format=STRFMT_OEM3;
+        else if (!strcmp(fmt,"cnav" )) format=STRFMT_CNAV;
         else if (!strcmp(fmt,"ubx"  )) format=STRFMT_UBX;
         else if (!strcmp(fmt,"sbp"  )) format=STRFMT_SBP;
         else if (!strcmp(fmt,"hemis")) format=STRFMT_CRES;

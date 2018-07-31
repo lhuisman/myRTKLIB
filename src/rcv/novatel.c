@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------------------
 * notvatel.c : NovAtel OEM6/OEM5/OEM4 receiver functions
 *
-*          Copyright (C) 2007-2017 by T.TAKASU, All rights reserved.
+*          Copyright (C) 2007-2018 by T.TAKASU, All rights reserved.
 *
 * reference :
 *     [1] NovAtel, OM-20000094 Rev6 OEMV Family Firmware Reference Manual, 2008
@@ -197,7 +197,7 @@ static int decode_trackstat(unsigned int stat, int *sys, int *code, int *track,
         switch (sigtype) {
             case  0: freq=0; *code=CODE_L1C; break; /* L1C/A */
             case  5: freq=0; *code=CODE_L1P; break; /* L1P */
-            case  9: freq=1; *code=CODE_L2D; break; /* L2Pcodeless */
+            case  9: freq=1; *code=CODE_L2W; break; /* L2Pcodeless */
             case 14: freq=2; *code=CODE_L5Q; break; /* L5Q (OEM6) */
             case 17: freq=1; *code=CODE_L2X; break; /* L2C(M+L) */
             default: freq=-1; break;
@@ -326,7 +326,11 @@ static int decode_rangecmpb(raw_t *raw)
             lli=0;
         }
         if (!parity) lli|=LLI_HALFC;
+#if 0
         if (halfc  ) lli|=LLI_HALFA;
+#else
+        if (halfc!=raw->halfc[sat-1][pos]) lli|=LLI_SLIP;
+#endif
         raw->tobs [sat-1][pos]=raw->time;
         raw->lockt[sat-1][pos]=lockt;
         raw->halfc[sat-1][pos]=halfc;
@@ -415,7 +419,11 @@ static int decode_rangeb(raw_t *raw)
             lli=0;
         }
         if (!parity) lli|=LLI_HALFC;
+#if 0
         if (halfc  ) lli|=LLI_HALFA;
+#else
+        if (halfc!=raw->halfc[sat-1][pos]) lli|=LLI_SLIP;
+#endif
         raw->tobs [sat-1][pos]=raw->time;
         raw->lockt[sat-1][pos]=lockt;
         raw->halfc[sat-1][pos]=halfc;

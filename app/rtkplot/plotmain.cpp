@@ -2729,17 +2729,17 @@ void __fastcall TPlot::LoadOpt(void)
     AutoScale    =ini->ReadInteger("plot","autoscale",     1);
     ShowStats    =ini->ReadInteger("plot","showstats",     0);
     ShowLabel    =ini->ReadInteger("plot","showlabel",     1);
-    ShowGLabel   =ini->ReadInteger("plot","showglabel",    1);
+    ShowGLabel   =ini->ReadInteger("plot","showglabel",    2);
     ShowCompass  =ini->ReadInteger("plot","showcompass",   0);
     ShowScale    =ini->ReadInteger("plot","showscale",     1);
     ShowArrow    =ini->ReadInteger("plot","showarrow",     0);
-    ShowSlip     =ini->ReadInteger("plot","showslip",      0);
-    ShowHalfC    =ini->ReadInteger("plot","showhalfc",     0);
+    ShowSlip     =ini->ReadInteger("plot","showslip",      2);
+    ShowHalfC    =ini->ReadInteger("plot","showhalfc",     1);
     ShowErr      =ini->ReadInteger("plot","showerr",       0);
     ShowEph      =ini->ReadInteger("plot","showeph",       0);
     PlotStyle    =ini->ReadInteger("plot","plotstyle",     0);
     MarkSize     =ini->ReadInteger("plot","marksize",      2);
-    NavSys       =ini->ReadInteger("plot","navsys",  SYS_GPS);
+    NavSys       =ini->ReadInteger("plot","navsys",  SYS_GPS|SYS_GLO|SYS_SBS|SYS_GAL);
     AnimCycle    =ini->ReadInteger("plot","animcycle",    10);
     RefCycle     =ini->ReadInteger("plot","refcycle",    100);
     HideLowSat   =ini->ReadInteger("plot","hidelowsat",    0);
@@ -2794,11 +2794,11 @@ void __fastcall TPlot::LoadOpt(void)
     RefDialog->StaPosFile=ini->ReadString ("plot","staposfile","");
     RefDialog->Format    =ini->ReadInteger("plot","staposformat",0);
     
-    ElMask    =ini->ReadFloat  ("plot","elmask", 0.0);
+    ElMask    =ini->ReadFloat  ("plot","elmask", 15.0);
     MaxDop    =ini->ReadFloat  ("plot","maxdop",30.0);
     MaxMP     =ini->ReadFloat  ("plot","maxmp" ,10.0);
     YRange    =ini->ReadFloat  ("plot","yrange", 5.0);
-    Origin    =ini->ReadInteger("plot","orgin",    2);
+    Origin    =ini->ReadInteger("plot","orgin",    4);
     RcvPos    =ini->ReadInteger("plot","rcvpos",   0);
     OOPos[0]  =ini->ReadFloat  ("plot","oopos1",   0);
     OOPos[1]  =ini->ReadFloat  ("plot","oopos2",   0);
