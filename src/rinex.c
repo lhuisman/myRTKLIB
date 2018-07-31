@@ -1962,11 +1962,11 @@ extern int outrnxobsh(FILE *fp, const rnxopt_t *opt, const nav_t *nav)
 /* output obs data field -----------------------------------------------------*/
 static void outrnxobsf(FILE *fp, double obs, int lli, int qual)
 {
-    if (obs==0.0||obs<=-1E9||obs>=1E9) {
+    if (obs==0.0) { 
         fprintf(fp,"              ");
     }
     else {
-        fprintf(fp,"%14.3f",obs);
+        fprintf(fp,"%14.3f",fmod(obs,1e9));
     }
     if (lli<0||!(lli&(LLI_SLIP|LLI_HALFC|LLI_BOCTRK))) {
         fprintf(fp," ");

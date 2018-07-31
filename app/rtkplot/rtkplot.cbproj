@@ -4,7 +4,7 @@
         <ProjectType>CppVCLApplication</ProjectType>
         <MainSource>rtkplot.cpp</MainSource>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Release</Config>
+        <Config Condition="'$(Config)'==''">Debug</Config>
         <FrameworkType>VCL</FrameworkType>
         <ProjectVersion>18.2</ProjectVersion>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
@@ -19,11 +19,6 @@
         <CfgParent>Base</CfgParent>
         <Base>true</Base>
     </PropertyGroup>
-    <PropertyGroup Condition="('$(Platform)'=='Win64' and '$(Base)'=='true') or '$(Base_Win64)'!=''">
-        <Base_Win64>true</Base_Win64>
-        <CfgParent>Base</CfgParent>
-        <Base>true</Base>
-    </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Debug' or '$(Cfg_1)'!=''">
         <Cfg_1>true</Cfg_1>
         <CfgParent>Base</CfgParent>
@@ -31,12 +26,6 @@
     </PropertyGroup>
     <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Cfg_1)'=='true') or '$(Cfg_1_Win32)'!=''">
         <Cfg_1_Win32>true</Cfg_1_Win32>
-        <CfgParent>Cfg_1</CfgParent>
-        <Cfg_1>true</Cfg_1>
-        <Base>true</Base>
-    </PropertyGroup>
-    <PropertyGroup Condition="('$(Platform)'=='Win64' and '$(Cfg_1)'=='true') or '$(Cfg_1_Win64)'!=''">
-        <Cfg_1_Win64>true</Cfg_1_Win64>
         <CfgParent>Cfg_1</CfgParent>
         <Cfg_1>true</Cfg_1>
         <Base>true</Base>
@@ -105,13 +94,6 @@
         <UWP_CppLogo44>$(BDS)\bin\Artwork\Windows\UWP\cppreg_UwpDefault_44.png</UWP_CppLogo44>
         <UWP_CppLogo150>$(BDS)\bin\Artwork\Windows\UWP\cppreg_UwpDefault_150.png</UWP_CppLogo150>
     </PropertyGroup>
-    <PropertyGroup Condition="'$(Base_Win64)'!=''">
-        <BCC_Defines>_RTLDLL;WIN32;TRACE;ENAGLO;ENAGAL;ENAQZS;ENACMP;NEXOBS=3;NFREQ=3;$(BCC_Defines)</BCC_Defines>
-        <TASM_Defines>_RTLDLL;WIN32;TRACE;ENAGLO;ENAGAL;ENAQZS;NFREQ=3;$(TASM_Defines)</TASM_Defines>
-        <BRCC_Defines>_RTLDLL;WIN32;TRACE;ENAGLO;ENAGAL;ENAQZS;NFREQ=3;$(BRCC_Defines)</BRCC_Defines>
-        <UWP_CppLogo44>$(BDS)\bin\Artwork\Windows\UWP\cppreg_UwpDefault_44.png</UWP_CppLogo44>
-        <UWP_CppLogo150>$(BDS)\bin\Artwork\Windows\UWP\cppreg_UwpDefault_150.png</UWP_CppLogo150>
-    </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1)'!=''">
         <DCC_AdditionalSwitches> -V</DCC_AdditionalSwitches>
         <DCC_Define>DEBUG;$(DCC_Define);$(DCC_Define)</DCC_Define>
@@ -138,9 +120,6 @@
         <BCC_wpia>false</BCC_wpia>
         <VerInfo_Locale>1033</VerInfo_Locale>
         <BCC_wpar>false</BCC_wpar>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Cfg_1_Win64)'!=''">
-        <BCC_Defines>_DEBUG;$(BCC_Defines);$(BCC_Defines)</BCC_Defines>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_AdditionalSwitches> -$O+</DCC_AdditionalSwitches>
@@ -366,6 +345,9 @@
         <CppCompile Include="..\..\src\rcv\cmr.c">
             <BuildOrder>61</BuildOrder>
         </CppCompile>
+        <CppCompile Include="..\..\src\rcv\comnav.c">
+            <BuildOrder>62</BuildOrder>
+        </CppCompile>
         <CppCompile Include="..\..\src\rcv\crescent.c">
             <BuildOrder>37</BuildOrder>
             <BuildOrder>20</BuildOrder>
@@ -546,7 +528,6 @@
             </CPlusPlusBuilder.Personality>
             <Platforms>
                 <Platform value="Win32">True</Platform>
-                <Platform value="Win64">False</Platform>
             </Platforms>
             <Deployment Version="3">
                 <DeployFile LocalName="..\..\src\rcv\binex.c" Configuration="Release" Class="ProjectFile">

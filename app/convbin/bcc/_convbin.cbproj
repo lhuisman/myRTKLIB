@@ -211,6 +211,9 @@
         <CppCompile Include="..\..\..\src\rcv\tersus.c">
             <BuildOrder>28</BuildOrder>
         </CppCompile>
+        <CppCompile Include="..\..\..\src\rcv\comnav.c">
+            <BuildOrder>29</BuildOrder>
+        </CppCompile>
         <CppCompile Include="..\..\..\src\rcv\ublox.c">
             <BuildOrder>7</BuildOrder>
             <BuildOrder>12</BuildOrder>
@@ -523,6 +526,12 @@
                     </Platform>
                 </DeployFile>
                 <DeployFile LocalName="..\..\..\src\rcv\tersus.c" Configuration="Release" Class="ProjectFile">
+                    <Platform Name="Win32">
+                        <RemoteDir>.\</RemoteDir>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="..\..\..\src\rcv\comnav.c" Configuration="Release" Class="ProjectFile">
                     <Platform Name="Win32">
                         <RemoteDir>.\</RemoteDir>
                         <Overwrite>true</Overwrite>

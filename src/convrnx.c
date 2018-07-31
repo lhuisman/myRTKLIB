@@ -696,13 +696,13 @@ static void set_obstype(int format, rnxopt_t *opt)
         {CODE_L1I,CODE_L7I},
         {0}
     };
-    static const unsigned char codes_oem3[NSATSYS][8]={ /* novatel oem3 */
-        {CODE_L1C,CODE_L2P},
-        {0},
-        {0},
-        {0},
-        {CODE_L1C},
-        {0},
+    static const unsigned char codes_cnav[NSATSYS][8]={ /* comnav */
+        {CODE_L1C,CODE_L1P,CODE_L2D,CODE_L2X,CODE_L5I},
+        {CODE_L1C,CODE_L2C},
+        {CODE_L1B,CODE_L1X,CODE_L5X,CODE_L7X,CODE_L8X},
+        {CODE_L1C,CODE_L2X,CODE_L5Q},
+        {CODE_L1C,CODE_L5I},
+        {CODE_L1I,CODE_L7I},
         {0}
     };
     static const unsigned char codes_oem4[NSATSYS][8]={ /* novatel oem6 */
@@ -802,7 +802,7 @@ static void set_obstype(int format, rnxopt_t *opt)
             case STRFMT_RTCM2: codes=codes_rtcm2[i]; break;
             case STRFMT_RTCM3: codes=codes_rtcm3[i]; break;
             case STRFMT_OEM4 : codes=codes_oem4 [i]; break;
-            case STRFMT_OEM3 : codes=codes_oem3 [i]; break;
+            case STRFMT_CNAV : codes=codes_cnav [i]; break;
             case STRFMT_CRES : codes=codes_cres [i]; break;
             case STRFMT_SBP  : codes=codes_sbp  [i]; break;
             case STRFMT_JAVAD: codes=codes_javad[i]; break;

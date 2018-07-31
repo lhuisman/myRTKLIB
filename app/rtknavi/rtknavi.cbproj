@@ -308,6 +308,9 @@
         <CppCompile Include="..\..\src\rcv\cmr.c">
             <BuildOrder>61</BuildOrder>
         </CppCompile>
+        <CppCompile Include="..\..\src\rcv\comnav.c">
+            <BuildOrder>62</BuildOrder>
+        </CppCompile>
         <CppCompile Include="..\..\src\rcv\crescent.c">
             <BuildOrder>49</BuildOrder>
         </CppCompile>
@@ -708,6 +711,12 @@
                     </Platform>
                 </DeployFile>
                 <DeployFile LocalName="..\..\src\rcv\tersus.c" Configuration="Release" Class="ProjectFile">
+                    <Platform Name="Win32">
+                        <RemoteDir>.\</RemoteDir>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="..\..\src\rcv\comnav.c" Configuration="Release" Class="ProjectFile">
                     <Platform Name="Win32">
                         <RemoteDir>.\</RemoteDir>
                         <Overwrite>true</Overwrite>

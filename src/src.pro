@@ -61,6 +61,7 @@ SOURCES += rtkcmn.c \
     rcv/ss2.c \
     rcv/ublox.c \
     rcv/tersus.c \
+    rcv/comnav.c \
     rcv/swiftnav.c \
     rcv/cmr.c
 

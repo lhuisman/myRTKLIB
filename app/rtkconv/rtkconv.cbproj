@@ -250,6 +250,9 @@
         <CppCompile Include="..\..\src\rcv\cmr.c">
             <BuildOrder>38</BuildOrder>
         </CppCompile>
+        <CppCompile Include="..\..\src\rcv\comnav.c">
+            <BuildOrder>40</BuildOrder>
+        </CppCompile>
         <CppCompile Include="..\..\src\rcv\crescent.c">
             <BuildOrder>20</BuildOrder>
             <BuildOrder>10</BuildOrder>
@@ -483,6 +486,12 @@
                     </Platform>
                 </DeployFile>
                 <DeployFile LocalName="..\..\src\rcv\tersus.c" Configuration="Debug" Class="ProjectFile">
+                    <Platform Name="Win32">
+                        <RemoteDir>.\</RemoteDir>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="..\..\src\rcv\comnav.c" Configuration="Debug" Class="ProjectFile">
                     <Platform Name="Win32">
                         <RemoteDir>.\</RemoteDir>
                         <Overwrite>true</Overwrite>

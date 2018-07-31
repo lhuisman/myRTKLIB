@@ -990,7 +990,7 @@ extern int input_raw(raw_t *raw, int format, unsigned char data)
     
     switch (format) {
         case STRFMT_OEM4 : return input_oem4 (raw,data);
-        case STRFMT_OEM3 : return input_oem3 (raw,data);
+        case STRFMT_CNAV : return input_cnav (raw,data);
         case STRFMT_UBX  : return input_ubx  (raw,data);
         case STRFMT_SBP  : return input_sbp  (raw,data);
         case STRFMT_CRES : return input_cres (raw,data);
@@ -1020,7 +1020,7 @@ extern int input_rawf(raw_t *raw, int format, FILE *fp)
     
     switch (format) {
         case STRFMT_OEM4 : return input_oem4f (raw,fp);
-        case STRFMT_OEM3 : return input_oem3f (raw,fp);
+        case STRFMT_CNAV : return input_cnavf (raw,fp);
         case STRFMT_UBX  : return input_ubxf  (raw,fp);
         case STRFMT_SBP  : return input_sbpf  (raw,fp);
         case STRFMT_CRES : return input_cresf (raw,fp);

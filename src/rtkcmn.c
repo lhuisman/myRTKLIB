@@ -204,7 +204,7 @@ const prcopt_t prcopt_default={ /* defaults processing options */
     {0},{0},{0},                /* baseline,ru,rb */
     {"",""},                    /* anttype */
     {{0}},{{0}},{0},            /* antdel,pcv,exsats */
-    1                           /* maxaveep */
+    1,1                           /* maxaveep,initrst */
 };
 const solopt_t solopt_default={ /* defaults solution output options */
     SOLF_LLH,TIMES_GPST,1,3,    /* posf,times,timef,timeu */
@@ -217,7 +217,7 @@ const char *formatstrs[32]={    /* stream format strings */
     "RTCM 2",                   /*  0 */
     "RTCM 3",                   /*  1 */
     "NovAtel OEM6",             /*  2 */
-    "NovAtel OEM3",             /*  3 */
+    "ComNav",                   /*  3 */
     "u-blox",                   /*  4 */
     "Swift Navigation SBP",     /*  5 */
     "Hemisphere",               /*  6 */

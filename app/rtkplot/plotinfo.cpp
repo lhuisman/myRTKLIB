@@ -408,3 +408,4 @@ void __fastcall TPlot::UpdatePoint(int x, int y)
     Message2->Caption=A2U(msg);
 }
 //---------------------------------------------------------------------------
+
