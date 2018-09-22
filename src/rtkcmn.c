@@ -182,8 +182,8 @@ const double chisqr[100]={      /* chi-sqr(n) (alpha=0.001) */
     138 ,139 ,140 ,142 ,143 ,144 ,145 ,147 ,148 ,149
 };
 const double lam_carr[MAXFREQ]={ /* carrier wave length (m) */
-    CLIGHT/FREQ1,CLIGHT/FREQ2,CLIGHT/FREQ5,CLIGHT/FREQ6,CLIGHT/FREQ7,
-    CLIGHT/FREQ8,CLIGHT/FREQ9
+    CLIGHT/FREQL1,CLIGHT/FREQL2,CLIGHT/FREQE5b,CLIGHT/FREQL5,CLIGHT/FREQE6,
+    CLIGHT/FREQE5ab,CLIGHT/FREQs
 };
 const prcopt_t prcopt_default={ /* defaults processing options */
     PMODE_SINGLE,0,2,SYS_GPS,   /* mode,soltype,nf,navsys */
@@ -248,24 +248,24 @@ static char *obscodes[]={       /* observation code strings */
     "5B","5C","9A","9B","9C", "9X",""  ,""  ,""  ,""    /* 50-59 */
 };
 static unsigned char obsfreqs[]={
-    /* 1:L1/E1, 2:L2/B1, 3:L5/E5a/L3, 4:L6/LEX/B3, 5:E5b/B2, 6:E5(a+b), 7:S */
+    /* 1:L1/E1, 2:L2/B1, 3:E5b/B2, 4:L5/E5a/L3, 5:L6/LEX/B3, 6:E5(a+b), 7:S */
     0, 1, 1, 1, 1,  1, 1, 1, 1, 1, /*  0- 9 */
     1, 1, 1, 1, 2,  2, 2, 2, 2, 2, /* 10-19 */
-    2, 2, 2, 2, 3,  3, 3, 5, 5, 5, /* 20-29 */
-    4, 4, 4, 4, 4,  4, 4, 6, 6, 6, /* 30-39 */
-    2, 2, 4, 4, 3,  3, 3, 1, 1, 3, /* 40-49 */
-    3, 3, 7, 7, 7,  7, 0, 0, 0, 0  /* 50-59 */
+    2, 2, 2, 2, 4,  4, 4, 3, 3, 3, /* 20-29 */
+    5, 5, 5, 5, 5,  5, 5, 6, 6, 6, /* 30-39 */
+    2, 2, 5, 5, 4,  4, 4, 1, 1, 4, /* 40-49 */
+    4, 4, 7, 7, 7,  7, 0, 0, 0, 0  /* 50-59 */
 };
 static char codepris[7][MAXFREQ][16]={  /* code priority table */
-   
-   /* L1/E1      L2/B1        L5/E5a/L3 L6/LEX/B3 E5b/B2    E5(a+b)  S */
-    {"CPYWMNSL","PYWCMNDSLX","IQX"     ,""       ,""       ,""      ,""    }, /* GPS */
-    {"PC"      ,"PC"        ,"IQX"     ,""       ,""       ,""      ,""    }, /* GLO */
-    {"CABXZ"   ,""          ,"IQX"     ,"ABCXZ"  ,"IQX"    ,"IQX"   ,""    }, /* GAL */
-    {"CSLXZ"   ,"SLX"       ,"IQX"     ,"SLX"    ,""       ,""      ,""    }, /* QZS */
-    {"C"       ,""          ,"IQX"     ,""       ,""       ,""      ,""    }, /* SBS */
-    {"IQX"     ,"IQX"       ,"IQX"     ,"IQX"    ,"IQX"    ,""      ,""    }, /* BDS */
-    {""        ,""          ,"ABCX"    ,""       ,""       ,""      ,"ABCX"}  /* IRN */
+
+   /* L1/E1      L2/B1   E5b/B2  L5/E5a/L3 L6/LEX/B3     E5(a+b)  S */
+    {"CPYWMNSL","CLPYWMNDSX","IQX"   ,"IQX"   ,""        ,""      ,""    }, /* GPS */
+    {"PC"      ,"PC"        ,"IQX"   ,"IQX"   ,""        ,""      ,""    }, /* GLO */
+    {"CABXZ"   ,""          ,"IQX"   ,"IQX"   ,"ABCXZ"   ,"IQX"   ,""    }, /* GAL */
+    {"CSLXZ"   ,"SLX"       ,"IQX"   ,"IQX"   ,"SLX"     ,""      ,""    }, /* QZS */
+    {"C"       ,""          ,"IQX"   ,"IQX"   ,""        ,""      ,""    }, /* SBS */
+    {"IQX"     ,"IQX"       ,"IQX"   ,"IQX"   ,"IQX"     ,""      ,""    }, /* BDS */
+    {""        ,""          ,"ABCX"  ,"ABCX"  ,""        ,""      ,"ABCX"}  /* IRN */
 };
 static fatalfunc_t *fatalfunc=NULL; /* fatal callback function */
 
@@ -3377,13 +3377,13 @@ extern double satwavelen(int sat, int frq, const nav_t *nav)
         else if (frq==2) return CLIGHT/FREQ3_CMP; /* B3 */
     }
     else {
-        if      (frq==0) return CLIGHT/FREQ1; /* L1/E1 */
-        else if (frq==1) return CLIGHT/FREQ2; /* L2 */
-        else if (frq==2) return CLIGHT/FREQ5; /* L5/E5a */
-        else if (frq==3) return CLIGHT/FREQ6; /* L6/LEX */
-        else if (frq==4) return CLIGHT/FREQ7; /* E5b */
-        else if (frq==5) return CLIGHT/FREQ8; /* E5a+b */
-        else if (frq==6) return CLIGHT/FREQ9; /* S */
+        if      (frq==0) return CLIGHT/FREQL1; /* L1/E1 */
+        else if (frq==1) return CLIGHT/FREQL2; /* L2 */
+        else if (frq==2) return CLIGHT/FREQE5b; /* E5b */
+        else if (frq==3) return CLIGHT/FREQL5; /* L5/E5a */
+        else if (frq==4) return CLIGHT/FREQE6; /* L6/LEX */
+        else if (frq==5) return CLIGHT/FREQE5ab; /* E5a+b */
+        else if (frq==6) return CLIGHT/FREQs; /* S */
     }
     return 0.0;
 }

@@ -93,7 +93,8 @@ __fastcall TOptDialog::TOptDialog(TComponent* Owner)
 	: TForm(Owner)
 {
 	AnsiString label,s;
-	int freq[]={1,2,5,6,7,8,9},nglo=MAXPRNGLO,ngal=MAXPRNGAL,nqzs=MAXPRNQZS;
+	const char *freqs[]={"L1","L2","E5b","L5","E6","E5ab"};
+	int nglo=MAXPRNGLO,ngal=MAXPRNGAL,nqzs=MAXPRNQZS;
 	int ncmp=MAXPRNCMP,nirn=MAXPRNIRN;
 	PrcOpt=prcopt_default;
 	SolOpt=solopt_default;
@@ -102,7 +103,7 @@ __fastcall TOptDialog::TOptDialog(TComponent* Owner)
 	
 	Freq->Items->Clear();
 	for (int i=0;i<NFREQ;i++) {
-		label=label+(i>0?"+":"")+s.sprintf("L%d",freq[i]);
+		label=label+(i>0?"+":"")+s.sprintf("%s",freqs[i]);
 		Freq->Items->Add(label);
 	}
 	if (nglo<=0) NavSys2->Enabled=false;
@@ -717,7 +718,6 @@ void __fastcall TOptDialog::LoadOpt(AnsiString file)
 	
 	PosMode		 ->ItemIndex	=prcopt.mode;
 	Freq		 ->ItemIndex	=prcopt.nf>NFREQ-1?NFREQ-1:prcopt.nf-1;
-	Solution	 ->ItemIndex	=prcopt.soltype;
 	ElMask		 ->Text			=s.sprintf("%.0f",prcopt.elmin*R2D);
 	DynamicModel ->ItemIndex	=prcopt.dynamics;
 	TideCorr	 ->ItemIndex	=prcopt.tidecorr;
@@ -940,7 +940,7 @@ void __fastcall TOptDialog::SaveOpt(AnsiString file)
 
 	prcopt.mode		=PosMode	 ->ItemIndex;
 	prcopt.nf		=Freq		 ->ItemIndex+1;
-	prcopt.soltype	=Solution	 ->ItemIndex;
+	prcopt.soltype	=0;   /* forward */
 	prcopt.elmin	=str2dbl(ElMask	->Text)*D2R;
 	prcopt.dynamics	=DynamicModel->ItemIndex;
 	prcopt.tidecorr	=TideCorr	 ->ItemIndex;
@@ -1071,7 +1071,6 @@ void __fastcall TOptDialog::UpdateEnable(void)
 	int ar=rtk||ppp;
 	
 	Freq           ->Enabled=rel;
-	Solution       ->Enabled=false;
 	DynamicModel   ->Enabled=rel;
 	TideCorr       ->Enabled=rel||ppp;
 	PosOpt1        ->Enabled=ppp;

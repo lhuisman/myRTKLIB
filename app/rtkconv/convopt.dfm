@@ -432,7 +432,7 @@ object ConvOptDialog: TConvOptDialog
       Top = 14
       Width = 53
       Height = 17
-      Caption = 'L5/3'
+      Caption = 'E5b'
       TabOrder = 2
     end
     object Freq4: TCheckBox
@@ -440,7 +440,7 @@ object ConvOptDialog: TConvOptDialog
       Top = 14
       Width = 45
       Height = 17
-      Caption = 'L6'
+      Caption = 'L5'
       TabOrder = 3
     end
     object Freq5: TCheckBox
@@ -448,23 +448,23 @@ object ConvOptDialog: TConvOptDialog
       Top = 14
       Width = 39
       Height = 17
-      Caption = 'L7'
+      Caption = 'E6'
       TabOrder = 4
     end
     object Freq6: TCheckBox
-      Left = 177
+      Left = 174
       Top = 14
-      Width = 31
+      Width = 40
       Height = 17
-      Caption = 'L8'
+      Caption = 'E5ab'
       TabOrder = 5
     end
     object Freq7: TCheckBox
-      Left = 209
+      Left = 218
       Top = 14
       Width = 31
       Height = 17
-      Caption = 'L9'
+      Caption = 'S'
       TabOrder = 6
     end
   end

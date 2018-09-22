@@ -211,8 +211,8 @@ static void gen_obs_gps(rtcm_t *rtcm, const obsd_t *data, int *code1, int *pr1,
     double P0,L0,P1,L1;
     int lt1,lt2;
     
-    lam1=CLIGHT/FREQ1;
-    lam2=CLIGHT/FREQ2;
+    lam1=CLIGHT/FREQL1;
+    lam2=CLIGHT/FREQL2;
     *pr1=*amb=0;
     if (ppr1) *ppr1=0xFFF80000; /* invalid values */
     if (pr21) *pr21=0xFFFFE000;
@@ -221,9 +221,9 @@ static void gen_obs_gps(rtcm_t *rtcm, const obsd_t *data, int *code1, int *pr1,
     /* adjust P and L for consistency with time tag adjustment */
     P0=L0=P1=L1=0;
     if (data->P[0]!=0.0) P0=data->P[0]-tadj*CLIGHT;
-    if (data->L[0]!=0.0) L0=data->L[0]-tadj*FREQ1;
+    if (data->L[0]!=0.0) L0=data->L[0]-tadj*FREQL1;
     if (data->P[1]!=0.0) P1=data->P[1]-tadj*CLIGHT;
-    if (data->L[1]!=0.0) L1=data->L[1]-tadj*FREQ2;
+    if (data->L[1]!=0.0) L1=data->L[1]-tadj*FREQL2;
 
     /* L1 pseudorange */
     if (P0!=0.0&&data->code[0]) {

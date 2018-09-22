@@ -687,14 +687,20 @@ static void set_obstype(int format, rnxopt_t *opt)
         {0},
         {0}
     };
-    static const unsigned char codes_rtcm3[NSATSYS][8]={ /* rtcm3 */
-        {CODE_L1C,CODE_L1W,CODE_L2W,CODE_L2X,CODE_L5X},
-        {CODE_L1C,CODE_L1P,CODE_L2C,CODE_L2P},
-        {CODE_L1X,CODE_L5X,CODE_L7X,CODE_L8X},
-        {CODE_L1C,CODE_L2X,CODE_L5X},
-        {CODE_L1C,CODE_L5X},
-        {CODE_L1I,CODE_L7I},
-        {0}
+    static const unsigned char codes_rtcm3[NSATSYS][32]={ /* rtcm 3.2 */
+        {CODE_L1C,CODE_L1P,CODE_L1W,CODE_L1Y,CODE_L1M,CODE_L1N,CODE_L1S,CODE_L1L,
+         CODE_L2C,CODE_L2D,CODE_L2S,CODE_L2L,CODE_L2X,CODE_L2P,CODE_L2W,CODE_L2Y,
+         CODE_L2M,CODE_L2N,CODE_L5I,CODE_L5Q,CODE_L5X},
+        {CODE_L1C,CODE_L1P,CODE_L2C,CODE_L2P,CODE_L3I,CODE_L3Q,CODE_L3X},
+        {CODE_L1C,CODE_L1A,CODE_L1B,CODE_L1X,CODE_L1Z,CODE_L5I,CODE_L5Q,CODE_L5X,
+         CODE_L6A,CODE_L6B,CODE_L6C,CODE_L6X,CODE_L6Z,CODE_L7I,CODE_L7Q,CODE_L7X,
+         CODE_L8I,CODE_L8Q,CODE_L8X},
+        {CODE_L1C,CODE_L1S,CODE_L1L,CODE_L1X,CODE_L1Z,CODE_L2S,CODE_L2L,CODE_L2X,
+         CODE_L5I,CODE_L5Q,CODE_L5X,CODE_L6S,CODE_L6L,CODE_L6X},
+        {CODE_L1C,CODE_L5I,CODE_L5Q,CODE_L5X},
+        {CODE_L1I,CODE_L1Q,CODE_L1X,CODE_L7I,CODE_L7Q,CODE_L7X,CODE_L6I,CODE_L6Q,
+         CODE_L6X},
+        {CODE_L5A,CODE_L5B,CODE_L5C,CODE_L5X,CODE_L9A,CODE_L9B,CODE_L9C,CODE_L9X}
     };
     static const unsigned char codes_cnav[NSATSYS][8]={ /* comnav */
         {CODE_L1C,CODE_L1P,CODE_L2D,CODE_L2X,CODE_L5I},
@@ -777,19 +783,19 @@ static void set_obstype(int format, rnxopt_t *opt)
     static const unsigned char codes_sbp[NSATSYS][8]={ /* Swift */
         {CODE_L1C,CODE_L2S},
         {CODE_L1C,CODE_L2C},
+        {CODE_L1B,CODE_L7I},
         {CODE_L1C},
         {CODE_L1C},
-        {CODE_L1C},
-        {CODE_L1I},
+        {CODE_L1I,CODE_L7I},
         {0}
     };
-    static const unsigned char codes_other[7][8]={ /* others */
+    static const unsigned char codes_other[NSATSYS][8]={ /* others inc u-blox */
+        {CODE_L1C,CODE_L2L},
+        {CODE_L1C,CODE_L2C},
+        {CODE_L1C,CODE_L1X,CODE_L7Q},
         {CODE_L1C},
         {CODE_L1C},
-        {CODE_L1X},
-        {CODE_L1C},
-        {CODE_L1C},
-        {CODE_L1I},
+        {CODE_L1I,CODE_L7I},
         {0}
     };
     const unsigned char *codes;

@@ -196,7 +196,7 @@ static int decode_rxmraw(raw_t *raw)
     
     for (i=0,p+=8;i<nsat&&i<MAXOBS;i++,p+=24) {
         raw->obs.data[n].time=time;
-        raw->obs.data[n].L[0]  =R8(p   )-toff*FREQ1;
+        raw->obs.data[n].L[0]  =R8(p   )-toff*FREQL1;
         raw->obs.data[n].P[0]  =R8(p+ 8)-toff*CLIGHT;
         raw->obs.data[n].D[0]  =R4(p+16);
         prn                    =U1(p+20);
@@ -235,9 +235,9 @@ static int decode_rxmraw(raw_t *raw)
 static int decode_rxmrawx(raw_t *raw)
 {
     gtime_t time;
-    double tow,cp1,pr1,tadj=0.0,toff=0.0,freq,tn;
-    int i,j,sys,prn,sat,n=0,nsat,week,tstat,lockt,halfv,halfc,fcn;
-    int cpstd,prstd,std_slip=0;
+    double tow,cp1,pr1,tadj=0.0,toff=0.0,frq,freq,tn;
+    int i,j,sys,prn,sat,n=0,nextn=0,nsat,week,tstat,lockt,halfv,halfc,fcn;
+    int cpstd,prstd,sigid,std_slip=0;
     char *q;
     unsigned char *p=raw->buff+6;
     
@@ -285,42 +285,79 @@ static int decode_rxmrawx(raw_t *raw)
             trace(2,"ubx rxmrawx sat number error: sys=%2d prn=%2d\n",sys,prn);
             continue;
         }
+        sigid=U1(p+22)&7;  /* signal identifier */
         prstd=U1(p+27)&15; /* pseudorange std-dev */
         prstd=1<<(prstd>=5?prstd-5:0); /* prstd=2^(x-5) */
         prstd=prstd<=9?prstd:9;  /* limit to 9 to fit RINEX format */
         cpstd=U1(p+28)&15; /* carrier-phase std-dev */
         tstat=U1(p+30); /* tracking status */
         pr1=tstat&1?R8(p  ):0.0;
+
+        /* set freq and code */
+        switch (sigid) {
+            case 0: frq=0;break;
+            case 1: frq=0;break;
+            case 2: frq=1;break;
+            case 3: frq=1;break;
+            case 4: frq=1;break;
+            case 5: frq=2;break;
+            case 6: frq=2;break;
+        }
+
+        /* find obs record if freq>0 */
+        if (frq==0) {
+            /* start new obs record */
+            n=nextn++;
+            for (j=0;j<NFREQ+NEXOBS;j++) {
+                raw->obs.data[n].L[j]=raw->obs.data[n].P[j]=0.0;
+                raw->obs.data[n].D[j]=0.0;
+                raw->obs.data[n].SNR[j]=raw->obs.data[n].LLI[j]=0;
+                raw->obs.data[n].code[j]=CODE_NONE;
+            }
+        } else { /* find existing record */
+            for ((j=0);j<nextn;j++)
+                if (raw->obs.data[j].sat==sat) break;
+            n=j;
+        }
+
+        if (frq==0) {
+            raw->obs.data[n].code[0]=
+                sys==SYS_CMP?CODE_L1I:CODE_L1C;
+        } else if (frq==1) {
+            raw->obs.data[n].code[1]=
+                sys==SYS_CMP?CODE_L7I:(sys==SYS_GLO?CODE_L2C:CODE_L2L);
+        } else if (frq==2) {
+            raw->obs.data[n].code[2]=CODE_L7Q;
+        }
+
         /* indicate phase ok if locked and std<=slip threshold */
         cp1=tstat&2?R8(p+8):0.0;
         if (cp1==-0.5||cpstd>CPSTD_VALID) cp1=0.0; /* invalid phase */
         raw->obs.data[n].sat=sat;
         raw->obs.data[n].time=time;
-        raw->obs.data[n].P[0]=pr1;
-        raw->obs.data[n].L[0]=cp1;
-        raw->obs.data[n].qualL[0]=cpstd<=7?cpstd:0;
-        raw->obs.data[n].qualP[0]=prstd;
+        raw->obs.data[n].P[frq]=pr1;
+        raw->obs.data[n].L[frq]=cp1;
+        raw->obs.data[n].qualL[frq]=cpstd<=7?cpstd:0;
+        raw->obs.data[n].qualP[frq]=prstd;
         
         /* offset by time tag adjustment */
         if (toff!=0.0&&cp1!=0) {
             fcn=(int)U1(p+23)-7;
             freq=sys==SYS_CMP?FREQ1_CMP:
-                 (sys==SYS_GLO?FREQ1_GLO+DFRQ1_GLO*fcn:FREQ1);
-            raw->obs.data[n].P[0]-=toff*CLIGHT;
-            raw->obs.data[n].L[0]-=toff*freq;
+                 (sys==SYS_GLO?FREQ1_GLO+DFRQ1_GLO*fcn:FREQL1);
+            raw->obs.data[n].P[frq]-=toff*CLIGHT;
+            raw->obs.data[n].L[frq]-=toff*freq;
         }
-        raw->obs.data[n].D[0]=R4(p+16);
-        raw->obs.data[n].SNR[0]=U1(p+26)*4;
+        raw->obs.data[n].D[frq]=R4(p+16);
+        raw->obs.data[n].SNR[frq]=U1(p+26)*4;
         /* indicate slip occurred if phase std>=slip threshold */
-        raw->obs.data[n].LLI[0]=0;
-        raw->obs.data[n].code[0]=
-            sys==SYS_CMP?CODE_L1I:(sys==SYS_GAL?CODE_L1X:CODE_L1C);
+        raw->obs.data[n].LLI[frq]=0;
         
         lockt=U2(p+24);    /* lock time count (ms) */
-        if (lockt==0||lockt<raw->lockt[sat-1][0]) raw->lockt[sat-1][1]=1;
-        raw->lockt[sat-1][0]=lockt;
+        if (lockt==0||lockt<raw->lockt[sat-1][frq]) raw->lockflag[sat-1][frq]=1;
+        raw->lockt[sat-1][frq]=lockt;
         if (std_slip>0) {
-            if (cpstd>=std_slip) raw->lockt[sat-1][1]=1; /* slip by std-dev of cp */
+            if (cpstd>=std_slip) raw->lockflag[sat-1][frq]=1; /* slip by std-dev of cp */
         }
         if (sys==SYS_SBS) { /* half-cycle valid */
             halfv=lockt>8000?1:0;
@@ -336,30 +373,17 @@ static int decode_rxmrawx(raw_t *raw)
 #endif
 
         if (cp1!=0.0) { /* carrier-phase valid */
-            
+
             /* LLI: bit1=loss-of-lock,bit2=half-cycle-invalid */
-            raw->obs.data[n].LLI[0]|=raw->lockt[sat-1][1]>0.0?LLI_SLIP:0;
-#if 1
-            raw->obs.data[n].LLI[0]|=halfc!=raw->halfc[sat-1][0]?1:0;
-#elif 0
-            raw->obs.data[n].LLI[0]|=halfc?LLI_HALFA:0; /* half-cycle subtraced */
-#else
-            raw->obs.data[n].LLI[0]|=halfc?LLI_HALFS:0; /* half-cycle subtraced */
-#endif
-            raw->obs.data[n].LLI[0]|=halfv?0:LLI_HALFC;
-            raw->halfc[sat-1][0]=halfc;
-            raw->lockt[sat-1][1]=0.0;
+            raw->obs.data[n].LLI[frq]|=raw->lockflag[sat-1][frq]>0.0?LLI_SLIP:0;
+            raw->obs.data[n].LLI[frq]|=halfc!=raw->halfc[sat-1][frq]?1:0;
+            raw->obs.data[n].LLI[frq]|=halfv?0:LLI_HALFC;
+            raw->halfc[sat-1][frq]=halfc;
+            raw->lockflag[sat-1][frq]=0.0;
         }
-        for (j=1;j<NFREQ+NEXOBS;j++) {
-            raw->obs.data[n].L[j]=raw->obs.data[n].P[j]=0.0;
-            raw->obs.data[n].D[j]=0.0;
-            raw->obs.data[n].SNR[j]=raw->obs.data[n].LLI[j]=0;
-            raw->obs.data[n].code[j]=CODE_NONE;
-        }
-        n++;
     }
     raw->time=time;
-    raw->obs.n=n;
+    raw->obs.n=nextn;
     return 1;
 }
 /* save subframe -------------------------------------------------------------*/

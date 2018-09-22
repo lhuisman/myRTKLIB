@@ -779,7 +779,7 @@ static int decode_obsdata(FILE *fp, char *buff, double ver, int mask,
     }
     /* save obs data */
     for (i=0;i<ind->n;i++) {
-        if (p[i]<0||val[i]==0.0) continue;
+        if (p[i]<0||(val[i]==0.0&&lli[i]==0)) continue;
         switch (ind->type[i]) {
             case 0: obs->P[p[i]]=val[i];
                     obs->code[p[i]]=ind->code[i];
@@ -917,7 +917,7 @@ static void set_index(double ver, int sys, const char *opt,
     }
     for (i=0;i<n;i++) {
         if (!ind->code[i]||!ind->pri[i]||ind->pos[i]>=0) continue;
-        trace(4,"reject obs type: sys=%2d, obs=%s\n",sys,tobs[i]);
+        trace(3,"reject obs type: sys=%2d, obs=%s\n",sys,tobs[i]);
     }
     ind->n=n;
     
@@ -1876,7 +1876,7 @@ extern int outrnxobsh(FILE *fp, const rnxopt_t *opt, const nav_t *nav)
     else { /* ver.3 */
         if      (opt->navsys==SYS_GPS) sys="G: GPS";
         else if (opt->navsys==SYS_GLO) sys="R: GLONASS";
-        else if (opt->navsys==SYS_GAL) sys="E: Galielo";
+        else if (opt->navsys==SYS_GAL) sys="E: Galileo";
         else if (opt->navsys==SYS_QZS) sys="J: QZSS";   /* ver.3.02 */
         else if (opt->navsys==SYS_CMP) sys="C: BeiDou"; /* ver.3.02 */
         else if (opt->navsys==SYS_IRN) sys="I: IRNSS";  /* ver.3.03 */

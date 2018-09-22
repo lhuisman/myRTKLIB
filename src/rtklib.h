@@ -56,9 +56,9 @@ extern "C" {
 
 /* constants -----------------------------------------------------------------*/
 
-#define VER_RTKLIB  "2.4.3 demo5"             /* library version */
+#define VER_RTKLIB  "demo5"             /* library version */
 
-#define PATCH_LEVEL "b29d"               /* patch level */
+#define PATCH_LEVEL "b29e"               /* patch level */
 
 #define COPYRIGHT_RTKLIB \
             "Copyright (C) 2007-2018 T.Takasu\nAll rights reserved."
@@ -80,13 +80,13 @@ extern "C" {
 
 #define MAXFREQ     7                   /* max NFREQ */
 
-#define FREQ1       1.57542E9           /* L1/E1  frequency (Hz) */
-#define FREQ2       1.22760E9           /* L2     frequency (Hz) */
-#define FREQ5       1.17645E9           /* L5/E5a frequency (Hz) */
-#define FREQ6       1.27875E9           /* E6/LEX frequency (Hz) */
-#define FREQ7       1.20714E9           /* E5b    frequency (Hz) */
-#define FREQ8       1.191795E9          /* E5a+b  frequency (Hz) */
-#define FREQ9       2.492028E9          /* S      frequency (Hz) */
+#define FREQL1      1.57542E9           /* L1/E1  frequency 1 (Hz) */
+#define FREQL2      1.22760E9           /* L2     frequency 2 (Hz) */
+#define FREQE5b      1.20714E9          /* E5b    frequency 3 (Hz) */
+#define FREQL5      1.17645E9           /* L5/E5a frequency 4 (Hz) */
+#define FREQE6      1.27875E9           /* E6/LEX frequency 5 (Hz) */
+#define FREQE5ab    1.191795E9          /* E5a+b  frequency 6 (Hz) */
+#define FREQs       2.492028E9           /* S      frequency 7 (Hz) */
 #define FREQ1_GLO   1.60200E9           /* GLONASS G1 base frequency (Hz) */
 #define DFRQ1_GLO   0.56250E6           /* GLONASS G1 bias frequency (Hz/n) */
 #define FREQ2_GLO   1.24600E9           /* GLONASS G2 base frequency (Hz) */
@@ -273,11 +273,11 @@ extern "C" {
 
 #define FREQTYPE_L1 0x01                /* frequency type: L1/E1 */
 #define FREQTYPE_L2 0x02                /* frequency type: L2/B1 */
-#define FREQTYPE_L5 0x04                /* frequency type: L5/E5a/L3 */
-#define FREQTYPE_L6 0x08                /* frequency type: E6/LEX/B3 */
-#define FREQTYPE_L7 0x10                /* frequency type: E5b/B2 */
-#define FREQTYPE_L8 0x20                /* frequency type: E5(a+b) */
-#define FREQTYPE_L9 0x40                /* frequency type: S */
+#define FREQTYPE_E5b 0x04               /* frequency type: E5b/B2 */
+#define FREQTYPE_L5 0x08                /* frequency type: L5/E5a/L3 */
+#define FREQTYPE_E6 0x10                /* frequency type: E6/LEX/B3 */
+#define FREQTYPE_E5ab 0x20              /* frequency type: E5(a+b) */
+#define FREQTYPE_S 0x40                 /* frequency type: S */
 #define FREQTYPE_ALL 0xFF               /* frequency type: all */
 
 #define CODE_NONE   0                   /* obs code: none or unknown */
@@ -1049,7 +1049,7 @@ typedef struct {        /* SNR mask type */
 typedef struct {        /* processing options type */
     int mode;           /* positioning mode (PMODE_???) */
     int soltype;        /* solution type (0:forward,1:backward,2:combined) */
-    int nf;             /* number of frequencies (1:L1,2:L1+L2,3:L1+L2+L5) */
+    int nf;             /* number of frequencies (1:L1,2:L1+L2,3:L1+L2+E5b,4:L1+L2+E5b+L5) */
     int navsys;         /* navigation system */
     double elmin;       /* elevation mask angle (rad) */
     snrmask_t snrmask;  /* SNR mask */
@@ -1265,6 +1265,7 @@ typedef struct {        /* receiver raw data control type */
     unsigned char subfrm[MAXSAT][380];  /* subframe buffer */
     lexmsg_t lexmsg;    /* LEX message */
     double lockt[MAXSAT][NFREQ+NEXOBS]; /* lock time (s) */
+    unsigned char lockflag[MAXSAT][NFREQ+NEXOBS]; /* used for carrying forward cycle slip */
     double icpp[MAXSAT],off[MAXSAT],icpc; /* carrier params for ss2 */
     double prCA[MAXSAT],dpCA[MAXSAT]; /* L1/CA pseudrange/doppler for javad */
     unsigned char halfc[MAXSAT][NFREQ+NEXOBS]; /* half-cycle add flag */

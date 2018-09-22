@@ -79,12 +79,11 @@ object SerialOptDialog: TSerialOptDialog
     TabOrder = 0
   end
   object BitRate: TComboBox
-    Left = 74
-    Top = 32
+    Left = 76
+    Top = 29
     Width = 77
     Height = 21
     DropDownCount = 12
-    ItemIndex = 5
     TabOrder = 3
     Text = '115200'
     Items.Strings = (
@@ -98,7 +97,8 @@ object SerialOptDialog: TSerialOptDialog
       '38400'
       '57600'
       '115200'
-      '230400')
+      '230400'
+      '460800')
   end
   object Port: TComboBox
     Left = 74

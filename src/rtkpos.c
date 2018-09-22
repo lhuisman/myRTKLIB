@@ -639,7 +639,7 @@ static void detslp_ll(rtk_t *rtk, const obsd_t *obs, int i, int rcv)
     
     for (f=0;f<rtk->opt.nf;f++) {
         
-        if (obs[i].L[f]==0.0||
+        if ((obs[i].L[f]==0.0&&obs[i].LLI[f]==0)||
             fabs(timediff(obs[i].time,rtk->ssat[sat-1].pt[rcv-1][f]))<DTTOL) {
             continue;
         }
