@@ -235,9 +235,9 @@ static int decode_rxmraw(raw_t *raw)
 static int decode_rxmrawx(raw_t *raw)
 {
     gtime_t time;
-    double tow,cp1,pr1,tadj=0.0,toff=0.0,frq,freq,tn;
+    double tow,cp1,pr1,tadj=0.0,toff=0.0,freq,tn;
     int i,j,sys,prn,sat,n=0,nextn=0,nsat,week,tstat,lockt,halfv,halfc,fcn;
-    int cpstd,prstd,sigid,std_slip=0;
+    int frq,cpstd,prstd,sigid,std_slip=0;
     char *q;
     unsigned char *p=raw->buff+6;
     
@@ -302,6 +302,7 @@ static int decode_rxmrawx(raw_t *raw)
             case 4: frq=1;break;
             case 5: frq=2;break;
             case 6: frq=2;break;
+            default: frq=0;break;
         }
 
         /* find obs record if freq>0 */
