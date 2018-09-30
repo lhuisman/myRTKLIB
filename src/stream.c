@@ -816,6 +816,8 @@ static int readfile(file_t *file, unsigned char *buff, int nmax, char *msg)
         if ((n=file->fpos_n-ftell(file->fp))<nmax) {
             nmax=n;
         }
+	
+        if (!file->repmode) tick_master = file->tick_n;
     }
     if (nmax>0) {
         nr=(int)fread(buff,1,nmax,file->fp);

@@ -59,7 +59,11 @@ void __fastcall TInputStrDialog::FormShow(TObject *Sender)
 	TimeTagC  ->Checked  =TimeTag;
 	TimeSpeedL->Text     =TimeSpeed;
 	TimeStartE->Text     =TimeStart;
-	Chk64Bit  ->Checked  =Time64Bit;
+		if (Time64Bit) {
+		  Time64BitL   ->ItemIndex=1;
+		} else {
+		  Time64BitL   ->ItemIndex=0;
+		}
 	NmeaPos1  ->Text     =s.sprintf("%.9f",NmeaPos[0]);
 	NmeaPos2  ->Text     =s.sprintf("%.9f",NmeaPos[1]);
 	NmeaPos3  ->Text     =s.sprintf("%.3f",NmeaPos[2]);
@@ -86,7 +90,7 @@ void __fastcall TInputStrDialog::BtnOkClick(TObject *Sender)
 	TimeTag    =TimeTagC  ->Checked;
 	TimeSpeed  =TimeSpeedL->Text;
 	TimeStart  =TimeStartE->Text;
-	Time64Bit  =Chk64Bit  ->Checked;
+    Time64Bit  =Time64BitL->ItemIndex;
 	NmeaPos[0] =str2dbl(NmeaPos1->Text);
 	NmeaPos[1] =str2dbl(NmeaPos2->Text);
 	NmeaPos[2] =str2dbl(NmeaPos3->Text);
@@ -148,7 +152,7 @@ AnsiString __fastcall TInputStrDialog::SetFilePath(AnsiString path)
 	if (TimeTagC->Checked     ) path+="::T";
 	if (TimeStartE->Text!="0" ) path+="::+"+TimeStartE->Text;
 	path+="::"+TimeSpeedL->Text;
-	if (Chk64Bit->Checked     ) path+="::P=8";
+    if (Time64Bit) { path+="::P=8"; } else { path+="::P=4"; };
 	return path;
 }
 //---------------------------------------------------------------------------
@@ -393,9 +397,9 @@ void __fastcall TInputStrDialog::UpdateEnable(void)
 	TimeTagC  ->Enabled=ena1;
 	TimeStartE->Enabled=ena1&&TimeTagC->Checked;
 	TimeSpeedL->Enabled=ena1&&TimeTagC->Checked;
+    Time64BitL->Enabled=ena1&&TimeTagC->Checked;
 	LabelF2   ->Enabled=ena1&&TimeTagC->Checked;
 	LabelF3   ->Enabled=ena1&&TimeTagC->Checked;
-	Chk64Bit  ->Enabled=ena1&&TimeTagC->Checked;
 }
 //---------------------------------------------------------------------------
 

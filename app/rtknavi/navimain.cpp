@@ -2581,7 +2581,7 @@ void __fastcall TMainForm::LoadOpt(void)
     InTimeTag       =ini->ReadInteger("setting","intimetag",       0);
     InTimeSpeed     =ini->ReadString ("setting","intimespeed",  "x1");
     InTimeStart     =ini->ReadString ("setting","intimestart",   "0");
-    InTime64Bit     =ini->ReadInteger("setting","intime64bit",     0);
+    InTime64Bit     =ini->ReadInteger("setting","intime64bit",      sizeof (size_t) == 4 ? 0 : 1);
     OutTimeTag      =ini->ReadInteger("setting","outtimetag",      0);
     OutAppend       =ini->ReadInteger("setting","outappend",       0);
     OutSwapInterval =ini->ReadString ("setting","outswapinterval","");
