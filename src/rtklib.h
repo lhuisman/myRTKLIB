@@ -557,6 +557,11 @@ typedef struct {        /* observation data record */
 } obsd_t;
 
 typedef struct {        /* observation data */
+    gtime_t eventime;   /* time of event (GPST) */
+    int timevalid;      /* time is valid (Valid GNSS fix) for time mark */
+    int flag;           /* epoch flag (0:ok,1:power failure,>1:event flag) */
+    int rcvcount;       /* count of rcv event */
+    int tmcount;        /* time mark count */
     int n,nmax;         /* number of obervation data/allocated */
     obsd_t *data;       /* observation data records */
 } obs_t;
@@ -1608,8 +1613,7 @@ EXPORT int readrnxt(const char *file, int rcv, gtime_t ts, gtime_t te,
                     sta_t *sta);
 EXPORT int readrnxc(const char *file, nav_t *nav);
 EXPORT int outrnxobsh(FILE *fp, const rnxopt_t *opt, const nav_t *nav);
-EXPORT int outrnxobsb(FILE *fp, const rnxopt_t *opt, const obsd_t *obs, int n,
-                      int epflag);
+EXPORT int outrnxobsb(FILE *fp, const rnxopt_t *opt, const obs_t *obs);
 EXPORT int outrnxnavh (FILE *fp, const rnxopt_t *opt, const nav_t *nav);
 EXPORT int outrnxgnavh(FILE *fp, const rnxopt_t *opt, const nav_t *nav);
 EXPORT int outrnxhnavh(FILE *fp, const rnxopt_t *opt, const nav_t *nav);

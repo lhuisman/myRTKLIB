@@ -30,6 +30,7 @@ static const char rcsid[] = "$Id: Swiftnav SBP,v 1.0 2017/02/01 FT $";
 #define ID_MSGEPHGLO 0x008B      /* Glonass L1/L2 OF nav message */
 #define ID_MSGIONGPS 0x0090      /* GPS ionospheric parameters */
 #define ID_MSG_SBAS_RAW 0x7777   /* SBAS data */
+#define ID_MSG_EXT_EVENT 0x101   /* external event */
 
 #define SEC_DAY 86400.0
 
@@ -294,6 +295,15 @@ static int flushobuf(raw_t *raw) {
 
   trace(3, "flushobuf: n=%d\n", raw->obuf.n);
 
+  /* copy events from data buffer */
+  if (raw->obuf.eventime.time>0) {
+     raw->obs.eventime = raw->obuf.eventime;
+     raw->obs.timevalid = raw->obuf.timevalid;
+     raw->obs.flag = raw->obuf.flag;
+     raw->obs.rcvcount = raw->obuf.rcvcount;
+     raw->obs.tmcount=raw->obuf.tmcount;
+    }
+
   /* copy observation data buffer */
   for (i = 0; i < raw->obuf.n && i < MAXOBS; i++) {
     if (!satsys(raw->obuf.data[i].sat, NULL))
@@ -303,6 +313,11 @@ static int flushobuf(raw_t *raw) {
     raw->obs.data[n++] = raw->obuf.data[i];
   }
   raw->obs.n = n;
+
+  /* clear events from data buffer */
+  raw->obuf.eventime = time0;
+  raw->obuf.flag = raw->obuf.timevalid=0;
+  raw->obuf.rcvcount = raw->obuf.tmcount=0;
 
   /* clear observation data buffer */
   for (i = 0; i < MAXOBS; i++) {
@@ -1132,6 +1147,39 @@ static int decode_snav(raw_t *raw) {
   return 3;
 }
 
+/* decode external event -----------------------------------------------*/
+static int decode_event(raw_t *raw) {
+  gtime_t eventime;
+  uint8_t *puiTmp = (raw->buff) + 6;
+  uint16_t wn;
+  uint32_t tow;
+  int32_t ns_residual;
+  uint8_t flags,pin;
+
+  trace(4, "MSG_EXT_EVENT: len=%d\n", raw->len);
+
+  if ((raw->len) < 20) {
+    trace(2, "SBP decode_event length error: len=%d\n", raw->len);
+    return -1;
+  }
+
+/* get message fields */
+  wn = U2(puiTmp + 0);
+  tow = U4(puiTmp + 2);
+  ns_residual = I4(puiTmp + 6);
+  flags = U1(puiTmp + 10);
+  pin = U1(puiTmp + 11);
+
+/* write to event variables */
+  eventime = gpst2time(wn,tow*1E-3+ns_residual*1E-9);
+  raw->obuf.flag = 5; /* event flag */
+  raw->obuf.eventime = eventime;
+  raw->obuf.tmcount++;
+  raw->obuf.timevalid = (flags & 0x02)>>1;
+
+  return 0;
+}
+
 /* decode SBF raw message --------------------------------------------------*/
 static int decode_sbp(raw_t *raw) {
   uint16_t crc, uCalcCrc;
@@ -1182,6 +1230,8 @@ static int decode_sbp(raw_t *raw) {
     return decode_gpsion(raw);
   case ID_MSG_SBAS_RAW:
     return decode_snav(raw);
+  case ID_MSG_EXT_EVENT:
+    return decode_event(raw);
 
   default:
     trace(4, "decode_sbp: unused frame type=%04x len=%d\n", type, raw->len);

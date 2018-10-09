@@ -1004,7 +1004,12 @@ static void convobs(FILE **ofp, rnxopt_t *opt, strfile_t *str, int *staid,
         }
     }
     /* output rinex obs */
-    outrnxobsb(ofp[0],opt,str->obs->data,str->obs->n,0);
+    outrnxobsb(ofp[0],opt,str->obs);
+    /* n[NOUTFILE+1] - count of events converted to rinex */
+    if (str->obs->flag == 5)
+       n[NOUTFILE+1]++;
+    /* set to zero flag for the next iteration (initialization) */
+    str->obs->flag = 0;
     
     if (opt->tstart.time==0) opt->tstart=time;
     opt->tend=time;
@@ -1215,7 +1220,7 @@ static void setapppos(strfile_t *str, rnxopt_t *opt)
 /* show status message -------------------------------------------------------*/
 static int showstat(int sess, gtime_t ts, gtime_t te, int *n)
 {
-    const char type[]="ONGHQLCISE";
+    const char type[]="ONGHQLCISET";
     char msg[1024]="",*p=msg,s[64];
     int i;
     
@@ -1232,9 +1237,10 @@ static int showstat(int sess, gtime_t ts, gtime_t te, int *n)
     }
     p+=sprintf(p,": ");
     
-    for (i=0;i<NOUTFILE+1;i++) {
+    /* +2 to NOUTFILE for counters of errors and events */
+    for (i=0;i<NOUTFILE+2;i++) {
         if (n[i]==0) continue;
-        p+=sprintf(p,"%c=%d%s",type[i],n[i],i<NOUTFILE?" ":"");
+        p+=sprintf(p,"%c=%d%s",type[i],n[i],i<NOUTFILE+1?" ":"");
     }
     return showmsg(msg);
 }
@@ -1248,7 +1254,7 @@ static int convrnx_s(int sess, int format, rnxopt_t *opt, const char *file,
     halfc_t halfc={{{0}}};
     gtime_t ts={0},te={0},tend={0},time={0};
     unsigned char slips[MAXSAT][NFREQ+NEXOBS]={{0}};
-    int i,j,nf,type,n[NOUTFILE+1]={0},staid=-1,abort=0;
+    int i,j,nf,type,n[NOUTFILE+2]={0},staid=-1,abort=0;
     char path[1024],*paths[NOUTFILE],s[NOUTFILE][1024];
     char *epath[MAXEXFILE]={0},*staname=*opt->staid?opt->staid:"0000";
     

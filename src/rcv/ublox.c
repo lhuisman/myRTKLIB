@@ -71,6 +71,7 @@
 #define ID_TRKD5    0x030A      /* ubx message id: trace mesurement data */
 #define ID_TRKMEAS  0x0310      /* ubx message id: trace mesurement data */
 #define ID_TRKSFRBX 0x030F      /* ubx message id: trace subframe buffer */
+#define ID_TIMTM2   0x0D03      /* ubx message id: time mark data */
 
 #define FU1         1           /* ubx message field types */
 #define FU2         2
@@ -1071,6 +1072,52 @@ static int decode_trksfrbx(raw_t *raw)
     }
     return 0;
 }
+/* decode ubx-tim-tm2: time mark data ----------------------------------------*/
+static int decode_timtm2(raw_t *raw)
+{
+    gtime_t eventime;
+    char ch, flags;
+    unsigned int count, wnR, wnF;
+    unsigned long towMsR, towSubMsR, towMsF, towSubMsF, accEst;
+    int time, timeBase, newRisingEdge, newFallingEdge;
+    unsigned char *p=raw->buff+6;
+
+    trace(4, "decode_timtm2: len=%d\n", raw->len);
+
+    if (raw->outtype) {
+        sprintf(raw->msgtype, "UBX TIM-TM2 (%4d)", raw->len);
+    }
+    ch = U1(p);
+    flags = *(p+1);
+    count = U2(p+2);
+    wnR = U2(p+4);
+    wnF = U2(p+6);
+    towMsR = U4(p+8);
+    towSubMsR = U4(p+12);
+    towMsF = U4(p+16);
+    towSubMsF = U4(p+20);
+    accEst = U4(p+24);
+
+    /* extract flags to variables */
+    newFallingEdge = ((flags >> 2) & 0x01);
+    timeBase =       ((flags >> 3) & 0x03);
+    time =           ((flags >> 6) & 0x01);
+    newRisingEdge =  ((flags >> 7) & 0x01);
+
+    if (newFallingEdge)
+    {
+        eventime = gpst2time(wnF,towMsF*1E-3+towSubMsF*1E-9);
+        raw->obs.flag = 5; /* Event flag */
+        raw->obs.eventime = eventime;
+        raw->obs.rcvcount = count;
+        raw->obs.tmcount++;
+        raw->obs.timevalid = time;
+    } else {
+        raw->obs.flag = 0;
+    }
+    return 0;
+}
+
 /* decode ublox raw message --------------------------------------------------*/
 static int decode_ubx(raw_t *raw)
 {
@@ -1093,6 +1140,7 @@ static int decode_ubx(raw_t *raw)
         case ID_TRKMEAS : return decode_trkmeas (raw);
         case ID_TRKD5   : return decode_trkd5   (raw);
         case ID_TRKSFRBX: return decode_trksfrbx(raw);
+        case ID_TIMTM2  : return decode_timtm2  (raw);
     }
     if (raw->outtype) {
         sprintf(raw->msgtype,"UBX 0x%02X 0x%02X (%4d)",type>>8,type&0xF,
@@ -1107,7 +1155,7 @@ static int sync_ubx(unsigned char *buff, unsigned char data)
     return buff[0]==UBXSYNC1&&buff[1]==UBXSYNC2;
 }
 /* input ublox raw message from stream -----------------------------------------
-* fetch next ublox raw data and input a mesasge from stream
+* fetch next ublox raw data and input a message from stream
 * args   : raw_t *raw   IO     receiver raw data control struct
 *          unsigned char data I stream data (1 byte)
 * return : status (-1: error message, 0: no message, 1: input observation data,
