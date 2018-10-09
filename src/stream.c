@@ -330,7 +330,7 @@ static DWORD WINAPI serialthread(void *arg)
 static serial_t *openserial(const char *path, int mode, char *msg)
 {
     const int br[]={
-        300,600,1200,2400,4800,9600,19200,38400,57600,115200,230400
+        300,600,1200,2400,4800,9600,19200,38400,57600,115200,230400,460800
     };
     serial_t *serial;
     int i,brate=115200,bsize=8,stopb=1,tcp_port=0;
@@ -342,7 +342,7 @@ static serial_t *openserial(const char *path, int mode, char *msg)
     char dcb[64]="";
 #else
     const speed_t bs[]={
-        B300,B600,B1200,B2400,B4800,B9600,B19200,B38400,B57600,B115200,B230400
+        B300,B600,B1200,B2400,B4800,B9600,B19200,B38400,B57600,B115200,B230400,B460800
     };
     struct termios ios={0};
     int rw=0;
@@ -1574,6 +1574,7 @@ static int rspntrip_c(ntrip_t *ntrip, char *msg)
         ntrip->state=2;
         sprintf(msg,"%s/%s",ntrip->tcp->svr.saddr,ntrip->mntpnt);
         tracet(2,"rspntrip_c: response ok nb=%d\n",ntrip->nb);
+        ntrip->tcp->tirecon=ticonnect;
         return 1;
     }
     if ((p=strstr((char *)ntrip->buff,NTRIP_RSP_SRCTBL))) { /* source table */
@@ -1588,6 +1589,8 @@ static int rspntrip_c(ntrip_t *ntrip, char *msg)
         ntrip->nb=0;
         ntrip->buff[0]='\0';
         ntrip->state=0;
+        /* increase subsequent disconnect time to avoid too many reconnect requests */
+        if (ntrip->tcp->tirecon>300000) ntrip->tcp->tirecon=ntrip->tcp->tirecon*5/4;
         discontcp(&ntrip->tcp->svr,ntrip->tcp->tirecon);
     }
     else if ((p=strstr((char *)ntrip->buff,NTRIP_RSP_HTTP))) { /* http response */

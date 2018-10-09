@@ -436,9 +436,9 @@ static void *strsvrthread(void *arg)
         }
         for (i=1;i<svr->nstr;i++) {
             
-            /* read message from output stream */
-            while ((n=strread(svr->stream+i,buff,sizeof(buff)))>0) {
-                
+            /* read message from output stream if connected */
+            while (strstat(svr->stream+i,NULL)>=2 &&
+                  (n=strread(svr->stream+i,buff,sizeof(buff)))>0) {
                 /* relay back message from output stream to input stream */
                 if (i==svr->relayback) {
                     strwrite(svr->stream,buff,n);
