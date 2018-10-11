@@ -1108,10 +1108,10 @@ static int decode_timtm2(raw_t *raw)
     {
         eventime = gpst2time(wnF,towMsF*1E-3+towSubMsF*1E-9);
         raw->obs.flag = 5; /* Event flag */
-        raw->obs.eventime = eventime;
+        raw->obs.data[0].eventime = eventime;
         raw->obs.rcvcount = count;
         raw->obs.tmcount++;
-        raw->obs.timevalid = time;
+        raw->obs.data[0].timevalid = time;
     } else {
         raw->obs.flag = 0;
     }

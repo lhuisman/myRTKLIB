@@ -645,11 +645,17 @@ static int decode_obsepoch(FILE *fp, char *buff, double ver, gtime_t *time,
     trace(4,"decode_obsepoch: ver=%.2f\n",ver);
     
     if (ver<=2.99) { /* ver.2 */
-        if ((n=(int)str2num(buff,29,3))<=0) return 0;
+        /* if ((n=(int)str2num(buff,29,3))<=0) return 0; */
         
         /* epoch flag: 3:new site,4:header info,5:external event */
         *flag=(int)str2num(buff,28,1);
         
+        if (*flag == 5) {
+            str2time(buff,0,26,time);
+        }
+
+        if ((n=(int)str2num(buff,29,3))<=0) return 0;
+
         if (3<=*flag&&*flag<=5) return n;
         
         if (str2time(buff,0,26,time)) {
@@ -668,9 +674,15 @@ static int decode_obsepoch(FILE *fp, char *buff, double ver, gtime_t *time,
         }
     }
     else { /* ver.3 */
-        if ((n=(int)str2num(buff,32,3))<=0) return 0;
+        /* if ((n=(int)str2num(buff,32,3))<=0) return 0; */
         
         *flag=(int)str2num(buff,31,1);
+        
+        if (*flag == 5) {
+            str2time(buff,1,28,time);
+        }
+
+        if ((n=(int)str2num(buff,32,3))<=0) return 0;
         
         if (3<=*flag&&*flag<=5) return n;
         
@@ -956,8 +968,12 @@ static int readrnxobsb(FILE *fp, const char *opt, double ver, int *tsys,
         
         /* decode obs epoch */
         if (i==0) {
-            if ((nsat=decode_obsepoch(fp,buff,ver,&time,flag,sats))<=0) {
+            if ((nsat=decode_obsepoch(fp,buff,ver,&time,flag,sats))<=0 && (*flag != 5)) {
                 continue;
+            }
+            if (*flag == 5) {
+                data[0].eventime = time;
+                return 0;
             }
         }
         else if (*flag<=2||*flag==6) {
@@ -982,6 +998,7 @@ static int readrnxobs(FILE *fp, gtime_t ts, gtime_t te, double tint,
                       const char *opt, int rcv, double ver, int *tsys,
                       char tobs[][MAXOBSTYPE][4], obs_t *obs, sta_t *sta)
 {
+	gtime_t eventime={0};
     obsd_t *data;
     unsigned char slips[MAXSAT][NFREQ]={{0}};
     int i,n,flag=0,stat=0;
@@ -994,6 +1011,16 @@ static int readrnxobs(FILE *fp, gtime_t ts, gtime_t te, double tint,
     
     /* read rinex obs data body */
     while ((n=readrnxobsb(fp,opt,ver,tsys,tobs,&flag,data,sta))>=0&&stat>=0) {
+
+        if (flag == 5) {
+            eventime = data[0].eventime;
+            n = readrnxobsb(fp,opt,ver,tsys,tobs,&flag,data,sta);
+        }
+        
+        for (i=0;i<n;i++) data[i].eventime = eventime;
+        /* set to zero eventime for the next iteration */
+        eventime.time = 0;
+        eventime.sec = 0;
         
         for (i=0;i<n;i++) {
             
@@ -1710,7 +1737,7 @@ extern void free_rnxctr(rnxctr_t *rnx)
     free(rnx->nav.seph); rnx->nav.seph=NULL; rnx->nav.ns=0;
 }
 /* open rinex data -------------------------------------------------------------
-* fetch next rinex message and input a messsage from file
+* fetch next rinex message and input a message from file
 * args   : rnxctr_t *rnx IO  rinex control struct
 *          FILE  *fp    I    file pointer
 * return : status (-2: end of file, 0: no message, 1: input observation data,
@@ -1876,7 +1903,7 @@ extern int outrnxobsh(FILE *fp, const rnxopt_t *opt, const nav_t *nav)
     else { /* ver.3 */
         if      (opt->navsys==SYS_GPS) sys="G: GPS";
         else if (opt->navsys==SYS_GLO) sys="R: GLONASS";
-        else if (opt->navsys==SYS_GAL) sys="E: Galileo";
+        else if (opt->navsys==SYS_GAL) sys="E: Galielo";
         else if (opt->navsys==SYS_QZS) sys="J: QZSS";   /* ver.3.02 */
         else if (opt->navsys==SYS_CMP) sys="C: BeiDou"; /* ver.3.02 */
         else if (opt->navsys==SYS_IRN) sys="I: IRNSS";  /* ver.3.03 */
@@ -2039,13 +2066,13 @@ static int obsindex(double ver, int sys, const unsigned char *code,
     return -1;
 }
 /* output rinex event time ---------------------------------------------------*/
-static void outrinexevent(FILE *fp, const rnxopt_t *opt, const obs_t *obs,
+static void outrinexevent(FILE *fp, const rnxopt_t *opt, const obsd_t *obs,
                           const double epdiff)
 {
     int n;
     double epe[6];
 
-    time2epoch(obs->eventime,epe);
+    time2epoch(obs[0].eventime,epe);
     n = obs->timevalid ? 0 : 1;
 
     if (opt->rnxver<=2.99) { /* ver.2 */
@@ -2068,21 +2095,22 @@ static void outrinexevent(FILE *fp, const rnxopt_t *opt, const obs_t *obs,
 *          int    flag      I   epoch flag (0:ok,1:power failure,>1:event flag)
 * return : status (1:ok, 0:output error)
 *-----------------------------------------------------------------------------*/
-extern int outrnxobsb(FILE *fp, const rnxopt_t *opt, const obs_t *obs)
+extern int outrnxobsb(FILE *fp, const rnxopt_t *opt, const obsd_t *obs, int n,
+                      int flag)
 {
     const char *mask;
     double epdiff,ep[6];
     char sats[MAXOBS][4]={""};
     int i,j,k,m,ns,sys,ind[MAXOBS],s[MAXOBS]={0};
 
-    trace(3,"outrnxobsb: n=%d\n",obs->n);
+    trace(3,"outrnxobsb: n=%d\n",n);
 
-    time2epoch(obs->data[0].time,ep);
+    time2epoch(obs[0].time,ep);
     
-    for (i=ns=0;i<obs->n&&ns<MAXOBS;i++) {
-        sys=satsys(obs->data[i].sat,NULL);
-        if (!(sys&opt->navsys)||opt->exsats[obs->data[i].sat-1]) continue;
-        if (!sat2code(obs->data[i].sat,sats[ns])) continue;
+    for (i=ns=0;i<n&&ns<MAXOBS;i++) {
+        sys=satsys(obs[i].sat,NULL);
+        if (!(sys&opt->navsys)||opt->exsats[obs[i].sat-1]) continue;
+        if (!sat2code(obs[i].sat,sats[ns])) continue;
         switch (sys) {
             case SYS_GPS: s[ns]=0; break;
             case SYS_GLO: s[ns]=1; break;
@@ -2098,8 +2126,8 @@ extern int outrnxobsb(FILE *fp, const rnxopt_t *opt, const obs_t *obs)
 
     /* if epoch of event less than epoch of observation, then first output
     time mark, else first output observation record */
-    epdiff = timediff(obs->data[0].time,obs->eventime);
-    if (obs->flag == 5 && epdiff >= 0) {
+    epdiff = timediff(obs[0].time,obs[0].eventime);
+    if (flag == 5 && epdiff >= 0) {
         outrinexevent(fp, opt, obs, epdiff);
     }
 
@@ -2116,7 +2144,7 @@ extern int outrnxobsb(FILE *fp, const rnxopt_t *opt, const obs_t *obs)
                 ep[0],ep[1],ep[2],ep[3],ep[4],ep[5],0,ns,"");
     }
     for (i=0;i<ns;i++) {
-        sys=satsys(obs->data[ind[i]].sat,NULL);
+        sys=satsys(obs[ind[i]].sat,NULL);
         
         if (opt->rnxver<=2.99) { /* ver.2 */
             m=0;
@@ -2133,7 +2161,7 @@ extern int outrnxobsb(FILE *fp, const rnxopt_t *opt, const obs_t *obs)
                 if (j%5==0) fprintf(fp,"\n");
             }
             /* search obs data index */
-            if ((k=obsindex(opt->rnxver,sys,obs->data[ind[i]].code,opt->tobs[m][j],
+            if ((k=obsindex(opt->rnxver,sys,obs[ind[i]].code,opt->tobs[m][j],
                             mask))<0) {
                 outrnxobsf(fp,0.0,-1,-1);
                 continue;
@@ -2141,16 +2169,16 @@ extern int outrnxobsb(FILE *fp, const rnxopt_t *opt, const obs_t *obs)
             /* output field */
             switch (opt->tobs[m][j][0]) {
                 case 'C':
-                case 'P': outrnxobsf(fp,obs->data[ind[i]].P[k],-1,obs->data[ind[i]].qualP[k]); break;
-                case 'L': outrnxobsf(fp,obs->data[ind[i]].L[k],obs->data[ind[i]].LLI[k],obs->data[ind[i]].qualL[k]); break;
-                case 'D': outrnxobsf(fp,obs->data[ind[i]].D[k],-1,-1); break;
-                case 'S': outrnxobsf(fp,obs->data[ind[i]].SNR[k]*0.25,-1,-1); break;
+                case 'P': outrnxobsf(fp,obs[ind[i]].P[k],-1,obs[ind[i]].qualP[k]); break;
+                case 'L': outrnxobsf(fp,obs[ind[i]].L[k],obs[ind[i]].LLI[k],obs[ind[i]].qualL[k]); break;
+                case 'D': outrnxobsf(fp,obs[ind[i]].D[k],-1,-1); break;
+                case 'S': outrnxobsf(fp,obs[ind[i]].SNR[k]*0.25,-1,-1); break;
             }
         }
         if (opt->rnxver>2.99&&fprintf(fp,"\n")==EOF) return 0;
     }
 
-    if (obs->flag == 5 && epdiff < 0) {
+    if (flag == 5 && epdiff < 0) {
         outrinexevent(fp, opt, obs, epdiff);
     }
 

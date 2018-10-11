@@ -296,9 +296,9 @@ static int flushobuf(raw_t *raw) {
   trace(3, "flushobuf: n=%d\n", raw->obuf.n);
 
   /* copy events from data buffer */
-  if (raw->obuf.eventime.time>0) {
-     raw->obs.eventime = raw->obuf.eventime;
-     raw->obs.timevalid = raw->obuf.timevalid;
+  if (raw->obuf.data[0].eventime.time>0) {
+     raw->obs.data[0].eventime = raw->obuf.data[0].eventime;
+     raw->obs.data[0].timevalid = raw->obuf.data[0].timevalid;
      raw->obs.flag = raw->obuf.flag;
      raw->obs.rcvcount = raw->obuf.rcvcount;
      raw->obs.tmcount=raw->obuf.tmcount;
@@ -315,8 +315,8 @@ static int flushobuf(raw_t *raw) {
   raw->obs.n = n;
 
   /* clear events from data buffer */
-  raw->obuf.eventime = time0;
-  raw->obuf.flag = raw->obuf.timevalid=0;
+  raw->obuf.data[0].eventime = time0;
+  raw->obuf.flag = raw->obuf.data[0].timevalid=0;
   raw->obuf.rcvcount = raw->obuf.tmcount=0;
 
   /* clear observation data buffer */
@@ -1173,9 +1173,9 @@ static int decode_event(raw_t *raw) {
 /* write to event variables */
   eventime = gpst2time(wn,tow*1E-3+ns_residual*1E-9);
   raw->obuf.flag = 5; /* event flag */
-  raw->obuf.eventime = eventime;
+  raw->obuf.data[0].eventime = eventime;
   raw->obuf.tmcount++;
-  raw->obuf.timevalid = (flags & 0x02)>>1;
+  raw->obuf.data[0].timevalid = (flags & 0x02)>>1;
 
   return 0;
 }

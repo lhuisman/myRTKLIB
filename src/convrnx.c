@@ -1004,7 +1004,7 @@ static void convobs(FILE **ofp, rnxopt_t *opt, strfile_t *str, int *staid,
         }
     }
     /* output rinex obs */
-    outrnxobsb(ofp[0],opt,str->obs);
+    outrnxobsb(ofp[0],opt,str->obs->data,str->obs->n,str->obs->flag);
     /* n[NOUTFILE+1] - count of events converted to rinex */
     if (str->obs->flag == 5)
        n[NOUTFILE+1]++;

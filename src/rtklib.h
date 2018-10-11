@@ -349,6 +349,9 @@ extern "C" {
 #define PMODE_PPP_STATIC 8              /* positioning mode: PPP-static */
 #define PMODE_PPP_FIXED 9               /* positioning mode: PPP-fixed */
 
+#define SOLT_XYZ    0                   /* solution type: x/y/z-ecef */
+#define SOLT_ENU    1                   /* solution type: e/n/u-baseline */
+
 #define SOLF_LLH    0                   /* solution format: lat/lon/height */
 #define SOLF_XYZ    1                   /* solution format: x/y/z-ecef */
 #define SOLF_ENU    2                   /* solution format: e/n/u-baseline */
@@ -545,6 +548,8 @@ typedef struct {        /* time struct */
 
 typedef struct {        /* observation data record */
     gtime_t time;       /* receiver sampling time (GPST) */
+    gtime_t eventime;   /* time of event (GPST) */
+    int timevalid;      /* time is valid (Valid GNSS fix) for time mark */
     unsigned char sat,rcv; /* satellite/receiver number */
     unsigned char SNR [NFREQ+NEXOBS]; /* signal strength (0.25 dBHz) */
     unsigned char LLI [NFREQ+NEXOBS]; /* loss of lock indicator */
@@ -557,12 +562,10 @@ typedef struct {        /* observation data record */
 } obsd_t;
 
 typedef struct {        /* observation data */
-    gtime_t eventime;   /* time of event (GPST) */
-    int timevalid;      /* time is valid (Valid GNSS fix) for time mark */
+    int n,nmax;         /* number of obervation data/allocated */
     int flag;           /* epoch flag (0:ok,1:power failure,>1:event flag) */
     int rcvcount;       /* count of rcv event */
     int tmcount;        /* time mark count */
-    int n,nmax;         /* number of obervation data/allocated */
     obsd_t *data;       /* observation data records */
 } obs_t;
 
@@ -931,6 +934,7 @@ typedef struct {        /* station parameter type */
 
 typedef struct {        /* solution type */
     gtime_t time;       /* time (GPST) */
+    gtime_t eventime;   /* time of event (GPST) */
     double rr[6];       /* position/velocity (m|m/s) */
                         /* {x,y,z,vx,vy,vz} or {e,n,u,ve,vn,vu} */
     float  qr[6];       /* position variance/covariance (m^2) */
@@ -1613,7 +1617,7 @@ EXPORT int readrnxt(const char *file, int rcv, gtime_t ts, gtime_t te,
                     sta_t *sta);
 EXPORT int readrnxc(const char *file, nav_t *nav);
 EXPORT int outrnxobsh(FILE *fp, const rnxopt_t *opt, const nav_t *nav);
-EXPORT int outrnxobsb(FILE *fp, const rnxopt_t *opt, const obs_t *obs);
+EXPORT int outrnxobsb(FILE *fp, const rnxopt_t *opt, const obsd_t *obsd, int n, int flag);
 EXPORT int outrnxnavh (FILE *fp, const rnxopt_t *opt, const nav_t *nav);
 EXPORT int outrnxgnavh(FILE *fp, const rnxopt_t *opt, const nav_t *nav);
 EXPORT int outrnxhnavh(FILE *fp, const rnxopt_t *opt, const nav_t *nav);
