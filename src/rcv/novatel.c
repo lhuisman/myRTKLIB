@@ -51,6 +51,9 @@
 *                           improve unchange-test of beidou ephemeris
 *           2017/06/15 1.15 add output half-cycle-ambiguity status to LLI
 *                           improve slip-detection by lock-time rollback
+*           2018/10/10 1.16 fix problem on data souce for galileo ephemeris
+*                           output L2W instead of L2D for L2Pcodeless
+*                           test toc difference to output beidou ephemeris
 *-----------------------------------------------------------------------------*/
 #include "rtklib.h"
 
@@ -326,11 +329,7 @@ static int decode_rangecmpb(raw_t *raw)
             lli=0;
         }
         if (!parity) lli|=LLI_HALFC;
-#if 0
         if (halfc  ) lli|=LLI_HALFA;
-#else
-        if (halfc!=raw->halfc[sat-1][pos]) lli|=LLI_SLIP;
-#endif
         raw->tobs [sat-1][pos]=raw->time;
         raw->lockt[sat-1][pos]=lockt;
         raw->halfc[sat-1][pos]=halfc;
@@ -419,11 +418,7 @@ static int decode_rangeb(raw_t *raw)
             lli=0;
         }
         if (!parity) lli|=LLI_HALFC;
-#if 0
         if (halfc  ) lli|=LLI_HALFA;
-#else
-        if (halfc!=raw->halfc[sat-1][pos]) lli|=LLI_SLIP;
-#endif
         raw->tobs [sat-1][pos]=raw->time;
         raw->lockt[sat-1][pos]=lockt;
         raw->halfc[sat-1][pos]=halfc;
@@ -727,7 +722,7 @@ static int decode_galephemerisb(raw_t *raw)
     dvs_e1b   =U1(p)&1; p+=1;
     dvs_e5a   =U1(p)&1; p+=1;
     dvs_e5b   =U1(p)&1; p+=1;
-    eph.sva   =U1(p);   p+=1+1; /* SISA */
+    eph.sva   =U1(p);   p+=1+1; /* SISA index */
     eph.iode  =U4(p);   p+=4;   /* IODNav */
     eph.toes  =U4(p);   p+=4;
     sqrtA     =R8(p);   p+=8;
@@ -768,7 +763,9 @@ static int decode_galephemerisb(raw_t *raw)
     eph.f0    =sel_nav?af0_fnav:af0_inav;
     eph.f1    =sel_nav?af1_fnav:af1_inav;
     eph.f2    =sel_nav?af2_fnav:af2_inav;
-    eph.code  =sel_nav?2:1; /* data source 1:I/NAV E1B,2:F/NAV E5a-I */
+    
+    /* set data source defined in rinex 3.03 */
+    eph.code=(sel_nav==0)?((1<<0)|(1<<9)):((1<<1)|(1<<8));
     
     if (raw->outtype) {
         msg=raw->msgtype+strlen(raw->msgtype);
@@ -1047,6 +1044,7 @@ static int decode_bdsephemerisb(raw_t *raw)
     
     if (!strstr(raw->opt,"-EPHALL")) {
         if (timediff(raw->nav.eph[eph.sat-1].toe,eph.toe)==0.0&&
+            timediff(raw->nav.eph[eph.sat-1].toc,eph.toc)==0.0&&
             raw->nav.eph[eph.sat-1].iode==eph.iode&&
             raw->nav.eph[eph.sat-1].iodc==eph.iodc) return 0; /* unchanged */
     }

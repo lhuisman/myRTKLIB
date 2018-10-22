@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------------------
 * rinex.c : rinex functions
 *
-*          Copyright (C) 2007-2014 by T.TAKASU, All rights reserved.
+*          Copyright (C) 2007-2018 by T.TAKASU, All rights reserved.
 *
 * reference :
 *     [1] W.Gurtner and L.Estey, RINEX The Receiver Independent Exchange Format
@@ -20,6 +20,10 @@
 *         International GNSS Service (IGS), RINEX Working Group and Radio
 *         Technical Commission for Maritime Services Special Committee 104
 *         (RTCM-SC104), December 10, 2012
+*     [8] RINEX The Receiver Independent Exchange Format Version 3.03,
+*         International GNSS Service (IGS), RINEX Working Group and Radio
+*         Technical Commission for Maritime Services Special Committee 104
+*         (RTCM-SC104), July 14, 2015
 *
 * version : $Revision:$
 * history : 2006/01/16 1.0  new
@@ -86,6 +90,8 @@
 *           2016/09/17 1.26 fix bug on fit interval in QZSS RINEX nav
 *                           URA output value complient to RINEX 3.03
 *           2016/10/10 1.27 add api outrnxinavh()
+*           2018/10/10 1.28 support galileo sisa value for rinex nav output
+*                           fix bug on handling beidou B1 code in rinex 3.03
 *-----------------------------------------------------------------------------*/
 #include "rtklib.h"
 
@@ -355,8 +361,8 @@ static void decode_obsh(FILE *fp, char *buff, double ver, int *tsys,
         }
         *tobs[i][nt]='\0';
         
-        /* change beidou B1 code: 3.02 draft -> 3.02/3.03 */
-        if (i==5) {
+        /* change beidou B1 code: 3.02 */
+        if (i==5&&fabs(ver-3.02)<1e-3) {
             for (j=0;j<nt;j++) if (tobs[i][j][1]=='2') tobs[i][j][1]='1';
         }
         /* if unknown code in ver.3, set default code */
@@ -1858,6 +1864,7 @@ static void outobstype_ver2(FILE *fp, const rnxopt_t *opt)
 static void outobstype_ver3(FILE *fp, const rnxopt_t *opt)
 {
     const char label[]="SYS / # / OBS TYPES";
+    char tobs[8];
     int i,j;
     
     trace(3,"outobstype_ver3:\n");
@@ -1870,7 +1877,14 @@ static void outobstype_ver3(FILE *fp, const rnxopt_t *opt)
         for (j=0;j<opt->nobs[i];j++) {
             if (j>0&&j%13==0) fprintf(fp,"      ");
             
-            fprintf(fp," %3s",opt->tobs[i][j]);
+            strcpy(tobs,opt->tobs[i][j]);
+            
+            /* beidou B1x -> 1x (3.02), 2x (other) */
+            if (navsys[i]==SYS_CMP) {
+                if (opt->rnxver==3.02&&tobs[1]=='2') tobs[1]='1';
+                if (opt->rnxver!=3.02&&tobs[1]=='1') tobs[1]='2';
+            }
+            fprintf(fp," %3s", tobs);
             
             if (j%13==12) fprintf(fp,"  %-20s\n",label);
         }
@@ -2401,7 +2415,7 @@ extern int outrnxnavb(FILE *fp, const rnxopt_t *opt, const eph_t *eph)
     outnavf(fp,eph->flag   );
     fprintf(fp,"\n%s",sep  );
     
-    outnavf(fp,uravalue(eph->sva,sys));
+    outnavf(fp,uravalue(sys,eph->sva));
     outnavf(fp,eph->svh    );
     outnavf(fp,eph->tgd[0] ); /* GPS/QZS:TGD, GAL:BGD E5a/E1, BDS: TGD1 B1/B3 */
     if (sys==SYS_GAL||sys==SYS_CMP) {
@@ -2603,7 +2617,7 @@ extern int outrnxhnavb(FILE *fp, const rnxopt_t *opt, const seph_t *seph)
     outnavf(fp,seph->pos[1]/1E3   );
     outnavf(fp,seph->vel[1]/1E3   );
     outnavf(fp,seph->acc[1]/1E3   );
-    outnavf(fp,uravalue(seph->sva,SYS_SBS));
+    outnavf(fp,uravalue(SYS_SBS,seph->sva));
     fprintf(fp,"\n%s",sep         );
     
     outnavf(fp,seph->pos[2]/1E3   );

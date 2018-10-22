@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------------------
 * rtkpos.c : precise positioning
 *
-*          Copyright (C) 2007-2015 by T.TAKASU, All rights reserved.
+*          Copyright (C) 2007-2018 by T.TAKASU, All rights reserved.
 *
 * version : $Revision: 1.1 $ $Date: 2008/07/17 21:48:06 $
 * history : 2007/01/12 1.0  new
@@ -39,6 +39,7 @@
 *           2016/07/30 1.21 suppress single solution if !prcopt.outsingle
 *                           fix bug on slip detection of backward filter
 *           2016/08/20 1.22 fix bug on ddres() function
+*           2018/10/10 1.13 support api change of satexclude()
 *-----------------------------------------------------------------------------*/
 #include <stdarg.h>
 #include "rtklib.h"
@@ -966,9 +967,9 @@ static void zdres_sat(int base, double r, const obsd_t *obs, const nav_t *nav,
         O   e    = line of sight unit vectors to sats
         O   azel = [az, el] to sats                                           */
 static int zdres(int base, const obsd_t *obs, int n, const double *rs,
-                 const double *dts, const int *svh, const nav_t *nav,
-                 const double *rr, const prcopt_t *opt, int index, double *y,
-                 double *e, double *azel)
+                 const double *dts, const double *var, const int *svh,
+                 const nav_t *nav, const double *rr, const prcopt_t *opt,
+                 int index, double *y, double *e, double *azel)
 {
     double r,rr_[3],pos[3],dant[NFREQ]={0},disp[3];
     double zhd,zazel[]={0.0,90.0*D2R};
@@ -1000,7 +1001,7 @@ static int zdres(int base, const obsd_t *obs, int n, const double *rs,
         if (satazel(pos,e+i*3,azel+i*2)<opt->elmin) continue;
         
         /* excluded satellite? */
-        if (satexclude(obs[i].sat,svh[i],opt)) continue;
+        if (satexclude(obs[i].sat,var[i],svh[i],opt)) continue;
         
         /* adjust range for satellite clock-bias */
         r+=-CLIGHT*dts[i*2];
@@ -1418,7 +1419,7 @@ static double intpres(gtime_t time, const obsd_t *obs, int n, const nav_t *nav,
     
     satposs(time,obsb,nb,nav,opt->sateph,rs,dts,var,svh);
     
-    if (!zdres(1,obsb,nb,rs,dts,svh,nav,rtk->rb,opt,1,yb,e,azel)) {
+    if (!zdres(1,obsb,nb,rs,dts,var,svh,nav,rtk->rb,opt,1,yb,e,azel)) {
         return tt;
     }
     for (i=0;i<n;i++) {
@@ -1919,7 +1920,7 @@ static int relpos(rtk_t *rtk, const obsd_t *obs, int nu, int nr,
     /* calculate [range - measured pseudorange] for base station (phase and code)
          output is in y[nu:nu+nr], see call for rover below for more details                                                 */
     trace(3,"base station:\n");
-    if (!zdres(1,obs+nu,nr,rs+nu*6,dts+nu*2,svh+nu,nav,rtk->rb,opt,1,
+    if (!zdres(1,obs+nu,nr,rs+nu*6,dts+nu*2,var+nu,svh+nu,nav,rtk->rb,opt,1,
                y+nu*nf*2,e+nu*3,azel+nu*2)) {
         errmsg(rtk,"initial base station position error\n");
         
@@ -1967,7 +1968,7 @@ static int relpos(rtk_t *rtk, const obsd_t *obs, int nu, int nr,
                 e    = line of sight unit vectors to sats
                 azel = [az, el] to sats                                   */
         trace(3,"rover:\n");
-        if (!zdres(0,obs,nu,rs,dts,svh,nav,xp,opt,0,y,e,azel)) {
+        if (!zdres(0,obs,nu,rs,dts,var,svh,nav,xp,opt,0,y,e,azel)) {
             errmsg(rtk,"rover initial position error\n");
             stat=SOLQ_NONE;
             break;
@@ -2002,7 +2003,7 @@ static int relpos(rtk_t *rtk, const obsd_t *obs, int nu, int nr,
         trace(4,"x(%d)=",i+1); tracemat(4,xp,1,NR(opt),13,4);
     }
     /* calc zero diff residuals again after kalman filter update */
-    if (stat!=SOLQ_NONE&&zdres(0,obs,nu,rs,dts,svh,nav,xp,opt,0,y,e,azel)) {
+    if (stat!=SOLQ_NONE&&zdres(0,obs,nu,rs,dts,var,svh,nav,xp,opt,0,y,e,azel)) {
         
         /* calc double diff residuals again after kalman filter update for float solution */
         nv=ddres(rtk,nav,obs,dt,xp,Pp,sat,y,e,azel,iu,ir,ns,v,NULL,R,vflg);
@@ -2046,7 +2047,7 @@ static int relpos(rtk_t *rtk, const obsd_t *obs, int nu, int nr,
         if (manage_amb_LAMBDA(rtk,bias,xa,sat,nf,ns)>1) {
     
             /* find zero-diff residuals for fixed solution */
-            if (zdres(0,obs,nu,rs,dts,svh,nav,xa,opt,0,y,e,azel)) {
+            if (zdres(0,obs,nu,rs,dts,var,svh,nav,xa,opt,0,y,e,azel)) {
                 
                 /* post-fit residuals for fixed solution (xa includes fixed phase biases, rtk->xa does not) */
                 nv=ddres(rtk,nav,obs,dt,xa,NULL,sat,y,e,azel,iu,ir,ns,v,NULL,R,vflg);
