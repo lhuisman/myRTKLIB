@@ -259,7 +259,7 @@ static int inputobs(obsd_t *obs, int solq, const prcopt_t *popt)
                 if (timediff(obss.data[i].time,obss.data[iobsu].time)>DTTOL) break;
         }
         nr=nextobsf(&obss,&iobsr,2);
-        if (nr<=0) {    /* remove this for event logging??? */
+        if (nr<=0) {
             nr=nextobsf(&obss,&iobsr,2);
         }
         for (i=0;i<nu&&n<MAXOBS*2;i++) obs[n++]=obss.data[iobsu+i];
