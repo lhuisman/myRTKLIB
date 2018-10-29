@@ -384,10 +384,12 @@ static int decode_rxmrawx(raw_t *raw)
         slip=lockt==0||lockt*1E-3<raw->lockt[sat-1][f-1]||
              halfc!=raw->halfc[sat-1][f-1];
         if (std_slip>0&&cpstd>=std_slip) slip=LLI_SLIP;
+        if (slip) raw->lockflag[sat-1][f-1]=slip;
         raw->lockt[sat-1][f-1]=lockt*1E-3;
         raw->halfc[sat-1][f-1]=halfc;
         /* LLI: bit1=slip,bit2=half-cycle-invalid, bit7=half-cycle-subtract */
-        LLI=(slip?LLI_SLIP:0)|(halfc?LLI_HALFS:0)|(!halfv&&L!=0.0?LLI_HALFC:0);
+        LLI=(halfc?LLI_HALFS:0)|(!halfv&&L!=0.0?LLI_HALFC:0);
+        if (L!=0.0) LLI|=raw->lockflag[sat-1][f-1]>0.0?LLI_SLIP:0;
 
         for (j=0;j<n;j++) {
             if (raw->obs.data[j].sat==sat) break;
@@ -413,6 +415,7 @@ static int decode_rxmrawx(raw_t *raw)
         raw->obs.data[j].SNR[f-1]=(unsigned char)(cn0*4);
         raw->obs.data[j].LLI[f-1]=(unsigned char)LLI;
         raw->obs.data[j].code[f-1]=(unsigned char)code;
+        if (L!=0.0) raw->lockflag[sat-1][f-1]=0;
     }
     raw->time=time;
     raw->obs.n=n;
@@ -1114,6 +1117,7 @@ static int decode_timtm2(raw_t *raw)
     unsigned long towMsR, towSubMsR, towMsF, towSubMsF, accEst;
     int time, timeBase, newRisingEdge, newFallingEdge;
     unsigned char *p=raw->buff+6;
+    double tr[6],tf[6];
 
     trace(4, "decode_timtm2: len=%d\n", raw->len);
 
@@ -1148,6 +1152,10 @@ static int decode_timtm2(raw_t *raw)
     } else {
         raw->obs.flag = 0;
     }
+    time2epoch(gpst2time(wnR,towMsR*1E-3+towSubMsR*1E-9),tr);
+    time2epoch(gpst2time(wnF,towMsF*1E-3+towSubMsF*1E-9),tf);
+    trace(3,"time mark rise: %f:%f:%.3f\n",tr[3],tr[4],tr[5]);
+    trace(3,"time mark fall: %f:%f:%.3f\n",tf[3],tf[4],tf[5]);
     return 0;
 }
 

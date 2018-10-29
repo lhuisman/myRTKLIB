@@ -95,7 +95,7 @@
 
 /* ephemeris selections ------------------------------------------------------*/
 static int eph_sel[]={ /* GPS,GLO,GAL,QZS,BDS,SBS */
-    0,0,1,0,0,0
+    0,0,0,0,0,0
 };
 
 /* variance by ura ephemeris -------------------------------------------------*/
