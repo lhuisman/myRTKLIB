@@ -1004,10 +1004,11 @@ static int readrnxobs(FILE *fp, gtime_t ts, gtime_t te, double tint,
                       const char *opt, int rcv, double ver, int *tsys,
                       char tobs[][MAXOBSTYPE][4], obs_t *obs, sta_t *sta)
 {
-	gtime_t eventime={0},time1={0};
+    gtime_t eventime={0},time0={0},time1={0};
     obsd_t *data;
     unsigned char slips[MAXSAT][NFREQ]={{0}};
     int i,n,n1=0,flag=0,stat=0;
+    double dtime1=0;
     
     trace(4,"readrnxobs: rcv=%d ver=%.2f tsys=%d\n",rcv,ver,*tsys);
     
@@ -1021,6 +1022,8 @@ static int readrnxobs(FILE *fp, gtime_t ts, gtime_t te, double tint,
         if (flag == 5) {
             eventime = data[0].eventime;
             n = readrnxobsb(fp,opt,ver,tsys,tobs,&flag,data,sta);
+            if (fabs(timediff(data[0].time,time1)-dtime1)>=DTTOL)
+                n = readrnxobsb(fp,opt,ver,tsys,tobs,&flag,data,sta);
         }
         
         if (eventime.time==0 || obs->n-n1<=0 || timediff(eventime,time1)>=0) {
@@ -1028,7 +1031,7 @@ static int readrnxobs(FILE *fp, gtime_t ts, gtime_t te, double tint,
         }  else {
            /* add event to previous epoch if delayed */
             for (i=0;i<n1;i++) obs->data[obs->n-i-1].eventime = eventime;
-            for (i=0;i<n;i++) data[i].eventime.time = data[i].eventime.sec = 0;
+            for (i=0;i<n;i++) data[i].eventime=time0;
         }
         /* set to zero eventime for the next iteration */
         eventime.time = 0;
@@ -1055,7 +1058,7 @@ static int readrnxobs(FILE *fp, gtime_t ts, gtime_t te, double tint,
             /* save obs data */
             if ((stat=addobsdata(obs,data+i))<0) break;
         }
-        n1=n;time1=data[0].time;
+        n1=n;dtime1=timediff(data[0].time,time1);time1=data[0].time;
     }
     trace(4,"readrnxobs: nobs=%d stat=%d\n",obs->n,stat);
     
