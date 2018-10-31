@@ -432,8 +432,8 @@ static void sort_codes(unsigned char *codes, unsigned char *types, int n)
     int i,j;
     
     for (i=0;i<n-1;i++) for (j=i+1;j<n;j++) {
-       obs1=code2obs(codes[i],NULL);
-       obs2=code2obs(codes[j],NULL);
+       obs1=code2obs(NULL,codes[i],NULL);
+       obs2=code2obs(NULL,codes[j],NULL);
        if (strcmp(obs1,obs2)<=0) continue;
        tmp=codes[i]; codes[i]=codes[j]; codes[j]=tmp;
        tmp=types[i]; types[i]=types[j]; types[j]=tmp;
@@ -455,7 +455,7 @@ static void setopt_obstype(const unsigned char *codes,
     
     for (i=0;codes[i];i++) {
         
-        if (!(id=code2obs(codes[i],&freq))) continue;
+        if (!(id=code2obs(sys,codes[i],&freq))) continue;
         
         if (!(opt->freqtype&(1<<(freq-1)))||opt->mask[sys][codes[i]-1]=='0') {
             continue;
@@ -664,7 +664,7 @@ static int scan_obstype(int format, char **files, int nf, rnxopt_t *opt,
         return 0;
     }
     for (i=0;i<NSATSYS;i++) for (j=0;j<n[i];j++) {
-        trace(2,"scan_obstype: sys=%d code=%s type=%d\n",i,code2obs(codes[i][j],NULL),types[i][j]);
+        trace(2,"scan_obstype: sys=%d code=%s type=%d\n",i,code2obs(NULL,codes[i][j],NULL),types[i][j]);
     }
     for (i=0;i<NSATSYS;i++) {
         
@@ -675,7 +675,7 @@ static int scan_obstype(int format, char **files, int nf, rnxopt_t *opt,
         setopt_obstype(codes[i],types[i],i,opt);
         
         for (j=0;j<n[i];j++) {
-            trace(3,"scan_obstype: sys=%d code=%s\n",i,code2obs(codes[i][j],NULL));
+            trace(3,"scan_obstype: sys=%d code=%s\n",i,code2obs(NULL,codes[i][j],NULL));
         }
     }
     return 1;
@@ -704,8 +704,8 @@ static void set_obstype(int format, rnxopt_t *opt)
         {CODE_L1C,CODE_L1S,CODE_L1L,CODE_L1X,CODE_L1Z,CODE_L2S,CODE_L2L,CODE_L2X,
          CODE_L5I,CODE_L5Q,CODE_L5X,CODE_L6S,CODE_L6L,CODE_L6X},
         {CODE_L1C,CODE_L5I,CODE_L5Q,CODE_L5X},
-        {CODE_L1I,CODE_L1Q,CODE_L1X,CODE_L7I,CODE_L7Q,CODE_L7X,CODE_L6I,CODE_L6Q,
-         CODE_L6X},
+        {CODE_L1I,CODE_L1Q,CODE_L1X,CODE_L2I,CODE_L2Q,CODE_L2X,
+         CODE_L7I,CODE_L7Q,CODE_L7X,CODE_L6I,CODE_L6Q,CODE_L6X},
         {CODE_L5A,CODE_L5B,CODE_L5C,CODE_L5X,CODE_L9A,CODE_L9B,CODE_L9C,CODE_L9X}
     };
     static const unsigned char codes_cnav[NSATSYS][8]={ /* comnav */
@@ -764,8 +764,8 @@ static void set_obstype(int format, rnxopt_t *opt)
         {CODE_L1C,CODE_L1S,CODE_L1L,CODE_L1X,CODE_L1Z,CODE_L2S,CODE_L2L,CODE_L2X,
          CODE_L5I,CODE_L5Q,CODE_L5X,CODE_L6S,CODE_L6L,CODE_L6X},
         {CODE_L1C,CODE_L5I,CODE_L5Q,CODE_L5X},
-        {CODE_L1I,CODE_L1Q,CODE_L1X,CODE_L7I,CODE_L7Q,CODE_L7X,CODE_L6I,CODE_L6Q,
-         CODE_L6X},
+        {CODE_L1I,CODE_L1Q,CODE_L1X,CODE_L2I,CODE_L2Q,CODE_L2X,
+         CODE_L7I,CODE_L7Q,CODE_L7X,CODE_L6I,CODE_L6Q,CODE_L6X},
         {CODE_L5A,CODE_L5B,CODE_L5C,CODE_L5X,CODE_L9A,CODE_L9B,CODE_L9C,CODE_L9X}
     };
     static const unsigned char codes_rt17[NSATSYS][8]={ /* rt17 */
@@ -801,7 +801,7 @@ static void set_obstype(int format, rnxopt_t *opt)
         {CODE_L1C,CODE_L1X,CODE_L7Q},
         {CODE_L1C},
         {CODE_L1C},
-        {CODE_L1I,CODE_L7I},
+        {CODE_L1I,CODE_L2I,CODE_L7I},
         {0}
     };
     const unsigned char *codes;

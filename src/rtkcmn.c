@@ -252,17 +252,27 @@ static char *obscodes[]={       /* observation code strings */
     "5B","5C","9A","9B","9C", "9X",""  ,""  ,""  ,""    /* 50-59 */
 };
 static unsigned char obsfreqs[]={
-    /* 1:L1/E1, 2:L2/B1, 3:E5b/B2, 4:L5/E5a/L3, 5:L6/LEX/B3, 6:E5(a+b), 7:S */
+    /* 1:L1/E1, 2:L2, 3:E5b, 4:L5/E5a/L3, 5:E6/LEX, 6:E5(a+b), 7:S */
     0, 1, 1, 1, 1,  1, 1, 1, 1, 1, /*  0- 9 */
     1, 1, 1, 1, 2,  2, 2, 2, 2, 2, /* 10-19 */
     2, 2, 2, 2, 4,  4, 4, 3, 3, 3, /* 20-29 */
     5, 5, 5, 5, 5,  5, 5, 6, 6, 6, /* 30-39 */
-    2, 2, 5, 5, 4,  4, 4, 1, 1, 4, /* 40-49 */
+    1, 1, 3, 3, 4,  4, 4, 1, 1, 4, /* 40-49 */
     4, 4, 7, 7, 7,  7, 0, 0, 0, 0  /* 50-59 */
 };
+static unsigned char obsfreqs_cmp[]={
+    /* 1:B1, 2:B2, 3:B3 */
+    0, 1, 1, 1, 1,  1, 1, 1, 1, 1, /*  0- 9 */
+    1, 1, 1, 1, 2,  2, 2, 2, 1, 2, /* 10-19 */
+    2, 2, 2, 2, 4,  4, 4, 2, 2, 2, /* 20-29 */
+    5, 5, 5, 3, 5,  5, 5, 6, 6, 6, /* 30-39 */
+    1, 1, 3, 3, 4,  4, 4, 1, 1, 4, /* 40-49 */
+    4, 4, 7, 7, 7,  7, 0, 0, 0, 0  /* 50-59 */
+};
+
 static char codepris[7][MAXFREQ][16]={  /* code priority table */
 
-   /* L1/E1      L2/B1   E5b/B2  L5/E5a/L3 L6/LEX/B3     E5(a+b)  S */
+   /* L1/E1/B1   L2/B2      E5b/B3  L5/E5a/L3 E6/LEX     E5(a+b)  S */
     {"CPYWMNSL","CLPYWMNDSX","IQX"   ,"IQX"   ,""        ,""      ,""    }, /* GPS */
     {"PC"      ,"PC"        ,"IQX"   ,"IQX"   ,""        ,""      ,""    }, /* GLO */
     {"CABXZ"   ,""          ,"IQX"   ,"IQX"   ,"ABCXZ"   ,"IQX"   ,""    }, /* GAL */
@@ -586,13 +596,19 @@ extern int testsnr(int base, int freq, double el, double snr,
 * return : obs code (CODE_???)
 * notes  : obs codes are based on reference [6] and qzss extension
 *-----------------------------------------------------------------------------*/
-extern unsigned char obs2code(const char *obs, int *freq)
+extern unsigned char obs2code(int sys, const char *obs, int *freq)
 {
     int i;
     if (freq) *freq=0;
     for (i=1;*obscodes[i];i++) {
         if (strcmp(obscodes[i],obs)) continue;
-        if (freq) *freq=obsfreqs[i];
+        
+    if (freq) {
+       if (sys==SYS_CMP)
+           *freq=obsfreqs_cmp[i];
+       else
+           *freq=obsfreqs[i];
+    }
         return (unsigned char)i;
     }
     return CODE_NONE;
@@ -601,16 +617,21 @@ extern unsigned char obs2code(const char *obs, int *freq)
 * convert obs code to obs code string
 * args   : unsigned char code I obs code (CODE_???)
 *          int    *freq  IO     frequency (NULL: no output)
-*                               (1:L1/E1, 2:L2/B1, 3:L5/E5a/L3, 4:L6/LEX/B3,
-                                 5:E5b/B2, 6:E5(a+b), 7:S)
+*                               (1:L1/E1/B1, 2:L2/B2, 3:L5/E5a/L3/B3, 4:L6/LEX,
+                                 5:E5b, 6:E5(a+b), 7:S)
 * return : obs code string ("1C","1P","1P",...)
 * notes  : obs codes are based on reference [6] and qzss extension
 *-----------------------------------------------------------------------------*/
-extern char *code2obs(unsigned char code, int *freq)
+extern char *code2obs(int sys, unsigned char code, int *freq)
 {
     if (freq) *freq=0;
     if (code<=CODE_NONE||MAXCODE<code) return "";
-    if (freq) *freq=obsfreqs[code];
+    if (freq) {
+       if (sys==SYS_CMP)
+           *freq=obsfreqs_cmp[code];
+       else
+           *freq=obsfreqs[code];
+    }
     return obscodes[code];
 }
 /* set code priority -----------------------------------------------------------
@@ -657,7 +678,7 @@ extern int getcodepri(int sys, unsigned char code, const char *opt)
         case SYS_IRN: i=6; optstr="-IL%2s"; break;
         default: return 0;
     }
-    obs=code2obs(code,&j);
+    obs=code2obs(sys,code,&j);
     
     /* parse code options */
     for (p=opt;p&&(p=strchr(p,'-'));p++) {

@@ -975,7 +975,7 @@ static unsigned char *decode_bnx_7f_05_obs(raw_t *raw, unsigned char *buff,
     
     /* get code priority */
     for (i=0;i<nobs;i++) {
-        code2obs(codes[code[i]&0x3F],freq+i);
+        code2obs(sys,codes[code[i]&0x3F],freq+i);
         pri[i]=getcodepri(sys,codes[code[i]&0x3F],raw->opt);
         
         /* frequency index for beidou */

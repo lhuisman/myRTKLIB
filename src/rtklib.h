@@ -1449,8 +1449,8 @@ EXPORT int  satno   (int sys, int prn);
 EXPORT int  satsys  (int sat, int *prn);
 EXPORT int  satid2no(const char *id);
 EXPORT void satno2id(int sat, char *id);
-EXPORT unsigned char obs2code(const char *obs, int *freq);
-EXPORT char *code2obs(unsigned char code, int *freq);
+EXPORT unsigned char obs2code(int sys, const char *obs, int *freq);
+EXPORT char *code2obs(int sys, unsigned char code, int *freq);
 EXPORT int  satexclude(int sat, double var, int svh, const prcopt_t *opt);
 EXPORT int  testsnr(int base, int freq, double el, double snr,
                     const snrmask_t *mask);

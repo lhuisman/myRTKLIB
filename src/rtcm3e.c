@@ -1387,8 +1387,8 @@ static const int codes_qzs[]={
     CODE_L5X,CODE_L6S,CODE_L6L,CODE_L6X,CODE_L1X
 };
 static const int codes_bds[]={
-    CODE_L1I,CODE_L1Q,CODE_L1X,CODE_L7I,CODE_L7Q,CODE_L7X,CODE_L6I,CODE_L6Q,
-    CODE_L6X
+    CODE_L1I,CODE_L1Q,CODE_L1X,CODE_L2I,CODE_L2Q,CODE_L2X,
+    CODE_L7I,CODE_L7Q,CODE_L7X,CODE_L6I,CODE_L6Q,CODE_L6X
 };
 static const int codes_sbs[]={
     CODE_L1C,CODE_L5I,CODE_L5Q,CODE_L5X
@@ -1506,7 +1506,7 @@ static int encode_ssr3(rtcm_t *rtcm, int sys, int sync)
         case SYS_GLO: np=5; offp=  0; codes=codes_glo; ncode= 4; break;
         case SYS_GAL: np=6; offp=  0; codes=codes_gal; ncode=19; break;
         case SYS_QZS: np=4; offp=192; codes=codes_qzs; ncode=13; break;
-        case SYS_CMP: np=6; offp=  1; codes=codes_bds; ncode= 9; break;
+        case SYS_CMP: np=6; offp=  1; codes=codes_bds; ncode=12; break;
         case SYS_SBS: np=6; offp=120; codes=codes_sbs; ncode= 4; break;
         default: return 0;
     }
@@ -1690,7 +1690,7 @@ static int encode_ssr7(rtcm_t *rtcm, int sys, int sync)
         case SYS_GLO: np=5; offp=  0; codes=codes_glo; ncode= 4; break;
         case SYS_GAL: np=6; offp=  0; codes=codes_gal; ncode=19; break;
         case SYS_QZS: np=4; offp=192; codes=codes_qzs; ncode=13; break;
-        case SYS_CMP: np=6; offp=  1; codes=codes_bds; ncode= 9; break;
+        case SYS_CMP: np=6; offp=  1; codes=codes_bds; ncode=12; break;
         default: return 0;
     }
     /* number of satellites */
@@ -1760,7 +1760,7 @@ static int to_sigid(int sys, unsigned char code, int *freq)
         else if (code==CODE_L2M) code=CODE_L2P;
         else if (code==CODE_L2N) code=CODE_L2P;
     }
-    if (!*(sig=code2obs(code,freq))) return 0;
+    if (!*(sig=code2obs(sys,code,freq))) return 0;
     
     switch (sys) {
         case SYS_GPS: msm_sig=msm_sig_gps; break;

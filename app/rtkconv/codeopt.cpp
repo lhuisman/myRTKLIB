@@ -81,9 +81,9 @@ void __fastcall TCodeOptDialog::FormShow(TObject *Sender)
 	J35->Checked=mask[3][34]=='1';
 	J36->Checked=mask[3][35]=='1';
 	J33->Checked=mask[3][32]=='1';
-	C47->Checked=mask[5][46]=='1';
-	C48->Checked=mask[5][47]=='1';
-	C12->Checked=mask[5][11]=='1';
+	C40->Checked=mask[5][39]=='1';
+	C41->Checked=mask[5][40]=='1';
+	C18->Checked=mask[5][11]=='1';
 	C27->Checked=mask[5][26]=='1';
 	C28->Checked=mask[5][27]=='1';
 	C29->Checked=mask[5][28]=='1';
@@ -172,9 +172,9 @@ void __fastcall TCodeOptDialog::BtnOkClick(TObject *Sender)
 	if (J35->Checked) mask[3][34]='1';
 	if (J36->Checked) mask[3][35]='1';
 	if (J33->Checked) mask[3][32]='1';
-	if (C47->Checked) mask[5][46]='1';
-	if (C48->Checked) mask[5][47]='1';
-	if (C12->Checked) mask[5][11]='1';
+	if (C40->Checked){mask[5][39]='1';mask[5][46]='1';}
+	if (C41->Checked){mask[5][40]='1';mask[5][47]='1';}
+	if (C18->Checked){mask[5][17]='1';mask[5][11]='1';}
 	if (C27->Checked) mask[5][26]='1';
 	if (C28->Checked) mask[5][27]='1';
 	if (C29->Checked) mask[5][28]='1';
@@ -261,9 +261,9 @@ void __fastcall TCodeOptDialog::BtnSetAllClick(TObject *Sender)
 	J35->Checked=set;
 	J36->Checked=set;
 	J33->Checked=set;
-	C47->Checked=set;
-	C48->Checked=set;
-	C12->Checked=set;
+	C40->Checked=set;
+	C41->Checked=set;
+	C18->Checked=set;
 	C27->Checked=set;
 	C28->Checked=set;
 	C29->Checked=set;
@@ -348,9 +348,9 @@ void __fastcall TCodeOptDialog::UpdateEnable(void)
 	J35->Enabled=(NavSys&SYS_QZS)&&(FreqType&FREQTYPE_E6);
 	J36->Enabled=(NavSys&SYS_QZS)&&(FreqType&FREQTYPE_E6);
 	J33->Enabled=(NavSys&SYS_QZS)&&(FreqType&FREQTYPE_E6);
-	C47->Enabled=(NavSys&SYS_CMP)&&(FreqType&FREQTYPE_L2);
-	C48->Enabled=(NavSys&SYS_CMP)&&(FreqType&FREQTYPE_L2);
-	C12->Enabled=(NavSys&SYS_CMP)&&(FreqType&FREQTYPE_L2);
+	C40->Enabled=(NavSys&SYS_CMP)&&(FreqType&FREQTYPE_L2);
+	C41->Enabled=(NavSys&SYS_CMP)&&(FreqType&FREQTYPE_L2);
+	C18->Enabled=(NavSys&SYS_CMP)&&(FreqType&FREQTYPE_L2);
 	C27->Enabled=(NavSys&SYS_CMP)&&(FreqType&FREQTYPE_E5b);
 	C28->Enabled=(NavSys&SYS_CMP)&&(FreqType&FREQTYPE_E5b);
 	C29->Enabled=(NavSys&SYS_CMP)&&(FreqType&FREQTYPE_E5b);

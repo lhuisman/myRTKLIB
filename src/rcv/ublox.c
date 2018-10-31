@@ -164,8 +164,8 @@ static int ubx_sig(int sys, int sigid)
         if (sigid == 6) return CODE_L7Q; /* E5bQ */
     }
     else if (sys == SYS_CMP) {
-        if (sigid == 0) return CODE_L1I; /* B1I D1 (rinex 3.02) */
-        if (sigid == 1) return CODE_L1I; /* B1I D2 (rinex 3.02) */
+        if (sigid == 0) return CODE_L2I; /* B1I D1 (rinex 3.03) */
+        if (sigid == 1) return CODE_L2I; /* B1I D2 (rinex 3.03) */
         if (sigid == 2) return CODE_L7I; /* B2I D1 */
         if (sigid == 3) return CODE_L7I; /* B2I D2 */
     }
@@ -183,7 +183,7 @@ static double sig_freq(int sys, int f, int fcn)
 {
     static const double freq_glo[8]={FREQ1_GLO,FREQ2_GLO,FREQ3_GLO};
     static const double dfrq_glo[8]={DFRQ1_GLO,DFRQ2_GLO};
-    static const double freq_bds[8]={FREQ1_CMP,0,0,FREQ3_CMP,FREQ2_CMP};
+    static const double freq_bds[8]={FREQ1_CMP,FREQ2_CMP,FREQ3_CMP};
     
     if (sys == SYS_GLO) {
         return freq_glo[f-1]+dfrq_glo[f-1]*fcn;
@@ -363,9 +363,9 @@ static int decode_rxmrawx(raw_t *raw)
             code=ubx_sig(sys,sigid);
             }
         else {
-            code=(sys==SYS_CMP)?CODE_L1I:((sys==SYS_GAL)?CODE_L1X:CODE_L1C);
+            code=(sys==SYS_CMP)?CODE_L2I:((sys==SYS_GAL)?CODE_L1X:CODE_L1C);
         }
-        code2obs(code,&f); /* freq index */
+        code2obs(sys,code,&f); /* freq index */
 
         if (f==0||f>NFREQ) {
             trace(2,"ubx rxmrawx signal error: sys=%2d code=%2d\n",sys,code);
@@ -678,7 +678,7 @@ static int decode_trkmeas(raw_t *raw)
         raw->obs.data[n].L[0]=-adr;
         raw->obs.data[n].D[0]=(float)dop;
         raw->obs.data[n].SNR[0]=(unsigned char)(snr*4.0);
-        raw->obs.data[n].code[0]=sys==SYS_CMP?CODE_L1I:CODE_L1C;
+        raw->obs.data[n].code[0]=sys==SYS_CMP?CODE_L2I:CODE_L1C;
         raw->obs.data[n].qualL[0]=8-qi;
         raw->obs.data[n].LLI[0]=raw->lockt[sat-1][1]>0.0?1:0;
         if (sys==SYS_SBS) { /* half-cycle valid */
@@ -803,7 +803,7 @@ static int decode_trkd5(raw_t *raw)
         raw->obs.data[n].L[0]=-adr;
         raw->obs.data[n].D[0]=(float)dop;
         raw->obs.data[n].SNR[0]=(unsigned char)(snr*4.0);
-        raw->obs.data[n].code[0]=sys==SYS_CMP?CODE_L1I:CODE_L1C;
+        raw->obs.data[n].code[0]=sys==SYS_CMP?CODE_L2I:CODE_L1C;
         raw->obs.data[n].LLI[0]=raw->lockt[sat-1][1]>0.0?1:0;
         raw->lockt[sat-1][1]=0.0;
         

@@ -101,41 +101,43 @@ object OptDialog: TOptDialog
     Top = 1
     Width = 411
     Height = 377
-    ActivePage = TabSheet2
+    ActivePage = TabSheet1
     TabOrder = 4
     object TabSheet1: TTabSheet
       Caption = 'Setting&1'
+      ExplicitLeft = 1
+      ExplicitTop = 21
       object Label3: TLabel
         Left = 24
-        Top = 73
+        Top = 95
         Width = 183
         Height = 13
         Caption = 'Rec Dynamics / Earth Tides Correction'
       end
       object Label8: TLabel
         Left = 24
-        Top = 95
-        Width = 108
+        Top = 27
+        Width = 58
         Height = 13
-        Caption = 'Ionosphere Correction'
+        Caption = 'Frequencies'
       end
       object LabelPosMode: TLabel
         Left = 24
-        Top = 7
+        Top = 5
         Width = 80
         Height = 13
         Caption = 'Positioning Mode'
       end
       object LabelFreq: TLabel
         Left = 24
-        Top = 29
-        Width = 119
+        Top = 51
+        Width = 51
         Height = 13
-        Caption = 'Frequencies / Filter Type'
+        Caption = 'Filter Type'
       end
       object LabelElMask: TLabel
         Left = 23
-        Top = 51
+        Top = 73
         Width = 179
         Height = 13
         Caption = 'Elevation Mask ('#176') / SNR Mask (dBHz)'
@@ -157,13 +159,13 @@ object OptDialog: TOptDialog
       object Label9: TLabel
         Left = 23
         Top = 117
-        Width = 114
+        Width = 107
         Height = 13
-        Caption = 'Troposphere Correction'
+        Caption = 'Iono/Tropo Correction'
       end
       object DynamicModel: TComboBox
         Left = 248
-        Top = 70
+        Top = 92
         Width = 75
         Height = 21
         Style = csDropDownList
@@ -176,9 +178,9 @@ object OptDialog: TOptDialog
           'ON')
       end
       object IonoOpt: TComboBox
-        Left = 248
-        Top = 92
-        Width = 152
+        Left = 247
+        Top = 114
+        Width = 76
         Height = 21
         Style = csDropDownList
         DropDownCount = 16
@@ -198,9 +200,9 @@ object OptDialog: TOptDialog
           'Input TEC')
       end
       object TropOpt: TComboBox
-        Left = 248
+        Left = 324
         Top = 114
-        Width = 152
+        Width = 76
         Height = 21
         Style = csDropDownList
         ItemIndex = 0
@@ -217,7 +219,7 @@ object OptDialog: TOptDialog
       end
       object PosMode: TComboBox
         Left = 248
-        Top = 4
+        Top = 2
         Width = 152
         Height = 21
         Style = csDropDownList
@@ -240,24 +242,22 @@ object OptDialog: TOptDialog
       end
       object Freq: TComboBox
         Left = 248
-        Top = 26
-        Width = 75
+        Top = 25
+        Width = 152
         Height = 21
         Style = csDropDownList
-        ItemIndex = 0
         TabOrder = 1
-        Text = 'L1'
         OnChange = FreqChange
         Items.Strings = (
           'L1'
           'L1+L2'
-          'L1+L2+L5'
-          'L1+L5')
+          'L1+L2+E5b'
+          'L1+L2+E5b+L5')
       end
       object Solution: TComboBox
-        Left = 325
-        Top = 26
-        Width = 75
+        Left = 248
+        Top = 48
+        Width = 152
         Height = 21
         Style = csDropDownList
         ItemIndex = 0
@@ -339,7 +339,7 @@ object OptDialog: TOptDialog
       end
       object TideCorr: TComboBox
         Left = 325
-        Top = 70
+        Top = 92
         Width = 75
         Height = 21
         Style = csDropDownList
@@ -363,7 +363,7 @@ object OptDialog: TOptDialog
       end
       object ElMask: TComboBox
         Left = 248
-        Top = 48
+        Top = 70
         Width = 75
         Height = 21
         AutoComplete = False
@@ -422,7 +422,7 @@ object OptDialog: TOptDialog
       end
       object BtnMask: TButton
         Left = 324
-        Top = 47
+        Top = 69
         Width = 77
         Height = 23
         Caption = '...'
@@ -2132,14 +2132,14 @@ object OptDialog: TOptDialog
       '(*.blq)|*.blq|Ionosphere Data File (*.*i,*stec)|*.*i;*.stec'
     Options = [ofHideReadOnly, ofNoChangeDir, ofEnableSizing]
     Title = 'Load File'
-    Left = 201
-    Top = 157
+    Left = 121
+    Top = 309
   end
   object SaveDialog: TSaveDialog
     Filter = 'All (*.*)|*.*|Options File (*.conf)|*.conf'
     Options = [ofHideReadOnly, ofNoChangeDir, ofEnableSizing]
     Title = 'Save File'
-    Left = 203
-    Top = 109
+    Left = 171
+    Top = 309
   end
 end
