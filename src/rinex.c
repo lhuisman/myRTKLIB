@@ -903,7 +903,7 @@ static void set_index(double ver, int sys, const char *opt,
     for (p=opt;p&&(p=strchr(p,'-'));p++) {
         if (sscanf(p,optstr,str,&shift)<2) continue;
         for (i=0;i<n;i++) {
-            if (strcmp(code2obs(NULL,ind->code[i],NULL),str)) continue;
+            if (strcmp(code2obs(0,ind->code[i],NULL),str)) continue;
             ind->shift[i]=shift;
             trace(2,"phase shift: sys=%2d tobs=%s shift=%.3f\n",sys,
                   tobs[i],shift);
@@ -2078,12 +2078,12 @@ static int obsindex(double ver, int sys, const unsigned char *code,
                     return i;
             }
             else {
-                id=code2obs(NULL,code[i],NULL);
+                id=code2obs(0,code[i],NULL);
                 if (id[0]==tobs[1]) return i;
             }
         }
         else { /* ver.3 */
-            id=code2obs(NULL,code[i],NULL);
+            id=code2obs(0,code[i],NULL);
             if (!strcmp(id,tobs+1)) return i;
         }
     }
