@@ -492,6 +492,8 @@ private:
     void __fastcall MouseMoveSol (int X, int Y, double dx, double dy, double dxs, double dys);
     void __fastcall MouseMoveObs (int X, int Y, double dx, double dy, double dxs, double dys);
 
+    int  __fastcall CheckObsTypeForMatch(const obsd_t *obs, int i);
+    int  __fastcall CheckObsType2ForMatch(const obsd_t *obs, int i);
     void __fastcall DrawTrk      (int level);
     void __fastcall DrawTrkImage (int level);
     void __fastcall DrawTrkMap   (int level);

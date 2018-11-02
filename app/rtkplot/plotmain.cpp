@@ -176,10 +176,10 @@ __fastcall TPlot::TPlot(TComponent* Owner) : TForm(Owner)
     FrqType->Items->Clear();
     FrqType->Items->Add("L1/LC");
     if (nfreq>=2) FrqType->Items->Add("L2");
-    if (nfreq>=3) FrqType->Items->Add("L5");
-    if (nfreq>=4) FrqType->Items->Add("L6");
-    if (nfreq>=5) FrqType->Items->Add("L7");
-    if (nfreq>=6) FrqType->Items->Add("L8");
+    if (nfreq>=3) FrqType->Items->Add("E5b");
+    if (nfreq>=4) FrqType->Items->Add("L5");
+    if (nfreq>=5) FrqType->Items->Add("E6");
+    if (nfreq>=6) FrqType->Items->Add("E5ab");
     FrqType->ItemIndex=0;
     
     TLEData.n=TLEData.nmax=0;

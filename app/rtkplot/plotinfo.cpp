@@ -318,7 +318,8 @@ void __fastcall TPlot::UpdateSatList(void)
 void __fastcall TPlot::UpdateObsType(void)
 {
     AnsiString s;
-    char *codes[MAXCODE+1],freqs[]="125678";
+    char *codes[MAXCODE+1];
+    const char *freqs[]={"L1","L2","E5b","L5","E6","E5ab"};
     int i,j,n=0,cmask[MAXCODE+1]={0},fmask[6]={0};
     
     trace(3,"UpdateObsType\n");
@@ -328,7 +329,8 @@ void __fastcall TPlot::UpdateObsType(void)
     }
     for (i=1;i<=MAXCODE;i++) {
         if (!cmask[i]) continue;
-        codes[n++]=code2obs(i,&j);
+
+        codes[n++]=code2obs(satsys(Obs.data[i].sat,NULL),i,&j);
         fmask[j-1]=1;
     }
     ObsType ->Items->Clear();
@@ -337,8 +339,8 @@ void __fastcall TPlot::UpdateObsType(void)
     
     for (i=0;i<6;i++) {
         if (!fmask[i]) continue;
-        ObsType ->Items->Add(s.sprintf("L%c",freqs[i]));
-        ObsType2->Items->Add(s.sprintf("L%c",freqs[i]));
+        ObsType ->Items->Add(s.sprintf("%s",freqs[i]));
+        ObsType2->Items->Add(s.sprintf("%s",freqs[i]));
     }
     for (i=0;i<n;i++) {
         ObsType ->Items->Add(s.sprintf("L%s",codes[i]));

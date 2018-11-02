@@ -196,7 +196,6 @@ object Plot: TPlot
             'NMEA (*.nmea)'
             'Solution Status (*.stat)'
             'All (*.*)')
-          ExplicitWidth = 150
         end
       end
     end

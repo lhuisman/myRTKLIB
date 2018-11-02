@@ -387,8 +387,9 @@ static int decode_rxmrawx(raw_t *raw)
         if (slip) raw->lockflag[sat-1][f-1]=slip;
         raw->lockt[sat-1][f-1]=lockt*1E-3;
         raw->halfc[sat-1][f-1]=halfc;
-        /* LLI: bit1=slip,bit2=half-cycle-invalid, bit7=half-cycle-subtract */
-        LLI=(halfc?LLI_HALFS:0)|(!halfv&&L!=0.0?LLI_HALFC:0);
+        /* LLI: bit1=slip,bit2=half-cycle-invalid */
+        LLI=!halfv&&L!=0.0?LLI_HALFC:0;
+        LLI|=halfc!=raw->halfc[sat-1][f-1]?1:0;
         if (L!=0.0) LLI|=raw->lockflag[sat-1][f-1]>0.0?LLI_SLIP:0;
 
         for (j=0;j<n;j++) {

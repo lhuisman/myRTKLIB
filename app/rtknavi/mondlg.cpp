@@ -1017,7 +1017,7 @@ void __fastcall TMonitorDialog::ShowObs(void)
 			Tbl->Cells[j++][i+1]=s.sprintf("%d",obs[i].LLI[k]);
 		}
 		for (k=0;k<NFREQ+nex;k++) {
-			code=code2obs(obs[i].code[k],NULL);
+			code=code2obs(0,obs[i].code[k],NULL);
 			if (*code) Tbl->Cells[j++][i+1]=s.sprintf("L%s",code);
 			else       Tbl->Cells[j++][i+1]="";
 		}
@@ -1917,13 +1917,13 @@ void __fastcall TMonitorDialog::ShowRtcmSsr(void)
 		buff[0]='\0';
 		for (p=buff,k=0;k<MAXCODE;k++) {
 			if (ssr[i].cbias[k]==0.0) continue;
-			p+=sprintf(p,"%s:%.3f ",code2obs(k+1,NULL),ssr[i].cbias[k]);
+			p+=sprintf(p,"%s:%.3f ",code2obs(0,k+1,NULL),ssr[i].cbias[k]);
 		}
 		Tbl->Cells[j++][i+1]=buff;
 		buff[0]='\0';
 		for (p=buff,k=0;k<MAXCODE;k++) {
 			if (ssr[i].pbias[k]==0.0) continue;
-			p+=sprintf(p,"%s:%.3f ",code2obs(k+1,NULL),ssr[i].pbias[k]);
+			p+=sprintf(p,"%s:%.3f ",code2obs(0,k+1,NULL),ssr[i].pbias[k]);
 		}
 		Tbl->Cells[j++][i+1]=buff;
 	}

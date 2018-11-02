@@ -294,8 +294,8 @@ TColor __fastcall TPlot::ObsColor(const obsd_t *obs, double az, double el)
 {
     TColor color=clBlack;
     AnsiString ObsType_Text;
-    char *code="";
-    int i;
+    char *code="",*codeType="";
+    int i,frq,frqType,sys;
     
     trace(4,"ObsColor\n");
     
@@ -303,18 +303,22 @@ TColor __fastcall TPlot::ObsColor(const obsd_t *obs, double az, double el)
     
     if (PlotType==PLOT_SNR||PlotType==PLOT_SNRE) {
         ObsType_Text=ObsType2->Text;
-        code=ObsType_Text.c_str()+1;
+        codeType=ObsType_Text.c_str()+1;
+        frqType=ObsType2->ItemIndex;
     }
     else if (ObsType->ItemIndex) {
         ObsType_Text=ObsType->Text;
-        code=ObsType_Text.c_str()+1;
+        codeType=ObsType_Text.c_str()+1;
+        frqType=ObsType->ItemIndex;
     }
     if (SimObs) {
         color=SysColor(obs->sat);
     }
-    else if (*code) {
+    else if (*codeType) {
         for (i=0;i<NFREQ+NEXOBS;i++) {
-            if (!strstr(code2obs(obs->code[i],NULL),code)) continue;
+            sys=satsys(obs->sat,NULL);
+            code=code2obs(sys,obs->code[i],&frq);
+            if (frq!=frqType&&!strstr(code,codeType)) continue;
             color=SnrColor(obs->SNR[i]*0.25);
             break;
         }

@@ -326,7 +326,7 @@ static void setmask(const char *argv, rnxopt_t *opt, int mask)
         else if (p[0]=='C') i=5;
         else if (p[0]=='I') i=6;
         else continue;
-        if ((code=obs2code(p+2,NULL))) {
+        if ((code=obs2code(0,p+2,NULL))) {
             opt->mask[i][code-1]=mask?'1':'0';
         }
     }
