@@ -345,9 +345,17 @@ static serial_t *openserial(const char *path, int mode, char *msg)
     COMMTIMEOUTS co={MAXDWORD,0,0,0,0}; /* non-block-read */
     char dcb[64]="";
 #else
+
+#ifdef __APPLE__
+    /* MacOS doesn't support higher baudrates (>230400B) */
+    const speed_t bs[]={
+        B300,B600,B1200,B2400,B4800,B9600,B19200,B38400,B57600,B115200,B230400
+    };
+#else /* regular Linux with higher baudrates */
     const speed_t bs[]={
         B300,B600,B1200,B2400,B4800,B9600,B19200,B38400,B57600,B115200,B230400,B460800
     };
+#endif /* ifdef __APPLE__ */
     struct termios ios={0};
     int rw=0;
 #endif
