@@ -318,19 +318,39 @@ static int model_phw(gtime_t time, int sat, const char *type, int opt,
     return 1;
 }
 /* measurement error variance ------------------------------------------------*/
-static double varerr(int sat, int sys, double el, int freq, int type,
-                     const prcopt_t *opt)
+static double varerr(int sat, int sys, double el, double snr_rover, int freq, 
+                     int type, const prcopt_t *opt)
 {
-    double fact=1.0,sinel=sin(el);
+    double a, b, snr_max;
+    double fact = 1.0;
+    double sinel = sin(el);
     
-    if (type==1) fact*=opt->eratio[freq==0?0:1];
-    fact*=sys==SYS_GLO?EFACT_GLO:(sys==SYS_SBS?EFACT_SBS:EFACT_GPS);
+    if (type == 1) fact *= opt->eratio[(freq == 0) ? 0 : 1];
     
-    if (sys==SYS_GPS||sys==SYS_QZS) {
-        if (freq==2) fact*=EFACT_GPS_L5; /* GPS/QZS L5 error factor */
+    switch (sys) {
+        case SYS_GPS: fact *= EFACT_GPS; break;
+        case SYS_GLO: fact *= EFACT_GLO; break;
+        case SYS_SBS: fact *= EFACT_SBS; break;
+        default:      fact *= EFACT_GPS; break;
     }
-    if (opt->ionoopt==IONOOPT_IFLC) fact*=3.0;
-    return SQR(fact*opt->err[1])+SQR(fact*opt->err[2]/sinel);
+    
+    if ( (sys == SYS_GPS) || (sys == SYS_QZS) ) {
+        if (freq==2) fact *= EFACT_GPS_L5; /* GPS/QZS L5 error factor */
+    }
+        
+    a = fact * opt->err[1];
+    b = fact * opt->err[2];
+    snr_max = opt->err[5];
+    
+    /* note: SQR(3.0) is approximated scale factor for error variance 
+       in the case of iono-free combination */
+    fact = (opt->ionoopt == IONOOPT_IFLC) ? SQR(3.0) : 1.0;
+    switch (opt->weightmode) {
+        case WEIGHTOPT_ELEVATION: return fact * ( SQR(a) + SQR(b / sinel) );
+        case WEIGHTOPT_SNR      : return fact * SQR(a) * pow(10, 0.1 * MAX(snr_max - snr_rover, 0)); 
+                                                   ;
+        default: return 0;
+    }
 }
 /* initialize state and covariance -------------------------------------------*/
 static void initx(rtk_t *rtk, double xi, double var, int i)
@@ -1038,7 +1058,7 @@ static int ppp_res(int post, const obsd_t *obs, int n, const double *rs,
             else        rtk->ssat[sat-1].resp[j/2]=v[nv];
             
             /* variance */
-            var[nv]=varerr(obs[i].sat,sys,azel[1+i*2],j/2,j%2,opt)+
+            var[nv]=varerr(obs[i].sat,sys,azel[1+i*2],0.25*rtk->ssat[sat-1].snr_rover[j/2],j/2,j%2,opt)+
                     vart+SQR(C)*vari+var_rs[i];
             if (sys==SYS_GLO&&j%2==1) var[nv]+=VAR_GLO_IFB;
             
@@ -1126,7 +1146,8 @@ static void update_stat(rtk_t *rtk, const obsd_t *obs, int n, int stat)
     rtk->sol.dtr[1]=rtk->x[IC(1,opt)]-rtk->x[IC(0,opt)];
     
     for (i=0;i<n&&i<MAXOBS;i++) for (j=0;j<opt->nf;j++) {
-        rtk->ssat[obs[i].sat-1].snr[j]=obs[i].SNR[j];
+        rtk->ssat[obs[i].sat-1].snr_rover[j]=obs[i].SNR[j];
+        rtk->ssat[obs[i].sat-1].snr_base[j] =0;
     }
     for (i=0;i<MAXSAT;i++) for (j=0;j<opt->nf;j++) {
         if (rtk->ssat[i].slip[j]&3) rtk->ssat[i].slipc[j]++;
@@ -1170,8 +1191,12 @@ extern void pppos(rtk_t *rtk, const obsd_t *obs, int n, const nav_t *nav)
     
     rs=mat(6,n); dts=mat(2,n); var=mat(1,n); azel=zeros(2,n);
     
-    for (i=0;i<MAXSAT;i++) for (j=0;j<opt->nf;j++) rtk->ssat[i].fix[j]=0;
-    
+    for (i=0;i<MAXSAT;i++) for (j=0;j<opt->nf;j++) {
+        rtk->ssat[i].fix[j]=0;
+        rtk->ssat[obs[i].sat-1].snr_rover[j]=obs[i].SNR[j];
+        rtk->ssat[obs[i].sat-1].snr_base[j] =0;
+    }
+        
     /* temporal update of ekf states */
     udstate_ppp(rtk,obs,n,nav);
     
