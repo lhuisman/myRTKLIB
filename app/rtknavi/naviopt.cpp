@@ -1237,3 +1237,10 @@ void __fastcall TOptDialog::NavSys6Click(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
+
+void __fastcall TOptDialog::ObsWeightChange(TObject *Sender)
+{
+	UpdateEnable();
+}
+//---------------------------------------------------------------------------
+

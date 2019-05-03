@@ -239,6 +239,10 @@ __published:
     TLabel *Label51;
     TLabel *Label52;
     TEdit *GloHwBias;
+	TLabel *Label12;
+	TComboBox *ObsWeightMode;
+	TLabel *Label53;
+	TEdit *Edit1;
 	void __fastcall BtnOkClick(TObject *Sender);
 	void __fastcall RovAntPcvClick(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);
@@ -279,6 +283,7 @@ __published:
 	void __fastcall BtnTLEFileClick(TObject *Sender);
 	void __fastcall BtnSnrMaskClick(TObject *Sender);
 	void __fastcall NavSys6Click(TObject *Sender);
+	void __fastcall ObsWeightChange(TObject *Sender);
 private:
 	void __fastcall GetOpt(void);
 	void __fastcall SetOpt(void);

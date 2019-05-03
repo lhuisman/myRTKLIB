@@ -62,27 +62,25 @@ object OptDialog: TOptDialog
     TabOrder = 4
     object TabSheet1: TTabSheet
       Caption = 'Setting&1'
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
+      ExplicitLeft = 8
+      ExplicitTop = 22
       object Label3: TLabel
         Left = 24
-        Top = 73
+        Top = 137
         Width = 183
         Height = 13
         Caption = 'Rec Dynamics / Earth Tides Correction'
       end
       object Label9: TLabel
         Left = 24
-        Top = 117
+        Top = 181
         Width = 114
         Height = 13
         Caption = 'Troposphere Correction'
       end
       object Label8: TLabel
         Left = 24
-        Top = 95
+        Top = 159
         Width = 108
         Height = 13
         Caption = 'Ionosphere Correction'
@@ -110,21 +108,28 @@ object OptDialog: TOptDialog
       end
       object Label32: TLabel
         Left = 24
-        Top = 139
+        Top = 203
         Width = 119
         Height = 13
         Caption = 'Satellite Ephemeris/Clock'
       end
       object Label35: TLabel
         Left = 24
-        Top = 188
+        Top = 252
         Width = 176
         Height = 13
         Caption = 'Excluded Satellites (+PRN: Included)'
       end
+      object Label12: TLabel
+        Left = 24
+        Top = 73
+        Width = 92
+        Height = 13
+        Caption = 'Raw Obs weighting'
+      end
       object NavSys1: TCheckBox
         Left = 24
-        Top = 210
+        Top = 274
         Width = 49
         Height = 17
         Caption = 'GPS'
@@ -134,7 +139,7 @@ object OptDialog: TOptDialog
       end
       object DynamicModel: TComboBox
         Left = 248
-        Top = 70
+        Top = 134
         Width = 75
         Height = 21
         Style = csDropDownList
@@ -147,7 +152,7 @@ object OptDialog: TOptDialog
       end
       object IonoOpt: TComboBox
         Left = 248
-        Top = 92
+        Top = 156
         Width = 152
         Height = 21
         Style = csDropDownList
@@ -166,7 +171,7 @@ object OptDialog: TOptDialog
       end
       object TropOpt: TComboBox
         Left = 248
-        Top = 114
+        Top = 178
         Width = 152
         Height = 21
         Style = csDropDownList
@@ -219,7 +224,7 @@ object OptDialog: TOptDialog
       end
       object SatEphem: TComboBox
         Left = 248
-        Top = 136
+        Top = 200
         Width = 152
         Height = 21
         Style = csDropDownList
@@ -236,14 +241,14 @@ object OptDialog: TOptDialog
       end
       object ExSatsE: TEdit
         Left = 221
-        Top = 184
+        Top = 248
         Width = 179
         Height = 21
         TabOrder = 7
       end
       object NavSys2: TCheckBox
         Left = 68
-        Top = 210
+        Top = 274
         Width = 71
         Height = 17
         Caption = 'GLO'
@@ -252,7 +257,7 @@ object OptDialog: TOptDialog
       end
       object NavSys3: TCheckBox
         Left = 114
-        Top = 210
+        Top = 274
         Width = 61
         Height = 17
         Caption = 'Galileo'
@@ -260,7 +265,7 @@ object OptDialog: TOptDialog
       end
       object NavSys4: TCheckBox
         Left = 168
-        Top = 210
+        Top = 274
         Width = 61
         Height = 17
         Caption = 'QZSS'
@@ -268,7 +273,7 @@ object OptDialog: TOptDialog
       end
       object NavSys5: TCheckBox
         Left = 218
-        Top = 210
+        Top = 274
         Width = 51
         Height = 17
         Caption = 'SBAS'
@@ -276,7 +281,7 @@ object OptDialog: TOptDialog
       end
       object TideCorr: TComboBox
         Left = 325
-        Top = 70
+        Top = 134
         Width = 75
         Height = 21
         Style = csDropDownList
@@ -289,7 +294,7 @@ object OptDialog: TOptDialog
       end
       object NavSys6: TCheckBox
         Left = 268
-        Top = 210
+        Top = 274
         Width = 69
         Height = 19
         Caption = 'BeiDou'
@@ -324,7 +329,7 @@ object OptDialog: TOptDialog
       end
       object PosOpt1: TCheckBox
         Left = 24
-        Top = 162
+        Top = 226
         Width = 61
         Height = 17
         Caption = 'Sat PCV'
@@ -332,7 +337,7 @@ object OptDialog: TOptDialog
       end
       object PosOpt2: TCheckBox
         Left = 82
-        Top = 162
+        Top = 226
         Width = 62
         Height = 17
         Caption = 'Rec PCV'
@@ -340,7 +345,7 @@ object OptDialog: TOptDialog
       end
       object PosOpt3: TCheckBox
         Left = 142
-        Top = 162
+        Top = 226
         Width = 69
         Height = 17
         Caption = 'PhWU'
@@ -348,7 +353,7 @@ object OptDialog: TOptDialog
       end
       object PosOpt4: TCheckBox
         Left = 191
-        Top = 162
+        Top = 226
         Width = 68
         Height = 17
         Caption = 'Rej Ecl'
@@ -356,7 +361,7 @@ object OptDialog: TOptDialog
       end
       object PosOpt5: TCheckBox
         Left = 244
-        Top = 162
+        Top = 226
         Width = 68
         Height = 17
         Caption = 'RAIM FDE'
@@ -373,7 +378,7 @@ object OptDialog: TOptDialog
       end
       object PosOpt6: TCheckBox
         Left = 313
-        Top = 162
+        Top = 226
         Width = 68
         Height = 17
         Caption = 'DBCorr'
@@ -381,21 +386,32 @@ object OptDialog: TOptDialog
       end
       object NavSys7: TCheckBox
         Left = 322
-        Top = 210
+        Top = 274
         Width = 69
         Height = 19
         Caption = 'IRNSS'
         TabOrder = 22
         OnClick = NavSys6Click
       end
+      object ObsWeightMode: TComboBox
+        Left = 248
+        Top = 70
+        Width = 75
+        Height = 21
+        Style = csDropDownList
+        DropDownCount = 10
+        ItemIndex = 0
+        TabOrder = 23
+        Text = 'Elevation'
+        OnChange = ObsWeightChange
+        Items.Strings = (
+          'Elevation'
+          'SNR')
+      end
     end
     object TabSheet2: TTabSheet
       Caption = 'Setting&2'
       ImageIndex = 1
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label25: TLabel
         Left = 24
         Top = 7
@@ -751,10 +767,6 @@ object OptDialog: TOptDialog
     object TabSheet3: TTabSheet
       Caption = 'O&utput'
       ImageIndex = 2
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object LabelSolFormat: TLabel
         Left = 24
         Top = 7
@@ -1041,16 +1053,19 @@ object OptDialog: TOptDialog
     object TabSheet4: TTabSheet
       Caption = 'S&tatistics'
       ImageIndex = 3
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label29: TLabel
         Left = 34
         Top = 213
         Width = 132
         Height = 13
         Caption = 'Satellite Clock Stability (s/s)'
+      end
+      object Label53: TLabel
+        Left = 36
+        Top = 245
+        Width = 119
+        Height = 13
+        Caption = 'SNR weighting: max SNR'
       end
       object GroupBox3: TGroupBox
         Left = 2
@@ -1220,14 +1235,18 @@ object OptDialog: TOptDialog
         TabOrder = 2
         Text = '5.0E-12'
       end
+      object Edit1: TEdit
+        Left = 248
+        Top = 240
+        Width = 148
+        Height = 21
+        TabOrder = 3
+        Text = '5.0E-12'
+      end
     end
     object TabSheet5: TTabSheet
       Caption = '&Positions'
       ImageIndex = 4
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label4: TLabel
         Left = 12
         Top = 12
@@ -1544,10 +1563,6 @@ object OptDialog: TOptDialog
     object TabSheet7: TTabSheet
       Caption = '&Files'
       ImageIndex = 6
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label1: TLabel
         Left = 6
         Top = 93
@@ -1886,10 +1901,6 @@ object OptDialog: TOptDialog
     object TabSheet8: TTabSheet
       Caption = '&Misc'
       ImageIndex = 6
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label19: TLabel
         Left = 32
         Top = 7
@@ -2172,14 +2183,14 @@ object OptDialog: TOptDialog
       '*.pos)|*.pos|Options File (*.conf)|*.conf'
     Options = [ofHideReadOnly, ofNoChangeDir, ofEnableSizing]
     Title = 'Load File'
-    Left = 192
-    Top = 235
+    Left = 200
+    Top = 299
   end
   object SaveDialog: TSaveDialog
     Filter = 'All (*.*)|*.*|Options File (*.conf)|*.conf'
     Title = 'Save File'
-    Left = 210
-    Top = 162
+    Left = 146
+    Top = 306
   end
   object FontDialog: TFontDialog
     Font.Charset = DEFAULT_CHARSET
@@ -2187,7 +2198,7 @@ object OptDialog: TOptDialog
     Font.Height = -11
     Font.Name = 'Tahoma'
     Font.Style = []
-    Left = 206
-    Top = 210
+    Left = 246
+    Top = 298
   end
 end
