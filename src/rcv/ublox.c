@@ -202,8 +202,8 @@ static int sig_idx(int sys, int code)
     else if (sys == SYS_GAL) {
         if (code==CODE_L1C) return 1;
         if (code==CODE_L1B) return 1;
-        if (code==CODE_L7Q) return 2;
-        if (code==CODE_L7I) return 2;
+        if (code==CODE_L7Q) return 3;
+        if (code==CODE_L7I) return 3;
     }
     else if (sys == SYS_QZS) {
         if (code==CODE_L1C) return 1;
