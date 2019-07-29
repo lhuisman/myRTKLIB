@@ -67,7 +67,7 @@ object CodeOptDialog: TCodeOptDialog
     OnClick = BtnOkClick
   end
   object BtnCancel: TButton
-    Left = 318
+    Left = 324
     Top = 301
     Width = 71
     Height = 29
@@ -317,7 +317,7 @@ object CodeOptDialog: TCodeOptDialog
     end
   end
   object GroupBox3: TGroupBox
-    Left = 0
+    Left = 1
     Top = 107
     Width = 394
     Height = 69
@@ -606,23 +606,23 @@ object CodeOptDialog: TCodeOptDialog
     OnClick = BtnSetAllClick
   end
   object GroupBox6: TGroupBox
-    Left = 4
-    Top = 230
+    Left = 0
+    Top = 228
     Width = 393
     Height = 34
     Caption = 'BeiDou'
     TabOrder = 8
     object C40: TCheckBox
-      Left = 5
-      Top = 15
-      Width = 40
+      Left = 10
+      Top = 14
+      Width = 35
       Height = 16
-      Caption = '1I/2I'
+      Caption = '2I'
       Enabled = False
       TabOrder = 2
     end
     object C42: TCheckBox
-      Left = 270
+      Left = 238
       Top = 14
       Width = 32
       Height = 16
@@ -631,25 +631,25 @@ object CodeOptDialog: TCodeOptDialog
       TabOrder = 0
     end
     object C27: TCheckBox
-      Left = 157
+      Left = 124
       Top = 14
-      Width = 33
+      Width = 34
       Height = 16
       Caption = '7I'
       Enabled = False
       TabOrder = 3
     end
     object C28: TCheckBox
-      Left = 192
+      Left = 162
       Top = 14
-      Width = 34
+      Width = 44
       Height = 16
       Caption = '7Q'
       Enabled = False
       TabOrder = 4
     end
     object C29: TCheckBox
-      Left = 232
+      Left = 201
       Top = 14
       Width = 34
       Height = 16
@@ -658,25 +658,25 @@ object CodeOptDialog: TCodeOptDialog
       TabOrder = 1
     end
     object C41: TCheckBox
-      Left = 52
+      Left = 48
       Top = 14
-      Width = 50
+      Width = 34
       Height = 16
-      Caption = '1Q/2Q'
+      Caption = '2Q'
       Enabled = False
       TabOrder = 5
     end
-    object C18: TCheckBox
-      Left = 106
+    object C12: TCheckBox
+      Left = 86
       Top = 14
-      Width = 49
+      Width = 34
       Height = 16
-      Caption = '1X/2X'
+      Caption = '2X'
       Enabled = False
       TabOrder = 6
     end
     object C43: TCheckBox
-      Left = 308
+      Left = 276
       Top = 14
       Width = 32
       Height = 16
@@ -685,10 +685,10 @@ object CodeOptDialog: TCodeOptDialog
       TabOrder = 7
     end
     object C33: TCheckBox
-      Left = 344
-      Top = 12
-      Width = 33
-      Height = 19
+      Left = 314
+      Top = 14
+      Width = 32
+      Height = 16
       Caption = '6X'
       Enabled = False
       TabOrder = 8

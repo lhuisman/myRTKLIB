@@ -83,7 +83,7 @@ void __fastcall TCodeOptDialog::FormShow(TObject *Sender)
 	J33->Checked=mask[3][32]=='1';
 	C40->Checked=mask[5][39]=='1';
 	C41->Checked=mask[5][40]=='1';
-	C18->Checked=mask[5][11]=='1';
+	C12->Checked=mask[5][11]=='1';
 	C27->Checked=mask[5][26]=='1';
 	C28->Checked=mask[5][27]=='1';
 	C29->Checked=mask[5][28]=='1';
@@ -172,9 +172,9 @@ void __fastcall TCodeOptDialog::BtnOkClick(TObject *Sender)
 	if (J35->Checked) mask[3][34]='1';
 	if (J36->Checked) mask[3][35]='1';
 	if (J33->Checked) mask[3][32]='1';
-	if (C40->Checked){mask[5][39]='1';mask[5][46]='1';}
-	if (C41->Checked){mask[5][40]='1';mask[5][47]='1';}
-	if (C18->Checked){mask[5][17]='1';mask[5][11]='1';}
+	if (C40->Checked) mask[5][39]='1';
+	if (C41->Checked) mask[5][40]='1';
+	if (C12->Checked) mask[5][11]='1';
 	if (C27->Checked) mask[5][26]='1';
 	if (C28->Checked) mask[5][27]='1';
 	if (C29->Checked) mask[5][28]='1';
@@ -263,7 +263,7 @@ void __fastcall TCodeOptDialog::BtnSetAllClick(TObject *Sender)
 	J33->Checked=set;
 	C40->Checked=set;
 	C41->Checked=set;
-	C18->Checked=set;
+	C12->Checked=set;
 	C27->Checked=set;
 	C28->Checked=set;
 	C29->Checked=set;
@@ -323,9 +323,9 @@ void __fastcall TCodeOptDialog::UpdateEnable(void)
 	E24->Enabled=(NavSys&SYS_GAL)&&(FreqType&FREQTYPE_L5);
 	E25->Enabled=(NavSys&SYS_GAL)&&(FreqType&FREQTYPE_L5);
 	E26->Enabled=(NavSys&SYS_GAL)&&(FreqType&FREQTYPE_L5);
-	E27->Enabled=(NavSys&SYS_GAL)&&(FreqType&FREQTYPE_E5b);
-	E28->Enabled=(NavSys&SYS_GAL)&&(FreqType&FREQTYPE_E5b);
-	E29->Enabled=(NavSys&SYS_GAL)&&(FreqType&FREQTYPE_E5b);
+	E27->Enabled=(NavSys&SYS_GAL)&&(FreqType&FREQTYPE_L2);
+	E28->Enabled=(NavSys&SYS_GAL)&&(FreqType&FREQTYPE_L2);
+	E29->Enabled=(NavSys&SYS_GAL)&&(FreqType&FREQTYPE_L2);
 	E30->Enabled=(NavSys&SYS_GAL)&&(FreqType&FREQTYPE_E6);
 	E31->Enabled=(NavSys&SYS_GAL)&&(FreqType&FREQTYPE_E6);
 	E32->Enabled=(NavSys&SYS_GAL)&&(FreqType&FREQTYPE_E6);
@@ -342,18 +342,18 @@ void __fastcall TCodeOptDialog::UpdateEnable(void)
 	J16->Enabled=(NavSys&SYS_QZS)&&(FreqType&FREQTYPE_L2);
 	J17->Enabled=(NavSys&SYS_QZS)&&(FreqType&FREQTYPE_L2);
 	J18->Enabled=(NavSys&SYS_QZS)&&(FreqType&FREQTYPE_L2);
-	J24->Enabled=(NavSys&SYS_QZS)&&(FreqType&FREQTYPE_E5b);
-	J25->Enabled=(NavSys&SYS_QZS)&&(FreqType&FREQTYPE_E5b);
-	J26->Enabled=(NavSys&SYS_QZS)&&(FreqType&FREQTYPE_E5b);
+	J24->Enabled=(NavSys&SYS_QZS)&&(FreqType&FREQTYPE_L2);
+	J25->Enabled=(NavSys&SYS_QZS)&&(FreqType&FREQTYPE_L2);
+	J26->Enabled=(NavSys&SYS_QZS)&&(FreqType&FREQTYPE_L2);
 	J35->Enabled=(NavSys&SYS_QZS)&&(FreqType&FREQTYPE_E6);
 	J36->Enabled=(NavSys&SYS_QZS)&&(FreqType&FREQTYPE_E6);
 	J33->Enabled=(NavSys&SYS_QZS)&&(FreqType&FREQTYPE_E6);
-	C40->Enabled=(NavSys&SYS_CMP)&&(FreqType&FREQTYPE_L2);
-	C41->Enabled=(NavSys&SYS_CMP)&&(FreqType&FREQTYPE_L2);
-	C18->Enabled=(NavSys&SYS_CMP)&&(FreqType&FREQTYPE_L2);
-	C27->Enabled=(NavSys&SYS_CMP)&&(FreqType&FREQTYPE_E5b);
-	C28->Enabled=(NavSys&SYS_CMP)&&(FreqType&FREQTYPE_E5b);
-	C29->Enabled=(NavSys&SYS_CMP)&&(FreqType&FREQTYPE_E5b);
+	C40->Enabled=(NavSys&SYS_CMP)&&(FreqType&FREQTYPE_L1);
+	C41->Enabled=(NavSys&SYS_CMP)&&(FreqType&FREQTYPE_L1);
+	C12->Enabled=(NavSys&SYS_CMP)&&(FreqType&FREQTYPE_L1);
+	C27->Enabled=(NavSys&SYS_CMP)&&(FreqType&FREQTYPE_L2);
+	C28->Enabled=(NavSys&SYS_CMP)&&(FreqType&FREQTYPE_L2);
+	C29->Enabled=(NavSys&SYS_CMP)&&(FreqType&FREQTYPE_L2);
 	C42->Enabled=(NavSys&SYS_CMP)&&(FreqType&FREQTYPE_E6);
 	C43->Enabled=(NavSys&SYS_CMP)&&(FreqType&FREQTYPE_E6);
 	C33->Enabled=(NavSys&SYS_CMP)&&(FreqType&FREQTYPE_E6);

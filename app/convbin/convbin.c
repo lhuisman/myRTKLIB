@@ -497,11 +497,10 @@ static int cmdopts(int argc, char **argv, rnxopt_t *opt, char **ifile,
     }
     if (nf>=1) opt->freqtype|=FREQTYPE_L1;
     if (nf>=2) opt->freqtype|=FREQTYPE_L2;
-    if (nf>=3) opt->freqtype|=FREQTYPE_E5b;
-    if (nf>=4) opt->freqtype|=FREQTYPE_L5;
-    if (nf>=5) opt->freqtype|=FREQTYPE_E6;
-    if (nf>=6) opt->freqtype|=FREQTYPE_E5ab;
-    if (nf>=7) opt->freqtype|=FREQTYPE_S;
+    if (nf>=3) opt->freqtype|=FREQTYPE_L5;
+    if (nf>=4) opt->freqtype|=FREQTYPE_E6;
+    if (nf>=5) opt->freqtype|=FREQTYPE_E5ab;
+    if (nf>=6) opt->freqtype|=FREQTYPE_S;
     
     if (*fmt) {
         if      (!strcmp(fmt,"rtcm2")) format=STRFMT_RTCM2;

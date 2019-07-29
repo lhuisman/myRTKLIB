@@ -454,7 +454,7 @@ void __fastcall TMainWindow::BtnInFileViewClick(TObject *Sender)
 		!strcmp(ext+3,"g"  )||!strcmp(ext+3,"G"  )||!strcmp(ext+3,"h" )||
 		!strcmp(ext+3,"H"  )||!strcmp(ext+3,"q"  )||!strcmp(ext+3,"Q" )||
 		!strcmp(ext+3,"l"  )||!strcmp(ext+3,"L"  )||!strcmp(ext+3,"c" )||
-        !strcmp(ext+3,"C"  )||!strcmp(ext+3,"i"  )||!strcmp(ext+3,"I" )) {
+        !strcmp(ext+3,"C"  )) {
 		viewer->Show();
 		viewer->Read(RepPath(InFile_Text));
 	}
@@ -832,8 +832,6 @@ void __fastcall TMainWindow::ConvertFile(void)
 		else if (!strcmp(p+3,"L"   )) format=STRFMT_RINEX;
 		else if (!strcmp(p+3,"c"   )) format=STRFMT_RINEX;
 		else if (!strcmp(p+3,"C"   )) format=STRFMT_RINEX;
-		else if (!strcmp(p+3,"i"   )) format=STRFMT_RINEX;
-		else if (!strcmp(p+3,"I"   )) format=STRFMT_RINEX;
 		else {
 			showmsg("file format can not be recognized");
 			return;
@@ -866,7 +864,7 @@ void __fastcall TMainWindow::ConvertFile(void)
 	if (OutFile9->Enabled&&OutFileEna9->Checked) strcpy(ofile[8],OutFile9_Text.c_str());
 	
 	// check overwrite output file
-	for (i=0;i<8;i++) {
+	for (i=0;i<9;i++) {
 		if (!*ofile[i]||!(fp=fopen(ofile[i],"r"))) continue;
 		fclose(fp);
 		ConfDialog->Label2->Caption=ofile[i];

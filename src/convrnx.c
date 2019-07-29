@@ -547,7 +547,6 @@ static void update_halfc(halfc_t *halfc, obsd_t *obs)
     }
 }
 /* dump half-cycle ambiguity status ------------------------------------------*/
-#if 1
 static void dump_halfc(halfc_t *halfc)
 {
     halfd_t *p;
@@ -565,7 +564,6 @@ static void dump_halfc(halfc_t *halfc)
         }
     }
 }
-#endif
 /* resolve half-cycle ambiguity ----------------------------------------------*/
 static void resolve_halfc(halfc_t *halfc, obsd_t *obs)
 {

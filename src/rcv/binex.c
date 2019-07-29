@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------------------
 * binex.c : binex dependent functions
 *
-*          Copyright (C) 2013-2017 by T.TAKASU, All rights reserved.
+*          Copyright (C) 2013-2019 by T.TAKASU, All rights reserved.
 *
 * reference :
 *     [1] UNAVCO, BINEX: Binary exchange format
@@ -627,7 +627,7 @@ static int decode_bnx_01_04(raw_t *raw, unsigned char *buff, int len)
     if (eph_sel==2&&!(eph.code&(1<<8))) return 0; /* only F/NAV */
     
     eph.A=sqrtA*sqrtA;
-    eph.iode=eph.iodc;
+    eph.iodc=eph.iode;
     eph.toe=gpst2time(eph.week,eph.toes);
     eph.toc=gpst2time(eph.week,eph.toes);
     eph.ttr=adjweek(eph.toe,tow);
@@ -982,6 +982,9 @@ static unsigned char *decode_bnx_7f_05_obs(raw_t *raw, unsigned char *buff,
         if (sys==SYS_CMP) {
             if      (freq[i]==5) freq[i]=2; /* B2 */
             else if (freq[i]==4) freq[i]=3; /* B3 */
+        }
+        else if (sys==SYS_GAL) {
+            if (freq[i]==5) freq[i]=2; /* E5b */
         }
     }
     for (i=0;i<NFREQ;i++) {
