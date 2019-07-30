@@ -5,7 +5,6 @@
 #include "plotmain.h"
 #include "mapdlg.h"
 #include "pntdlg.h"
-#include "geview.h"
 
 #define HEADXML "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
 #define HEADGPX "<gpx version=\"1.1\" creator=\"%s\" xmlns=\"%s\">\n"
@@ -1359,8 +1358,7 @@ void __fastcall TPlot::Clear(void)
         initsolbuf(SolData  ,1,RtBuffSize+1);
         initsolbuf(SolData+1,1,RtBuffSize+1);
     }
-    GoogleEarthView->Clear();
-    
+
     for (i=0;i<=360;i++) ElMaskData[i]=0.0;
     
     UpdateTime();

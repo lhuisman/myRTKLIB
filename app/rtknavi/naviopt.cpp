@@ -93,7 +93,7 @@ __fastcall TOptDialog::TOptDialog(TComponent* Owner)
 	: TForm(Owner)
 {
 	AnsiString label,s;
-	const char *freqs[]={"L1","L2","E5b","L5","E6","E5ab"};
+	const char *freqs[]={"L1","L2/E5b","L5","E6","E5ab"};
 	int nglo=MAXPRNGLO,ngal=MAXPRNGAL,nqzs=MAXPRNQZS;
 	int ncmp=MAXPRNCMP,nirn=MAXPRNIRN;
 	PrcOpt=prcopt_default;

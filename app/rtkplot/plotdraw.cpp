@@ -6,7 +6,6 @@
 #include "plotmain.h"
 #include "graph.h"
 #include "refdlg.h"
-#include "geview.h"
 #include "gmview.h"
 
 #define COL_ELMASK  clRed
@@ -281,7 +280,7 @@ void __fastcall TPlot::DrawTrk(int level)
         GraphT->ToPoint(xt,yt,p1);
         DrawMark(GraphT,p1,5,CColor[2],20,0);
     }
-    // update geview and gmview center
+	// update geview and gmview center
     if (level) {
         if (norm(OPos,3)>0.0) {
             GraphT->GetCent(xt,yt);
@@ -291,10 +290,9 @@ void __fastcall TPlot::DrawTrk(int level)
             enu2ecef(opos,enu,rr);
             for (i=0;i<3;i++) rr[i]+=OPos[i];
             ecef2pos(rr,cent);
-            GoogleEarthView->SetCent(cent[0]*R2D,cent[1]*R2D);
-            GoogleMapView  ->SetCent(cent[0]*R2D,cent[1]*R2D);
-        }
-        Refresh_GEView();
+			GoogleMapView  ->SetCent(cent[0]*R2D,cent[1]*R2D);
+		}
+		Refresh_GEView();
     }
 }
 // draw map-image on track-plot ---------------------------------------------
@@ -2086,37 +2084,28 @@ void __fastcall TPlot::Refresh_GEView(void)
     double pos[3]={0},heading,ddeg;
     int i,opts[12],sel=!BtnSol1->Down&&BtnSol2->Down?1:0;
     
-    // get ge options
-    GoogleEarthView->GetOpts(opts);
-    
-    if (BtnShowTrack->Down) {
+	if (BtnShowTrack->Down) {
         
         // update mark
         if (BtnSol2->Down&&SolData[1].n>0) {
             sol=getsol(SolData+1,SolIndex[1]);
             ecef2pos(sol->rr,pos);
             pos[2]-=geoidh(pos);
-            GoogleEarthView->SetMark(2,pos);
-            GoogleEarthView->ShowMark(2);
-            GoogleMapView->SetMark(2,pos);
+			GoogleMapView->SetMark(2,pos);
             GoogleMapView->ShowMark(2);
         }
         else {
-            GoogleEarthView->HideMark(2);
-            GoogleMapView->HideMark(2);
+			GoogleMapView->HideMark(2);
         }
         if (BtnSol1->Down&&SolData[0].n>0) {
             sol=getsol(SolData,SolIndex[0]);
             ecef2pos(sol->rr,pos);
             pos[2]-=geoidh(pos);
-            GoogleEarthView->SetMark(1,pos);
-            GoogleEarthView->ShowMark(1);
-            GoogleMapView->SetMark(1,pos);
+			GoogleMapView->SetMark(1,pos);
             GoogleMapView->ShowMark(1);
         }
         else {
-            GoogleEarthView->HideMark(1);
-            GoogleMapView->HideMark(1);
+			GoogleMapView->HideMark(1);
         }
         // update heading
         if (opts[10]&&norm(pos,3)>0.0) {
@@ -2132,43 +2121,12 @@ void __fastcall TPlot::Refresh_GEView(void)
                 if      (GEHeading<-180.0) GEHeading+=360.0;
                 else if (GEHeading> 180.0) GEHeading-=360.0;
             }
-            GoogleEarthView->SetHeading(GEHeading);
-            delete vel;
+			delete vel;
         }
     }
     else {
-        GoogleEarthView->HideMark(1);
-        GoogleEarthView->HideMark(2);
-        GoogleMapView->HideMark(1);
+		GoogleMapView->HideMark(1);
         GoogleMapView->HideMark(2);
-    }
-    // update track
-    if (BtnSol1->Down&&!BtnConnect->Down) {
-        if (!GEDataState[0]) {
-            GoogleEarthView->HideTrack(1);
-            GEDataState[0]=GoogleEarthView->UpdateTrack(1,SolData);
-        }
-        GoogleEarthView->ShowTrack(1);
-    }
-    else {
-        GoogleEarthView->HideTrack(1);
-    }
-    if (BtnSol2->Down&&!BtnConnect->Down) {
-        if (!GEDataState[1]) {
-            GoogleEarthView->HideTrack(2);
-            GEDataState[1]=GoogleEarthView->UpdateTrack(2,SolData+1);
-        }
-        GoogleEarthView->ShowTrack(2);
-    }
-    else {
-        GoogleEarthView->HideTrack(2);
-    }
-    // update points
-    if (BtnShowMap->Down) {
-        GoogleEarthView->ShowPoint();
-    }
-    else {
-        GoogleEarthView->HidePoint();
     }
 }
 // refresh google map view -----------------------------------------------------

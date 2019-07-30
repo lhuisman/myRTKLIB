@@ -49,7 +49,6 @@
 #include "pntdlg.h"
 #include "mapdlg.h"
 #include "skydlg.h"
-#include "geview.h"
 #include "gmview.h"
 #include "viewer.h"
 #include "vmapdlg.h"
@@ -100,8 +99,6 @@ __fastcall TPlot::TPlot(TComponent* Owner) : TForm(Owner)
     
     X0=Y0=Xc=Yc=Xs=Ys=Xcent=0.0;
     MouseDownTick=0;
-    GEState=GEDataState[0]=GEDataState[1]=0;
-    GEHeading=0.0;
     OEpoch=t0;
     for (i=0;i<3;i++) OPos[i]=OVel[i]=0.0;
     Az=El=NULL;
@@ -175,11 +172,11 @@ __fastcall TPlot::TPlot(TComponent* Owner) : TForm(Owner)
     
     FrqType->Items->Clear();
     FrqType->Items->Add("L1/LC");
-    if (nfreq>=2) FrqType->Items->Add("L2");
-    if (nfreq>=3) FrqType->Items->Add("E5b");
-    if (nfreq>=4) FrqType->Items->Add("L5");
-    if (nfreq>=5) FrqType->Items->Add("E6");
-    if (nfreq>=6) FrqType->Items->Add("E5ab");
+	if (nfreq>=2) FrqType->Items->Add("L2/E5b");
+	if (nfreq>=3) FrqType->Items->Add("L5");
+	if (nfreq>=4) FrqType->Items->Add("E6");
+	if (nfreq>=5) FrqType->Items->Add("E5ab");
+
     FrqType->ItemIndex=0;
     
     TLEData.n=TLEData.nmax=0;
@@ -877,17 +874,6 @@ void __fastcall TPlot::MenuMonitor2Click(TObject *Sender)
     Console2->Caption="Monitor RT Input 2";
     Console2->Show();
 }
-// callback on menu-google-earth-view ---------------------------------------
-void __fastcall TPlot::MenuGEClick(TObject *Sender)
-{
-    AnsiString s;
-    
-    trace(3,"MenuGEClick\n");
-    
-    GoogleEarthView->Caption=
-        s.sprintf("%s ver.%s %s: Google Earth View",PRGNAME,VER_RTKLIB,PATCH_LEVEL);
-    GoogleEarthView->Show();
-}
 // callback on menu-google-map-view -----------------------------------------
 void __fastcall TPlot::MenuGMClick(TObject *Sender)
 {
@@ -994,10 +980,7 @@ void __fastcall TPlot::MenuShowMapClick(TObject *Sender)
     trace(3,"MenuShowPointClick\n");
     
     BtnShowMap->Down=!BtnShowMap->Down;
-    
-#if 0
-    if (BtnShowPoint->Down) UpdatePntsGE();
-#endif
+
     UpdatePlot();
     UpdateEnable();
 }
@@ -1019,29 +1002,12 @@ void __fastcall TPlot::MenuAnimStopClick(TObject *Sender)
 void __fastcall TPlot::MenuMaxClick(TObject *Sender)
 {
     TRect rect;
-    ::SystemParametersInfo(SPI_GETWORKAREA,0,&rect,0);
+	::SystemParametersInfo(SPI_GETWORKAREA,0,&rect,0);
 	Top=rect.Top;
 	Left=rect.Left;
 	Width=rect.Width();
 	Height=rect.Height();
-    GoogleEarthView->Hide();
-    GoogleMapView->Hide();
-}
-// callback on menu-windows-plot-ge -----------------------------------------
-void __fastcall TPlot::MenuPlotGEClick(TObject *Sender)
-{
-    TRect rect;
-    ::SystemParametersInfo(SPI_GETWORKAREA,0,&rect,0);
-	Top=rect.Top;
-	Left=rect.Left;
-	Width=rect.Width()/2;
-	Height=rect.Height();
-    GoogleEarthView->Top=Top;
-    GoogleEarthView->Left=Width;
-    GoogleEarthView->Width=Width;
-    GoogleEarthView->Height=Height;
-    GoogleMapView->Hide();
-    GoogleEarthView->Show();
+	GoogleMapView->Hide();
 }
 // callback on menu-windows-plot-gm -----------------------------------------
 void __fastcall TPlot::MenuPlotGMClick(TObject *Sender)
@@ -1056,8 +1022,7 @@ void __fastcall TPlot::MenuPlotGMClick(TObject *Sender)
     GoogleMapView->Left=Width;
     GoogleMapView->Width=Width;
     GoogleMapView->Height=Height;
-    GoogleEarthView->Hide();
-    GoogleMapView->Show();
+	GoogleMapView->Show();
 }
 // callback on menu-windows-plot-ge/gm --------------------------------------
 void __fastcall TPlot::MenuPlotGEGMClick(TObject *Sender)
@@ -1068,16 +1033,11 @@ void __fastcall TPlot::MenuPlotGEGMClick(TObject *Sender)
 	Left=rect.Left;
 	Width=rect.Width()/2;
 	Height=rect.Height();
-    GoogleEarthView->Top=Top;
-    GoogleEarthView->Left=Width;
-    GoogleEarthView->Width=Width;
-    GoogleEarthView->Height=Height/2;
-    GoogleMapView->Top=Top+Height/2;
+	GoogleMapView->Top=Top+Height/2;
     GoogleMapView->Left=Width;
     GoogleMapView->Width=Width;
     GoogleMapView->Height=Height/2;
-    GoogleEarthView->Show();
-    GoogleMapView->Show();
+	GoogleMapView->Show();
 }
 //---------------------------------------------------------------------------
 void __fastcall TPlot::DispGesture(TObject *Sender, const TGestureEventInfo &EventInfo,
@@ -1239,7 +1199,7 @@ void __fastcall TPlot::RangeListClick(TObject *Sender)
     RangeList->Visible=false;
     if ((i=RangeList->ItemIndex)<0) return;
     
-    strcpy(file,U2A(RangeList->Items->Strings[i]).c_str());
+	strcpy(file,U2A(RangeList->Items->Strings[i]).c_str());
     
     if (!sscanf(file,"%lf",&range)) return;
     
@@ -1321,13 +1281,6 @@ void __fastcall TPlot::BtnOptionsClick(TObject *Sender)
     trace(3,"BtnOptionsClick\n");
     
     MenuOptionsClick(Sender);
-}
-// callback on button-ge-view -----------------------------------------------
-void __fastcall TPlot::BtnGEClick(TObject *Sender)
-{
-    trace(3,"BtnGEClick\n");
-    
-    MenuGEClick(Sender);
 }
 // callback on button-gm-view -----------------------------------------------
 void __fastcall TPlot::BtnGMClick(TObject *Sender)
@@ -1943,7 +1896,6 @@ void __fastcall TPlot::TimerTimer(TObject *Sender)
                         time2gpst(SolData[i].time,&Week);
                         UpdateOrigin();
                         ecef2pos(SolData[i].data[0].rr,pos);
-                        GoogleEarthView->SetView(pos[0]*R2D,pos[1]*R2D,0.0,0.0);
                         GoogleMapView->SetView(pos[0]*R2D,pos[1]*R2D,13);
                     }
                     nmsg[i]++;
@@ -2367,8 +2319,7 @@ void __fastcall TPlot::UpdateEnable(void)
     BtnShowSkyplot ->Left=425;
     BtnShowMap     ->Left=450;
     BtnShowImg     ->Left=475;
-    BtnGE          ->Left=500;
-    BtnGM          ->Left=525;
+	BtnGM          ->Left=525;
     
     Panel102       ->Visible=PlotType==PLOT_SOLP||PlotType==PLOT_SOLV||
                              PlotType==PLOT_SOLA||PlotType==PLOT_NSAT||
@@ -2404,7 +2355,6 @@ void __fastcall TPlot::UpdateEnable(void)
     BtnShowImg     ->Visible=PlotType==PLOT_TRK||PlotType==PLOT_SKY||
                              PlotType==PLOT_MPS;
     BtnAnimate     ->Visible=data&&BtnShowTrack->Down;
-    BtnGE          ->Visible=PlotType==PLOT_TRK;
     BtnGM          ->Visible=PlotType==PLOT_TRK;
     TimeScroll     ->Visible=data&&BtnShowTrack->Down;
     
@@ -2436,9 +2386,8 @@ void __fastcall TPlot::UpdateEnable(void)
     MenuShowImg    ->Enabled=BtnShowImg  ->Enabled;
     MenuShowSkyplot->Enabled=BtnShowSkyplot->Visible;
     MenuShowGrid   ->Enabled=BtnShowGrid ->Visible;
-    MenuGE         ->Enabled=BtnGE       ->Enabled;
-    MenuGM         ->Enabled=BtnGM       ->Enabled;
-    
+	MenuGM         ->Enabled=BtnGM       ->Enabled;
+
     MenuShowTrack  ->Checked=BtnShowTrack->Down;
     MenuFixCent    ->Checked=BtnFixCent  ->Down;
     MenuFixHoriz   ->Checked=BtnFixHoriz ->Down;
@@ -2555,8 +2504,7 @@ void __fastcall TPlot::SetRange(int all, double range)
         GraphT->SetScale(MAX(xs,ys),MAX(xs,ys));
         if (norm(OPos,3)>0.0) {
             ecef2pos(OPos,pos);
-            GoogleEarthView->SetView(pos[0]*R2D,pos[1]*R2D,0.0,0.0);
-            GoogleMapView->SetView(pos[0]*R2D,pos[1]*R2D,13);
+			GoogleMapView->SetView(pos[0]*R2D,pos[1]*R2D,13);
         }
     }
     if (PLOT_SOLP<=PlotType&&PlotType<=PLOT_SOLA) {
@@ -2569,7 +2517,7 @@ void __fastcall TPlot::SetRange(int all, double range)
         GraphG[0]->GetLim(tl,xp);
         xl[0]=yl[0]=zl[0]=0.0;
         xl[1]=MaxDop;
-        yl[1]=YLIM_AGE;
+		yl[1]=YLIM_AGE;
         zl[1]=YLIM_RATIO;
         GraphG[0]->SetLim(tl,xl);
         GraphG[1]->SetLim(tl,yl);
@@ -2694,8 +2642,7 @@ void __fastcall TPlot::FitRange(int all)
         if (lats[0]<=lats[1]&&lons[0]<=lons[1]) {
             lat=(lats[0]+lats[1])/2.0;
             lon=(lons[0]+lons[1])/2.0;
-//            GoogleEarthView->SetView(lat,lon,0.0,0.0);
-        }
+		}
     }
 }
 // set center of track plot -------------------------------------------------
@@ -2817,9 +2764,8 @@ void __fastcall TPlot::LoadOpt(void)
     for (i=0;i<11;i++) {
         geopts[i]=ini->ReadInteger("ge",s.sprintf("geopts_%d",i),0);
     }
-    GoogleEarthView->SetOpts(geopts);
-    
-    for (i=0;i<2;i++) {
+
+	for (i=0;i<2;i++) {
         StrCmds  [0][i]=ini->ReadString ("str",s.sprintf("strcmd1_%d",    i),"");
         StrCmds  [1][i]=ini->ReadString ("str",s.sprintf("strcmd2_%d",    i),"");
         StrCmdEna[0][i]=ini->ReadInteger("str",s.sprintf("strcmdena1_%d", i), 0);
@@ -2848,12 +2794,12 @@ void __fastcall TPlot::LoadOpt(void)
     
     for (i=0;i<RangeList->Count;i++) {
         
-        strcpy(rangelist,U2A(RangeList->Items->Strings[i]).c_str());
+		strcpy(rangelist,U2A(RangeList->Items->Strings[i]).c_str());
         
         if (sscanf(rangelist,"%lf",&range)&&range==YRange) {
             RangeList->Selected[i]=true;
-        }
-    }
+		}
+	}
 }
 // save options to ini-file -------------------------------------------------
 void __fastcall TPlot::SaveOpt(void)
@@ -2953,9 +2899,8 @@ void __fastcall TPlot::SaveOpt(void)
     
     ini->WriteString ("plot","rnxopts",      RnxOpts       );
     ini->WriteString ("plot","apikey",       ApiKey        );
-    
-    GoogleEarthView->GetOpts(geopts);
-    for (i=0;i<11;i++) {
+
+	for (i=0;i<11;i++) {
         ini->WriteInteger("ge",s.sprintf("geopts_%d",i),geopts[i]);
     }
     for (i=0;i<2;i++) {
