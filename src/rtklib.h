@@ -78,7 +78,7 @@ extern "C" {
 
 #define HION        350000.0            /* ionosphere height (m) */
 
-#define MAXFREQ     7                   /* max NFREQ */
+#define MAXFREQ     6                   /* max NFREQ */
 
 #define FREQL1      1.57542E9           /* L1/E1/B1  frequency (Hz) */
 #define FREQL2      1.22760E9           /* L2     frequency (Hz) */

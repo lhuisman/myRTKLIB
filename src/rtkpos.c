@@ -788,7 +788,7 @@ static void udbias(rtk_t *rtk, double tt, const obsd_t *obs, const int *sat,
                    const int *iu, const int *ir, int ns, const nav_t *nav)
 {
     double cp,pr,cp1,cp2,pr1,pr2,*bias,offset,lami,lam1,lam2,C1,C2;
-    int i,j,f,slip,reset,nf=NF(&rtk->opt),sysi;
+    int i,j,f,slip,rejc,reset,nf=NF(&rtk->opt),sysi;
     
     trace(3,"udbias  : tt=%.3f ns=%d\n",tt,ns);
     
@@ -832,14 +832,16 @@ static void udbias(rtk_t *rtk, double tt, const obsd_t *obs, const int *sat,
                 rtk->ssat[i-1].lock[f]=-rtk->opt.minlock;
             }
         }
-        /* reset phase-bias state if detecting cycle slip */
+        /* reset phase-bias state if detecting cycle slip or outlier */
         for (i=0;i<ns;i++) {
             j=IB(sat[i],f,&rtk->opt);
             rtk->P[j+j*rtk->nx]+=rtk->opt.prn[0]*rtk->opt.prn[0]*fabs(tt);
             slip=rtk->ssat[sat[i]-1].slip[f];
+            rejc=rtk->ssat[sat[i]-1].rejc[f];
             if (rtk->opt.ionoopt==IONOOPT_IFLC) slip|=rtk->ssat[sat[i]-1].slip[1];
-            if (rtk->opt.modear==ARMODE_INST||!(slip&1)) continue;
+            if (rtk->opt.modear==ARMODE_INST||(!(slip&1)&&rejc<2)) continue;
             rtk->x[j]=0.0;
+            rtk->ssat[sat[i]-1].rejc[f]=0;
             rtk->ssat[sat[i]-1].lock[f]=-rtk->opt.minlock;
             /* retain icbiases for GLONASS sats */
             if (rtk->ssat[sat[i]-1].sys!=SYS_GLO) rtk->ssat[sat[i]-1].icbias[f]=0;  
@@ -1212,7 +1214,7 @@ static int ddres(rtk_t *rtk, const nav_t *nav, const obsd_t *obs, double dt, con
                  double *H, double *R, int *vflg)
 {
     prcopt_t *opt=&rtk->opt;
-    double bl,dr[3],posu[3],posr[3],didxi=0.0,didxj=0.0,*im,icb;
+    double bl,dr[3],posu[3],posr[3],didxi=0.0,didxj=0.0,*im,icb,threshadj;
     double *tropr,*tropu,*dtdxr,*dtdxu,*Ri,*Rj,lami,lamj,fi,fj,df,*Hi=NULL;
     int i,j,k,m,f,frq,code,nv=0,nb[NFREQ*4*2+2]={0},b=0,sysi,sysj,nf=NF(opt);
     
@@ -1361,15 +1363,20 @@ static int ddres(rtk_t *rtk, const nav_t *nav, const obsd_t *obs, double dt, con
                 else      rtk->ssat[sat[j]-1].resc[frq]=v[nv];  /* carrier phase */
 
                 /* if residual too large, flag as outlier */
-                if (opt->maxinno>0.0&&fabs(v[nv])>opt->maxinno) {
-                    if (!code) {
-                        rtk->ssat[sat[i]-1].rejc[frq]++;
-                        rtk->ssat[sat[j]-1].rejc[frq]++;
+                k=IB(sat[j],frq,opt);
+				if (rtk->P[k+rtk->nx*k]<SQR(rtk->opt.std[0]/2)) {  /* skip check if bias just intialized */
+                    threshadj=code?1:opt->eratio[frq]; /* adjust threshold by error stdev ratio */
+                    if (opt->maxinno>0.0&&fabs(v[nv])>opt->maxinno/threshadj) {
+                        if (!code) {
+                            rtk->ssat[sat[j]-1].vsat[frq]=0;
+                            rtk->ssat[sat[j]-1].rejc[frq]++;
+                        }
+                        errmsg(rtk,"outlier rejected (sat=%3d-%3d %s%d v=%.3f)\n",
+                                sat[i],sat[j],code?"P":"L",frq+1,v[nv]);
+                        continue;
                     }
-                    errmsg(rtk,"outlier rejected (sat=%3d-%3d %s%d v=%.3f)\n",
-                            sat[i],sat[j],code?"P":"L",frq+1,v[nv]);
-                    continue;
                 }
+
                 /* single-differenced measurement error variances */
                 Ri[nv] = varerr(sat[i], sysi, azel[1+iu[i]*2], 
                                 0.25 * rtk->ssat[sat[i]-1].snr_rover[frq],

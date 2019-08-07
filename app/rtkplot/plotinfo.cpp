@@ -319,7 +319,7 @@ void __fastcall TPlot::UpdateObsType(void)
 {
     AnsiString s;
     char *codes[MAXCODE+1];
-    const char *freqs[]={"L1","L2","E5b","L5","E6","E5ab"};
+	const char *freqs[]={"L1","L2/E5b","L5","E6","E5ab"};
     int i,j,n=0,cmask[MAXCODE+1]={0},fmask[6]={0};
     
     trace(3,"UpdateObsType\n");

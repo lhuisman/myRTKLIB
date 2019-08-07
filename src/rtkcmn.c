@@ -184,7 +184,7 @@ const double chisqr[100]={      /* chi-sqr(n) (alpha=0.001) */
     138 ,139 ,140 ,142 ,143 ,144 ,145 ,147 ,148 ,149
 };
 const double lam_carr[MAXFREQ]={ /* carrier wave length (m) */
-    CLIGHT/FREQL1,CLIGHT/FREQL2,CLIGHT/FREQE5b,CLIGHT/FREQL5,CLIGHT/FREQE6,
+	CLIGHT/FREQL1,CLIGHT/FREQL2,CLIGHT/FREQL5,CLIGHT/FREQE6,
     CLIGHT/FREQE5ab,CLIGHT/FREQs
 };
 const prcopt_t prcopt_default={ /* defaults processing options */
@@ -273,13 +273,13 @@ static unsigned char obsfreqs_cmp[]={
 static char codepris[7][MAXFREQ][16]={  /* code priority table */
 
    /* L1/E1/B1   L2/B2      E5b/B3  L5/E5a/L3 E6/LEX     E5(a+b)  S */
-    {"CPYWMNSL","CLPYWMNDSX","IQX"   ,"IQX"   ,""        ,""      ,""    }, /* GPS */
-    {"PC"      ,"PC"        ,"IQX"   ,"IQX"   ,""        ,""      ,""    }, /* GLO */
-    {"CABXZ"   ,""          ,"IQX"   ,"IQX"   ,"ABCXZ"   ,"IQX"   ,""    }, /* GAL */
-    {"CSLXZ"   ,"SLX"       ,"IQX"   ,"IQX"   ,"SLX"     ,""      ,""    }, /* QZS */
-    {"C"       ,""          ,"IQX"   ,"IQX"   ,""        ,""      ,""    }, /* SBS */
-    {"IQX"     ,"IQX"       ,"IQX"   ,"IQX"   ,"IQX"     ,""      ,""    }, /* BDS */
-    {""        ,""          ,"ABCX"  ,"ABCX"  ,""        ,""      ,"ABCX"}  /* IRN */
+	{"CPYWMNSL","CLPYWMNDSX","IQX"   ,""        ,""      ,""    }, /* GPS */
+	{"PC"      ,"PC"        ,"IQX"   ,""        ,""      ,""    }, /* GLO */
+	{"CABXZ"   ,""          ,"IQX"   ,"ABCXZ"   ,"IQX"   ,""    }, /* GAL */
+	{"CSLXZ"   ,"SLX"       ,"IQX"   ,"SLX"     ,""      ,""    }, /* QZS */
+	{"C"       ,""          ,"IQX"   ,""        ,""      ,""    }, /* SBS */
+	{"IQX"     ,"IQX"       ,"IQX"   ,"IQX"     ,""      ,""    }, /* BDS */
+    {""        ,""          ,"ABCX"  ,""        ,""      ,"ABCX"}  /* IRN */
 };
 static fatalfunc_t *fatalfunc=NULL; /* fatal callback function */
 
@@ -647,7 +647,7 @@ extern void setcodepri(int sys, int freq, const char *pri)
     trace(3,"setcodepri:sys=%d freq=%d pri=%s\n",sys,freq,pri);
     
     if (freq<=0||MAXFREQ<freq) return;
-    if (sys&SYS_GPS) strcpy(codepris[0][freq-1],pri);
+	if (sys&SYS_GPS) strcpy(codepris[0][freq-1],pri);
     if (sys&SYS_GLO) strcpy(codepris[1][freq-1],pri);
     if (sys&SYS_GAL) strcpy(codepris[2][freq-1],pri);
     if (sys&SYS_QZS) strcpy(codepris[3][freq-1],pri);
