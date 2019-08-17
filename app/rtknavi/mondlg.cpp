@@ -367,7 +367,7 @@ void __fastcall TMonitorDialog::ShowRtk(void)
 	AnsiString sol[]={"-","Fix","Float","SBAS","DGPS","Single","PPP",""};
 	AnsiString mode[]={"Single","DGPS","Kinematic","Static","Static-Start","Moving-Base",
 					   "Fixed","PPP-Kinematic","PPP-Static",""};
-	AnsiString freq[]={"-","L1","L1+L2/E5b","L1+L2/E5b+L5","L1+L2/E5b+L5+E6"};
+	AnsiString freq[]={"-","L1","L1+L2","L1+L2+L5","L1+L2+L5+L6","L1+L2+L5+L6+L7","L1+L2+L5+L6+L7+L8",""};
 	double *del,*off1,*off2,runtime,rt[3]={0},dop[4]={0};
 	double azel[MAXSAT*2],pos[3],vel[3];
 	int i,j,k,thread,cycle,state,rtkstat,nsat0,nsat1,prcout,nave;
@@ -1017,7 +1017,7 @@ void __fastcall TMonitorDialog::ShowObs(void)
 			Tbl->Cells[j++][i+1]=s.sprintf("%d",obs[i].LLI[k]);
 		}
 		for (k=0;k<NFREQ+nex;k++) {
-			code=code2obs(0,obs[i].code[k],NULL);
+			code=code2obs(obs[i].code[k],NULL);
 			if (*code) Tbl->Cells[j++][i+1]=s.sprintf("L%s",code);
 			else       Tbl->Cells[j++][i+1]="";
 		}
@@ -1917,13 +1917,13 @@ void __fastcall TMonitorDialog::ShowRtcmSsr(void)
 		buff[0]='\0';
 		for (p=buff,k=0;k<MAXCODE;k++) {
 			if (ssr[i].cbias[k]==0.0) continue;
-			p+=sprintf(p,"%s:%.3f ",code2obs(0,k+1,NULL),ssr[i].cbias[k]);
+			p+=sprintf(p,"%s:%.3f ",code2obs(k+1,NULL),ssr[i].cbias[k]);
 		}
 		Tbl->Cells[j++][i+1]=buff;
 		buff[0]='\0';
 		for (p=buff,k=0;k<MAXCODE;k++) {
 			if (ssr[i].pbias[k]==0.0) continue;
-			p+=sprintf(p,"%s:%.3f ",code2obs(0,k+1,NULL),ssr[i].pbias[k]);
+			p+=sprintf(p,"%s:%.3f ",code2obs(k+1,NULL),ssr[i].pbias[k]);
 		}
 		Tbl->Cells[j++][i+1]=buff;
 	}

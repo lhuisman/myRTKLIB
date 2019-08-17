@@ -93,8 +93,7 @@ __fastcall TOptDialog::TOptDialog(TComponent* Owner)
 	: TForm(Owner)
 {
 	AnsiString label,s;
-	const char *freqs[]={"L1","L2/E5b","L5","E6","E5ab"};
-	int nglo=MAXPRNGLO,ngal=MAXPRNGAL,nqzs=MAXPRNQZS;
+	int freq[]={1,2,5,6,7,8,9},nglo=MAXPRNGLO,ngal=MAXPRNGAL,nqzs=MAXPRNQZS;
 	int ncmp=MAXPRNCMP,nirn=MAXPRNIRN;
 	PrcOpt=prcopt_default;
 	SolOpt=solopt_default;
@@ -103,7 +102,7 @@ __fastcall TOptDialog::TOptDialog(TComponent* Owner)
 	
 	Freq->Items->Clear();
 	for (int i=0;i<NFREQ;i++) {
-		label=label+(i>0?"+":"")+s.sprintf("%s",freqs[i]);
+		label=label+(i>0?"+":"")+s.sprintf("L%d",freq[i]);
 		Freq->Items->Add(label);
 	}
 	if (nglo<=0) NavSys2->Enabled=false;

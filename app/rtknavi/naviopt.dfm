@@ -216,12 +216,12 @@ object OptDialog: TOptDialog
         Style = csDropDownList
         ItemIndex = 1
         TabOrder = 1
-        Text = 'L1+L2/E5b'
+        Text = 'L1+L2'
         OnChange = FreqChange
         Items.Strings = (
           'L1'
-          'L1+L2/E5b'
-          'L1+L2/E5b+L5')
+          'L1+L2'
+          'L1+L2+L5')
       end
       object SatEphem: TComboBox
         Left = 248
