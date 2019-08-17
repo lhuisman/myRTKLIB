@@ -1761,7 +1761,7 @@ static int to_sigid(int sys, unsigned char code, int *freq)
         else if (code==CODE_L2M) code=CODE_L2P;
         else if (code==CODE_L2N) code=CODE_L2P;
     }
-    if (!*(sig=code2obs(sys,code,freq))) return 0;
+    if (!*(sig=code2obs(code,freq))) return 0;
     
     switch (sys) {
         case SYS_GPS: msm_sig=msm_sig_gps; break;

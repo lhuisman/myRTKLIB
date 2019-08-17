@@ -35,7 +35,6 @@ object Plot: TPlot
     Color = clWhite
     ParentBackground = False
     TabOrder = 3
-    ExplicitWidth = 634
     object Disp: TPaintBox
       AlignWithMargins = True
       Left = 154
@@ -210,7 +209,6 @@ object Plot: TPlot
     Color = clWindow
     ParentBackground = False
     TabOrder = 0
-    ExplicitWidth = 634
     object BtnMessage2: TSpeedButton
       Left = 721
       Top = 0
@@ -242,7 +240,6 @@ object Plot: TPlot
       BorderWidth = 1
       TabOrder = 0
       Visible = False
-      ExplicitLeft = 440
       object Message2: TLabel
         Left = 2
         Top = 2
@@ -280,7 +277,6 @@ object Plot: TPlot
       Font.Style = []
       ParentFont = False
       TabOrder = 1
-      ExplicitWidth = 440
       object QL3: TLabel
         Left = 11
         Top = 2
@@ -382,7 +378,6 @@ object Plot: TPlot
     Color = clWindow
     ParentBackground = False
     TabOrder = 1
-    ExplicitWidth = 634
     object Panel11: TPanel
       Left = 537
       Top = 0
@@ -392,7 +387,6 @@ object Plot: TPlot
       BevelOuter = bvNone
       TabOrder = 0
       TabStop = True
-      ExplicitLeft = 434
       object BtnReload: TSpeedButton
         Left = 158
         Top = 0
@@ -1232,8 +1226,6 @@ object Plot: TPlot
           ParentFont = False
           TabOrder = 0
           OnChange = PlotTypeSChange
-          ExplicitLeft = 2
-          ExplicitWidth = 59
         end
       end
       object Panel102: TPanel
@@ -1586,7 +1578,6 @@ object Plot: TPlot
       Align = alLeft
       BevelOuter = bvNone
       TabOrder = 2
-      ExplicitLeft = 541
       object BtnAnimate: TSpeedButton
         Left = 2
         Top = 0

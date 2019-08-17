@@ -1822,8 +1822,8 @@ static void save_msm_obs(rtcm_t *rtcm, int sys, msm_h_t *h, const double *r,
             default: sig[i]=""; break;
         }
         /* signal to rinex obs type */
-        code[i]=obs2code(sys,sig[i],freq+i);
-
+        code[i]=obs2code(sig[i],freq+i);
+        
         /* freqency index for beidou and galileo */
         if (sys==SYS_CMP) {
             if      (freq[i]==5) freq[i]=2; /* B2 */

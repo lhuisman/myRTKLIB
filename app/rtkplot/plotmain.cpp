@@ -172,11 +172,11 @@ __fastcall TPlot::TPlot(TComponent* Owner) : TForm(Owner)
     
     FrqType->Items->Clear();
     FrqType->Items->Add("L1/LC");
-	if (nfreq>=2) FrqType->Items->Add("L2/E5b");
-	if (nfreq>=3) FrqType->Items->Add("L5");
-	if (nfreq>=4) FrqType->Items->Add("E6");
-	if (nfreq>=5) FrqType->Items->Add("E5ab");
-
+    if (nfreq>=2) FrqType->Items->Add("L2");
+    if (nfreq>=3) FrqType->Items->Add("L5");
+    if (nfreq>=4) FrqType->Items->Add("L6");
+    if (nfreq>=5) FrqType->Items->Add("L7");
+    if (nfreq>=6) FrqType->Items->Add("L8");
     FrqType->ItemIndex=0;
     
     TLEData.n=TLEData.nmax=0;
@@ -1002,7 +1002,7 @@ void __fastcall TPlot::MenuAnimStopClick(TObject *Sender)
 void __fastcall TPlot::MenuMaxClick(TObject *Sender)
 {
     TRect rect;
-	::SystemParametersInfo(SPI_GETWORKAREA,0,&rect,0);
+    ::SystemParametersInfo(SPI_GETWORKAREA,0,&rect,0);
 	Top=rect.Top;
 	Left=rect.Left;
 	Width=rect.Width();
@@ -1199,7 +1199,7 @@ void __fastcall TPlot::RangeListClick(TObject *Sender)
     RangeList->Visible=false;
     if ((i=RangeList->ItemIndex)<0) return;
     
-	strcpy(file,U2A(RangeList->Items->Strings[i]).c_str());
+    strcpy(file,U2A(RangeList->Items->Strings[i]).c_str());
     
     if (!sscanf(file,"%lf",&range)) return;
     
@@ -2504,7 +2504,7 @@ void __fastcall TPlot::SetRange(int all, double range)
         GraphT->SetScale(MAX(xs,ys),MAX(xs,ys));
         if (norm(OPos,3)>0.0) {
             ecef2pos(OPos,pos);
-			GoogleMapView->SetView(pos[0]*R2D,pos[1]*R2D,13);
+            GoogleMapView->SetView(pos[0]*R2D,pos[1]*R2D,13);
         }
     }
     if (PLOT_SOLP<=PlotType&&PlotType<=PLOT_SOLA) {
@@ -2517,7 +2517,7 @@ void __fastcall TPlot::SetRange(int all, double range)
         GraphG[0]->GetLim(tl,xp);
         xl[0]=yl[0]=zl[0]=0.0;
         xl[1]=MaxDop;
-		yl[1]=YLIM_AGE;
+        yl[1]=YLIM_AGE;
         zl[1]=YLIM_RATIO;
         GraphG[0]->SetLim(tl,xl);
         GraphG[1]->SetLim(tl,yl);
@@ -2642,7 +2642,7 @@ void __fastcall TPlot::FitRange(int all)
         if (lats[0]<=lats[1]&&lons[0]<=lons[1]) {
             lat=(lats[0]+lats[1])/2.0;
             lon=(lons[0]+lons[1])/2.0;
-		}
+        }
     }
 }
 // set center of track plot -------------------------------------------------
