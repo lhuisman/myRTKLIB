@@ -1364,17 +1364,16 @@ static int ddres(rtk_t *rtk, const nav_t *nav, const obsd_t *obs, double dt, con
 
                 /* if residual too large, flag as outlier */
                 k=IB(sat[j],frq,opt);
-				if (rtk->P[k+rtk->nx*k]<SQR(rtk->opt.std[0]/2)) {  /* skip check if bias just intialized */
-                    threshadj=code?1:opt->eratio[frq]; /* adjust threshold by error stdev ratio */
-                    if (opt->maxinno>0.0&&fabs(v[nv])>opt->maxinno/threshadj) {
-                        if (!code) {
-                            rtk->ssat[sat[j]-1].vsat[frq]=0;
-                            rtk->ssat[sat[j]-1].rejc[frq]++;
-                        }
-                        errmsg(rtk,"outlier rejected (sat=%3d-%3d %s%d v=%.3f)\n",
-                                sat[i],sat[j],code?"P":"L",frq+1,v[nv]);
-                        continue;
+                /* adjust threshold by error stdev ratio unless phase bias just initialized*/
+                threshadj=code||(rtk->P[k+rtk->nx*k]>SQR(rtk->opt.std[0]/2))?opt->eratio[frq]:1;
+                if (opt->maxinno>0.0&&fabs(v[nv])>opt->maxinno*threshadj) {
+                    if (!code) {
+                        rtk->ssat[sat[j]-1].vsat[frq]=0;
+                        rtk->ssat[sat[j]-1].rejc[frq]++;
                     }
+                    errmsg(rtk,"outlier rejected (sat=%3d-%3d %s%d v=%.3f)\n",
+                            sat[i],sat[j],code?"P":"L",frq+1,v[nv]);
+                    continue;
                 }
 
                 /* single-differenced measurement error variances */
