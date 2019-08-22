@@ -101,7 +101,7 @@ static int eph_sel[]={ /* GPS,GLO,GAL,QZS,BDS,SBS */
 /* variance by ura ephemeris -------------------------------------------------*/
 static double var_uraeph(int sys, int ura)
 {   if (sys==SYS_GAL) 
-        return SQR(uravalue(sys,ura));
+        return SQR(sisa_value(ura));
     else
         return ura<0||14<ura?SQR(6144.0):SQR(ura_value[ura]);
 }

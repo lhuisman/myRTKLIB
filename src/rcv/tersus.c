@@ -429,8 +429,8 @@ static int decode_gpsephemb(raw_t *raw)
     eph.toe=gpst2time(eph.week,eph.toes);
     eph.toc=gpst2time(eph.week,toc);
     eph.ttr=adjweek(eph.toe,tow);
-    eph.sva=uraindex(ura,SYS_GPS);
-    
+    eph.sva=uraindex(ura);
+
     if (!strstr(raw->opt,"-EPHALL")) {
         if (timediff(raw->nav.eph[eph.sat-1].toe,eph.toe)==0.0&&
             raw->nav.eph[eph.sat-1].iode==eph.iode&&
@@ -543,7 +543,7 @@ static int decode_bdsephemerisb(raw_t *raw)
     eph.cic   =R8(p);   p+=8;
     eph.cis   =R8(p);
     eph.A     =sqrtA*sqrtA;
-    eph.sva   =uraindex(ura,SYS_CMP);
+    eph.sva   =uraindex(ura);
     
     if (raw->outtype) {
         msg=raw->msgtype+strlen(raw->msgtype);

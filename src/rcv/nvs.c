@@ -197,7 +197,7 @@ static int decode_gpsephem(int sat, raw_t *raw)
     eph.f2     = R4(&puiTmp[114]) * 1e+3;
     eph.f1     = R4(&puiTmp[118]);
     eph.f0     = R4(&puiTmp[122]) * 1e-3;
-    eph.sva    = uraindex(I2(&puiTmp[126]),SYS_GPS);
+    eph.sva    = uraindex(I2(&puiTmp[126]));
     eph.iode   = I2(&puiTmp[128]);
     eph.iodc   = I2(&puiTmp[130]);
     eph.code   = I2(&puiTmp[132]);

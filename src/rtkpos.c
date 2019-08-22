@@ -1779,6 +1779,7 @@ static int resamb_LAMBDA(rtk_t *rtk, double *bias, double *xa,int gps,int glo,in
     }
     else {
         errmsg(rtk,"lambda error (info=%d)\n",info);
+        nb=0;
     }
     free(D); free(y); free(Qy); free(DP);
     free(b); free(db); free(Qb); free(Qab); free(QQ);

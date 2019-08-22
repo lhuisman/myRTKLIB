@@ -2631,36 +2631,34 @@ static void uniqseph(nav_t *nav)
     trace(4,"uniqseph: ns=%d\n",nav->ns);
 }
 /* ura index to ura nominal value (m) ----------------------------------------*/
-extern double uravalue(int sys, int sva)
+extern double uravalue(int sva)
 {
-    if (sys==SYS_GAL) {
-        if (sva<= 49) return sva*0.01;
-        if (sva<= 74) return 0.5+(sva- 50)*0.02;
-        if (sva<= 99) return 1.0+(sva- 75)*0.04;
-        if (sva<=125) return 2.0+(sva-100)*0.16;
-        return -1.0; /* unknown or NAPA */
-    }
-    else {
-        return 0<=sva&&sva<15?ura_nominal[sva]:8192.0;
-    }
+    return 0<=sva&&sva<15?ura_nominal[sva]:8192.0;
 }
-extern int uraindex(double value, int sys)
+/* ura value (m) to ura index ------------------------------------------------*/
+extern int uraindex(double value)
 {
     int i;
-
-    if (sys==SYS_GAL) {
-        if (value>0 && value<0.5)
-            i=(int)(value*100+0.5);
-        else if (value>=0.5 && value<1.0)
-            i=50+(int)((value-0.5)/2*100+0.5);
-        else if (value>=1.0 && value<2.0)
-            i=75+(int)((value-1.0)/4*100);
-        else if (value>=2.0 && value<6.0)
-            i=100+(int)((value-2.0)/16*100+0.5);
-        else i=125;
-    } else
-        for (i=0;i<15;i++) if (ura_value[i]>=value) break;
+    for (i=0;i<15;i++) if (ura_value[i]>=value) break;
     return i;
+}
+/* galileo sisa index to sisa nominal value (m) ------------------------------*/
+extern double sisa_value(int sisa)
+{
+    if (sisa<= 49) return sisa*0.01;
+    if (sisa<= 74) return 0.5+(sisa- 50)*0.02;
+    if (sisa<= 99) return 1.0+(sisa- 75)*0.04;
+    if (sisa<=125) return 2.0+(sisa-100)*0.16;
+    return -1.0; /* unknown or NAPA */
+}
+/* galileo sisa value (m) to sisa index --------------------------------------*/
+extern int sisa_index(double value)
+{
+    if (value<0.0 || value>6.0) return 255; /* unknown or NAPA */
+    else if (value<=0.5) return (int)(value/0.01);
+    else if (value<=1.0) return (int)((value-0.5)/0.02)+50;
+    else if (value<=2.0) return (int)((value-1.0)/0.04)+75;
+    return (int)((value-2.0)/0.16)+100;
 }
 /* unique ephemerides ----------------------------------------------------------
 * unique ephemerides in navigation data and update carrier wave length

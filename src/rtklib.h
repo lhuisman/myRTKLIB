@@ -58,7 +58,7 @@ extern "C" {
 
 #define VER_RTKLIB  "demo5"             /* library version */
 
-#define PATCH_LEVEL "b32"               /* patch level */
+#define PATCH_LEVEL "b33"               /* patch level */
 
 #define COPYRIGHT_RTKLIB \
             "Copyright (C) 2007-2019 T.Takasu\nAll rights reserved."
@@ -1647,8 +1647,10 @@ EXPORT int  input_rnxctr(rnxctr_t *rnx, FILE *fp);
 EXPORT double eph2clk (gtime_t time, const eph_t  *eph);
 EXPORT double geph2clk(gtime_t time, const geph_t *geph);
 EXPORT double seph2clk(gtime_t time, const seph_t *seph);
-EXPORT double uravalue(int sys, int ura);
-EXPORT int uraindex(double value, int sys);
+EXPORT double uravalue(int ura);
+EXPORT int uraindex(double value);
+EXPORT double sisa_value(int sisa);
+EXPORT int sisa_index(double value);
 EXPORT void eph2pos (gtime_t time, const eph_t  *eph,  double *rs, double *dts,
                      double *var);
 EXPORT void geph2pos(gtime_t time, const geph_t *geph, double *rs, double *dts,

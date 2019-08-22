@@ -989,7 +989,7 @@ static int decode_bdsephemerisb(raw_t *raw)
     eph.cic   =R8(p);   p+=8;
     eph.cis   =R8(p);
     eph.A     =sqrtA*sqrtA;
-    eph.sva   =uraindex(ura,SYS_CMP);
+    eph.sva   =uraindex(ura);
     
     if (raw->outtype) {
         msg=raw->msgtype+strlen(raw->msgtype);
