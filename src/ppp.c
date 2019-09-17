@@ -1191,7 +1191,7 @@ extern void pppos(rtk_t *rtk, const obsd_t *obs, int n, const nav_t *nav)
     
     rs=mat(6,n); dts=mat(2,n); var=mat(1,n); azel=zeros(2,n);
     
-    for (i=0;i<MAXSAT;i++) for (j=0;j<opt->nf;j++) {
+    for (i=0;i<MAXOBS;i++) for (j=0;j<opt->nf;j++) {
         rtk->ssat[i].fix[j]=0;
         rtk->ssat[obs[i].sat-1].snr_rover[j]=obs[i].SNR[j];
         rtk->ssat[obs[i].sat-1].snr_base[j] =0;
