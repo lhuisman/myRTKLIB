@@ -92,11 +92,19 @@ static double locktime_d(gtime_t time, gtime_t *lltime, unsigned char LLI)
     return timediff(time,*lltime);
 }
 /* glonass frequency channel number in rtcm (0-13,-1:error) ------------------*/
-static int fcn_glo(int sat, rtcm_t *rtcm)
+static int fcn_glo(int sat, rtcm_t *rtcm, int obs_index)
 {
-    int prn;
-    if (satsys(sat,&prn)!=SYS_GLO||rtcm->nav.geph[prn-1].sat!=sat) return -1;
-    return rtcm->nav.geph[prn-1].frq+7;
+    int prn,fcn;
+
+    if (satsys(sat,&prn)!=SYS_GLO) return -1;
+    if (rtcm->nav.geph[prn-1].sat==sat) {
+        fcn=rtcm->nav.geph[prn-1].frq+7;
+    } else {
+        /* if freq slot not available from nav data check MSM obs data */
+        fcn=(int)rtcm->obs.data[obs_index].freq;
+        if (fcn>13) fcn=-1;  // set invalid result flag */
+    }
+    return fcn;
 }
 /* lock time indicator (ref [2] table 3.4-2) ---------------------------------*/
 static int to_lock(int lock)
@@ -524,7 +532,7 @@ static int encode_type1005(rtcm_t *rtcm, int sync)
     setbitu(rtcm->buff,i, 6,0          ); i+= 6; /* itrf realization year */
     setbitu(rtcm->buff,i, 1,1          ); i+= 1; /* gps indicator */
     setbitu(rtcm->buff,i, 1,1          ); i+= 1; /* glonass indicator */
-    setbitu(rtcm->buff,i, 1,0          ); i+= 1; /* galileo indicator */
+    setbitu(rtcm->buff,i, 1,1          ); i+= 1; /* galileo indicator */
     setbitu(rtcm->buff,i, 1,0          ); i+= 1; /* ref station indicator */
     set38bits(rtcm->buff,i,p[0]/0.0001 ); i+=38; /* antenna ref point ecef-x */
     setbitu(rtcm->buff,i, 1,1          ); i+= 1; /* oscillator indicator */
@@ -631,7 +639,7 @@ static int encode_type1009(rtcm_t *rtcm, int sync)
     for (j=0;j<rtcm->obs.n&&nsat<MAXOBS;j++) {
         sat=rtcm->obs.data[j].sat;
         if (satsys(sat,&prn)!=SYS_GLO) continue;
-        fcn=fcn_glo(sat,rtcm);
+        fcn=fcn_glo(sat,rtcm,j);
         
         /* generate obs field data glonass */
         gen_obs_glo(rtcm,rtcm->obs.data+j,fcn,&code1,&pr1,&ppr1,&lock1,&amb,
@@ -668,7 +676,7 @@ static int encode_type1010(rtcm_t *rtcm, int sync)
     for (j=0;j<rtcm->obs.n&&nsat<MAXOBS;j++) {
         sat=rtcm->obs.data[j].sat;
         if (satsys(sat,&prn)!=SYS_GLO) continue;
-        fcn=fcn_glo(sat,rtcm);
+        fcn=fcn_glo(sat,rtcm,j);
         
         /* generate obs field data glonass */
         gen_obs_glo(rtcm,rtcm->obs.data+j,fcn,&code1,&pr1,&ppr1,&lock1,&amb,
@@ -707,7 +715,7 @@ static int encode_type1011(rtcm_t *rtcm, int sync)
     for (j=0;j<rtcm->obs.n&&nsat<MAXOBS;j++) {
         sat=rtcm->obs.data[j].sat;
         if (satsys(sat,&prn)!=SYS_GLO) continue;
-        fcn=fcn_glo(sat,rtcm);
+        fcn=fcn_glo(sat,rtcm,j);
         
         /* generate obs field data glonass */
         gen_obs_glo(rtcm,rtcm->obs.data+j,fcn,&code1,&pr1,&ppr1,&lock1,&amb,
@@ -748,7 +756,7 @@ static int encode_type1012(rtcm_t *rtcm, int sync)
     for (j=0;j<rtcm->obs.n&&nsat<MAXOBS;j++) {
         sat=rtcm->obs.data[j].sat;
         if (satsys(sat,&prn)!=SYS_GLO) continue;
-        fcn=fcn_glo(sat,rtcm);
+        fcn=fcn_glo(sat,rtcm,j);
         
         /* generate obs field data glonass */
         gen_obs_glo(rtcm,rtcm->obs.data+j,fcn,&code1,&pr1,&ppr1,&lock1,&amb,
@@ -1839,13 +1847,17 @@ static void gen_msm_sat(rtcm_t *rtcm, int sys, int nsat,
     for (i=0;i<rtcm->obs.n;i++) {
         data=rtcm->obs.data+i;
         if (!(sat=to_satid(sys,data->sat))) continue;
-        fcn=fcn_glo(data->sat,rtcm);
+        fcn=fcn_glo(data->sat,rtcm,i);
         
         for (j=0;j<NFREQ+NEXOBS;j++) {
             if (!(sig=to_sigid(sys,data->code[j],&f))) continue;
             k=sat_ind[sat-1]-1;
-            lambda=satwavelen(data->sat,f-1,&rtcm->nav);
-            
+            if (sys==SYS_GLO&&fcn>=0) {
+                lambda=CLIGHT/((j==1?FREQ2_GLO:FREQ1_GLO)+
+                           (j==1?DFRQ2_GLO:DFRQ1_GLO)*(fcn-7));
+            } else {
+                lambda=satwavelen(data->sat,f-1,&rtcm->nav);
+            }
             /* rough range (ms) and rough phase-range-rate (m/s) */
             rrng_s =ROUND( data->P[j]/RANGE_MS/P2_10)*RANGE_MS*P2_10;
             rrate_s=ROUND(-data->D[j]*lambda)*1.0;
@@ -1868,7 +1880,7 @@ static void gen_msm_sig(rtcm_t *rtcm, int sys, int nsat, int nsig, int ncell,
 {
     obsd_t *data;
     double lambda,psrng_s,phrng_s,rate_s,lt;
-    int i,j,k,sat,sig,cell,f,LLI;
+    int i,j,k,fcn,sat,sig,cell,f,LLI;
     
     for (i=0;i<ncell;i++) {
         if (psrng) psrng[i]=0.0;
@@ -1879,13 +1891,18 @@ static void gen_msm_sig(rtcm_t *rtcm, int sys, int nsat, int nsig, int ncell,
         data=rtcm->obs.data+i;
         
         if (!(sat=to_satid(sys,data->sat))) continue;
+        fcn=fcn_glo(data->sat,rtcm,i);
         
         for (j=0;j<NFREQ+NEXOBS;j++) {
             if (!(sig=to_sigid(sys,data->code[j],&f))) continue;
             k=sat_ind[sat-1]-1;
             if ((cell=cell_ind[sig_ind[sig-1]-1+k*nsig])>=64) continue;
-            
-            lambda=satwavelen(data->sat,f-1,&rtcm->nav);
+            if (sys==SYS_GLO&&fcn>=0) {
+                lambda=CLIGHT/((j==1?FREQ2_GLO:FREQ1_GLO)+
+                           (j==1?DFRQ2_GLO:DFRQ1_GLO)*(fcn-7));
+            } else {
+                lambda=satwavelen(data->sat,f-1,&rtcm->nav);
+            }
             psrng_s=data->P[j]==0.0?0.0:data->P[j]-rrng[k];
             phrng_s=data->L[j]==0.0||lambda<=0.0?0.0: data->L[j]*lambda-rrng [k];
             rate_s =data->D[j]==0.0||lambda<=0.0?0.0:-data->D[j]*lambda-rrate[k];

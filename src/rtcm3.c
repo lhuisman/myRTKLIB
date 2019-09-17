@@ -1875,6 +1875,7 @@ static void save_msm_obs(rtcm_t *rtcm, int sys, msm_h_t *h, const double *r,
                     fn=ex[i]-7;
                     wl=CLIGHT/((freq[k]==2?FREQ2_GLO:FREQ1_GLO)+
                                (freq[k]==2?DFRQ2_GLO:DFRQ1_GLO)*fn);
+                    rtcm->obs.data[index].freq=(char)ex[i];
                 }
                 /* pseudorange (m) */
                 if (r[i]!=0.0&&pr[j]>-1E12) {

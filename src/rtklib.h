@@ -58,7 +58,7 @@ extern "C" {
 
 #define VER_RTKLIB  "demo5"             /* library version */
 
-#define PATCH_LEVEL "b33"               /* patch level */
+#define PATCH_LEVEL "b33a"               /* patch level */
 
 #define COPYRIGHT_RTKLIB \
             "Copyright (C) 2007-2019 T.Takasu\nAll rights reserved."
@@ -558,6 +558,7 @@ typedef struct {        /* observation data record */
     unsigned char code[NFREQ+NEXOBS]; /* code indicator (CODE_???) */
     unsigned char qualL[NFREQ+NEXOBS]; /* quality of carrier phase measurement */
     unsigned char qualP[NFREQ+NEXOBS]; /* quality of pseudorange measurement */
+    unsigned char freq; /* GLONASS frequency channel (0-13) */
     double L[NFREQ+NEXOBS]; /* observation data carrier-phase (cycle) */
     double P[NFREQ+NEXOBS]; /* observation data pseudorange (m) */
     float  D[NFREQ+NEXOBS]; /* observation data doppler frequency (Hz) */
