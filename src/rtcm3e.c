@@ -102,7 +102,7 @@ static int fcn_glo(int sat, rtcm_t *rtcm, int obs_index)
     } else {
         /* if freq slot not available from nav data check MSM obs data */
         fcn=(int)rtcm->obs.data[obs_index].freq;
-        if (fcn>13) fcn=-1;  // set invalid result flag */
+        if (fcn>13) fcn=-1;  /* set invalid result flag */
     }
     return fcn;
 }
