@@ -1798,9 +1798,8 @@ static int manage_amb_LAMBDA(rtk_t *rtk, double *bias, double *xa, const int *sa
 
     /* find and count sats used last time for AR */
     for (f=0;f<nf;f++) for (i=0;i<ns;i++) 
-            if (rtk->ssat[sat[i]-1].vsat[f] && rtk->ssat[sat[i]-1].lock[f]>=0 && rtk->ssat[sat[i]-1].azel[1]>=rtk->opt.elmin) {
+            if (rtk->ssat[sat[i]-1].vsat[f]&&rtk->ssat[sat[i]-1].lock[f]>0)
                 arsats[ar++]=i;
-            }
 
     /* if no fix on previous sample and enough sats, exclude next sat in list */
     trace(3,"num sats used last AR: %d\n",ar);
