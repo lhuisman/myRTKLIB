@@ -83,6 +83,7 @@ void __fastcall TInputStrDialog::BtnOkClick(TObject *Sender)
 	Format[0]  =Format1   ->ItemIndex;
 	Format[1]  =Format2->ItemIndex<NRcv?Format2->ItemIndex:STRFMT_SP3+Format2->ItemIndex-NRcv;
 	Format[2]  =Format3->ItemIndex<NRcv?Format3->ItemIndex:STRFMT_SP3+Format3->ItemIndex-NRcv;
+	Time64Bit  =Time64BitL->ItemIndex;
 	Paths[0][2]=SetFilePath(FilePath1->Text);
 	Paths[1][2]=SetFilePath(FilePath2->Text);
 	Paths[2][2]=SetFilePath(FilePath3->Text);
@@ -90,7 +91,6 @@ void __fastcall TInputStrDialog::BtnOkClick(TObject *Sender)
 	TimeTag    =TimeTagC  ->Checked;
 	TimeSpeed  =TimeSpeedL->Text;
 	TimeStart  =TimeStartE->Text;
-    Time64Bit  =Time64BitL->ItemIndex;
 	NmeaPos[0] =str2dbl(NmeaPos1->Text);
 	NmeaPos[1] =str2dbl(NmeaPos2->Text);
 	NmeaPos[2] =str2dbl(NmeaPos3->Text);
