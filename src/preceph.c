@@ -273,8 +273,8 @@ extern void readsp3(const char *file, nav_t *nav, int opt)
     for (i=j=0;i<n;i++) {
         if (!(ext=strrchr(efiles[i],'.'))) continue;
         
-        if (!strstr(ext+1,"sp3")&&!strstr(ext+1,".SP3")&&
-            !strstr(ext+1,"eph")&&!strstr(ext+1,".EPH")) continue;
+        if (!strstr(ext+1,"sp3")&&!strstr(ext+1,"SP3")&&
+            !strstr(ext+1,"eph")&&!strstr(ext+1,"EPH")) continue;
         
         if (!(fp=fopen(efiles[i],"r"))) {
             trace(2,"sp3 file open error %s\n",efiles[i]);
