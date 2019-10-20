@@ -105,8 +105,6 @@ object OptDialog: TOptDialog
     TabOrder = 4
     object TabSheet1: TTabSheet
       Caption = 'Setting&1'
-      ExplicitLeft = 1
-      ExplicitTop = 21
       object Label3: TLabel
         Left = 24
         Top = 95
@@ -246,13 +244,15 @@ object OptDialog: TOptDialog
         Width = 152
         Height = 21
         Style = csDropDownList
+        ItemIndex = 1
         TabOrder = 1
+        Text = 'L1+L2'
         OnChange = FreqChange
         Items.Strings = (
           'L1'
           'L1+L2'
-          'L1+L2+E5b'
-          'L1+L2+E5b+L5')
+          'L1+L2+L5'
+          'L1+L2+L5+L6')
       end
       object Solution: TComboBox
         Left = 248
