@@ -101,7 +101,7 @@ const char *msm_sig_sbs[32]={
 };
 const char *msm_sig_cmp[32]={
     /* BeiDou: ref [15] table 3.5-106 */
-    ""  ,"1I","1Q","1X",""  ,""  ,""  ,"6I","6Q","6X",""  ,""  ,
+    ""  ,"2I","2Q","2X","1I","1Q","1X"  ,"6I","6Q","6X",""  ,""  ,
     ""  ,"7I","7Q","7X",""  ,""  ,""  ,""  ,""  ,""  ,""  ,""  ,
     ""  ,""  ,""  ,""  ,""  ,""  ,""  ,""
 };
@@ -1366,7 +1366,7 @@ static const int codes_qzs[]={
     CODE_L5X,CODE_L6S,CODE_L6L,CODE_L6X,CODE_L1X
 };
 static const int codes_bds[]={
-    CODE_L1I,CODE_L1Q,CODE_L1X,CODE_L2I,CODE_L2Q,CODE_L2X,
+    CODE_L2I,CODE_L2Q,CODE_L2X,CODE_L1I,CODE_L1Q,CODE_L1X,
     CODE_L7I,CODE_L7Q,CODE_L7X,CODE_L6I,CODE_L6Q,CODE_L6X
 };
 static const int codes_sbs[]={
