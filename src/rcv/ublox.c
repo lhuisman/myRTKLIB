@@ -162,8 +162,8 @@ static int ubx_sig(int sys, int sigid)
 {
     if (sys == SYS_GPS) {
         if (sigid == 0) return CODE_L1C; /* L1C/A */
-        if (sigid == 3) return CODE_L2L; /* L2CL */
-        if (sigid == 4) return CODE_L2M; /* L2CM */
+        if (sigid == 3) return CODE_L2L; /* L2C(L) */
+        if (sigid == 4) return CODE_L2S; /* L2C(M) */
     }
     else if (sys == SYS_GLO) {
         if (sigid == 0) return CODE_L1C; /* G1C/A (GLO L1 OF) */
@@ -196,7 +196,7 @@ static int sig_idx(int sys, int code)
     if (sys == SYS_GPS) {
         if (code==CODE_L1C) return 1;
         if (code==CODE_L2L) return 2;
-        if (code==CODE_L2M) return 2;
+        if (code==CODE_L2S) return 2;
     }
     else if (sys == SYS_GLO) {
         if (code==CODE_L1C) return 1;
