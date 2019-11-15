@@ -1690,7 +1690,8 @@ static int resamb_LAMBDA(rtk_t *rtk, double *bias, double *xa,int gps,int glo,in
     rtk->sol.ratio=0.0;
     
     if (rtk->opt.mode<=PMODE_DGPS||rtk->opt.modear==ARMODE_OFF||
-        rtk->opt.thresar[0]<1.0) { 
+        rtk->opt.thresar[0]<1.0) {
+        rtk->nb_ar=0;
         return 0;
     }
     /* skip AR if position variance too high to avoid false fix */
@@ -1699,6 +1700,7 @@ static int resamb_LAMBDA(rtk_t *rtk, double *bias, double *xa,int gps,int glo,in
     trace(3,"posvar=%.6f\n",var);
     if (var>rtk->opt.thresar[1]) {
         errmsg(rtk,"position variance too large:  %.4f\n",var);
+        rtk->nb_ar=0;
         return 0;
     }
     /* Create single to double-difference transformation matrix (D')
@@ -1709,7 +1711,7 @@ static int resamb_LAMBDA(rtk_t *rtk, double *bias, double *xa,int gps,int glo,in
         free(D);
         return -1; /* flag abort */
     }
-    rtk->nb_ar = nb;
+    rtk->nb_ar=nb;
     /* nx=# of float states, na=# of fixed states, nb=# of double-diff phase biases */
     ny=na+nb; y=mat(ny,1); Qy=mat(ny,ny); DP=mat(ny,nx);
     b=mat(nb,2); db=mat(nb,1); Qb=mat(nb,nb); Qab=mat(na,nb); QQ=mat(na,nb);
@@ -1867,16 +1869,15 @@ static int manage_amb_LAMBDA(rtk_t *rtk, double *bias, double *xa, const int *sa
         if (glo1!=glo2||gps1!=gps2)
             nb=resamb_LAMBDA(rtk,bias,xa,gps2,glo2,glo2);
     }
-    
-    rtk->sol.prev_ratio1=ratio1>0?ratio1:rtk->sol.ratio;
-    rtk->sol.prev_ratio2=rtk->sol.ratio;
-
-    /* restore excluded sat if still no fix */
-    if (excflag&&rtk->sol.ratio<rtk->sol.thres && rtk->sol.ratio<1.5*rtk->sol.prev_ratio2) {
+    /* restore excluded sat if still no fix or significant increase in ar ratio */
+    if (excflag && (rtk->sol.ratio<rtk->sol.thres) && (rtk->sol.ratio<(1.5*rtk->sol.prev_ratio2))) {
         i=sat[arsats[rtk->excsat++]];
         for (f=0;f<nf;f++) rtk->ssat[i-1].lock[f]=lockc[f];
         trace(3,"AR: restore sat %d\n",i);
     }
+
+    rtk->sol.prev_ratio1=ratio1>0?ratio1:rtk->sol.ratio;
+    rtk->sol.prev_ratio2=rtk->sol.ratio;
 
     return nb;
 }
@@ -2221,6 +2222,7 @@ extern void rtkinit(rtk_t *rtk, const prcopt_t *opt)
     }
     rtk->holdamb=0;
     rtk->excsat=0;
+    rtk->nb_ar=0;
     for (i=0;i<MAXERRMSG;i++) rtk->errbuf[i]=0;
     rtk->opt=*opt;
     rtk->initial_mode=rtk->opt.mode;
