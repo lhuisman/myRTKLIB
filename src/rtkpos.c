@@ -1803,7 +1803,7 @@ static int resamb_LAMBDA(rtk_t *rtk, double *bias, double *xa,int gps,int glo,in
 /* resolve integer ambiguity by LAMBDA using partial fix techniques and multiple attempts -----------------------*/
 static int manage_amb_LAMBDA(rtk_t *rtk, double *bias, double *xa, const int *sat, int nf, int ns) 
 {
-    int i,f,lockc[NFREQ],ar=0,excflag=0,arsats[MAXOBS];
+    int i,f,lockc[NFREQ],ar=0,excflag=0,arsats[MAXOBS]={0};
     int gps1=-1,glo1=-1,gps2,glo2,nb,rerun,dly;
     float ratio1;
 
@@ -2184,8 +2184,9 @@ static int relpos(rtk_t *rtk, const obsd_t *obs, int nu, int nr,
     }
     for (i=0;i<n;i++) for (j=0;j<nf;j++) {
         if (obs[i].L[j]==0.0) continue;
-        rtk->ssat[obs[i].sat-1].pt[obs[i].rcv-1][j]=obs[i].time;
-        rtk->ssat[obs[i].sat-1].ph[obs[i].rcv-1][j]=obs[i].L[j];
+        nf=opt->ionoopt==IONOOPT_IFLC?1:opt->nf;  /* fixes gcc compiler warnings */
+        rtk->ssat[obs[i].sat-1].pt[obs[i].rcv-1][j<nf?j:nf]=obs[i].time;
+        rtk->ssat[obs[i].sat-1].ph[obs[i].rcv-1][j<nf?j:nf]=obs[i].L[j];
     }
     for (i=0;i<MAXSAT;i++) for (j=0;j<nf;j++) {
         /* Don't lose track of which sats were used to try and resolve the ambiguities */
