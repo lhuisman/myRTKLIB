@@ -2946,6 +2946,10 @@ extern void tracelevel(int level)
 {
     level_trace=level;
 }
+extern int gettracelevel(void)
+{
+    return level_trace;
+}
 extern void trace(int level, const char *format, ...)
 {
     va_list ap;
