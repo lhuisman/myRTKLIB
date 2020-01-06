@@ -340,7 +340,7 @@ static int cmdopts(int argc, char **argv, rnxopt_t *opt, char **ifile,
     int i,j,k,sat,nf=3,nc=2,format=-1;
     char *p,*sys,*fmt="",*paths[1],path[1024],buff[256];
     
-    opt->rnxver=2.11;
+    opt->rnxver=3.03;
     opt->obstype=OBSTYPE_PR|OBSTYPE_CP;
     opt->navsys=SYS_GPS|SYS_GLO|SYS_GAL|SYS_QZS|SYS_SBS|SYS_CMP;
     opt->scanobs=1;

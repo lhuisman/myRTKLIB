@@ -100,7 +100,7 @@ typedef enum { false, true } bool;
 
 #define P2_10       0.0009765625 /* 2^-10 */
 
-#define MAX_CPSTD_VALID 7       /* max std-dev for valid carrier-phase  */
+#define MAX_CPSTD_VALID 5       /* max std-dev for valid carrier-phase  */
 #define CPSTD_SLIP 15           /* std-dev threshold for slip */
 
 #define ROUND(x)    (int)floor((x)+0.5)
@@ -455,7 +455,7 @@ static int decode_rxmrawx(raw_t *raw)
             raw->obs.data[n].rcv=0;
             for (k=0;k<NFREQ+NEXOBS;k++) {
                 raw->obs.data[n].L[k]=raw->obs.data[n].P[k]=0.0;
-                raw->obs.data[n].qualL[k]=raw->obs.data[n].qualP[k]=0.0;
+                raw->obs.data[n].qualL[k]=raw->obs.data[n].qualP[k]=0;
                 raw->obs.data[n].D[k]=0.0;
                 raw->obs.data[n].SNR[k]=raw->obs.data[n].LLI[k]=0;
                 raw->obs.data[n].code[k]=CODE_NONE;
