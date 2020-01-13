@@ -909,7 +909,8 @@ static int antpos(prcopt_t *opt, int rcvno, const obs_t *obs, const nav_t *nav,
             trace(1,"no position in rinex header\n");
             return 0;
         }
-        /* antenna delta */
+        /* add antenna delta unless using rinex header deltas */
+        if (strcmp(opt->anttype[rcvno],"*")) return 1;   
         if (stas[rcvno==1?0:1].deltype==0) { /* enu */
             for (i=0;i<3;i++) del[i]=stas[rcvno==1?0:1].del[i];
             del[2]+=stas[rcvno==1?0:1].hgt;
