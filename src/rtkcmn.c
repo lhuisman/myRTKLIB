@@ -2224,6 +2224,8 @@ static int readantex(const char *file, pcvs_t *pcvs)
             if (sscanf(buff+4,"%d",&f)<1) continue;
             for (i=0;i<NFREQ;i++) if (freqs[i]==f) break;
             if (i<NFREQ) freq=i+1;
+            /* for Galileo E5b: use E2, not E7 */
+            if (satsys(pcv.sat,NULL)==SYS_GAL&&f==7) freq=2;
         }
         else if (strstr(buff+60,"END OF FREQUENCY")) {
             freq=0;
@@ -2665,9 +2667,9 @@ extern int sisa_index(double value)
 * args   : nav_t *nav    IO     navigation data
 * return : number of epochs
 *-----------------------------------------------------------------------------*/
-extern void uniqnav(nav_t *nav)
+extern void uniqnav(nav_t *nav, int nf)
 {
-    int i,j;
+    int i,j,sys;
     
     trace(3,"uniqnav: neph=%d ngeph=%d nseph=%d\n",nav->n,nav->ng,nav->ns);
     
@@ -2677,8 +2679,17 @@ extern void uniqnav(nav_t *nav)
     uniqseph(nav);
     
     /* update carrier wave length */
-    for (i=0;i<MAXSAT;i++) for (j=0;j<NFREQ;j++) {
-        nav->lam[i][j]=satwavelen(i+1,j,nav);
+    for (i=0;i<MAXSAT;i++) { 
+        for (j=0;j<NFREQ;j++) {
+            sys=satsys(i+1,NULL);
+            if ((sys!=SYS_GAL)||(nf<=2)||(j!=1)) {
+                nav->lam[i][j]=satwavelen(i+1,j,nav);
+            } else {
+                /* if this is a L1+L2+L5 solution set lam=0 as flag for satellite PCV
+                   antenna offset calc to indicate using Galileo E5a, not E5b  */
+                nav->lam[i][j]=0;
+            }
+        }
     }
 }
 /* compare observation data -------------------------------------------------*/
