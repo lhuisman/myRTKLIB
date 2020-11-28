@@ -58,7 +58,7 @@ extern "C" {
 
 #define VER_RTKLIB  "demo5"             /* library version */
 
-#define PATCH_LEVEL "b33d"               /* patch level */
+#define PATCH_LEVEL "b33e"               /* patch level */
 
 #define COPYRIGHT_RTKLIB \
             "Copyright (C) 2007-2019 T.Takasu\nAll rights reserved."
@@ -1540,7 +1540,7 @@ EXPORT double dms2deg(const double *dms);
 /* input and output functions ------------------------------------------------*/
 EXPORT void readpos(const char *file, const char *rcv, double *pos);
 EXPORT int  sortobs(obs_t *obs);
-EXPORT void uniqnav(nav_t *nav, int nf);
+EXPORT void uniqnav(nav_t *nav);
 EXPORT int  screent(gtime_t time, gtime_t ts, gtime_t te, double tint);
 EXPORT int  readnav(const char *file, nav_t *nav);
 EXPORT int  savenav(const char *file, const nav_t *nav);

@@ -653,7 +653,7 @@ static int pephclk(gtime_t time, int sat, const nav_t *nav, double *dts,
 *                                 {x,y,z,vx,vy,vz} (m|m/s)
 *          int    sat         I   satellite number
 *          nav_t  *nav        I   navigation data
-*          double *dant       I   satellite antenna phase center offset (ecef)
+*          double *dant       O   satellite antenna phase center offset (ecef)
 *                                 {dx,dy,dz} (m) (iono-free LC value)
 * return : none
 *-----------------------------------------------------------------------------*/

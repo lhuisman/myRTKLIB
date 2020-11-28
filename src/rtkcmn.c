@@ -2667,9 +2667,9 @@ extern int sisa_index(double value)
 * args   : nav_t *nav    IO     navigation data
 * return : number of epochs
 *-----------------------------------------------------------------------------*/
-extern void uniqnav(nav_t *nav, int nf)
+extern void uniqnav(nav_t *nav)
 {
-    int i,j,sys;
+    int i,j;
     
     trace(3,"uniqnav: neph=%d ngeph=%d nseph=%d\n",nav->n,nav->ng,nav->ns);
     
@@ -2679,17 +2679,8 @@ extern void uniqnav(nav_t *nav, int nf)
     uniqseph(nav);
     
     /* update carrier wave length */
-    for (i=0;i<MAXSAT;i++) { 
-        for (j=0;j<NFREQ;j++) {
-            sys=satsys(i+1,NULL);
-            if ((sys!=SYS_GAL)||(nf<=2)||(j!=1)) {
-                nav->lam[i][j]=satwavelen(i+1,j,nav);
-            } else {
-                /* if this is a L1+L2+L5 solution set lam=0 as flag for satellite PCV
-                   antenna offset calc to indicate using Galileo E5a, not E5b  */
-                nav->lam[i][j]=0;
-            }
-        }
+    for (i=0;i<MAXSAT;i++) for (j=0;j<NFREQ;j++) {
+        nav->lam[i][j]=satwavelen(i+1,j,nav);
     }
 }
 /* compare observation data -------------------------------------------------*/
@@ -3368,7 +3359,7 @@ extern int reppaths(const char *path, char *rpath[], int nmax, gtime_t ts,
 /* satellite carrier wave length -----------------------------------------------
 * get satellite carrier wave lengths
 * args   : int    sat       I   satellite number
-*          int    frq       I   frequency index (0:L1,1:L2,2:L5/3,...)
+*          int    frq       I   frequency index (0:L1,1:L2/E5b,2:L5/3,...)
 *          nav_t  *nav      I   navigation messages
 * return : carrier wave length (m) (0.0: error)
 *-----------------------------------------------------------------------------*/

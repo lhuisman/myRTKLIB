@@ -789,8 +789,17 @@ static int readobsnav(gtime_t ts, gtime_t te, double ti, char **infile,
     nepoch=sortobs(obs);
     
     /* delete duplicated ephemeris */
-    uniqnav(nav,prcopt->nf);
-    
+    uniqnav(nav);
+
+    /* Set lam[1] as flag for satellite PCV antenna offset calc to indicate
+       using Galileo E5a or E5b  */
+    if (prcopt->nf>2) {       /* if L1+L2+L5 solution */
+        for (i=0;i<MAXSAT;i++) {
+            /* set Galileo lam[1]=0 which will force offset calc to use lam[2] (E5a) */
+            if (satsys(i+1,NULL)==SYS_GAL) nav->lam[i][1]=0;
+        }
+    }
+
     /* set time span for progress display */
     if (ts.time==0||te.time==0) {
         for (i=0;   i<obs->n;i++) if (obs->data[i].rcv==1) break;
