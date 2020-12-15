@@ -1,0 +1,38 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "(gdb) Launch",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/rnx2rtkp",
+            "args": ["-k","/home/lhuisman/test/proc.opt",
+                     "-o", "/home/lhuisman/test/output3_%r_%b.pos",
+                     "-ts", "2020/10/07","00:00:00",
+                     "-te", "2020/10/07","23:59:59 ",
+                     "-ti","30",
+                     "-dtype", "BRDC_IGS_R",
+                     "-dtype", "KAD_ROV_01D",
+                     "-dtype", "TUD_BASE_01D",
+                     "-lstfile", "/home/lhuisman/test/downloadpaths.lst",
+                     "-basefile", "/home/lhuisman/test/bases.lst",
+                     "-rovfile", "/home/lhuisman/test/rovers.lst"
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        }
+    ]
+}
