@@ -1438,6 +1438,16 @@ typedef struct {        /* imu type */
     unsigned char buff[256]; /* imu data buffer */
 } imu_t;
 
+typedef struct {          /* download info type */
+    char lstfile [1024];  /* path to lst file with download locations */
+    char rovfile [1024];  /* path to file with rover stations and download locations */
+    char basefile [1024]; /* path to file with base stations and download locations */
+    char* dtypes [MAXANT]; /* aliases for download locations */
+    char* rovers[MAXRCV];  /* rover stations */
+    char* bases[MAXRCV];   /* base stations */
+} dwnld_t;
+
+
 typedef void fatalfunc_t(const char *); /* fatal callback function type */
 
 /* global variables ----------------------------------------------------------*/

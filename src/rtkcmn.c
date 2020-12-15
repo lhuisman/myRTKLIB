@@ -3932,6 +3932,26 @@ extern int rtk_uncompress(const char *file, char *uncfile)
         if (stat) remove(tmpfile);
         stat=1;
     }
+    else if ((p=strrchr(tmpfile,'.'))&&!strcmp(p,".crx")) {
+
+        strcpy(uncfile,tmpfile); 
+        
+        /* uncfile[p-tmpfile]='\0'; /* LH: Gives filename without extension */
+         uncfile[p-tmpfile+1]=*(p+1)=='c'?'r':'a';
+         uncfile[p-tmpfile+2]=*(p+2)=='r'?'n':'a';
+         uncfile[p-tmpfile+3]=*(p+3)=='x'?'x':'a';
+       
+
+        sprintf(cmd,"crx2rnx < \"%s\" > \"%s\"",tmpfile,uncfile);
+        
+        if (execcmd(cmd)) {
+            remove(uncfile);
+            return -1;
+        }
+        strcpy(tmpfile,uncfile);
+        stat=1;
+    }
+
     trace(3,"rtk_uncompress: stat=%d\n",stat);
     return stat;
 }

@@ -73,8 +73,8 @@ static void genpath(const char *file, const char *name, gtime_t time, int seqno,
     
     for (p=buff,q=(char *)file;(*p=*q);p++,q++) {
         if (*q=='%') q++; else continue;
-        if      (*q=='s'||*q=='r') p+=sprintf(p,"%s",l_name)-1;
-        else if (*q=='S'||*q=='R') p+=sprintf(p,"%s",u_name)-1;
+        if      (*q=='s'||*q=='r'||*q=='b') p+=sprintf(p,"%s",name)-1;
+        else if (*q=='S'||*q=='R') p+=sprintf(p,"%s",name)-1;
         else if (*q=='N') p+=sprintf(p,"%d",seqno)-1;
         else if (*q=='{'&&(r=strchr(q+1,'}'))) {
             strncpy(var,q+1,r-q-1);
@@ -142,7 +142,7 @@ static int test_file(const char *local)
     int comp=0;
     
     strcpy(buff,local);
-    
+    if (exist_file(buff)) return 1;
     if ((p=strrchr(buff,'.'))&&
         (!strcmp(p,".z")||!strcmp(p,".gz")||!strcmp(p,".zip")||
          !strcmp(p,".Z")||!strcmp(p,".GZ")||!strcmp(p,".ZIP"))) {
@@ -238,7 +238,7 @@ static int gen_paths(gtime_t time, gtime_t time_p, int seqnos, int seqnoe,
 {
     int i;
     
-    if (strstr(url->path,"%s")||strstr(url->path,"%S")) {
+    if (strstr(url->path,"%r")||strstr(url->path,"%b")||strstr(url->path,"%s")) {
         for (i=0;i<nsta;i++) {
             if (!gen_path(time,time_p,seqnos,seqnoe,url,stas[i],dir,paths)) {
                 return 0;
@@ -733,7 +733,7 @@ extern int dl_exec(gtime_t ts, gtime_t te, double ti, int seqnos, int seqnoe,
     }
     for (i=0;i<paths.n;i++) {
         
-        sprintf(str,"%s->%s (%d/%d)",paths.path[i].remot,paths.path[i].local,i+1,
+        sprintf(str,"%s->%s (%d/%d)\n",paths.path[i].remot,paths.path[i].local,i+1,
                 paths.n);
         if (showmsg(str)) break;
         
