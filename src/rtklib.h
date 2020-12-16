@@ -38,6 +38,7 @@
 #include <math.h>
 #include <time.h>
 #include <ctype.h>
+#include <errno.h>
 #ifdef WIN32
 #include <winsock2.h>
 #include <windows.h>
