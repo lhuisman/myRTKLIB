@@ -3208,11 +3208,56 @@ extern int expath(const char *path, char *paths[], int nmax)
     
     return n;
 }
+/* generate local directory recursively --------------------------------------*/
+static int mkdir_r(const char *dir)
+{
+    char pdir[1024],*p;
+    
+#ifdef WIN32
+    HANDLE h;
+    WIN32_FIND_DATA data;
+    
+    if (!*dir||!strcmp(dir+1,":\\")) return 1;
+    
+    strcpy(pdir,dir);
+    if ((p=strrchr(pdir,FILEPATHSEP))) {
+        *p='\0';
+        h=FindFirstFile(pdir,&data);
+        if (h==INVALID_HANDLE_VALUE) {
+            if (!mkdir_r(pdir)) return 0;
+        }
+        else FindClose(h);
+    }
+    if (CreateDirectory(dir,NULL)||
+        GetLastError()==ERROR_ALREADY_EXISTS) return 1;
+    
+    trace(2,"directory generation error: dir=%s\n",dir);
+    return 0;
+#else
+    FILE *fp;
+    
+    if (!*dir) return 1;
+    
+    strcpy(pdir,dir);
+    if ((p=strrchr(pdir,FILEPATHSEP))) {
+        *p='\0';
+        if (!(fp=fopen(pdir,"r"))) {
+            if (!mkdir_r(pdir)) return 0;
+        }
+        else fclose(fp);
+    }
+    if (!mkdir(dir,0777)||errno==EEXIST) return 1;
+    
+    trace(2,"directory generation error: dir=%s\n",dir);
+    return 0;
+#endif
+}
 /* create directory ------------------------------------------------------------
 * create directory if not exist
 * args   : char   *path     I   file path to be saved
 * return : none
 * notes  : not recursive. only one level
+* LH: Modified to allow recursive generation using mkdir_R copied form download.c
 *-----------------------------------------------------------------------------*/
 extern void createdir(const char *path)
 {
@@ -3224,11 +3269,7 @@ extern void createdir(const char *path)
     if (!(p=strrchr(buff,FILEPATHSEP))) return;
     *p='\0';
     
-#ifdef WIN32
-    CreateDirectory(buff,NULL);
-#else
-    mkdir(buff,0777);
-#endif
+    mkdir_r(buff);
 }
 /* replace string ------------------------------------------------------------*/
 static int repstr(char *str, const char *pat, const char *rep)
