@@ -1101,6 +1101,7 @@ static int execses(gtime_t ts, gtime_t te, double ti, const prcopt_t *popt,
     prcopt_t popt_=*popt;
     solopt_t tmsopt = *sopt;
     char tracefile[1024],statfile[1024],path[1024],*ext,outfiletm[1024]={0};
+    int i,j,k;
     
     trace(3,"execses : n=%d outfile=%s\n",n,outfile);
     
@@ -1144,6 +1145,11 @@ static int execses(gtime_t ts, gtime_t te, double ti, const prcopt_t *popt,
     if (*fopt->dcb) {
         reppath(fopt->dcb,path,ts,"","");
         readdcb(path,&navs,stas);
+    } else {
+        for (i=0;i<3;i++) {
+            for (j=0;j<MAXSAT;j++) navs.cbias[j][i]=0;
+            for (j=0;j<MAXRCV;j++) for (k=0;k<2;k++) navs.rbias[j][k][i]=0;
+        }
     }
     /* set antenna parameters */
     if (popt_.mode!=PMODE_SINGLE) {

@@ -152,9 +152,11 @@ extern int pppoutstat(rtk_t *rtk, char *buff)
     }
     /* receiver clocks */
     i=IC(0,&rtk->opt);
-    p+=sprintf(p,"$CLK,%d,%.3f,%d,%d,%.3f,%.3f,%.3f,%.3f\n",
+    p+=sprintf(p,"$CLK,%d,%.3f,%d,%d,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f\n",
                week,tow,rtk->sol.stat,1,x[i]*1E9/CLIGHT,x[i+1]*1E9/CLIGHT,
-               STD(rtk,i)*1E9/CLIGHT,STD(rtk,i+1)*1E9/CLIGHT);
+               x[i+2]*1E9/CLIGHT,x[i+3]*1E9/CLIGHT,STD(rtk,i)*1E9/CLIGHT,
+               STD(rtk,i+1)*1E9/CLIGHT,STD(rtk,i+2)*1E9/CLIGHT,
+               STD(rtk,i+2)*1E9/CLIGHT);
     
     /* tropospheric parameters */
     if (rtk->opt.tropopt==TROPOPT_EST||rtk->opt.tropopt==TROPOPT_ESTG) {
@@ -331,6 +333,7 @@ static double varerr(int sat, int sys, double el, double snr_rover, int freq,
         case SYS_GPS: fact *= EFACT_GPS; break;
         case SYS_GLO: fact *= EFACT_GLO; break;
         case SYS_GAL: fact *= EFACT_GAL; break;
+        case SYS_CMP: fact *= EFACT_CMP; break;
         case SYS_SBS: fact *= EFACT_SBS; break;
         default:      fact *= EFACT_GPS; break;
     }
@@ -398,6 +401,7 @@ static void corr_meas(const obsd_t *obs, const nav_t *nav, const double *azel,
     
     for (i=0;i<NFREQ;i++) {
         L[i]=P[i]=0.0;
+        /* skip if low SNR or missing observations */
         if (lam[i]==0.0||obs->L[i]==0.0||obs->P[i]==0.0) continue;
         if (testsnr(0,0,azel[1],obs->SNR[i]*0.25,&opt->snrmask)) continue;
         
@@ -406,35 +410,35 @@ static void corr_meas(const obsd_t *obs, const nav_t *nav, const double *azel,
         P[i]=obs->P[i]       -dants[i]-dantr[i];
 
         if (opt->sateph==EPHOPT_SSRAPC||opt->sateph==EPHOPT_SSRCOM) {
-            /* use SSR code correction */
+            /* select SSR code correction based on code */
             if (sys==SYS_GPS)
                 ix=(i==0?CODE_L1W-1:CODE_L2W-1);
             else if (sys==SYS_GLO)
                 ix=(i==0?CODE_L1P-1:CODE_L2P-1);
             else if (sys==SYS_GAL)
                 ix=(i==0?CODE_L1X-1:CODE_L7X-1);
-            P[i]+=(nav->ssr[obs->sat-1].cbias[obs->code[i]-1]-nav->ssr[obs->sat-1].cbias[ix]); /* ssr correction */
+            /* apply SSR correction */
+            P[i]+=(nav->ssr[obs->sat-1].cbias[obs->code[i]-1]-nav->ssr[obs->sat-1].cbias[ix]);
         }
-        else {
-            /* P1-C1,P2-C2 dcb correction (C1->P1,C2->P2) */
+        else {   /* use P1-C1,P2-C2 code corrections from DCB file */
             if (obs->code[i]==CODE_L1C) {
-                P[i]+=nav->cbias[obs->sat-1][1];
+                P[i]+=nav->cbias[obs->sat-1][1];  /* C1->P1 */
             }
             else if (obs->code[i]==CODE_L2C||obs->code[i]==CODE_L2X||
                      obs->code[i]==CODE_L2L||obs->code[i]==CODE_L2S) {
-                P[i]+=nav->cbias[obs->sat-1][2];
+                P[i]+=nav->cbias[obs->sat-1][2];   /* C2->P2 */
     #if 0
                 L[i]-=0.25*lam[i]; /* 1/4 cycle-shift */
     #endif
             }
         }
     }
-    /* iono-free LC */
+    /* choose freqs for iono-free LC */
     *Lc=*Pc=0.0;
     i=(sys&(SYS_SBS))?2:1; /* always use L1/L5 for SBAS */
     if (NFREQ>2&&P[1]==0.0) i=2; /* otherwise, if no L2, try L5 */
     if (lam[0]==0.0||lam[i]==0.0) return;
-    
+    /* calc coefs for iono-free LC */
     C1= SQR(lam[i])/(SQR(lam[i])-SQR(lam[0]));
     C2=-SQR(lam[0])/(SQR(lam[i])-SQR(lam[0]));
     
@@ -445,6 +449,7 @@ static void corr_meas(const obsd_t *obs, const nav_t *nav, const double *azel,
         if (P[1]!=0.0) P[1]+=C1*nav->cbias[obs->sat-1][0];
     }
 #endif
+    /*  calc iono-free LC */
     if (L[0]!=0.0&&L[i]!=0.0) *Lc=C1*L[0]+C2*L[i];
     if (P[0]!=0.0&&P[i]!=0.0) *Pc=C1*P[0]+C2*P[i];
 }
@@ -651,6 +656,7 @@ static void udiono_ppp(rtk_t *rtk, const obsd_t *obs, int n, const nav_t *nav)
     if ((p=strstr(rtk->opt.pppopt,"-GAP_RESION="))) {
         sscanf(p,"-GAP_RESION=%d",&gap_resion);
     }
+    /* reset ionosphere delay estimate if outage too long */
     for (i=0;i<MAXSAT;i++) {
         j=II(i+1,&rtk->opt);
         if (rtk->x[j]!=0.0&&(int)rtk->ssat[i].outc[0]>gap_resion) {
@@ -660,20 +666,24 @@ static void udiono_ppp(rtk_t *rtk, const obsd_t *obs, int n, const nav_t *nav)
     for (i=0;i<n;i++) {
         j=II(obs[i].sat,&rtk->opt);
         if (rtk->x[j]==0.0) {
+            /* initialize ionosphere delay estimates if zero */
             k=1;
             if (NFREQ>2&&obs[i].P[1]==0.0) k=2; /* if no L2, try L5 */
             lam=nav->lam[obs[i].sat-1];
             if (obs[i].P[0]==0.0||obs[i].P[k]==0.0||lam[0]==0.0||lam[k]==0.0) {
                 continue;
             }
+            /* use pseudorange difference adjusted by freq for initial estimate */
             ion=(obs[i].P[0]-obs[i].P[k])/(1.0-SQR(lam[k]/lam[0]));
             ecef2pos(rtk->sol.rr,pos);
             azel=rtk->ssat[obs[i].sat-1].azel;
+            /* adjust delay estimate by path length */
             ion/=ionmapf(pos,azel);
             initx(rtk,ion,VAR_IONO,j);
         }
         else {
             sinel=sin(MAX(rtk->ssat[obs[i].sat-1].azel[1],5.0*D2R));
+            /* update variance of delay state */
             rtk->P[j+j*rtk->nx]+=SQR(rtk->opt.prn[1]/sinel)*fabs(rtk->tt);
         }
     }
@@ -1147,9 +1157,21 @@ static void update_stat(rtk_t *rtk, const obsd_t *obs, int n, int stat)
         rtk->sol.qr[3]=(float)rtk->P[1];
         rtk->sol.qr[4]=(float)rtk->P[2+rtk->nx];
         rtk->sol.qr[5]=(float)rtk->P[2];
+
+        if (rtk->opt.dynamics) { /* velocity and covariance */
+            for (i=3;i<6;i++) {
+                rtk->sol.rr[i]=rtk->x[i];
+                rtk->sol.qv[i-3]=(float)rtk->P[i+i*rtk->nx];
+            }
+            rtk->sol.qv[3]=(float)rtk->P[4+3*rtk->nx];
+            rtk->sol.qv[4]=(float)rtk->P[5+4*rtk->nx];
+            rtk->sol.qv[5]=(float)rtk->P[5+3*rtk->nx];
+        }
     }
-    rtk->sol.dtr[0]=rtk->x[IC(0,opt)];
-    rtk->sol.dtr[1]=rtk->x[IC(1,opt)]-rtk->x[IC(0,opt)];
+        rtk->sol.dtr[0]=rtk->x[IC(0,opt)]; /* GPS */
+        rtk->sol.dtr[1]=rtk->x[IC(1,opt)]-rtk->x[IC(0,opt)]; /* GLO-GPS */
+        rtk->sol.dtr[2]=rtk->x[IC(2,opt)]-rtk->x[IC(0,opt)]; /* GAL-GPS */
+        rtk->sol.dtr[3]=rtk->x[IC(3,opt)]-rtk->x[IC(0,opt)]; /* BDS-GPS */
     
     for (i=0;i<n&&i<MAXOBS;i++) for (j=0;j<opt->nf;j++) {
         rtk->ssat[obs[i].sat-1].snr_rover[j]=obs[i].SNR[j];
@@ -1250,8 +1272,8 @@ extern void pppos(rtk_t *rtk, const obsd_t *obs, int n, const nav_t *nav)
     }
     if (stat==SOLQ_PPP) {
         
-        /* ambiguity resolution in ppp */
-        if (ppp_ar(rtk,obs,n,exc,nav,azel,xp,Pp)&&
+        /* ambiguity resolution in ppp - not supported */
+        /*if (ppp_ar(rtk,obs,n,exc,nav,azel,xp,Pp)&&
             ppp_res(9,obs,n,rs,dts,var,svh,dr,exc,nav,xp,rtk,v,H,R,azel)) {
             
             matcpy(rtk->xa,xp,rtk->nx,1);
@@ -1260,19 +1282,19 @@ extern void pppos(rtk_t *rtk, const obsd_t *obs, int n, const nav_t *nav)
             for (i=0;i<3;i++) std[i]=sqrt(Pp[i+i*rtk->nx]);
             if (norm(std,3)<MAX_STD_FIX) stat=SOLQ_FIX;
         }
-        else {
+        else { */
             rtk->nfix=0;
-        }
+        /* } */
         /* update solution status */
         update_stat(rtk,obs,n,stat);
         
-        /* hold fixed ambiguities */
-        if (stat==SOLQ_FIX&&test_hold_amb(rtk)) {
+        /* hold fixed ambiguities - not supported */
+        /*if (stat==SOLQ_FIX&&test_hold_amb(rtk)) {
             matcpy(rtk->x,xp,rtk->nx,1);
             matcpy(rtk->P,Pp,rtk->nx,rtk->nx);
             trace(2,"%s hold ambiguity\n",str);
             rtk->nfix=0;
-        }
+        } */
     }
     free(rs); free(dts); free(var); free(azel);
     free(xp); free(Pp); free(v); free(H); free(R);

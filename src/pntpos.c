@@ -64,16 +64,19 @@ static double varerr(const prcopt_t *opt, double el, double snr_rover, int sys)
     }
 }
 /* get tgd parameter (m) -----------------------------------------------------*/
-static double gettgd(int sat, const nav_t *nav)
+static double gettgd(int sat, int frq, const nav_t *nav)
 {
     int i;
     for (i=0;i<nav->n;i++) {
         if (nav->eph[i].sat!=sat) continue;
+        if (satsys(sat,NULL)==SYS_GAL)
+            return CLIGHT*nav->eph[i].tgd[2-frq]; /* tgd[0]=E5a, tgd[1]=E5b */
+        else
         return CLIGHT*nav->eph[i].tgd[0];
     }
     return 0.0;
 }
-/* psendorange with code bias correction -------------------------------------*/
+/* iono-free or "pseudo iono-free" pseudorange with code bias correction -----*/
 static double prange(const obsd_t *obs, const nav_t *nav, const double *azel,
                      int iter, const prcopt_t *opt, double *var)
 {
@@ -83,9 +86,9 @@ static double prange(const obsd_t *obs, const nav_t *nav, const double *azel,
     
     *var=0.0;
     
-    if (!(sys=satsys(obs->sat,NULL))) return 0.0;
-    
-    /* L1-L2 for GPS/GLO/QZS/GAL E5b, L1-L5 for SBS, GAL E5a */
+    if (!(sys=satsys(obs->sat,NULL))||P1==0.0) return 0.0;
+    /* choose freq for iono-free calculation:
+       L1-L2 for GPS/GLO/QZS/GAL E5b, L1-L5 for SBS, GAL E5a */
     if (NFREQ>=3&&(sys&(SYS_SBS))) j=2;  /* L5 for SBAS */
     if (obs->P[1]==0) j=2; /* use E5a if no Galileo E5b obs */
     if (NFREQ<2||lam[i]==0.0||lam[j]==0.0) return 0.0;
@@ -108,26 +111,25 @@ static double prange(const obsd_t *obs, const nav_t *nav, const double *azel,
     P1_C1=nav->cbias[obs->sat-1][1];
     P2_C2=nav->cbias[obs->sat-1][2];
     
-    /* if no P1-P2 DCB, use TGD instead */
-    if (P1_P2==0.0&&(sys&(SYS_GPS|SYS_GAL|SYS_QZS))) {
-        P1_P2=(1.0-gamma)*gettgd(obs->sat,nav);
-    }
-    if (opt->ionoopt==IONOOPT_IFLC) { /* dual-frequency */
-        
+    if (opt->ionoopt==IONOOPT_IFLC&&P2!=0.0) {
+        /* apply P1-C1,P2-C2 code corrections from DCB file */
         if (P1==0.0||P2==0.0) return 0.0;
         if (obs->code[i]==CODE_L1C) P1+=P1_C1; /* C1->P1 */
         if (obs->code[j]==CODE_L2C) P2+=P2_C2; /* C2->P2 */
         
-        /* iono-free combination */
-        PC=(gamma*P1-P2)/(gamma-1.0);
+        /* calc iono-free combination */
+        PC=(gamma*P1-P2)/(gamma-1.0);  /* k1P1 - k2P2 */
     }
-    else { /* single-frequency */
+    else { /* generate pseudo iono-free LC from L1 and P1-P2 code correction*/
         
-        if (P1==0.0) return 0.0;
+        /* if no P1-P2 DCB, use TGD from nav file instead */
+        if (P1_P2==0.0&&(sys&(SYS_GPS|SYS_GAL|SYS_QZS)))
+            P1_P2=(1.0-gamma)*gettgd(obs->sat,j,nav);
         if (obs->code[i]==CODE_L1C) P1+=P1_C1; /* C1->P1 */
-        PC=P1-P1_P2/(1.0-gamma);
+        PC=P1-P1_P2/(1.0-gamma);  /* pseudo (k1P1 - k2P2) */
     }
-    if (opt->sateph==EPHOPT_SBAS) PC-=P1_C1; /* sbas clock based C1 */
+    /* remove P1 code correction if using sbas ephemeris */
+    if (opt->sateph==EPHOPT_SBAS) PC-=P1_C1;
     
     *var=SQR(ERR_CBIAS);
     
