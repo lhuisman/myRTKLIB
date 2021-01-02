@@ -1395,7 +1395,6 @@ extern void free_raw(raw_t *raw)
     
     /* free receiver dependent data */
     switch (raw->format) {
-        case STRFMT_CMR : free_cmr (raw); break;
         case STRFMT_RT17: free_rt17(raw); break;
     }
     raw->rcv_data=NULL;
@@ -1415,9 +1414,9 @@ extern int input_raw(raw_t *raw, int format, uint8_t data)
     
     switch (format) {
         case STRFMT_OEM4 : return input_oem4 (raw,data);
-        case STRFMT_CNAV : return input_cnav (raw,data);
+        /*case STRFMT_CNAV : return input_cnav (raw,data); */
         case STRFMT_UBX  : return input_ubx  (raw,data);
-        case STRFMT_SBP  : return input_sbp  (raw,data);
+        /*case STRFMT_SBP  : return input_sbp  (raw,data); */
         case STRFMT_CRES : return input_cres (raw,data);
         case STRFMT_STQ  : return input_stq  (raw,data);
         case STRFMT_JAVAD: return input_javad(raw,data);
@@ -1425,7 +1424,7 @@ extern int input_raw(raw_t *raw, int format, uint8_t data)
         case STRFMT_BINEX: return input_bnx  (raw,data);
         case STRFMT_RT17 : return input_rt17 (raw,data);
         case STRFMT_SEPT : return input_sbf  (raw,data);
-        case STRFMT_TERSUS: return input_tersus(raw,data);
+        /*case STRFMT_TERSUS: return input_tersus(raw,data);*/
     }
     return 0;
 }
@@ -1442,9 +1441,9 @@ extern int input_rawf(raw_t *raw, int format, FILE *fp)
     
     switch (format) {
         case STRFMT_OEM4 : return input_oem4f (raw,fp);
-        case STRFMT_CNAV : return input_cnavf (raw,fp);
+        /*case STRFMT_CNAV : return input_cnavf (raw,fp); */
         case STRFMT_UBX  : return input_ubxf  (raw,fp);
-        case STRFMT_SBP  : return input_sbpf  (raw,fp);
+        /*case STRFMT_SBP  : return input_sbpf  (raw,fp); */
         case STRFMT_CRES : return input_cresf (raw,fp);
         case STRFMT_STQ  : return input_stqf  (raw,fp);
         case STRFMT_JAVAD: return input_javadf(raw,fp);
@@ -1452,7 +1451,7 @@ extern int input_rawf(raw_t *raw, int format, FILE *fp)
         case STRFMT_BINEX: return input_bnxf  (raw,fp);
         case STRFMT_RT17 : return input_rt17f (raw,fp);
         case STRFMT_SEPT : return input_sbff  (raw,fp);
-        case STRFMT_TERSUS: return input_tersusf(raw,fp);
+        /*case STRFMT_TERSUS: return input_tersusf(raw,fp); */
     }
     return -2;
 }

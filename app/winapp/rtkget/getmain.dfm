@@ -1,15 +1,20 @@
 object MainForm: TMainForm
+  AlignWithMargins = True
   Left = 0
   Top = 0
+  Margins.Left = 2
+  Margins.Top = 2
+  Margins.Right = 2
+  Margins.Bottom = 2
   BorderIcons = [biSystemMenu, biMinimize]
   Caption = 'RTKGET'
-  ClientHeight = 335
-  ClientWidth = 464
+  ClientHeight = 349
+  ClientWidth = 516
   Color = clWhite
-  Constraints.MaxHeight = 373
-  Constraints.MaxWidth = 480
-  Constraints.MinHeight = 373
-  Constraints.MinWidth = 480
+  Constraints.MaxHeight = 800
+  Constraints.MaxWidth = 800
+  Constraints.MinHeight = 388
+  Constraints.MinWidth = 520
   DoubleBuffered = True
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -17,7 +22,6 @@ object MainForm: TMainForm
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
-  Scaled = False
   OnClose = FormClose
   OnCreate = FormCreate
   OnShow = FormShow
@@ -25,373 +29,550 @@ object MainForm: TMainForm
   TextHeight = 13
   object Panel2: TPanel
     AlignWithMargins = True
-    Left = 1
-    Top = 0
-    Width = 462
-    Height = 226
-    Margins.Left = 1
-    Margins.Top = 0
-    Margins.Right = 1
-    Margins.Bottom = 0
-    Align = alTop
-    BevelInner = bvRaised
-    BevelOuter = bvLowered
+    Left = 2
+    Top = 2
+    Width = 512
+    Height = 236
+    Margins.Left = 2
+    Margins.Top = 2
+    Margins.Right = 2
+    Margins.Bottom = 2
+    Align = alClient
+    BevelOuter = bvNone
     TabOrder = 0
-    ExplicitWidth = 463
-    object Label6: TLabel
-      Left = 12
-      Top = 264
-      Width = 71
-      Height = 13
-      Caption = 'Local Directory'
-      Color = clWhite
-      ParentColor = False
-    end
-    object LabelSta: TLabel
-      Left = 320
-      Top = 6
-      Width = 56
-      Height = 13
-      Caption = 'Stations (0)'
-    end
-    object Label8: TLabel
-      Left = 127
-      Top = 6
-      Width = 85
-      Height = 13
-      Caption = 'Time Span (GPST)'
-    end
-    object BtnKeyword: TSpeedButton
-      Left = 228
-      Top = 180
-      Width = 15
-      Height = 19
-      Caption = '?'
-      Flat = True
-      OnClick = BtnKeywordClick
-    end
-    object Panel1: TPanel
-      Left = 123
-      Top = 24
-      Width = 194
-      Height = 77
-      BevelInner = bvRaised
-      BevelOuter = bvLowered
-      TabOrder = 2
-      object Label1: TLabel
-        Left = 8
-        Top = 8
-        Width = 24
-        Height = 13
-        Caption = 'Start'
-      end
-      object Label3: TLabel
-        Left = 8
-        Top = 31
-        Width = 18
-        Height = 13
-        Caption = 'End'
-      end
-      object BtnTime1: TSpeedButton
-        Left = 176
-        Top = 5
-        Width = 15
-        Height = 21
-        Caption = '?'
-        Flat = True
-        OnClick = BtnTime1Click
-      end
-      object BtnTime2: TSpeedButton
-        Left = 176
-        Top = 28
-        Width = 15
-        Height = 21
-        Caption = '?'
-        Flat = True
-        OnClick = BtnTime2Click
-      end
-      object Label7: TLabel
-        Left = 8
-        Top = 54
-        Width = 20
-        Height = 13
-        Caption = 'Intv'
-      end
-      object Label2: TLabel
-        Left = 100
-        Top = 54
-        Width = 17
-        Height = 13
-        Caption = 'No.'
-      end
-      object TimeY1: TEdit
-        Left = 38
-        Top = 5
-        Width = 65
-        Height = 21
-        TabOrder = 0
-        Text = '2000/01/01'
-      end
-      object TimeY2: TEdit
-        Left = 38
-        Top = 28
-        Width = 65
-        Height = 21
-        TabOrder = 4
-        Text = '2000/01/01'
-      end
-      object TimeH2: TEdit
-        Left = 123
-        Top = 28
-        Width = 37
-        Height = 21
-        TabOrder = 6
-        Text = '00:00'
-      end
-      object TimeH1: TEdit
-        Left = 123
-        Top = 5
-        Width = 37
-        Height = 21
-        TabOrder = 2
-        Text = '00:00'
-      end
-      object TimeY1UD: TUpDown
-        Left = 103
-        Top = 4
-        Width = 17
-        Height = 23
-        TabOrder = 1
-        OnChangingEx = TimeY1UDChangingEx
-      end
-      object TimeY2UD: TUpDown
-        Left = 103
-        Top = 27
-        Width = 17
-        Height = 23
-        TabOrder = 5
-        OnChangingEx = TimeY2UDChangingEx
-      end
-      object TimeH2UD: TUpDown
-        Left = 160
-        Top = 27
-        Width = 17
-        Height = 23
-        TabOrder = 7
-        OnChangingEx = TimeH2UDChangingEx
-      end
-      object TimeH1UD: TUpDown
-        Left = 160
-        Top = 4
-        Width = 17
-        Height = 23
-        TabOrder = 3
-        OnChangingEx = TimeH1UDChangingEx
-      end
-      object TimeInt: TComboBox
-        Left = 37
-        Top = 51
-        Width = 50
-        Height = 21
-        TabOrder = 8
-        Text = '24H'
-        Items.Strings = (
-          '15min'
-          '30min'
-          '1H'
-          '3H'
-          '6H'
-          '12H'
-          '24H'
-          '7day')
-      end
-      object Number: TEdit
-        Left = 123
-        Top = 51
-        Width = 52
-        Height = 21
-        TabOrder = 9
-        Text = '0'
-      end
-    end
-    object BtnDir: TButton
-      Left = 433
-      Top = 200
-      Width = 27
-      Height = 23
-      Caption = '...'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -9
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 8
-      OnClick = BtnDirClick
-    end
-    object DataList: TListBox
+    OnResize = Panel2Resize
+    object Panel5: TPanel
+      AlignWithMargins = True
       Left = 1
-      Top = 24
-      Width = 120
-      Height = 198
-      ItemHeight = 13
-      MultiSelect = True
-      TabOrder = 1
-      OnClick = DataListClick
-    end
-    object DataType: TComboBox
-      Left = 1
-      Top = 2
-      Width = 60
-      Height = 21
-      AutoComplete = False
-      Style = csDropDownList
-      DropDownCount = 32
-      TabOrder = 0
-      OnChange = DataTypeChange
-    end
-    object BtnStas: TButton
-      Left = 433
       Top = 1
-      Width = 27
-      Height = 23
-      Hint = 'Load Station List'
-      Caption = '...'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -9
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      ParentShowHint = False
-      ShowHint = True
-      TabOrder = 10
-      OnClick = BtnStasClick
-    end
-    object LocalDir: TCheckBox
-      Left = 128
-      Top = 181
-      Width = 90
-      Height = 17
-      Caption = ' Local Directory'
-      TabOrder = 6
-      OnClick = LocalDirClick
-    end
-    object StaList: TListBox
-      Left = 319
-      Top = 24
       Width = 140
-      Height = 174
-      Hint = 'Station List'
-      ItemHeight = 13
-      MultiSelect = True
-      ParentShowHint = False
-      ShowHint = True
-      TabOrder = 11
-      OnClick = StaListClick
-    end
-    object Panel4: TPanel
-      Left = 122
-      Top = 102
-      Width = 194
-      Height = 43
+      Height = 234
+      Margins.Left = 1
+      Margins.Top = 1
+      Margins.Right = 1
+      Margins.Bottom = 1
+      Align = alLeft
       BevelOuter = bvNone
-      TabOrder = 3
-      object Label4: TLabel
-        Left = 8
-        Top = 2
-        Width = 46
-        Height = 13
-        Caption = 'FTP Login'
-      end
-      object FtpLogin: TEdit
-        Left = 1
-        Top = 17
-        Width = 86
-        Height = 21
-        TabOrder = 0
-        Text = 'anonymous'
-      end
-      object FtpPasswd: TEdit
-        Left = 88
-        Top = 17
-        Width = 106
-        Height = 21
-        PasswordChar = '*'
+      Constraints.MinWidth = 140
+      TabOrder = 0
+      object DataList: TListBox
+        Left = 0
+        Top = 23
+        Width = 140
+        Height = 211
+        Align = alClient
+        ItemHeight = 13
+        MultiSelect = True
         TabOrder = 1
-        Text = 'user@'
+        OnClick = DataListClick
       end
-      object HidePasswd: TCheckBox
-        Left = 88
+      object Panel6: TPanel
+        Left = 0
         Top = 0
-        Width = 97
-        Height = 17
-        Caption = 'Password'
-        TabOrder = 2
-        OnClick = HidePasswdClick
+        Width = 140
+        Height = 23
+        Margins.Left = 1
+        Margins.Top = 1
+        Margins.Right = 1
+        Margins.Bottom = 1
+        Align = alTop
+        BevelOuter = bvNone
+        TabOrder = 0
+        OnResize = Panel6Resize
+        object DataType: TComboBox
+          Left = 0
+          Top = 0
+          Width = 68
+          Height = 21
+          Align = alClient
+          AutoComplete = False
+          Style = csDropDownList
+          DropDownCount = 32
+          TabOrder = 0
+          OnChange = DataTypeChange
+        end
+        object SubType: TComboBox
+          Left = 70
+          Top = 0
+          Width = 70
+          Height = 21
+          Align = alRight
+          AutoComplete = False
+          Style = csDropDownList
+          DropDownCount = 32
+          Sorted = True
+          TabOrder = 1
+          OnChange = DataTypeChange
+        end
+        object Panel17: TPanel
+          Left = 68
+          Top = 0
+          Width = 2
+          Height = 23
+          Align = alRight
+          BevelOuter = bvNone
+          TabOrder = 2
+        end
       end
     end
-    object UnZip: TCheckBox
-      Left = 128
-      Top = 162
-      Width = 146
-      Height = 17
-      Caption = ' Unzip/Uncompact Files'
-      TabOrder = 5
-    end
-    object SkipExist: TCheckBox
-      Left = 128
-      Top = 143
-      Width = 112
-      Height = 17
-      Caption = ' Skip Existing Files'
-      TabOrder = 4
-    end
-    object SubType: TComboBox
-      Left = 62
-      Top = 2
-      Width = 59
-      Height = 21
-      AutoComplete = False
-      Style = csDropDownList
-      DropDownCount = 32
-      Sorted = True
-      TabOrder = 12
-      OnChange = DataTypeChange
-    end
-    object BtnAll: TButton
-      Left = 407
+    object Panel7: TPanel
+      AlignWithMargins = True
+      Left = 143
       Top = 1
-      Width = 27
-      Height = 23
-      Hint = 'Select/Clear All'
-      Caption = 'A'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -9
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      ParentShowHint = False
-      ShowHint = True
-      TabOrder = 9
-      OnClick = BtnAllClick
-    end
-    object Dir: TComboBox
-      Left = 123
-      Top = 201
-      Width = 309
-      Height = 21
-      DropDownCount = 20
-      TabOrder = 7
-      OnChange = DirChange
+      Width = 368
+      Height = 234
+      Margins.Left = 1
+      Margins.Top = 1
+      Margins.Right = 1
+      Margins.Bottom = 1
+      Align = alClient
+      BevelOuter = bvNone
+      TabOrder = 1
+      object Panel8: TPanel
+        AlignWithMargins = True
+        Left = 1
+        Top = 213
+        Width = 367
+        Height = 21
+        Margins.Left = 1
+        Margins.Top = 2
+        Margins.Right = 0
+        Margins.Bottom = 0
+        Align = alBottom
+        BevelOuter = bvNone
+        Color = clWhite
+        ParentBackground = False
+        TabOrder = 1
+        object Dir: TComboBox
+          AlignWithMargins = True
+          Left = 5
+          Top = 0
+          Width = 335
+          Height = 21
+          Margins.Left = 5
+          Margins.Top = 0
+          Margins.Right = 2
+          Margins.Bottom = 0
+          Align = alClient
+          DropDownCount = 20
+          TabOrder = 0
+          OnChange = DirChange
+          OnCloseUp = ComboCloseUp
+          ExplicitLeft = -1
+          ExplicitWidth = 340
+        end
+        object BtnDir: TButton
+          Left = 342
+          Top = 0
+          Width = 25
+          Height = 21
+          Align = alRight
+          Caption = '...'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -9
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 1
+          OnClick = BtnDirClick
+          ExplicitLeft = 340
+          ExplicitTop = 1
+        end
+      end
+      object Panel9: TPanel
+        Left = 228
+        Top = 0
+        Width = 140
+        Height = 211
+        Margins.Left = 1
+        Margins.Right = 1
+        Margins.Bottom = 1
+        Align = alRight
+        BevelOuter = bvNone
+        Constraints.MinWidth = 140
+        TabOrder = 2
+        object StaList: TListBox
+          AlignWithMargins = True
+          Left = 0
+          Top = 23
+          Width = 140
+          Height = 187
+          Hint = 'Station List'
+          Margins.Left = 0
+          Margins.Top = 0
+          Margins.Right = 0
+          Margins.Bottom = 1
+          Align = alClient
+          ItemHeight = 13
+          MultiSelect = True
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 0
+          OnClick = StaListClick
+          ExplicitLeft = -1
+          ExplicitHeight = 186
+        end
+        object Panel15: TPanel
+          Left = 0
+          Top = 0
+          Width = 140
+          Height = 23
+          Margins.Left = 0
+          Margins.Top = 0
+          Margins.Right = 1
+          Margins.Bottom = 1
+          Align = alTop
+          BevelOuter = bvNone
+          TabOrder = 1
+          ExplicitTop = 1
+          object LabelSta: TLabel
+            Left = 5
+            Top = 4
+            Width = 56
+            Height = 13
+            Caption = 'Stations (0)'
+          end
+          object BtnAll: TButton
+            Left = 88
+            Top = 0
+            Width = 25
+            Height = 23
+            Hint = 'Select/Clear All'
+            Align = alRight
+            Caption = 'A'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -9
+            Font.Name = 'Tahoma'
+            Font.Style = []
+            ParentFont = False
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 0
+            OnClick = BtnAllClick
+          end
+          object BtnStas: TButton
+            Left = 115
+            Top = 0
+            Width = 25
+            Height = 23
+            Hint = 'Load Station List'
+            Align = alRight
+            Caption = '...'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -9
+            Font.Name = 'Tahoma'
+            Font.Style = []
+            ParentFont = False
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 1
+            OnClick = BtnStasClick
+          end
+          object Panel18: TPanel
+            Left = 113
+            Top = 0
+            Width = 2
+            Height = 23
+            Align = alRight
+            BevelOuter = bvNone
+            TabOrder = 2
+          end
+        end
+      end
+      object Panel10: TPanel
+        Left = 0
+        Top = 0
+        Width = 228
+        Height = 211
+        Align = alClient
+        BevelOuter = bvNone
+        TabOrder = 0
+        object Panel11: TPanel
+          Left = 0
+          Top = 0
+          Width = 228
+          Height = 21
+          Align = alTop
+          BevelOuter = bvNone
+          TabOrder = 0
+          object Label8: TLabel
+            Left = 10
+            Top = 4
+            Width = 85
+            Height = 13
+            Caption = 'Time Span (GPST)'
+          end
+        end
+        object Panel12: TPanel
+          Left = 0
+          Top = 21
+          Width = 228
+          Height = 26
+          Align = alTop
+          BevelOuter = bvNone
+          TabOrder = 1
+          ExplicitTop = 24
+          object Label1: TLabel
+            Left = 10
+            Top = 5
+            Width = 24
+            Height = 13
+            Caption = 'Start'
+          end
+          object BtnTime1: TSpeedButton
+            Left = 198
+            Top = 1
+            Width = 15
+            Height = 21
+            Caption = '?'
+            Flat = True
+            OnClick = BtnTime1Click
+          end
+          object TimeY1: TEdit
+            Left = 46
+            Top = 2
+            Width = 65
+            Height = 21
+            TabOrder = 0
+            Text = '2000/01/01'
+            OnKeyDown = TimeY1KeyDown
+          end
+          object TimeY1UD: TUpDown
+            Left = 113
+            Top = 1
+            Width = 20
+            Height = 23
+            TabOrder = 1
+            OnChangingEx = TimeY1UDChangingEx
+          end
+          object TimeH1: TEdit
+            Left = 136
+            Top = 2
+            Width = 38
+            Height = 21
+            TabOrder = 2
+            Text = '00:00'
+            OnKeyDown = TimeH1KeyDown
+          end
+          object TimeH1UD: TUpDown
+            Left = 176
+            Top = 1
+            Width = 20
+            Height = 23
+            TabOrder = 3
+            OnChangingEx = TimeH1UDChangingEx
+          end
+        end
+        object Panel13: TPanel
+          Left = 0
+          Top = 47
+          Width = 228
+          Height = 26
+          Align = alTop
+          BevelOuter = bvNone
+          TabOrder = 2
+          ExplicitTop = 50
+          object Label3: TLabel
+            Left = 10
+            Top = 5
+            Width = 18
+            Height = 13
+            Caption = 'End'
+          end
+          object BtnTime2: TSpeedButton
+            Left = 198
+            Top = 2
+            Width = 15
+            Height = 21
+            Caption = '?'
+            Flat = True
+            OnClick = BtnTime2Click
+          end
+          object TimeY2: TEdit
+            Left = 46
+            Top = 2
+            Width = 65
+            Height = 21
+            TabOrder = 0
+            Text = '2000/01/01'
+            OnKeyDown = TimeY2KeyDown
+          end
+          object TimeY2UD: TUpDown
+            Left = 113
+            Top = 2
+            Width = 20
+            Height = 23
+            TabOrder = 1
+            OnChangingEx = TimeY2UDChangingEx
+          end
+          object TimeH2: TEdit
+            Left = 136
+            Top = 2
+            Width = 38
+            Height = 21
+            TabOrder = 2
+            Text = '00:00'
+            OnKeyDown = TimeH2KeyDown
+          end
+          object TimeH2UD: TUpDown
+            Left = 176
+            Top = 2
+            Width = 20
+            Height = 23
+            TabOrder = 3
+            OnChangingEx = TimeH2UDChangingEx
+          end
+        end
+        object Panel4: TPanel
+          Left = 0
+          Top = 103
+          Width = 228
+          Height = 48
+          Align = alBottom
+          BevelOuter = bvNone
+          TabOrder = 4
+          object Label4: TLabel
+            Left = 10
+            Top = 6
+            Width = 46
+            Height = 13
+            Caption = 'FTP Login'
+          end
+          object FtpLogin: TEdit
+            Left = 6
+            Top = 22
+            Width = 102
+            Height = 21
+            TabOrder = 0
+            Text = 'anonymous'
+          end
+          object FtpPasswd: TEdit
+            Left = 110
+            Top = 22
+            Width = 102
+            Height = 21
+            PasswordChar = '*'
+            TabOrder = 2
+            Text = 'user@'
+          end
+          object HidePasswd: TCheckBox
+            Left = 110
+            Top = 4
+            Width = 97
+            Height = 17
+            Caption = 'Password'
+            TabOrder = 1
+            OnClick = HidePasswdClick
+          end
+        end
+        object Panel14: TPanel
+          Left = 0
+          Top = 73
+          Width = 228
+          Height = 26
+          Align = alTop
+          BevelOuter = bvNone
+          TabOrder = 3
+          ExplicitTop = 76
+          object Label7: TLabel
+            Left = 10
+            Top = 5
+            Width = 38
+            Height = 13
+            Caption = 'Interval'
+          end
+          object Label2: TLabel
+            Left = 118
+            Top = 5
+            Width = 17
+            Height = 13
+            Caption = 'No.'
+          end
+          object TimeInt: TComboBox
+            Left = 54
+            Top = 2
+            Width = 57
+            Height = 21
+            DropDownCount = 9
+            ItemIndex = 0
+            TabOrder = 0
+            Text = '-'
+            OnChange = TimeIntChange
+            OnCloseUp = ComboCloseUp
+            Items.Strings = (
+              '-'
+              '15min'
+              '30min'
+              '1H'
+              '3H'
+              '6H'
+              '12H'
+              '24H'
+              '7day')
+          end
+          object Number: TEdit
+            Left = 144
+            Top = 3
+            Width = 52
+            Height = 21
+            TabOrder = 1
+            Text = '0'
+          end
+        end
+        object Panel1: TPanel
+          Left = 0
+          Top = 151
+          Width = 228
+          Height = 60
+          Align = alBottom
+          BevelOuter = bvNone
+          TabOrder = 5
+          object BtnKeyword: TSpeedButton
+            Left = 119
+            Top = 41
+            Width = 15
+            Height = 19
+            Caption = '?'
+            Flat = True
+            OnClick = BtnKeywordClick
+          end
+          object SkipExist: TCheckBox
+            Left = 8
+            Top = 2
+            Width = 112
+            Height = 17
+            Caption = ' Skip Existing Files'
+            TabOrder = 0
+          end
+          object UnZip: TCheckBox
+            Left = 8
+            Top = 22
+            Width = 146
+            Height = 17
+            Caption = ' Unzip/Uncompact Files'
+            TabOrder = 1
+          end
+          object LocalDir: TCheckBox
+            Left = 8
+            Top = 42
+            Width = 110
+            Height = 17
+            Caption = ' Local Directory'
+            TabOrder = 2
+            OnClick = LocalDirClick
+          end
+        end
+      end
     end
   end
   object Panel3: TPanel
     AlignWithMargins = True
     Left = 0
-    Top = 302
-    Width = 464
+    Top = 316
+    Width = 516
     Height = 33
     Margins.Left = 0
     Margins.Top = 1
@@ -399,10 +580,8 @@ object MainForm: TMainForm
     Margins.Bottom = 0
     Align = alBottom
     BevelOuter = bvNone
-    TabOrder = 1
-    ExplicitTop = 301
-    ExplicitWidth = 465
-    ExplicitHeight = 32
+    TabOrder = 4
+    OnResize = Panel3Resize
     object BtnFile: TButton
       Left = 1
       Top = 1
@@ -461,14 +640,14 @@ object MainForm: TMainForm
   object Msg1: TPanel
     AlignWithMargins = True
     Left = 1
-    Top = 226
-    Width = 462
+    Top = 240
+    Width = 514
     Height = 25
     Margins.Left = 1
     Margins.Top = 0
     Margins.Right = 1
     Margins.Bottom = 0
-    Align = alTop
+    Align = alBottom
     BevelInner = bvRaised
     BevelOuter = bvLowered
     DoubleBuffered = True
@@ -481,12 +660,11 @@ object MainForm: TMainForm
     ParentFont = False
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 2
-    ExplicitWidth = 463
+    TabOrder = 1
     object MsgLabel1: TLabel
       Left = 2
       Top = 2
-      Width = 458
+      Width = 510
       Height = 21
       Margins.Left = 1
       Margins.Top = 1
@@ -502,14 +680,14 @@ object MainForm: TMainForm
   object Msg3: TPanel
     AlignWithMargins = True
     Left = 1
-    Top = 276
-    Width = 462
+    Top = 290
+    Width = 514
     Height = 25
     Margins.Left = 1
     Margins.Top = 0
     Margins.Right = 1
     Margins.Bottom = 0
-    Align = alTop
+    Align = alBottom
     BevelInner = bvRaised
     BevelOuter = bvLowered
     Color = clWhite
@@ -523,23 +701,21 @@ object MainForm: TMainForm
     ParentDoubleBuffered = False
     ParentFont = False
     TabOrder = 3
-    ExplicitWidth = 463
     object MsgLabel3: TLabel
       Left = 25
       Top = 2
-      Width = 412
+      Width = 464
       Height = 21
       Align = alClient
       Alignment = taCenter
       Color = clWhite
       ParentColor = False
       Layout = tlCenter
-      ExplicitLeft = 26
       ExplicitWidth = 3
       ExplicitHeight = 13
     end
     object BtnTray: TSpeedButton
-      Left = 437
+      Left = 489
       Top = 2
       Width = 23
       Height = 21
@@ -566,7 +742,7 @@ object MainForm: TMainForm
         FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
         FF00}
       OnClick = BtnTrayClick
-      ExplicitLeft = 436
+      ExplicitLeft = 478
     end
     object BtnHelp: TSpeedButton
       Left = 2
@@ -577,19 +753,21 @@ object MainForm: TMainForm
       Caption = '?'
       Flat = True
       OnClick = BtnHelpClick
+      ExplicitLeft = 13
+      ExplicitTop = 1
     end
   end
   object Msg2: TPanel
     AlignWithMargins = True
     Left = 1
-    Top = 251
-    Width = 462
+    Top = 265
+    Width = 514
     Height = 25
     Margins.Left = 1
     Margins.Top = 0
     Margins.Right = 1
     Margins.Bottom = 0
-    Align = alTop
+    Align = alBottom
     BevelInner = bvRaised
     BevelOuter = bvLowered
     DoubleBuffered = True
@@ -602,148 +780,11 @@ object MainForm: TMainForm
     ParentFont = False
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 4
-    ExplicitWidth = 463
-    object Image1: TImage
-      Left = 444
-      Top = 6
-      Width = 12
-      Height = 12
-      Picture.Data = {
-        07544269746D6170DE000000424DDE0000000000000076000000280000000D00
-        00000D0000000100040000000000680000000000000000000000100000000000
-        0000000000000000800000800000008080008000000080008000808000008080
-        8000C0C0C0000000FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFF
-        FF00FFFFFFFFFFFFF000FFFFFFFFFFFFF000FF0F70000FFFF000FF000FFFF0FF
-        F000FF0007FFFF7FF000FF00FFFFFFFFF000FF0FFFFFFF0FF000FFFFFFFFF00F
-        F000FF7FFFF7000FF000FFF0FFFF000FF000FFFF00007F0FF000FFFFFFFFFFFF
-        F000FFFFFFFFFFFFF000}
-      Transparent = True
-      Visible = False
-    end
-    object Image2: TImage
-      Left = 444
-      Top = 6
-      Width = 12
-      Height = 12
-      Picture.Data = {
-        07544269746D6170DE000000424DDE0000000000000076000000280000000D00
-        00000D0000000100040000000000680000000000000000000000100000000000
-        0000000000000000800000800000008080008000000080008000808000008080
-        8000C0C0C0000000FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFF
-        FF00FFFFFFFFFFFFF000FFFFFFFFFFFFF000FFFF00000FFFF000F7F0FFFFF8FF
-        F000F00078FFFF8FF000F0007FFFFF0FF000F707FFFFF707F000FF0FFFFF7000
-        F000FF8FFFF87000F000FFF8FFFFF0F7F000FFFF00000FFFF000FFFFFFFFFFFF
-        F000FFFFFFFFFFFFF000}
-      Transparent = True
-      Visible = False
-    end
-    object Image3: TImage
-      Left = 444
-      Top = 6
-      Width = 12
-      Height = 12
-      Picture.Data = {
-        07544269746D6170DE000000424DDE0000000000000076000000280000000D00
-        00000D0000000100040000000000680000000000000000000000100000000000
-        0000000000000000800000800000008080008000000080008000808000008080
-        8000C0C0C0000000FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFF
-        FF00FFFFFFFFFFFFF000FFFFFFFFFFFFF000FFFF00078FFFF000FFF0FFFFF0FF
-        F000FF0FFFFFF00FF0007F0F7FFFF007F000F0008FFF7000F000F700FFFF8F0F
-        7000FF00FFFFFF0FF000FFF0FFFFF0FFF000FFFF87000FFFF000FFFFFFFFFFFF
-        F000FFFFFFFFFFFFF000}
-      Transparent = True
-      Visible = False
-    end
-    object Image4: TImage
-      Left = 444
-      Top = 6
-      Width = 12
-      Height = 12
-      Picture.Data = {
-        07544269746D6170DE000000424DDE0000000000000076000000280000000D00
-        00000D0000000100040000000000680000000000000000000000100000000000
-        0000000000000000800000800000008080008000000080008000808000008080
-        8000C0C0C0000000FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFF
-        FF00FFFFFFFFFFFFF000FFFFFFFFFFFFF000FFFF00F70FFFF000FFF0FFFF007F
-        F000FF0FFFFFF007F000FF0FFFFF8000F000F80F7FFF7F08F000F0008FFFFF0F
-        F000F700FFFFFF0FF000FF700FFFF0FFF000FFFF07F00FFFF000FFFFFFFFFFFF
-        F000FFFFFFFFFFFFF000}
-      Transparent = True
-      Visible = False
-    end
-    object Image5: TImage
-      Left = 444
-      Top = 6
-      Width = 12
-      Height = 12
-      Picture.Data = {
-        07544269746D6170DE000000424DDE0000000000000076000000280000000D00
-        00000D0000000100040000000000680000000000000000000000100000000000
-        0000000000000000800000800000008080008000000080008000808000008080
-        8000C0C0C0000000FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFF
-        FF00FFFFFFFFFFFFF000FFFFFFFFFFFFF000FFFF7F00000FF000FFF0FFF000FF
-        F000FF0FFFFF007FF000FF0FFFFF7F0FF000FF0FFFFFFF0FF000FF0F7FFFFF0F
-        F000FF700FFFFF0FF000FFF000FFF0FFF000FF00000F7FFFF000FFFFFFFFFFFF
-        F000FFFFFFFFFFFFF000}
-      Transparent = True
-      Visible = False
-    end
-    object Image6: TImage
-      Left = 444
-      Top = 6
-      Width = 12
-      Height = 12
-      Picture.Data = {
-        07544269746D6170DE000000424DDE0000000000000076000000280000000D00
-        00000D0000000100040000000000680000000000000000000000100000000000
-        0000000000000000800000800000008080008000000080008000808000008080
-        8000C0C0C0000000FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFF
-        FF00FFFFFFFFFFFFF000FFFFFF7007FFF000FFFF80000FFFF000FFF8FF7000FF
-        F000FF0FFFF77F0FF000FF0FFFFF8F0FF000FF0FFFFFFF0FF000FF0F8FFFFF0F
-        F000FF0F77FFFF0FF000FFF0007FF8FFF000FFFF00008FFFF000FFF7007FFFFF
-        F000FFFFFFFFFFFFF000}
-      Transparent = True
-      Visible = False
-    end
-    object Image7: TImage
-      Left = 444
-      Top = 6
-      Width = 12
-      Height = 12
-      Picture.Data = {
-        07544269746D6170DE000000424DDE0000000000000076000000280000000D00
-        00000D0000000100040000000000680000000000000000000000100000000000
-        0000000000000000800000800000008080008000000080008000808000008080
-        8000C0C0C0000000FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFF
-        FF00FFFFFFF7FFFFF000FFFFF70FFFFFF000FFFF00000FFFF000FFF0000FF0FF
-        F000FF8FFF78FF0FF000FF7FFFFFFF0FF000FF0FFFFFFF0FF000FF0FFFFFFF7F
-        F000FF0FF78FFF8FF000FFF0FF0000FFF000FFFF00000FFFF000FFFFFF07FFFF
-        F000FFFFF7FFFFFFF000}
-      Transparent = True
-      Visible = False
-    end
-    object Image8: TImage
-      Left = 444
-      Top = 6
-      Width = 12
-      Height = 12
-      Picture.Data = {
-        07544269746D6170DE000000424DDE0000000000000076000000280000000D00
-        00000D0000000100040000000000680000000000000000000000100000000000
-        0000000000000000800000800000008080008000000080008000808000008080
-        8000C0C0C0000000FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFF
-        FF00FFFFFFFFFFFFF000FFFF708FFFFFF000FFF700000FFFF000FFF000FFF0FF
-        F000FF00F87FFF0FF000FF7FFFFFFF0FF000FFFFFFFFFFFFF000FF0FFFFFFF7F
-        F000FF0FFF78F00FF000FFF0FFF000FFF000FFFF000007FFF000FFFFFF807FFF
-        F000FFFFFFFFFFFFF000}
-      Transparent = True
-      Visible = False
-    end
+    TabOrder = 2
     object MsgLabel2: TLabel
       Left = 2
       Top = 2
-      Width = 458
+      Width = 487
       Height = 21
       Align = alClient
       Alignment = taCenter
@@ -751,23 +792,168 @@ object MainForm: TMainForm
       ExplicitWidth = 3
       ExplicitHeight = 13
     end
+    object Panel16: TPanel
+      Left = 489
+      Top = 2
+      Width = 23
+      Height = 21
+      Align = alRight
+      BevelOuter = bvNone
+      TabOrder = 0
+      object Image1: TImage
+        Left = 6
+        Top = 5
+        Width = 12
+        Height = 12
+        Picture.Data = {
+          07544269746D6170DE000000424DDE0000000000000076000000280000000D00
+          00000D0000000100040000000000680000000000000000000000100000000000
+          0000000000000000800000800000008080008000000080008000808000008080
+          8000C0C0C0000000FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFF
+          FF00FFFFFFFFFFFFF000FFFFFFFFFFFFF000FF0F70000FFFF000FF000FFFF0FF
+          F000FF0007FFFF7FF000FF00FFFFFFFFF000FF0FFFFFFF0FF000FFFFFFFFF00F
+          F000FF7FFFF7000FF000FFF0FFFF000FF000FFFF00007F0FF000FFFFFFFFFFFF
+          F000FFFFFFFFFFFFF000}
+        Transparent = True
+        Visible = False
+      end
+      object Image2: TImage
+        Left = 6
+        Top = 5
+        Width = 12
+        Height = 12
+        Picture.Data = {
+          07544269746D6170DE000000424DDE0000000000000076000000280000000D00
+          00000D0000000100040000000000680000000000000000000000100000000000
+          0000000000000000800000800000008080008000000080008000808000008080
+          8000C0C0C0000000FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFF
+          FF00FFFFFFFFFFFFF000FFFFFFFFFFFFF000FFFF00000FFFF000F7F0FFFFF8FF
+          F000F00078FFFF8FF000F0007FFFFF0FF000F707FFFFF707F000FF0FFFFF7000
+          F000FF8FFFF87000F000FFF8FFFFF0F7F000FFFF00000FFFF000FFFFFFFFFFFF
+          F000FFFFFFFFFFFFF000}
+        Transparent = True
+        Visible = False
+      end
+      object Image3: TImage
+        Left = 6
+        Top = 5
+        Width = 12
+        Height = 12
+        Picture.Data = {
+          07544269746D6170DE000000424DDE0000000000000076000000280000000D00
+          00000D0000000100040000000000680000000000000000000000100000000000
+          0000000000000000800000800000008080008000000080008000808000008080
+          8000C0C0C0000000FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFF
+          FF00FFFFFFFFFFFFF000FFFFFFFFFFFFF000FFFF00078FFFF000FFF0FFFFF0FF
+          F000FF0FFFFFF00FF0007F0F7FFFF007F000F0008FFF7000F000F700FFFF8F0F
+          7000FF00FFFFFF0FF000FFF0FFFFF0FFF000FFFF87000FFFF000FFFFFFFFFFFF
+          F000FFFFFFFFFFFFF000}
+        Transparent = True
+        Visible = False
+      end
+      object Image4: TImage
+        Left = 6
+        Top = 5
+        Width = 12
+        Height = 12
+        Picture.Data = {
+          07544269746D6170DE000000424DDE0000000000000076000000280000000D00
+          00000D0000000100040000000000680000000000000000000000100000000000
+          0000000000000000800000800000008080008000000080008000808000008080
+          8000C0C0C0000000FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFF
+          FF00FFFFFFFFFFFFF000FFFFFFFFFFFFF000FFFF00F70FFFF000FFF0FFFF007F
+          F000FF0FFFFFF007F000FF0FFFFF8000F000F80F7FFF7F08F000F0008FFFFF0F
+          F000F700FFFFFF0FF000FF700FFFF0FFF000FFFF07F00FFFF000FFFFFFFFFFFF
+          F000FFFFFFFFFFFFF000}
+        Transparent = True
+        Visible = False
+      end
+      object Image5: TImage
+        Left = 6
+        Top = 5
+        Width = 12
+        Height = 12
+        Picture.Data = {
+          07544269746D6170DE000000424DDE0000000000000076000000280000000D00
+          00000D0000000100040000000000680000000000000000000000100000000000
+          0000000000000000800000800000008080008000000080008000808000008080
+          8000C0C0C0000000FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFF
+          FF00FFFFFFFFFFFFF000FFFFFFFFFFFFF000FFFF7F00000FF000FFF0FFF000FF
+          F000FF0FFFFF007FF000FF0FFFFF7F0FF000FF0FFFFFFF0FF000FF0F7FFFFF0F
+          F000FF700FFFFF0FF000FFF000FFF0FFF000FF00000F7FFFF000FFFFFFFFFFFF
+          F000FFFFFFFFFFFFF000}
+        Transparent = True
+        Visible = False
+      end
+      object Image6: TImage
+        Left = 6
+        Top = 5
+        Width = 12
+        Height = 12
+        Picture.Data = {
+          07544269746D6170DE000000424DDE0000000000000076000000280000000D00
+          00000D0000000100040000000000680000000000000000000000100000000000
+          0000000000000000800000800000008080008000000080008000808000008080
+          8000C0C0C0000000FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFF
+          FF00FFFFFFFFFFFFF000FFFFFF7007FFF000FFFF80000FFFF000FFF8FF7000FF
+          F000FF0FFFF77F0FF000FF0FFFFF8F0FF000FF0FFFFFFF0FF000FF0F8FFFFF0F
+          F000FF0F77FFFF0FF000FFF0007FF8FFF000FFFF00008FFFF000FFF7007FFFFF
+          F000FFFFFFFFFFFFF000}
+        Transparent = True
+        Visible = False
+      end
+      object Image7: TImage
+        Left = 6
+        Top = 5
+        Width = 12
+        Height = 12
+        Picture.Data = {
+          07544269746D6170DE000000424DDE0000000000000076000000280000000D00
+          00000D0000000100040000000000680000000000000000000000100000000000
+          0000000000000000800000800000008080008000000080008000808000008080
+          8000C0C0C0000000FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFF
+          FF00FFFFFFF7FFFFF000FFFFF70FFFFFF000FFFF00000FFFF000FFF0000FF0FF
+          F000FF8FFF78FF0FF000FF7FFFFFFF0FF000FF0FFFFFFF0FF000FF0FFFFFFF7F
+          F000FF0FF78FFF8FF000FFF0FF0000FFF000FFFF00000FFFF000FFFFFF07FFFF
+          F000FFFFF7FFFFFFF000}
+        Transparent = True
+        Visible = False
+      end
+      object Image8: TImage
+        Left = 6
+        Top = 5
+        Width = 12
+        Height = 12
+        Picture.Data = {
+          07544269746D6170DE000000424DDE0000000000000076000000280000000D00
+          00000D0000000100040000000000680000000000000000000000100000000000
+          0000000000000000800000800000008080008000000080008000808000008080
+          8000C0C0C0000000FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFF
+          FF00FFFFFFFFFFFFF000FFFF708FFFFFF000FFF700000FFFF000FFF000FFF0FF
+          F000FF00F87FFF0FF000FF7FFFFFFF0FF000FFFFFFFFFFFFF000FF0FFFFFFF7F
+          F000FF0FFF78F00FF000FFF0FFF000FFF000FFFF000007FFF000FFFFFF807FFF
+          F000FFFFFFFFFFFFF000}
+        Transparent = True
+        Visible = False
+      end
+    end
   end
   object OpenDialog: TOpenDialog
     Filter = 'Text File (*.txt)|*.txt|All Files (*.*)|*.*'
     Title = 'Satation List File'
-    Left = 25
-    Top = 41
+    Left = 34
+    Top = 118
   end
   object SaveDialog: TSaveDialog
-    Left = 66
-    Top = 41
+    Left = 77
+    Top = 116
   end
   object Timer: TTimer
     Enabled = False
     Interval = 150
     OnTimer = TimerTimer
-    Left = 24
-    Top = 88
+    Left = 34
+    Top = 164
   end
   object TrayIcon: TTrayIcon
     Hint = 'RTKGET'
@@ -875,7 +1061,7 @@ object MainForm: TMainForm
       0000000000000000000000000000000000000000000000000000000000000000
       000000000000000000000000000000000000000000000000000000000000}
     OnDblClick = TrayIconDblClick
-    Left = 67
-    Top = 89
+    Left = 78
+    Top = 165
   end
 end

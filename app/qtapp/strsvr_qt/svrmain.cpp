@@ -39,7 +39,6 @@
 #include "refdlg.h"
 #include "console.h"
 #include "svrmain.h"
-#include "locale.h"
 
 //---------------------------------------------------------------------------
 
@@ -597,10 +596,8 @@ void MainForm::SvrStart(void)
         matcpy(conv[i]->out.sta.del,AntOff,3,1);
     }
     // stream server start
-    char *cmds[] = {cmd};
-    char *cmds_periodic[] = {};
-    if (!strsvrstart(&strsvr,opt,strs,paths,conv,cmds,cmds_periodic,AntPos)) return;
-
+    if (!strsvrstart(&strsvr,opt,strs,paths,conv,cmd,AntPos)) return;
+    
     StartTime=utc2gpst(timeget());
     Panel1    ->setEnabled(false);
     BtnStart  ->setVisible(false);
@@ -623,7 +620,7 @@ void MainForm::SvrStop(void)
     else if (Input->currentIndex()==1||Input->currentIndex()==3) {
         if (CmdEnaTcp[1]) strncpy(cmd,qPrintable(CmdsTcp[1]),1024);
     }
-    strsvrstopold(&strsvr,cmd);
+    strsvrstop(&strsvr,cmd);
     
     EndTime=utc2gpst(timeget());
     Panel1    ->setEnabled(true);

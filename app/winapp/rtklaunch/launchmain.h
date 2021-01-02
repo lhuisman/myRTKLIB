@@ -36,12 +36,9 @@ __published:
 	TMenuItem *MenuExpand;
 	TMenuItem *N2;
 	TPanel *Panel1;
-	TPanel *BtnOption;
 	TSpeedButton *BtnRtklib;
 	TPanel *Panel2;
 	TPanel *BtnExit;
-	TSpeedButton *BtnVideo;
-	TMenuItem *MenuVideo;
 	
 	void __fastcall BtnPlotClick(TObject *Sender);
 	void __fastcall BtnConvClick(TObject *Sender);
@@ -63,16 +60,13 @@ __published:
 	void __fastcall MenuExitClick(TObject *Sender);
 	void __fastcall MenuExpandClick(TObject *Sender);
 	void __fastcall Panel1Resize(TObject *Sender);
-	void __fastcall BtnOptionClick(TObject *Sender);
 	void __fastcall BtnRtklibMouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift,
           int X, int Y);
 	void __fastcall BtnExitClick(TObject *Sender);
-	void __fastcall BtnVideoClick(TObject *Sender);
-	void __fastcall MenuVideoClick(TObject *Sender);
 
 private:
 	AnsiString IniFile;
-	int Tray;
+	int Tray,Trace;
 	
 	void __fastcall UpdatePanel(void);
 	int __fastcall ExecCmd(AnsiString cmd);

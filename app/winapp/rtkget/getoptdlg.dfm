@@ -3,7 +3,7 @@ object DownOptDialog: TDownOptDialog
   Top = 0
   BorderStyle = bsDialog
   Caption = 'Options'
-  ClientHeight = 257
+  ClientHeight = 259
   ClientWidth = 356
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
@@ -17,7 +17,7 @@ object DownOptDialog: TDownOptDialog
   PixelsPerInch = 96
   TextHeight = 13
   object BtnOk: TButton
-    Left = 193
+    Left = 192
     Top = 227
     Width = 79
     Height = 29

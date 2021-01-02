@@ -46,7 +46,7 @@ static int abortf=0;          // abort flag
 
 // show message in message area ---------------------------------------------
 extern "C" {
-extern int showmsg(char *format,...)
+extern int showmsg(const char *format,...)
 {
     va_list arg;
     AnsiString str;
@@ -86,6 +86,8 @@ __fastcall TMainForm::TMainForm(TComponent* Owner)
     Locals =new TStringList;
     
     TimerCnt=0;
+
+    LogViewer=NULL;
 }
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::FormCreate(TObject *Sender)
@@ -143,6 +145,36 @@ void __fastcall TMainForm::FormClose(TObject *Sender, TCloseAction &Action)
     SaveOpt();
 }
 //---------------------------------------------------------------------------
+void __fastcall TMainForm::Panel3Resize(TObject *Sender)
+{
+    TButton *btn[]={
+        BtnFile,BtnLog,BtnOpts,BtnTest,BtnDownload,BtnExit
+    };
+    int w=(((TPanel *)Sender)->Width-4)/6;
+
+    for (int i=0;i<6;i++) {
+        btn[i]->Width=w-2;
+        btn[i]->Left=w*i+2;
+    }
+}
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::Panel2Resize(TObject *Sender)
+{
+    int w=((TPanel *)Sender)->Width;
+
+    Panel5->Width=w*140/502;
+    Panel9->Width=w*140/502;
+    ::PostMessage(Dir    ->Handle,CB_SETEDITSEL,-1,0);
+    ::PostMessage(TimeInt->Handle,CB_SETEDITSEL,-1,0);
+}
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::Panel6Resize(TObject *Sender)
+{
+    int w=((TPanel *)Sender)->Width;
+    
+    SubType->Width=(w-2)/2;
+}
+//---------------------------------------------------------------------------
 void __fastcall TMainForm::BtnFileClick(TObject *Sender)
 {
     AnsiString cmd="explorer",opt="",str;
@@ -158,12 +190,13 @@ void __fastcall TMainForm::BtnFileClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::BtnLogClick(TObject *Sender)
 {
-    TTextViewer *viewer;
     if (LogFile=="") return;
-    viewer=new TTextViewer(Application);
-    viewer->Caption=LogFile;
-    viewer->Show();
-    viewer->Read(LogFile);
+    if (!LogViewer) {
+        LogViewer=new TTextViewer(Application);
+    }
+    LogViewer->Caption=LogFile;
+    LogViewer->Show();
+    LogViewer->Read(LogFile);
 }
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::BtnTestClick(TObject *Sender)
@@ -175,7 +208,8 @@ void __fastcall TMainForm::BtnTestClick(TObject *Sender)
     url_t urls[MAX_URL_SEL];
     gtime_t ts,te;
     double ti;
-    char *stas[MAX_STA],*dir="";
+    char *stas[MAX_STA];
+    const char *dir="";
     int i,nsta,nurl;
     
     if (BtnTest->Caption=="&Abort") {
@@ -251,7 +285,8 @@ void __fastcall TMainForm::BtnDownloadClick(TObject *Sender)
     url_t urls[MAX_URL_SEL];
     gtime_t ts,te;
     double ti;
-    char *stas[MAX_STA],*dir="",msg[1024],path[1024];
+    char *stas[MAX_STA],msg[1024],path[1024];
+    const char *dir="";
     int i,nsta,nurl,seqnos=0,seqnoe=0,opts=0;
     
     if (BtnDownload->Caption=="&Abort") {
@@ -316,6 +351,10 @@ void __fastcall TMainForm::BtnDownloadClick(TObject *Sender)
     for (i=0;i<MAX_STA;i++) delete [] stas[i];
     
     if (Dir->Enabled) AddHist(Dir);
+    
+    if (LogFile!=""&&LogViewer) {
+        LogViewer->Read(LogFile);
+    }
 }
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::BtnExitClick(TObject *Sender)
@@ -332,16 +371,10 @@ void __fastcall TMainForm::BtnStasClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::BtnDirClick(TObject *Sender)
 {
-#ifdef TCPP
-    AnsiString dir=Dir->Text;
-    if (!SelectDirectory("Output Directory","",dir)) return;
-    Dir->Text=dir;
-#else
     UnicodeString dir=Dir->Text;
     TSelectDirExtOpts opt=TSelectDirExtOpts()<<sdNewUI<<sdNewFolder;
     if (!SelectDirectory(L"Output Directory",L"",dir,opt)) return;
     Dir->Text=dir;
-#endif
 }
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::DirChange(TObject *Sender)
@@ -458,7 +491,7 @@ void __fastcall TMainForm::StaListClick(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::TimeY1UDChangingEx(TObject *Sender, bool &AllowChange,
-      short NewValue, TUpDownDirection Direction)
+      int NewValue, TUpDownDirection Direction)
 {
     AnsiString s,TimeY1_Text=TimeY1->Text;
     double ep[]={2000,1,1,0,0,0};
@@ -477,7 +510,7 @@ void __fastcall TMainForm::TimeY1UDChangingEx(TObject *Sender, bool &AllowChange
 }
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::TimeH1UDChangingEx(TObject *Sender, bool &AllowChange,
-      short NewValue, TUpDownDirection Direction)
+      int NewValue, TUpDownDirection Direction)
 {
     AnsiString s,TimeH1_Text=TimeH1->Text;
     int hms[3]={0},sec,p=TimeH1->SelStart,ud=Direction==updUp?1:-1;
@@ -491,7 +524,7 @@ void __fastcall TMainForm::TimeH1UDChangingEx(TObject *Sender, bool &AllowChange
 }
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::TimeY2UDChangingEx(TObject *Sender, bool &AllowChange,
-      short NewValue, TUpDownDirection Direction)
+      int NewValue, TUpDownDirection Direction)
 {
     AnsiString s,TimeY2_Text=TimeY2->Text;
     double ep[]={2000,1,1,0,0,0};
@@ -510,7 +543,7 @@ void __fastcall TMainForm::TimeY2UDChangingEx(TObject *Sender, bool &AllowChange
 }
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::TimeH2UDChangingEx(TObject *Sender, bool &AllowChange,
-      short NewValue, TUpDownDirection Direction)
+      int NewValue, TUpDownDirection Direction)
 {
     AnsiString s,TimeH2_Text=TimeH2->Text;
     int hms[3]={0},sec,p=TimeH2->SelStart,ud=Direction==updUp?1:-1;
@@ -542,9 +575,9 @@ void __fastcall TMainForm::LoadOpt(void)
     AnsiString stas,s;
     char buff[8192],*p;
     
-    TimeY1->Text       =ini->ReadString ("opt","startd","2011/01/01");
+    TimeY1->Text       =ini->ReadString ("opt","startd","2020/01/01");
     TimeH1->Text       =ini->ReadString ("opt","starth",     "00:00");
-    TimeY2->Text       =ini->ReadString ("opt","endd",  "2011/01/01");
+    TimeY2->Text       =ini->ReadString ("opt","endd",  "2020/01/01");
     TimeH2->Text       =ini->ReadString ("opt","endh",       "00:00");
     TimeInt->Text      =ini->ReadString ("opt","timeint",      "24H");
     Number->Text       =ini->ReadString ("opt","number",         "0");
@@ -566,6 +599,8 @@ void __fastcall TMainForm::LoadOpt(void)
     LocalDir  ->Checked=ini->ReadInteger("opt","localdirena",      0);
     Dir       ->Text   =ini->ReadString ("opt","localdir",        "");
     DataType  ->Text   =ini->ReadString ("opt","datatype",        "");
+    Width              =ini->ReadInteger("window","width",       532);
+    Height             =ini->ReadInteger("window","height",      388);
     StaList->Clear();
     for (int i=0;i<10;i++) {
         stas=ini->ReadString("sta",s.sprintf("station%d",i),"");
@@ -613,6 +648,8 @@ void __fastcall TMainForm::SaveOpt(void)
     ini->WriteInteger("opt","localdirena",LocalDir ->Checked );
     ini->WriteString ("opt","localdir",   Dir       ->Text   );
     ini->WriteString ("opt","datatype",   DataType  ->Text   );
+    ini->WriteInteger("window","width",   Width              );
+    ini->WriteInteger("window","height",  Height             );
     for (int i=0,j=0;i<10;i++) {
         p=buff; *p='\0';
         for (int k=0;k<256&&j<StaList->Count;k++) {
@@ -633,7 +670,7 @@ void __fastcall TMainForm::LoadUrl(AnsiString file)
 {
     FILE *fp;
     url_t *urls;
-    char *p,*subtype,*sel[]={"*"};
+    char *p,*subtype,sel[]="*",*sels[]={sel};
     int i,j,n;
     
     urls=new url_t [MAX_URL];
@@ -649,7 +686,7 @@ void __fastcall TMainForm::LoadUrl(AnsiString file)
     
     if (file=="") file=URL_FILE; // default url
     
-    n=dl_readurls(file.c_str(),sel,1,urls,MAX_URL);
+    n=dl_readurls(file.c_str(),sels,1,urls,MAX_URL);
     
     for (i=0;i<n;i++) {
         Types ->Add(urls[i].type);
@@ -712,13 +749,16 @@ void __fastcall TMainForm::GetTime(gtime_t *ts, gtime_t *te, double *ti)
     
     *ts=epoch2time(eps);
     *te=epoch2time(epe);
-    *ti=86400.0,val;
+    *ti=86400.0;
     
     str=TimeInt->Text;
     if (sscanf(str.c_str(),"%lf%s",&val,unit)>=1) {
         if      (!strcmp(unit,"day")) *ti=val*86400.0;
         else if (!strcmp(unit,"min")) *ti=val*60.0;
         else                          *ti=val*3600.0;
+    }
+    if (TimeInt->Text=="-") {
+        *te=*ts;
     }
 }
 //---------------------------------------------------------------------------
@@ -765,7 +805,8 @@ int __fastcall TMainForm::SelectSta(char **stas)
 void __fastcall TMainForm::UpdateType(void)
 {
     AnsiString str;
-    char buff[256],*p,*type,*subtype;
+    char buff[256],*p;
+    const char *type,*subtype;
     int i;
     
     DataList->Clear();
@@ -824,11 +865,16 @@ void __fastcall TMainForm::UpdateEnable(void)
     Dir   ->Enabled=LocalDir->Checked;
     BtnDir->Enabled=LocalDir->Checked;
     FtpPasswd->PasswordChar=HidePasswd->Checked?'*':'\0';
+    Label3  ->Enabled=TimeInt->Text!="-";
+    TimeY2  ->Enabled=TimeInt->Text!="-";
+    TimeY2UD->Enabled=TimeInt->Text!="-";
+    TimeH2  ->Enabled=TimeInt->Text!="-";
+    TimeH2UD->Enabled=TimeInt->Text!="-";
+    BtnTime2->Enabled=TimeInt->Text!="-";
 }
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::PanelEnable(int ena)
 {
-    Panel1     ->Enabled=ena;
     Panel2     ->Enabled=ena;
     BtnFile    ->Enabled=ena;
     BtnLog     ->Enabled=ena;
@@ -836,29 +882,6 @@ void __fastcall TMainForm::PanelEnable(int ena)
     BtnTest    ->Enabled=ena;
     BtnDownload->Enabled=ena;
     BtnExit    ->Enabled=ena;
-    BtnAll     ->Enabled=ena;
-    BtnStas    ->Enabled=ena;
-    DataType   ->Enabled=ena;
-    SubType    ->Enabled=ena;
-    DataList   ->Enabled=ena;
-    TimeY1     ->Enabled=ena;
-    TimeY1UD   ->Enabled=ena;
-    TimeH1     ->Enabled=ena;
-    TimeH1UD   ->Enabled=ena;
-    TimeY2     ->Enabled=ena;
-    TimeY2UD   ->Enabled=ena;
-    TimeH2     ->Enabled=ena;
-    TimeH2UD   ->Enabled=ena;
-    TimeInt    ->Enabled=ena;
-    Number     ->Enabled=ena;
-    StaList    ->Enabled=ena;
-    FtpLogin   ->Enabled=ena;
-    FtpPasswd  ->Enabled=ena;
-    SkipExist  ->Enabled=ena;
-    UnZip      ->Enabled=ena;
-    LocalDir   ->Enabled=ena;
-    Dir        ->Enabled=ena;
-    BtnDir     ->Enabled=ena;
 }
 // --------------------------------------------------------------------------
 void __fastcall TMainForm::ReadHist(TIniFile *ini, AnsiString key, TStrings *list)
@@ -907,5 +930,54 @@ int __fastcall TMainForm::ExecCmd(AnsiString cmd)
     CloseHandle(info.hThread);
     return 1;
 }
+//--ComboCloseUp---------------------------------------------------------------
+void __fastcall TMainForm::ComboCloseUp(TObject *Sender)
+{
+    TComboBox *combo=(TComboBox *)Sender;
+    
+    ::PostMessage(combo->Handle,CB_SETEDITSEL,-1,0);
+}
 //---------------------------------------------------------------------------
+void __fastcall TMainForm::TimeY1KeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
+{
+    bool allowchange;
+    if (Key==VK_UP||Key==VK_DOWN) {
+        TimeY1UDChangingEx(Sender,allowchange,0,Key==VK_UP?updUp:updDown);
+        Key=0;
+    }
+}
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::TimeH1KeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
+{
+    bool allowchange;
+    if (Key==VK_UP||Key==VK_DOWN) {
+        TimeH1UDChangingEx(Sender,allowchange,0,Key==VK_UP?updUp:updDown);
+        Key=0;
+    }
+}
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::TimeH2KeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
+{
+    bool allowchange;
+    if (Key==VK_UP||Key==VK_DOWN) {
+        TimeH2UDChangingEx(Sender,allowchange,0,Key==VK_UP?updUp:updDown);
+        Key=0;
+    }
+}
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::TimeY2KeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
+{
+    bool allowchange;
+    if (Key==VK_UP||Key==VK_DOWN) {
+        TimeY2UDChangingEx(Sender,allowchange,0,Key==VK_UP?updUp:updDown);
+        Key=0;
+    }
+}
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::TimeIntChange(TObject *Sender)
+{
+    UpdateEnable();
+}
+//---------------------------------------------------------------------------
+
 

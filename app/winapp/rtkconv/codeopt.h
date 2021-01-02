@@ -87,7 +87,7 @@ __published:
 	TCheckBox *C28;
 	TCheckBox *C29;
 	TCheckBox *C41;
-	TCheckBox *C12;
+	TCheckBox *C18;
 	TCheckBox *C43;
 	TCheckBox *C33;
 	TCheckBox *R44;

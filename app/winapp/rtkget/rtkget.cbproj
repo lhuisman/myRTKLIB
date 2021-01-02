@@ -6,9 +6,9 @@
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Release</Config>
         <FrameworkType>VCL</FrameworkType>
-        <ProjectVersion>18.7</ProjectVersion>
-        <Platform Condition="'$(Platform)'==''">Win32</Platform>
-        <TargetedPlatforms>1</TargetedPlatforms>
+        <ProjectVersion>18.8</ProjectVersion>
+        <Platform Condition="'$(Platform)'==''">Win64</Platform>
+        <TargetedPlatforms>3</TargetedPlatforms>
         <AppType>Application</AppType>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
@@ -74,24 +74,25 @@
         <BCC_PCHUsage>None</BCC_PCHUsage>
         <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
         <BCC_wpar>false</BCC_wpar>
-        <IncludePath>..\appcmn\;..\..\src\;$(IncludePath)</IncludePath>
+        <IncludePath>..\appcmn\;..\..\..\src\;$(IncludePath)</IncludePath>
         <Manifest_File>None</Manifest_File>
         <VerInfo_Locale>1041</VerInfo_Locale>
         <DCC_Namespace>Vcl;Vcl.Imaging;Vcl.Touch;Vcl.Samples;Vcl.Shell;System;Xml;Data;Datasnap;Web;Soap;$(DCC_Namespace)</DCC_Namespace>
         <BCC_PCHCache>true</BCC_PCHCache>
-        <TASM_IncludePath>D:\proj\rtklib\app\downloader;$(BDS)\include;$(BDS)\include\vcl;..\..\src;$(TASM_IncludePath)</TASM_IncludePath>
+        <TASM_IncludePath>D:\proj\rtklib\app\downloader;$(BDS)\include;$(BDS)\include\vcl;..\..\..\src;$(TASM_IncludePath)</TASM_IncludePath>
         <PackageImports>vclx.bpi;vcl.bpi;$(PackageImports)</PackageImports>
         <ILINK_AppType>Windows</ILINK_AppType>
-        <BRCC_IncludePath>D:\proj\rtklib\app\downloader;$(BDS)\include;$(BDS)\include\vcl;..\..\src;$(BRCC_IncludePath)</BRCC_IncludePath>
-        <DCC_ObjPath>..\..\src;D:\proj\rtklib\app\downloader;$(DCC_ObjPath)</DCC_ObjPath>
-        <DCC_IncludePath>..\..\src;D:\proj\rtklib\app\downloader;C:\Users\ttaka\Documents\Borland Studio Projects;$(BDS)\lib;$(BDS)\lib\obj;$(DCC_IncludePath)</DCC_IncludePath>
-        <ILINK_ObjectSearchPath>..\..\src;D:\proj\rtklib\app\downloader;$(ILINK_ObjectSearchPath)</ILINK_ObjectSearchPath>
+        <BRCC_IncludePath>D:\proj\rtklib\app\downloader;$(BDS)\include;$(BDS)\include\vcl;..\..\..\src;$(BRCC_IncludePath)</BRCC_IncludePath>
+        <DCC_ObjPath>..\..\..\src;D:\proj\rtklib\app\downloader;$(DCC_ObjPath)</DCC_ObjPath>
+        <DCC_IncludePath>..\..\..\src;D:\proj\rtklib\app\downloader;C:\Users\ttaka\Documents\Borland Studio Projects;$(BDS)\lib;$(BDS)\lib\obj;$(DCC_IncludePath)</DCC_IncludePath>
+        <ILINK_ObjectSearchPath>..\..\..\src;D:\proj\rtklib\app\downloader;$(ILINK_ObjectSearchPath)</ILINK_ObjectSearchPath>
         <AllPackageLibs>rtl.lib;vcl.lib;vclx.lib;vclimg.lib</AllPackageLibs>
-        <DCC_ResourcePath>..\..\src;D:\proj\rtklib\app\downloader;$(DCC_ResourcePath)</DCC_ResourcePath>
+        <DCC_ResourcePath>..\..\..\src;D:\proj\rtklib\app\downloader;$(DCC_ResourcePath)</DCC_ResourcePath>
         <BCC_GenerateWindowsApp>true</BCC_GenerateWindowsApp>
-        <DCC_UnitSearchPath>..\..\src;D:\proj\rtklib\app\downloader;C:\Users\ttaka\Documents\Borland Studio Projects;$(BDS)\lib;$(BDS)\lib\obj;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
-        <ILINK_LibraryPath>..\appcmn\;..\..\src\;$(BDS)\lib;$(ILINK_LibraryPath)</ILINK_LibraryPath>
+        <DCC_UnitSearchPath>..\..\..\src;D:\proj\rtklib\app\downloader;C:\Users\ttaka\Documents\Borland Studio Projects;$(BDS)\lib;$(BDS)\lib\obj;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <ILINK_LibraryPath>..\appcmn\;..\..\..\src\;$(BDS)\lib;$(ILINK_LibraryPath)</ILINK_LibraryPath>
         <DCC_CBuilderOutput>JPHNE</DCC_CBuilderOutput>
+        <BCC_Defines>WIN32;TRACE;$(BCC_Defines)</BCC_Defines>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
@@ -99,7 +100,6 @@
         <TASM_Defines>_RTLDLL;USEPACKAGES;WIN32;TRACE;$(TASM_Defines)</TASM_Defines>
         <BCC_UserSuppliedOptions> -tWM</BCC_UserSuppliedOptions>
         <BRCC_Defines>_RTLDLL;USEPACKAGES;WIN32;TRACE;$(BRCC_Defines)</BRCC_Defines>
-        <BCC_Defines>WIN32;TRACE;$(BCC_Defines)</BCC_Defines>
         <DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
         <IncludePath>$(BDSINCLUDE)\windows\vcl;$(IncludePath)</IncludePath>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
@@ -111,9 +111,14 @@
     <PropertyGroup Condition="'$(Base_Win64)'!=''">
         <TASM_Defines>_RTLDLL;USEPACKAGES;WIN32;TRACE;$(TASM_Defines)</TASM_Defines>
         <BRCC_Defines>_RTLDLL;USEPACKAGES;WIN32;TRACE;$(BRCC_Defines)</BRCC_Defines>
-        <BCC_Defines>WIN32;TRACE;$(BCC_Defines)</BCC_Defines>
         <UWP_CppLogo44>$(BDS)\bin\Artwork\Windows\UWP\cppreg_UwpDefault_44.png</UWP_CppLogo44>
         <UWP_CppLogo150>$(BDS)\bin\Artwork\Windows\UWP\cppreg_UwpDefault_150.png</UWP_CppLogo150>
+        <DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;$(DCC_Namespace)</DCC_Namespace>
+        <BT_BuildType>Debug</BT_BuildType>
+        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
+        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+        <VerInfo_Locale>1033</VerInfo_Locale>
+        <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1)'!=''">
         <DCC_AdditionalSwitches> -V</DCC_AdditionalSwitches>
@@ -134,7 +139,6 @@
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
         <BCC_UserSuppliedOptions> -tWM -k</BCC_UserSuppliedOptions>
         <BCC_Defines>_DEBUG;$(BCC_Defines);$(BCC_Defines)</BCC_Defines>
-        <Icon_MainIcon>..\icon\rtk8.ico</Icon_MainIcon>
         <LinkPackageStatics>rtl.lib;vcl.lib;vclx.lib;vclimg.lib</LinkPackageStatics>
         <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
@@ -142,6 +146,12 @@
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win64)'!=''">
         <BCC_Defines>_DEBUG;$(BCC_Defines);$(BCC_Defines)</BCC_Defines>
+        <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
+        <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
+        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
+        <VerInfo_Locale>1033</VerInfo_Locale>
+        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+        <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_AdditionalSwitches> -$O+</DCC_AdditionalSwitches>
@@ -163,6 +173,13 @@
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win64)'!=''">
         <BCC_Defines>NDEBUG;$(BCC_Defines);$(BCC_Defines)</BCC_Defines>
+        <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
+        <LinkPackageStatics>rtl.lib;vcl.lib;vclx.lib;vclimg.lib</LinkPackageStatics>
+        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
+        <VerInfo_Locale>1033</VerInfo_Locale>
+        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+        <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
+        <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
     </PropertyGroup>
     <ItemGroup>
         <CppCompile Include="..\appcmn\aboutdlg.cpp">
@@ -216,10 +233,10 @@
             <DependentOn>staoptdlg.h</DependentOn>
             <BuildOrder>11</BuildOrder>
         </CppCompile>
-        <CppCompile Include="..\..\src\download.c">
+        <CppCompile Include="..\..\..\src\download.c">
             <BuildOrder>5</BuildOrder>
         </CppCompile>
-        <CppCompile Include="..\..\src\rtkcmn.c">
+        <CppCompile Include="..\..\..\src\rtkcmn.c">
             <BuildOrder>3</BuildOrder>
             <BuildOrder>1</BuildOrder>
         </CppCompile>
@@ -306,13 +323,13 @@
                     <Source Name="MainSource">rtkget.cpp</Source>
                 </Source>
                 <Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\bcboffice2k240.bpl">Embarcadero C++Builder Office 2000 サーバー パッケージ</Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\bcbofficexp240.bpl">Embarcadero C++Builder Office XP サーバー パッケージ</Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\bcboffice2k260.bpl">Embarcadero C++Builder Office 2000 サーバー パッケージ</Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\bcbofficexp260.bpl">Embarcadero C++Builder Office XP サーバー パッケージ</Excluded_Packages>
                 </Excluded_Packages>
             </CPlusPlusBuilder.Personality>
             <Platforms>
                 <Platform value="Win32">True</Platform>
-                <Platform value="Win64">False</Platform>
+                <Platform value="Win64">True</Platform>
             </Platforms>
         </BorlandProject>
         <ProjectFileVersion>12</ProjectFileVersion>

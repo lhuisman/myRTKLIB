@@ -148,7 +148,7 @@ static int decode_xf5raw(raw_t *raw)
         if (sys==SYS_GLO) {
             raw->obs.data[n].L[0]  =  L1 - toff*(FREQ1_GLO+DFRQ1_GLO*carrNo);
         } else {
-            raw->obs.data[n].L[0]  =  L1 - toff*FREQ1;
+            raw->obs.data[n].L[0]  =  L1 - toff*FREQL1;
         }
         raw->obs.data[n].P[0]    = (P1-dTowFrac)*CLIGHT*0.001 - toff*CLIGHT; /* in ms, needs to be converted */
         raw->obs.data[n].D[0]    =  (float)D1;

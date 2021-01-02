@@ -83,10 +83,9 @@ void __fastcall TConvOptDialog::FormShow(TObject *Sender)
 	Obs4->Checked=MainWindow->ObsType&OBSTYPE_SNR;
 	Freq1->Checked=MainWindow->FreqType&FREQTYPE_L1;
 	Freq2->Checked=MainWindow->FreqType&FREQTYPE_L2;
-	Freq4->Checked=MainWindow->FreqType&FREQTYPE_L5;
-	Freq5->Checked=MainWindow->FreqType&FREQTYPE_E6;
-	Freq6->Checked=MainWindow->FreqType&FREQTYPE_E5ab;
-	Freq7->Checked=MainWindow->FreqType&FREQTYPE_S;
+	Freq3->Checked=MainWindow->FreqType&FREQTYPE_L3;
+	Freq4->Checked=MainWindow->FreqType&FREQTYPE_L4;
+	Freq5->Checked=MainWindow->FreqType&FREQTYPE_L5;
 	ExSats->Text=MainWindow->ExSats;
 	TraceLevel->ItemIndex=MainWindow->TraceLevel;
 	ChkSepNav->Checked=MainWindow->SepNav;
@@ -145,10 +144,9 @@ void __fastcall TConvOptDialog::BtnOkClick(TObject *Sender)
 	if (Obs4->Checked) obstype|=OBSTYPE_SNR;
 	if (Freq1->Checked) freqtype|=FREQTYPE_L1;
 	if (Freq2->Checked) freqtype|=FREQTYPE_L2;
-	if (Freq4->Checked) freqtype|=FREQTYPE_L5;
-	if (Freq5->Checked) freqtype|=FREQTYPE_E6;
-	if (Freq6->Checked) freqtype|=FREQTYPE_E5ab;
-	if (Freq7->Checked) freqtype|=FREQTYPE_S;
+	if (Freq3->Checked) freqtype|=FREQTYPE_L3;
+	if (Freq4->Checked) freqtype|=FREQTYPE_L4;
+	if (Freq5->Checked) freqtype|=FREQTYPE_L5;
 	MainWindow->NavSys=navsys;
 	MainWindow->ObsType=obstype;
 	MainWindow->FreqType=freqtype;
@@ -191,10 +189,9 @@ void __fastcall TConvOptDialog::BtnMaskClick(TObject *Sender)
 	if (Nav7->Checked) CodeOptDialog->NavSys|=SYS_IRN;
 	if (Freq1->Checked) CodeOptDialog->FreqType|=FREQTYPE_L1;
 	if (Freq2->Checked) CodeOptDialog->FreqType|=FREQTYPE_L2;
-	if (Freq4->Checked) CodeOptDialog->FreqType|=FREQTYPE_L5;
-	if (Freq5->Checked) CodeOptDialog->FreqType|=FREQTYPE_E6;
-	if (Freq6->Checked) CodeOptDialog->FreqType|=FREQTYPE_E5ab;
-	if (Freq7->Checked) CodeOptDialog->FreqType|=FREQTYPE_S;
+	if (Freq3->Checked) CodeOptDialog->FreqType|=FREQTYPE_L3;
+	if (Freq4->Checked) CodeOptDialog->FreqType|=FREQTYPE_L4;
+	if (Freq5->Checked) CodeOptDialog->FreqType|=FREQTYPE_L5;
 	CodeOptDialog->ShowModal();
 }
 //---------------------------------------------------------------------------

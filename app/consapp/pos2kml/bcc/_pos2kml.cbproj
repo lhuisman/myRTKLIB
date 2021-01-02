@@ -5,9 +5,9 @@
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Release</Config>
         <FrameworkType>None</FrameworkType>
-        <ProjectVersion>18.7</ProjectVersion>
-        <Platform Condition="'$(Platform)'==''">Win32</Platform>
-        <TargetedPlatforms>1</TargetedPlatforms>
+        <ProjectVersion>18.8</ProjectVersion>
+        <Platform Condition="'$(Platform)'==''">Win64</Platform>
+        <TargetedPlatforms>3</TargetedPlatforms>
         <AppType>Console</AppType>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
@@ -61,23 +61,23 @@
         <Icns_MainIcns>$(BDS)\bin\cbuilder_PROJECTICNS.icns</Icns_MainIcns>
         <SanitizedProjectName>_pos2kml</SanitizedProjectName>
         <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
-        <IncludePath>..\;..\..\..\src\;$(IncludePath)</IncludePath>
+        <IncludePath>..\;..\..\..\..\src\;$(IncludePath)</IncludePath>
         <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;$(DCC_Namespace)</DCC_Namespace>
         <Manifest_File>None</Manifest_File>
         <Icon_MainIcon>_pos2kml_Icon.ico</Icon_MainIcon>
         <VerInfo_Locale>1041</VerInfo_Locale>
         <PackageImports>vclx.bpi;vcl.bpi;rtl.bpi;dbrtl.bpi;vcldb.bpi;dbxcds.bpi;dbexpress.bpi;xmlrtl.bpi;vclie.bpi;inet.bpi;inetdbbde.bpi;inetdbxpress.bpi;dsnap.bpi;adortl.bpi;soaprtl.bpi;bdertl.bpi;vcldbx.bpi;$(PackageImports)</PackageImports>
-        <TASM_IncludePath>..\;..\..\..\src;$(BDS)\include;$(BDS)\include\vcl;$(TASM_IncludePath)</TASM_IncludePath>
-        <DCC_ObjPath>..\..\..\src;..\;G:\rtklib_2.2.0b\app\pos2kml;G:\rtklib_2.2.0b\app\pos2kml\bcc;$(DCC_ObjPath)</DCC_ObjPath>
-        <BRCC_IncludePath>..\;..\..\..\src;$(BDS)\include;$(BDS)\include\vcl;$(BRCC_IncludePath)</BRCC_IncludePath>
+        <TASM_IncludePath>..\;..\..\..\..\src;$(BDS)\include;$(BDS)\include\vcl;$(TASM_IncludePath)</TASM_IncludePath>
+        <DCC_ObjPath>..\..\..\..\src;..\;G:\rtklib_2.2.0b\app\pos2kml;G:\rtklib_2.2.0b\app\pos2kml\bcc;$(DCC_ObjPath)</DCC_ObjPath>
+        <BRCC_IncludePath>..\;..\..\..\..\src;$(BDS)\include;$(BDS)\include\vcl;$(BRCC_IncludePath)</BRCC_IncludePath>
         <BCC_PCHWithExternalTypeFiles>false</BCC_PCHWithExternalTypeFiles>
-        <DCC_IncludePath>..\..\..\src;..\;G:\rtklib_2.2.0b\app\pos2kml;G:\rtklib_2.2.0b\app\pos2kml\bcc;C:\Users\ttaka\Documents\Borland Studio Projects;$(BDS)\lib;$(BDS)\lib\obj;$(DCC_IncludePath)</DCC_IncludePath>
-        <ILINK_ObjectSearchPath>..\..\..\src;..\;G:\rtklib_2.2.0b\app\pos2kml;G:\rtklib_2.2.0b\app\pos2kml\bcc;$(ILINK_ObjectSearchPath)</ILINK_ObjectSearchPath>
+        <DCC_IncludePath>..\..\..\..\src;..\;G:\rtklib_2.2.0b\app\pos2kml;G:\rtklib_2.2.0b\app\pos2kml\bcc;C:\Users\ttaka\Documents\Borland Studio Projects;$(BDS)\lib;$(BDS)\lib\obj;$(DCC_IncludePath)</DCC_IncludePath>
+        <ILINK_ObjectSearchPath>..\..\..\..\src;..\;G:\rtklib_2.2.0b\app\pos2kml;G:\rtklib_2.2.0b\app\pos2kml\bcc;$(ILINK_ObjectSearchPath)</ILINK_ObjectSearchPath>
         <BCC_SmartPCHCache>false</BCC_SmartPCHCache>
-        <BCC_IncludePath>..\..\..\src;$(BDS)\include;$(BCC_IncludePath)</BCC_IncludePath>
-        <DCC_UnitSearchPath>..\..\..\src;..\;G:\rtklib_2.2.0b\app\pos2kml;G:\rtklib_2.2.0b\app\pos2kml\bcc;C:\Users\ttaka\Documents\Borland Studio Projects;$(BDS)\lib;$(BDS)\lib\obj;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
-        <DCC_ResourcePath>..\..\..\src;..\;G:\rtklib_2.2.0b\app\pos2kml;G:\rtklib_2.2.0b\app\pos2kml\bcc;$(DCC_ResourcePath)</DCC_ResourcePath>
-        <ILINK_LibraryPath>..\..\..\src\;..\..\..\src;..\;G:\rtklib_2.2.0b\app\pos2kml;G:\rtklib_2.2.0b\app\pos2kml\bcc;$(BDS)\lib;$(ILINK_LibraryPath)</ILINK_LibraryPath>
+        <BCC_IncludePath>..\..\..\..\src;$(BDS)\include;$(BCC_IncludePath)</BCC_IncludePath>
+        <DCC_UnitSearchPath>..\..\..\..\src;..\;G:\rtklib_2.2.0b\app\pos2kml;G:\rtklib_2.2.0b\app\pos2kml\bcc;C:\Users\ttaka\Documents\Borland Studio Projects;$(BDS)\lib;$(BDS)\lib\obj;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <DCC_ResourcePath>..\..\..\..\src;..\;G:\rtklib_2.2.0b\app\pos2kml;G:\rtklib_2.2.0b\app\pos2kml\bcc;$(DCC_ResourcePath)</DCC_ResourcePath>
+        <ILINK_LibraryPath>..\..\..\..\src\;..\..\..\..\src;..\;G:\rtklib_2.2.0b\app\pos2kml;G:\rtklib_2.2.0b\app\pos2kml\bcc;$(BDS)\lib;$(ILINK_LibraryPath)</ILINK_LibraryPath>
         <DCC_CBuilderOutput>JPHNE</DCC_CBuilderOutput>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
@@ -95,6 +95,10 @@
         <BCC_Defines>_RTLDLL;WIN32;$(BCC_Defines)</BCC_Defines>
         <BRCC_Defines>_RTLDLL;_NO_VCL;WIN32;$(BRCC_Defines)</BRCC_Defines>
         <TASM_Defines>_RTLDLL;_NO_VCL;WIN32;$(TASM_Defines)</TASM_Defines>
+        <DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;$(DCC_Namespace)</DCC_Namespace>
+        <BT_BuildType>Debug</BT_BuildType>
+        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+        <VerInfo_Locale>1033</VerInfo_Locale>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1)'!=''">
         <DCC_AdditionalSwitches> -V</DCC_AdditionalSwitches>
@@ -142,25 +146,25 @@
             <BuildOrder>5</BuildOrder>
             <BuildOrder>1</BuildOrder>
         </CppCompile>
-        <CppCompile Include="..\..\..\src\convgpx.c">
+        <CppCompile Include="..\..\..\..\src\convgpx.c">
             <BuildOrder>6</BuildOrder>
         </CppCompile>
-        <CppCompile Include="..\..\..\src\convkml.c">
+        <CppCompile Include="..\..\..\..\src\convkml.c">
             <BuildOrder>-1</BuildOrder>
             <BuildOrder>1</BuildOrder>
         </CppCompile>
-        <CppCompile Include="..\..\..\src\geoid.c">
+        <CppCompile Include="..\..\..\..\src\geoid.c">
             <BuildOrder>3</BuildOrder>
             <BuildOrder>2</BuildOrder>
         </CppCompile>
-        <CppCompile Include="..\..\..\src\preceph.c">
+        <CppCompile Include="..\..\..\..\src\preceph.c">
             <BuildOrder>5</BuildOrder>
         </CppCompile>
-        <CppCompile Include="..\..\..\src\rtkcmn.c">
+        <CppCompile Include="..\..\..\..\src\rtkcmn.c">
             <BuildOrder>4</BuildOrder>
             <BuildOrder>2</BuildOrder>
         </CppCompile>
-        <CppCompile Include="..\..\..\src\solution.c">
+        <CppCompile Include="..\..\..\..\src\solution.c">
             <BuildOrder>4</BuildOrder>
             <BuildOrder>0</BuildOrder>
         </CppCompile>
@@ -239,7 +243,7 @@
             </CPlusPlusBuilder.Personality>
             <Platforms>
                 <Platform value="Win32">True</Platform>
-                <Platform value="Win64">False</Platform>
+                <Platform value="Win64">True</Platform>
             </Platforms>
         </BorlandProject>
         <ProjectFileVersion>12</ProjectFileVersion>

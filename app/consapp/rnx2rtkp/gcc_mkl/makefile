@@ -1,7 +1,7 @@
 # makefile for rnx2rtkp
 
 BINDIR  = /usr/local/bin
-SRC     = ../../../src
+SRC     = ../../../../src
 
 OPTS    = -DTRACE -DENAGLO -DENAQZS -DENAGAL -DENACMP -DENAIRN -DNFREQ=3
 #OPTS    = -DENAGLO -DENAQZS -DENAGAL -DENACMP -DNFREQ=2

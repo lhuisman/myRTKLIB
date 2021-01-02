@@ -3,8 +3,8 @@ object ConvOptDialog: TConvOptDialog
   Top = 0
   BorderStyle = bsDialog
   Caption = 'Options'
-  ClientHeight = 353
-  ClientWidth = 421
+  ClientHeight = 357
+  ClientWidth = 425
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -18,14 +18,14 @@ object ConvOptDialog: TConvOptDialog
   TextHeight = 13
   object Label3: TLabel
     Left = 153
-    Top = 329
+    Top = 332
     Width = 31
     Height = 13
     Caption = 'Debug'
   end
   object Label8: TLabel
-    Left = 8
-    Top = 307
+    Left = 10
+    Top = 305
     Width = 82
     Height = 13
     Caption = 'Receiver Options'
@@ -39,29 +39,29 @@ object ConvOptDialog: TConvOptDialog
   end
   object Label9: TLabel
     Left = 10
-    Top = 7
+    Top = 6
     Width = 49
     Height = 13
     Caption = 'RINEX Ver'
   end
   object Label12: TLabel
-    Left = 207
-    Top = 7
+    Left = 204
+    Top = 6
     Width = 48
     Height = 13
     Caption = 'Station ID'
   end
   object Label13: TLabel
-    Left = 8
-    Top = 329
+    Left = 10
+    Top = 332
     Width = 88
     Height = 13
     Caption = 'Time Torelance (s)'
   end
   object BtnOk: TButton
-    Left = 257
-    Top = 323
-    Width = 81
+    Left = 255
+    Top = 325
+    Width = 80
     Height = 29
     Caption = '&OK'
     ModalResult = 1
@@ -70,8 +70,8 @@ object ConvOptDialog: TConvOptDialog
   end
   object BtnCancel: TButton
     Left = 339
-    Top = 323
-    Width = 81
+    Top = 325
+    Width = 80
     Height = 29
     Cancel = True
     Caption = '&Cancel'
@@ -80,13 +80,13 @@ object ConvOptDialog: TConvOptDialog
   end
   object GroupBox1: TGroupBox
     Left = 1
-    Top = 25
+    Top = 24
     Width = 417
     Height = 204
     TabOrder = 6
     object Label1: TLabel
       Left = 10
-      Top = 71
+      Top = 72
       Width = 99
       Height = 13
       Caption = 'Maker Name/#/Type'
@@ -94,35 +94,35 @@ object ConvOptDialog: TConvOptDialog
     object Label2: TLabel
       Left = 10
       Top = 6
-      Width = 100
+      Width = 104
       Height = 13
       Caption = 'RunBy/Obsrv/Agency'
     end
     object Label4: TLabel
       Left = 10
-      Top = 93
+      Top = 94
       Width = 82
       Height = 13
       Caption = 'Rec #/Type/Vers'
     end
     object Label5: TLabel
       Left = 10
-      Top = 115
+      Top = 116
       Width = 56
       Height = 13
       Caption = 'Ant #/Type'
     end
     object Label6: TLabel
       Left = 10
-      Top = 137
+      Top = 138
       Width = 76
       Height = 13
       Caption = 'Approx Pos XYZ'
     end
     object Label7: TLabel
       Left = 10
-      Top = 159
-      Width = 76
+      Top = 160
+      Width = 100
       Height = 13
       Caption = 'Antenna Delta H/E/N'
     end
@@ -201,7 +201,7 @@ object ConvOptDialog: TConvOptDialog
       Top = 135
       Width = 95
       Height = 21
-      TabOrder = 16
+      TabOrder = 15
       Text = '0.0000'
     end
     object AntDel2: TEdit
@@ -209,7 +209,7 @@ object ConvOptDialog: TConvOptDialog
       Top = 157
       Width = 95
       Height = 21
-      TabOrder = 19
+      TabOrder = 18
       Text = '0.0000'
     end
     object AppPos1: TEdit
@@ -217,7 +217,7 @@ object ConvOptDialog: TConvOptDialog
       Top = 135
       Width = 95
       Height = 21
-      TabOrder = 15
+      TabOrder = 14
       Text = '0.0000'
     end
     object AntDel1: TEdit
@@ -225,7 +225,7 @@ object ConvOptDialog: TConvOptDialog
       Top = 157
       Width = 95
       Height = 21
-      TabOrder = 18
+      TabOrder = 17
       Text = '0.0000'
     end
     object AppPos0: TEdit
@@ -233,7 +233,7 @@ object ConvOptDialog: TConvOptDialog
       Top = 135
       Width = 95
       Height = 21
-      TabOrder = 14
+      TabOrder = 13
       Text = '0.0000'
     end
     object AntDel0: TEdit
@@ -241,7 +241,7 @@ object ConvOptDialog: TConvOptDialog
       Top = 157
       Width = 95
       Height = 21
-      TabOrder = 17
+      TabOrder = 16
       Text = '0.0000'
     end
     object Comment0: TEdit
@@ -273,40 +273,40 @@ object ConvOptDialog: TConvOptDialog
       TabOrder = 6
     end
     object OutIono: TCheckBox
-      Left = 207
-      Top = 183
+      Left = 187
+      Top = 182
       Width = 68
       Height = 18
       Caption = 'Iono Corr'
-      TabOrder = 20
+      TabOrder = 22
     end
     object OutTime: TCheckBox
-      Left = 281
-      Top = 183
+      Left = 263
+      Top = 182
       Width = 65
       Height = 18
       Caption = 'Time Corr'
-      TabOrder = 21
+      TabOrder = 23
     end
     object OutLeaps: TCheckBox
-      Left = 351
-      Top = 183
+      Left = 341
+      Top = 182
       Width = 62
       Height = 18
       Caption = 'Leap Sec'
-      TabOrder = 22
+      TabOrder = 24
     end
     object AutoPos: TCheckBox
       Left = 109
       Top = 137
       Width = 18
       Height = 18
-      TabOrder = 23
+      TabOrder = 19
       OnClick = AutoPosClick
     end
     object HalfCyc: TCheckBox
-      Left = 111
-      Top = 184
+      Left = 96
+      Top = 183
       Width = 82
       Height = 18
       Caption = 'Half Cyc Corr'
@@ -323,8 +323,8 @@ object ConvOptDialog: TConvOptDialog
   end
   object GroupBox3: TGroupBox
     Left = 1
-    Top = 262
-    Width = 128
+    Top = 263
+    Width = 132
     Height = 35
     Caption = 'Observation Types'
     TabOrder = 8
@@ -339,7 +339,7 @@ object ConvOptDialog: TConvOptDialog
       TabOrder = 0
     end
     object Obs2: TCheckBox
-      Left = 40
+      Left = 41
       Top = 14
       Width = 30
       Height = 15
@@ -349,7 +349,7 @@ object ConvOptDialog: TConvOptDialog
       TabOrder = 1
     end
     object Obs3: TCheckBox
-      Left = 70
+      Left = 72
       Top = 14
       Width = 30
       Height = 15
@@ -359,9 +359,9 @@ object ConvOptDialog: TConvOptDialog
       TabOrder = 2
     end
     object Obs4: TCheckBox
-      Left = 100
+      Left = 103
       Top = 14
-      Width = 27
+      Width = 30
       Height = 15
       Caption = 'S'
       Checked = True
@@ -370,9 +370,9 @@ object ConvOptDialog: TConvOptDialog
     end
   end
   object TraceLevel: TComboBox
-    Left = 188
-    Top = 327
-    Width = 63
+    Left = 189
+    Top = 329
+    Width = 60
     Height = 21
     Style = csDropDownList
     ItemIndex = 0
@@ -387,16 +387,16 @@ object ConvOptDialog: TConvOptDialog
       'Level 5')
   end
   object RcvOption: TEdit
-    Left = 102
-    Top = 300
-    Width = 316
+    Left = 103
+    Top = 301
+    Width = 315
     Height = 21
     TabOrder = 10
   end
   object GroupBox4: TGroupBox
-    Left = 130
-    Top = 262
-    Width = 241
+    Left = 137
+    Top = 263
+    Width = 176
     Height = 35
     Caption = 'GNSS Signals       '
     TabOrder = 9
@@ -413,7 +413,7 @@ object ConvOptDialog: TConvOptDialog
     object Freq1: TCheckBox
       Left = 10
       Top = 14
-      Width = 51
+      Width = 30
       Height = 17
       Caption = 'L1'
       Checked = True
@@ -421,59 +421,51 @@ object ConvOptDialog: TConvOptDialog
       TabOrder = 0
     end
     object Freq2: TCheckBox
-      Left = 42
+      Left = 43
       Top = 14
-      Width = 52
+      Width = 30
       Height = 17
-      Caption = 'L2/E5b'
+      Caption = 'L2'
       Checked = True
       State = cbChecked
       TabOrder = 1
     end
-    object Freq4: TCheckBox
-      Left = 100
-      Top = 16
-      Width = 45
-      Height = 13
-      Caption = 'L5'
+    object Freq3: TCheckBox
+      Left = 76
+      Top = 14
+      Width = 30
+      Height = 17
+      Caption = 'L3'
       TabOrder = 2
     end
-    object Freq5: TCheckBox
-      Left = 135
-      Top = 11
-      Width = 39
-      Height = 24
-      Caption = 'E6'
+    object Freq4: TCheckBox
+      Left = 109
+      Top = 14
+      Width = 30
+      Height = 17
+      Caption = 'L4'
       TabOrder = 3
     end
-    object Freq6: TCheckBox
-      Left = 174
+    object Freq5: TCheckBox
+      Left = 142
       Top = 14
-      Width = 40
+      Width = 30
       Height = 17
-      Caption = 'E5ab'
+      Caption = 'L5'
       TabOrder = 4
-    end
-    object Freq7: TCheckBox
-      Left = 218
-      Top = 14
-      Width = 31
-      Height = 17
-      Caption = 'S'
-      TabOrder = 5
     end
   end
   object ExSats: TEdit
-    Left = 316
+    Left = 317
     Top = 243
-    Width = 102
+    Width = 101
     Height = 21
     TabOrder = 12
   end
   object RnxVer: TComboBox
-    Left = 65
+    Left = 67
     Top = 2
-    Width = 64
+    Width = 60
     Height = 21
     Style = csDropDownList
     ItemIndex = 0
@@ -517,7 +509,7 @@ object ConvOptDialog: TConvOptDialog
     object Nav1: TCheckBox
       Left = 10
       Top = 14
-      Width = 47
+      Width = 40
       Height = 15
       Caption = 'GPS'
       Checked = True
@@ -525,60 +517,58 @@ object ConvOptDialog: TConvOptDialog
       TabOrder = 0
     end
     object Nav2: TCheckBox
-      Left = 53
+      Left = 52
       Top = 14
-      Width = 71
+      Width = 40
       Height = 15
       Caption = 'GLO'
-      Checked = True
-      State = cbChecked
       TabOrder = 1
     end
     object Nav3: TCheckBox
-      Left = 96
+      Left = 94
       Top = 14
-      Width = 59
+      Width = 40
       Height = 15
       Caption = 'GAL'
       TabOrder = 2
     end
     object Nav4: TCheckBox
-      Left = 139
+      Left = 136
       Top = 14
-      Width = 55
+      Width = 40
       Height = 15
       Caption = 'QZS'
       TabOrder = 3
     end
     object Nav5: TCheckBox
-      Left = 182
+      Left = 270
       Top = 14
-      Width = 49
+      Width = 40
       Height = 15
       Caption = 'SBS'
-      TabOrder = 4
+      TabOrder = 6
     end
     object Nav6: TCheckBox
-      Left = 225
+      Left = 178
       Top = 14
-      Width = 49
+      Width = 40
       Height = 15
       Caption = 'BDS'
-      TabOrder = 5
+      TabOrder = 4
     end
     object Nav7: TCheckBox
-      Left = 268
+      Left = 220
       Top = 14
-      Width = 49
+      Width = 45
       Height = 15
       Caption = 'NavIC'
       TabOrder = 5
     end
   end
   object BtnMask: TButton
-    Left = 373
-    Top = 267
-    Width = 46
+    Left = 316
+    Top = 268
+    Width = 50
     Height = 30
     Caption = 'Mask...'
     TabOrder = 13
@@ -593,8 +583,8 @@ object ConvOptDialog: TConvOptDialog
     TabOrder = 3
   end
   object TimeTol: TEdit
-    Left = 102
-    Top = 325
+    Left = 103
+    Top = 329
     Width = 45
     Height = 21
     TabOrder = 14

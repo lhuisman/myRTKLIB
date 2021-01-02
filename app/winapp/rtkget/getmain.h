@@ -17,6 +17,7 @@
 #else
 #include <inifiles.hpp>
 #endif
+#include "viewer.h"
 #include "rtklib.h"
 
 //---------------------------------------------------------------------------
@@ -24,33 +25,16 @@ class TMainForm : public TForm
 {
 __published:
 	TPanel *Panel2;
-	TLabel *Label6;
 	TPanel *Panel3;
 	TPanel *Msg1;
 	TPanel *Msg3;
 	TButton *BtnDir;
 	TListBox *DataList;
 	TComboBox *DataType;
-	TCheckBox *LocalDir;
 	TPanel *Msg2;
 	TLabel *LabelSta;
 	TOpenDialog *OpenDialog;
 	TListBox *StaList;
-	TPanel *Panel1;
-	TLabel *Label1;
-	TEdit *TimeY1;
-	TLabel *Label3;
-	TEdit *TimeY2;
-	TEdit *TimeH2;
-	TEdit *TimeH1;
-	TUpDown *TimeY1UD;
-	TUpDown *TimeY2UD;
-	TUpDown *TimeH2UD;
-	TUpDown *TimeH1UD;
-	TSpeedButton *BtnTime1;
-	TSpeedButton *BtnTime2;
-	TLabel *Label7;
-	TComboBox *TimeInt;
 	TPanel *Panel4;
 	TLabel *Label4;
 	TEdit *FtpLogin;
@@ -58,15 +42,12 @@ __published:
 	TLabel *Label8;
 	TSaveDialog *SaveDialog;
 	TButton *BtnStas;
-	TSpeedButton *BtnKeyword;
 	TCheckBox *HidePasswd;
 	TTimer *Timer;
 	TImage *Image1;
 	TImage *Image2;
 	TImage *Image3;
 	TImage *Image4;
-	TCheckBox *UnZip;
-	TCheckBox *SkipExist;
 	TTrayIcon *TrayIcon;
 	TComboBox *SubType;
 	TSpeedButton *BtnTray;
@@ -75,8 +56,6 @@ __published:
 	TImage *Image6;
 	TImage *Image7;
 	TImage *Image8;
-	TEdit *Number;
-	TLabel *Label2;
 	TButton *BtnAll;
 	TComboBox *Dir;
 	TLabel *MsgLabel2;
@@ -88,15 +67,50 @@ __published:
 	TButton *BtnTest;
 	TButton *BtnDownload;
 	TButton *BtnExit;
+	TPanel *Panel5;
+	TPanel *Panel6;
+	TPanel *Panel7;
+	TPanel *Panel8;
+	TPanel *Panel9;
+	TPanel *Panel10;
+	TPanel *Panel11;
+	TPanel *Panel12;
+	TLabel *Label1;
+	TEdit *TimeY1;
+	TUpDown *TimeY1UD;
+	TEdit *TimeH1;
+	TUpDown *TimeH1UD;
+	TSpeedButton *BtnTime1;
+	TPanel *Panel13;
+	TLabel *Label3;
+	TEdit *TimeY2;
+	TUpDown *TimeY2UD;
+	TEdit *TimeH2;
+	TUpDown *TimeH2UD;
+	TSpeedButton *BtnTime2;
+	TPanel *Panel14;
+	TLabel *Label7;
+	TComboBox *TimeInt;
+	TEdit *Number;
+	TLabel *Label2;
+	TPanel *Panel15;
+	TPanel *Panel1;
+	TCheckBox *SkipExist;
+	TCheckBox *UnZip;
+	TCheckBox *LocalDir;
+	TSpeedButton *BtnKeyword;
+	TPanel *Panel16;
+	TPanel *Panel17;
+	TPanel *Panel18;
 	
 	void __fastcall TimeY1UDChangingEx(TObject *Sender, bool &AllowChange,
-          short NewValue, TUpDownDirection Direction);
+          int NewValue, TUpDownDirection Direction);
 	void __fastcall TimeH1UDChangingEx(TObject *Sender, bool &AllowChange,
-          short NewValue, TUpDownDirection Direction);
+          int NewValue, TUpDownDirection Direction);
 	void __fastcall TimeY2UDChangingEx(TObject *Sender, bool &AllowChange,
-          short NewValue, TUpDownDirection Direction);
+          int NewValue, TUpDownDirection Direction);
 	void __fastcall TimeH2UDChangingEx(TObject *Sender, bool &AllowChange,
-          short NewValue, TUpDownDirection Direction);
+          int NewValue, TUpDownDirection Direction);
 	void __fastcall BtnExitClick(TObject *Sender);
 	void __fastcall BtnOptsClick(TObject *Sender);
 	void __fastcall BtnLogClick(TObject *Sender);
@@ -122,8 +136,18 @@ __published:
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall BtnAllClick(TObject *Sender);
 	void __fastcall DirChange(TObject *Sender);
+	void __fastcall Panel3Resize(TObject *Sender);
+	void __fastcall Panel2Resize(TObject *Sender);
+	void __fastcall Panel6Resize(TObject *Sender);
+	void __fastcall ComboCloseUp(TObject *Sender);
+	void __fastcall TimeY1KeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+	void __fastcall TimeH1KeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+	void __fastcall TimeH2KeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+	void __fastcall TimeY2KeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+	void __fastcall TimeIntChange(TObject *Sender);
 	
 private:
+    TTextViewer *LogViewer;
 	TStringList *Types;
 	TStringList *Urls;
 	TStringList *Locals;

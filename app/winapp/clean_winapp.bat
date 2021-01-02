@@ -4,16 +4,10 @@ cd ..
 cd rtknavi
 call clean.bat
 cd ..
-cd rtknavi_mkl
-call clean.bat
-cd ..
 cd rtkplot
 call clean.bat
 cd ..
 cd rtkpost
-call clean.bat
-cd ..
-cd rtkpost_mkl
 call clean.bat
 cd ..
 cd srctblbrows
@@ -26,12 +20,6 @@ cd rtkget
 call clean.bat
 cd ..
 cd rtklaunch
-call clean.bat
-cd ..
-cd rtkpost_win64
-call clean.bat
-cd ..
-cd rtknavi_win64
 call clean.bat
 cd ..
 

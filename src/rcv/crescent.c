@@ -100,7 +100,7 @@ static int decode_crespos(raw_t *raw)
 static int decode_cresraw(raw_t *raw)
 {
     gtime_t time;
-    double tow,tows,toff=0.0,cp,pr,dop,snr,freq=FREQ1;
+    double tow,tows,toff=0.0,cp,pr,dop,snr,freq=FREQL1;
     int i,j,n,prn,sat,week,word2,lli=0;
     uint32_t word1,sn,sc;
     uint8_t *p=raw->buff+8;
@@ -166,7 +166,7 @@ static int decode_cresraw2(raw_t *raw)
 {
     gtime_t time;
     double tow,tows,toff=0.0,cp[2]={0},pr1,pr[2]={0},dop[2]={0},snr[2]={0};
-    double freq[2]={FREQ1,FREQ2};
+    double freq[2]={FREQL1,FREQL2};
     int i,j,n=0,prn,sat,week,lli[2]={0};
     uint32_t word1,word2,word3,sc,sn;
     uint8_t *p=raw->buff+8;

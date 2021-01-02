@@ -1855,10 +1855,10 @@ static int DecodeType17(raw_t *Raw, uint32_t rif)
         /* Apply clock offset to observables */
         if (ClockOffset != 0.0)
         {
-            obs->P[0] += ClockOffset * (CLIGHT/FREQ1);
-            obs->P[1] += ClockOffset * (CLIGHT/FREQ2);
-            obs->L[0] += ClockOffset * FREQ1;
-            obs->L[1] += ClockOffset * FREQ2;
+            obs->P[0] += ClockOffset * (CLIGHT/FREQL1);
+            obs->P[1] += ClockOffset * (CLIGHT/FREQL2);
+            obs->L[0] += ClockOffset * FREQL1;
+            obs->L[1] += ClockOffset * FREQL2;
         }
 #endif
          n++;

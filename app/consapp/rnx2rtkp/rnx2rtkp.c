@@ -48,7 +48,7 @@ static const char *help[]={
 " -te de te end day/time   (de=y/m/d te=h:m:s) [obs end time]",
 " -ti tint  time interval (sec) [all]",
 " -p mode   mode (0:single,1:dgps,2:kinematic,3:static,4:static-start,",
-"                 5:moving-base,6:fixed,7:ppp-kine,8:ppp-static,9:ppp-fixed) [2]",
+"                 5:moving-base,6:fixed,7:ppp-kinematic,8:ppp-static,9:ppp-fixed) [2]",
 " -m mask   elevation mask angle (deg) [15]",
 " -sys s[,s...] nav system(s) (s=G:GPS,R:GLO,E:GAL,J:QZS,C:BDS,I:IRN) [G|R]",
 " -f freq   number of frequencies for relative mode (1:L1,2:L1+L2,3:L1+L2+L5) [2]",
@@ -73,7 +73,7 @@ static const char *help[]={
 " -x level  debug trace level (0:off) [0]"
 };
 /* show message --------------------------------------------------------------*/
-extern int showmsg(char *format, ...)
+extern int showmsg(const char *format, ...)
 {
     va_list arg;
     va_start(arg,format); vfprintf(stderr,format,arg); va_end(arg);

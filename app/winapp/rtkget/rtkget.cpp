@@ -29,7 +29,7 @@ USEFORM("..\appcmn\vieweropt.cpp", ViewerOptDialog);
 USEFORM("..\appcmn\viewer.cpp", TextViewer);
 USEFORM("staoptdlg.cpp", StaListDialog);
 //---------------------------------------------------------------------------
-WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
+int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
 	try
 	{

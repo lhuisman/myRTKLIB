@@ -1,27 +1,22 @@
 # makefile for str2str
 
 BINDIR = /usr/local/bin
-SRC    = ../../../src
+SRC    = ../../../../src
 
 # for beagleboard
 #CTARGET= -mfpu=neon -mfloat-abi=softfp -ffast-math
 CTARGET=
 
-OPTION = -DENAGLO -DENAGAL -DENAQZS -DENACMP -DENAIRN -DTRACE -DNFREQ=3 -DNEXOBS=3 -DSVR_REUSEADDR
+#OPTION = -DENAGLO -DENAGAL -DENAQZS -DENACMP -DENAIRN -DTRACE -DNFREQ=3 -DNEXOBS=3
+OPTION = -DENAGLO -DENAGAL -DENAQZS -DENACMP -DENAIRN -DTRACE -DNFREQ=5 -DNEXOBS=3 -DSVR_REUSEADDR
 CFLAGS = -Wall -O3 -ansi -pedantic -Wno-unused-but-set-variable -I$(SRC) $(OPTION) $(CTARGET) -g
-
-UNAME_S := $(shell uname -s)
-ifeq ($(UNAME_S), Darwin)
-	LDLIBS  = -lm -lpthread
-else
-	LDLIBS  = -lm -lrt -lpthread
-endif
+LDLIBS  = -lm -lrt -lpthread
 
 all        : str2str
 str2str    : str2str.o stream.o rtkcmn.o solution.o sbas.o geoid.o
-str2str    : rcvraw.o novatel.o ublox.o swiftnav.o crescent.o skytraq.o gw10.o javad.o
+str2str    : rcvraw.o novatel.o ublox.o ss2.o crescent.o skytraq.o javad.o
 str2str    : nvs.o binex.o rt17.o rtcm.o rtcm2.o rtcm3.o rtcm3e.o preceph.o streamsvr.o
-str2str    : septentrio.o cmr.o tersus.o comnav.o
+str2str    : septentrio.o
 
 str2str.o  : ../str2str.c
 	$(CC) -c $(CFLAGS) ../str2str.c
@@ -43,14 +38,12 @@ novatel.o  : $(SRC)/rcv/novatel.c
 	$(CC) -c $(CFLAGS) $(SRC)/rcv/novatel.c
 ublox.o    : $(SRC)/rcv/ublox.c
 	$(CC) -c $(CFLAGS) $(SRC)/rcv/ublox.c
-swiftnav.o      : $(SRC)/rcv/swiftnav.c
-	$(CC) -c $(CFLAGS) $(SRC)/rcv/swiftnav.c
+ss2.o      : $(SRC)/rcv/ss2.c
+	$(CC) -c $(CFLAGS) $(SRC)/rcv/ss2.c
 crescent.o : $(SRC)/rcv/crescent.c
 	$(CC) -c $(CFLAGS) $(SRC)/rcv/crescent.c
 skytraq.o  : $(SRC)/rcv/skytraq.c
 	$(CC) -c $(CFLAGS) $(SRC)/rcv/skytraq.c
-gw10.o     : $(SRC)/rcv/gw10.c
-	$(CC) -c $(CFLAGS) $(SRC)/rcv/gw10.c
 javad.o    : $(SRC)/rcv/javad.c
 	$(CC) -c $(CFLAGS) $(SRC)/rcv/javad.c
 nvs.o      : $(SRC)/rcv/nvs.c
@@ -71,12 +64,6 @@ preceph.o  : $(SRC)/preceph.c
 	$(CC) -c $(CFLAGS) $(SRC)/preceph.c
 septentrio.o: $(SRC)/rcv/septentrio.c
 	$(CC) -c $(CFLAGS) $(SRC)/rcv/septentrio.c
-cmr.o      : $(SRC)/rcv/cmr.c
-	$(CC) -c $(CFLAGS) $(SRC)/rcv/cmr.c
-tersus.o   : $(SRC)/rcv/tersus.c
-	$(CC) -c $(CFLAGS) $(SRC)/rcv/tersus.c
-comnav.o   : $(SRC)/rcv/comnav.c
-	$(CC) -c $(CFLAGS) $(SRC)/rcv/comnav.c
 
 str2str.o  : $(SRC)/rtklib.h
 stream.o   : $(SRC)/rtklib.h
@@ -88,10 +75,9 @@ geoid.o    : $(SRC)/rtklib.h
 rcvraw.o   : $(SRC)/rtklib.h
 novatel.o  : $(SRC)/rtklib.h
 ublox.o    : $(SRC)/rtklib.h
-swiftnav.o : $(SRC)/rtklib.h
+ss2.o      : $(SRC)/rtklib.h
 crescent.o : $(SRC)/rtklib.h
 skytraq.o  : $(SRC)/rtklib.h
-gw10.o     : $(SRC)/rtklib.h
 javad.o    : $(SRC)/rtklib.h
 nvs.o      : $(SRC)/rtklib.h
 binex.o    : $(SRC)/rtklib.h
@@ -102,9 +88,6 @@ rtcm3.o    : $(SRC)/rtklib.h
 rtcm3e.o   : $(SRC)/rtklib.h
 preceph.o  : $(SRC)/rtklib.h
 septentrio.o: $(SRC)/rtklib.h
-cmr.o      : $(SRC)/rtklib.h
-tersus.o   : $(SRC)/rtklib.h
-comnav.o   : $(SRC)/rtklib.h
 
 install:
 	cp str2str $(BINDIR)
@@ -133,3 +116,4 @@ test6:
 
 clean:
 	rm -f str2str str2str.exe *.o *.out *.trace
+

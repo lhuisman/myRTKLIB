@@ -299,9 +299,6 @@
         <CppCompile Include="..\..\..\src\rcv\skytraq.c">
             <BuildOrder>15</BuildOrder>
         </CppCompile>
-        <CppCompile Include="..\..\..\src\rcv\ss2.c">
-            <BuildOrder>14</BuildOrder>
-        </CppCompile>
         <CppCompile Include="..\..\..\src\rcv\ublox.c">
             <BuildOrder>12</BuildOrder>
         </CppCompile>
@@ -539,12 +536,6 @@
                     </Platform>
                 </DeployFile>
                 <DeployFile LocalName="..\..\..\src\rcv\binex.c" Configuration="Release" Class="ProjectFile">
-                    <Platform Name="Win64">
-                        <RemoteDir>.\</RemoteDir>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="..\..\..\src\rcv\ss2.c" Configuration="Release" Class="ProjectFile">
                     <Platform Name="Win64">
                         <RemoteDir>.\</RemoteDir>
                         <Overwrite>true</Overwrite>

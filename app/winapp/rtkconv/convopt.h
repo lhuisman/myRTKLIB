@@ -51,6 +51,7 @@ __published:
 	TGroupBox *GroupBox4;
 	TCheckBox *Freq1;
 	TCheckBox *Freq2;
+	TCheckBox *Freq3;
 	TCheckBox *Freq4;
 	TCheckBox *Obs1;
 	TCheckBox *Nav5;
@@ -66,7 +67,6 @@ __published:
 	TEdit *MarkerNo;
 	TEdit *ExSats;
 	TLabel *Label11;
-	TCheckBox *Freq6;
 	TCheckBox *RnxFile;
 	TLabel *Label12;
 	TEdit *RnxCode;
@@ -76,7 +76,6 @@ __published:
 	TCheckBox *AutoPos;
 	TButton *BtnMask;
 	TCheckBox *Nav7;
-	TCheckBox *Freq7;
 	TCheckBox *HalfCyc;
 	TCheckBox *ChkSepNav;
 	TLabel *Label13;

@@ -4,7 +4,7 @@
         <ProjectType>CppVCLApplication</ProjectType>
         <MainSource>rtkpost.cpp</MainSource>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Release</Config>
+        <Config Condition="'$(Config)'==''">Debug</Config>
         <FrameworkType>VCL</FrameworkType>
         <ProjectVersion>18.8</ProjectVersion>
         <Platform Condition="'$(Platform)'==''">Win64</Platform>
@@ -69,7 +69,7 @@
         <ILINK_LinkwithIntebaseTogo>false</ILINK_LinkwithIntebaseTogo>
         <SanitizedProjectName>rtkpost</SanitizedProjectName>
         <IncludePath>..\..\..\src\;..\appcmn\;..\..\src\;$(IncludePath)</IncludePath>
-        <ILINK_LibraryPath>..\..\..\src\;..\appcmn\;..\..\src\;$(ILINK_LibraryPath)</ILINK_LibraryPath>
+        <ILINK_LibraryPath>..\..\..\src\;..\appcmn\;..\..\..\lib\openblas;$(ILINK_LibraryPath)</ILINK_LibraryPath>
         <BCC_waus>false</BCC_waus>
         <BCC_weff>false</BCC_weff>
         <Manifest_File>None</Manifest_File>
@@ -93,7 +93,7 @@
         <DCC_UnitSearchPath>..\..\..\rtklib_extlex;..\..\extlex;..\..\extion;..\..\src\qzsext;..\appcmn;..\..\src\rcv;..\src;..\..\src;K:\proj\rtklib_1.1\util\gui;C:\Documents and Settings\TTAKA\My Documents\Borland Studio Projects;$(BDS)\lib;$(BDS)\lib\obj;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <DCC_ResourcePath>..\..\..\rtklib_extlex;..\..\extlex;..\..\extion;..\..\src\qzsext;..\appcmn;..\..\src\rcv;..\src;..\..\src;K:\proj\rtklib_1.1\util\gui;$(DCC_ResourcePath)</DCC_ResourcePath>
         <DCC_CBuilderOutput>JPHNE</DCC_CBuilderOutput>
-        <BCC_Defines>WIN32;TRACE;ENAGLO;ENAGAL;ENAQZS;ENACMP;ENAIRN;NFREQ=5;LAPACK;$(BCC_Defines)</BCC_Defines>
+        <BCC_Defines>WIN32;TRACE;ENAGLO;ENAGAL;ENAQZS;ENACMP;ENAIRN;NFREQ=3;EXOBS=3;LAPACK;$(BCC_Defines)</BCC_Defines>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
@@ -185,7 +185,7 @@
         <VerInfo_Locale>1033</VerInfo_Locale>
         <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
         <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
-        <BCC_Defines>NDEBUG;$(BCC_Defines);$(BCC_Defines)</BCC_Defines>
+        <BCC_Defines>NDEBUG;$(BCC_Defines);NFREQ=3;NEXOBS=3;$(BCC_Defines)</BCC_Defines>
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
     </PropertyGroup>
     <ItemGroup>
@@ -422,8 +422,8 @@
                     <Parameters Name="LoadUnspecifiedSymbols">False</Parameters>
                 </Parameters>
                 <Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\bcboffice2k260.bpl">Embarcadero C++Builder Office 2000 サーバー パッケージ</Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\bcbofficexp260.bpl">Embarcadero C++Builder Office XP サーバー パッケージ</Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\bcboffice2k260.bpl">Embarcadero C++Builder Office 2000 Servers Package</Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\bcbofficexp260.bpl">Embarcadero C++Builder Office XP Servers Package</Excluded_Packages>
                 </Excluded_Packages>
                 <ProjectProperties>
                     <ProjectProperties Name="AutoShowDeps">False</ProjectProperties>

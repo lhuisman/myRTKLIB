@@ -1,15 +1,9 @@
 # makefile for pos2kml
 
 BINDIR = /usr/local/bin
-SRC    = ../../../src
+SRC    = ../../../../src
 CFLAGS = -Wall -O3 -ansi -pedantic -I$(SRC) -DTRACE
-
-UNAME_S := $(shell uname -s)
-ifeq ($(UNAME_S), Darwin)
-	LDLIBS  = -lm
-else
-	LDLIBS  = -lm -lrt
-endif
+LDLIBS  = -lm -lrt
 
 pos2kml    : pos2kml.o convkml.o convgpx.o solution.o geoid.o rtkcmn.o preceph.o
 

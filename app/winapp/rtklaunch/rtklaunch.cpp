@@ -22,9 +22,8 @@
 
 
 USEFORM("launchmain.cpp", MainForm);
-USEFORM("launchoptdlg.cpp", LaunchOptDialog);
 //---------------------------------------------------------------------------
-WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
+int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 {
 	try
 	{
@@ -32,7 +31,6 @@ WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 		Application->MainFormOnTaskBar = true;
 		Application->Title = "RTKLAUNCH";
 		Application->CreateForm(__classid(TMainForm), &MainForm);
-		Application->CreateForm(__classid(TLaunchOptDialog), &LaunchOptDialog);
 		Application->Run();
 	}
 	catch (Exception &exception)

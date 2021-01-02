@@ -27,12 +27,6 @@
         <Projects Include="rtklaunch\rtklaunch.cbproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="rtknavi_win64\rtknavi_win64.cbproj">
-            <Dependencies/>
-        </Projects>
-        <Projects Include="rtkpost_win64\rtkpost_win64.cbproj">
-            <Dependencies/>
-        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -113,32 +107,14 @@
     <Target Name="rtklaunch:Make">
         <MSBuild Projects="rtklaunch\rtklaunch.cbproj" Targets="Make"/>
     </Target>
-    <Target Name="rtknavi_win64">
-        <MSBuild Projects="rtknavi_win64\rtknavi_win64.cbproj"/>
-    </Target>
-    <Target Name="rtknavi_win64:Clean">
-        <MSBuild Projects="rtknavi_win64\rtknavi_win64.cbproj" Targets="Clean"/>
-    </Target>
-    <Target Name="rtknavi_win64:Make">
-        <MSBuild Projects="rtknavi_win64\rtknavi_win64.cbproj" Targets="Make"/>
-    </Target>
-    <Target Name="rtkpost_win64">
-        <MSBuild Projects="rtkpost_win64\rtkpost_win64.cbproj"/>
-    </Target>
-    <Target Name="rtkpost_win64:Clean">
-        <MSBuild Projects="rtkpost_win64\rtkpost_win64.cbproj" Targets="Clean"/>
-    </Target>
-    <Target Name="rtkpost_win64:Make">
-        <MSBuild Projects="rtkpost_win64\rtkpost_win64.cbproj" Targets="Make"/>
-    </Target>
     <Target Name="Build">
-        <CallTarget Targets="rtkconv;rtknavi;rtkplot;rtkpost;srctblbrows;strsvr;rtkget;rtklaunch;rtknavi_win64;rtkpost_win64"/>
+        <CallTarget Targets="rtkconv;rtknavi;rtkplot;rtkpost;srctblbrows;strsvr;rtkget;rtklaunch"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="rtkconv:Clean;rtknavi:Clean;rtkplot:Clean;rtkpost:Clean;srctblbrows:Clean;strsvr:Clean;rtkget:Clean;rtklaunch:Clean;rtknavi_win64:Clean;rtkpost_win64:Clean"/>
+        <CallTarget Targets="rtkconv:Clean;rtknavi:Clean;rtkplot:Clean;rtkpost:Clean;srctblbrows:Clean;strsvr:Clean;rtkget:Clean;rtklaunch:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="rtkconv:Make;rtknavi:Make;rtkplot:Make;rtkpost:Make;srctblbrows:Make;strsvr:Make;rtkget:Make;rtklaunch:Make;rtknavi_win64:Make;rtkpost_win64:Make"/>
+        <CallTarget Targets="rtkconv:Make;rtknavi:Make;rtkplot:Make;rtkpost:Make;srctblbrows:Make;strsvr:Make;rtkget:Make;rtklaunch:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

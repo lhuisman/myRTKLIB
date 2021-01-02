@@ -10,7 +10,7 @@
 //---------------------------------------------------------------------------
 class TLaunchOptDialog : public TForm
 {
-__published:	// IDE で管理されるコンポーネント
+__published:
 	TRadioButton *OptMkl;
 	TRadioButton *OptWin64;
 	TButton *BtnCancel;
@@ -19,8 +19,8 @@ __published:	// IDE で管理されるコンポーネント
 	TCheckBox *Minimize;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall BtnOkClick(TObject *Sender);
-private:	// ユーザー宣言
-public:		// ユーザー宣言
+private:
+public:
 	__fastcall TLaunchOptDialog(TComponent* Owner);
 };
 //---------------------------------------------------------------------------
