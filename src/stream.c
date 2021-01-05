@@ -82,7 +82,9 @@
 #include <netinet/in.h>
 #include <netinet/tcp.h>
 #include <arpa/inet.h>
-#include <netdb.h>
+#ifndef _POSIX_SOURCE
+#define _POSIX_SOURCE
+#endif#include <netdb.h>
 #endif
 
 /* constants -----------------------------------------------------------------*/
