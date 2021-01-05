@@ -84,7 +84,8 @@
 #include <arpa/inet.h>
 #ifndef _POSIX_SOURCE
 #define _POSIX_SOURCE
-#endif#include <netdb.h>
+#endif
+#include <netdb.h>
 #endif
 
 /* constants -----------------------------------------------------------------*/
