@@ -6,6 +6,9 @@
 #include "refdlg.h"
 #include "pntdlg.h"
 #include "plotmain.h"
+
+#define PNTLIST_WIDTH	372
+
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma resource "*.dfm"
@@ -21,18 +24,19 @@ static double str2dbl(AnsiString str)
 __fastcall TPntDialog::TPntDialog(TComponent* Owner)
 	: TForm(Owner)
 {
-	PntList->RowCount=MAXWAYPNT;
+	PntList->RowCount=1;
 }
 //---------------------------------------------------------------------------
 void __fastcall TPntDialog::FormShow(TObject *Sender)
 {
-	int width[]={90,90,90};
+    double scale;
+	int width[]={90,90,80,90};
 	
-	FontScale=Screen->PixelsPerInch;
-	for (int i=0;i<3;i++) {
-		PntList->ColWidths[i]=width[i]*FontScale/96;
+    scale=(double)PntList->Width/PNTLIST_WIDTH;
+    
+	for (int i=0;i<4;i++) {
+		PntList->ColWidths[i]=(int)(width[i]*scale);
 	}
-	PntList->DefaultRowHeight=17*FontScale/96;
 	SetPoint();
 }
 //---------------------------------------------------------------------------
@@ -51,7 +55,8 @@ void __fastcall TPntDialog::BtnAddClick(TObject *Sender)
 	ecef2pos(rr,pos);
 	PntList->Cells[0][i]=s.sprintf("%.9f",pos[0]*R2D);
 	PntList->Cells[1][i]=s.sprintf("%.9f",pos[1]*R2D);
-	PntList->Cells[2][i]=s.sprintf("Point%02d",i+1);
+	PntList->Cells[2][i]=s.sprintf("%.4f",pos[2]);
+	PntList->Cells[3][i]=s.sprintf("Point%02d",i+1);
 	UpdatePoint();
 }
 //---------------------------------------------------------------------------
@@ -92,8 +97,8 @@ void __fastcall TPntDialog::UpdatePoint(void)
 		if (PntList->Cells[2][i]=="") continue;
 		Plot->PntPos[n][0]=str2dbl(PntList->Cells[0][i]);
 		Plot->PntPos[n][1]=str2dbl(PntList->Cells[1][i]);
-		Plot->PntPos[n][2]=0.0;
-		Plot->PntName[n++]=PntList->Cells[2][i];
+		Plot->PntPos[n][2]=str2dbl(PntList->Cells[2][i]);
+		Plot->PntName[n++]=PntList->Cells[3][i];
 	}
 	Plot->NWayPnt=n;
 	Plot->UpdatePlot();
@@ -104,12 +109,12 @@ void __fastcall TPntDialog::SetPoint(void)
 	AnsiString s;
 	
 	for (int i=0;i<Plot->NWayPnt;i++) {
-        wchar_t buff[256];
-        ::MultiByteToWideChar(CP_UTF8,0,Plot->PntName[i].c_str(),-1,buff,512);
 		PntList->Cells[0][i]=s.sprintf("%.9f",Plot->PntPos[i][0]);
 		PntList->Cells[1][i]=s.sprintf("%.9f",Plot->PntPos[i][1]);
-		PntList->Cells[2][i]=buff;
+		PntList->Cells[2][i]=s.sprintf("%.4f",Plot->PntPos[i][2]);
+		PntList->Cells[3][i]=Plot->PntName[i];
 	}
+	PntList->RowCount=Plot->NWayPnt;
 }
 //---------------------------------------------------------------------------
 void __fastcall TPntDialog::PntListClick(TObject *Sender)

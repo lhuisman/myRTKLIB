@@ -4,9 +4,9 @@ object RcvOptDialog: TRcvOptDialog
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Receiver Option'
-  ClientHeight = 58
+  ClientHeight = 61
   ClientWidth = 221
-  Color = clBtnFace
+  Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -19,8 +19,8 @@ object RcvOptDialog: TRcvOptDialog
   TextHeight = 13
   object BtnOk: TButton
     Left = 48
-    Top = 29
-    Width = 83
+    Top = 30
+    Width = 82
     Height = 29
     Caption = '&OK'
     ModalResult = 1
@@ -29,8 +29,8 @@ object RcvOptDialog: TRcvOptDialog
   end
   object BnCancel: TButton
     Left = 132
-    Top = 29
-    Width = 83
+    Top = 30
+    Width = 82
     Height = 29
     Caption = '&Cancel'
     ModalResult = 2

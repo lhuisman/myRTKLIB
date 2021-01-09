@@ -93,9 +93,9 @@ object OptDialog: TOptDialog
       object LabelFreq: TLabel
         Left = 24
         Top = 29
-        Width = 58
+        Width = 119
         Height = 13
-        Caption = 'Frequencies'
+        Caption = 'Frequencies / Filter Type'
       end
       object LabelElMask: TLabel
         Left = 24
@@ -164,8 +164,7 @@ object OptDialog: TOptDialog
           'Iono-Free LC'
           'Estimate STEC'
           'IONEX TEC'
-          'QZSS Broadcast'
-          'QZSS LEX')
+          'QZSS Broadcast')
       end
       object TropOpt: TComboBox
         Left = 248
@@ -249,8 +248,8 @@ object OptDialog: TOptDialog
         Top = 274
         Width = 71
         Height = 17
-        Caption = 'GLO'
-        TabOrder = 9
+        Caption = 'GLONASS'
+        TabOrder = 18
         OnClick = NavSys2Click
       end
       object NavSys3: TCheckBox
@@ -295,8 +294,8 @@ object OptDialog: TOptDialog
         Top = 274
         Width = 69
         Height = 19
-        Caption = 'BeiDou'
-        TabOrder = 13
+        Caption = 'BDS'
+        TabOrder = 21
         OnClick = NavSys6Click
       end
       object ElMask: TComboBox
@@ -808,11 +807,11 @@ object OptDialog: TOptDialog
         Caption = 'Geoid Model'
       end
       object Label20: TLabel
-        Left = 24
+        Left = 23
         Top = 29
-        Width = 210
+        Width = 194
         Height = 13
-        Caption = 'Output Header / Output Processing Options'
+        Caption = 'Output Header / Proc. Options / Velocity'
       end
       object Label36: TLabel
         Left = 24
@@ -1047,6 +1046,19 @@ object OptDialog: TOptDialog
         TabOrder = 8
         Text = '0'
       end
+      object OutputVel: TComboBox
+        Left = 350
+        Top = 28
+        Width = 50
+        Height = 21
+        Style = csDropDownList
+        ItemIndex = 0
+        TabOrder = 3
+        Text = 'OFF'
+        Items.Strings = (
+          'OFF'
+          'ON')
+      end
     end
     object TabSheet4: TTabSheet
       Caption = 'S&tatistics'
@@ -1233,18 +1245,14 @@ object OptDialog: TOptDialog
         TabOrder = 2
         Text = '5.0E-12'
       end
-      object Edit1: TEdit
-        Left = 248
-        Top = 240
-        Width = 148
-        Height = 21
-        TabOrder = 3
-        Text = '5.0E-12'
-      end
     end
     object TabSheet5: TTabSheet
       Caption = '&Positions'
       ImageIndex = 4
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Label4: TLabel
         Left = 12
         Top = 12
@@ -1259,8 +1267,8 @@ object OptDialog: TOptDialog
         Caption = 'Station Position File'
       end
       object BtnStaPosView: TSpeedButton
-        Left = 360
-        Top = 208
+        Left = 351
+        Top = 209
         Width = 21
         Height = 21
         Flat = True
@@ -1357,10 +1365,10 @@ object OptDialog: TOptDialog
           Text = '0'
         end
         object BtnRefPos: TButton
-          Left = 372
-          Top = 14
-          Width = 21
-          Height = 21
+          Left = 368
+          Top = 13
+          Width = 25
+          Height = 23
           Caption = '...'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
@@ -1402,8 +1410,7 @@ object OptDialog: TOptDialog
             'Lat/Lon/Height (deg/m)'
             'Lat/Lon/Height (dms/m)'
             'X/Y/Z-ECEF (m)'
-            'RTCM Antenna Position'
-            'Raw Antenna Position'
+            'RTCM/Raw Antenna Position'
             'Average of Single Position')
         end
         object MaxAveEp: TEdit
@@ -1509,10 +1516,10 @@ object OptDialog: TOptDialog
           Text = '0'
         end
         object BtnRovPos: TButton
-          Left = 372
-          Top = 14
-          Width = 21
-          Height = 21
+          Left = 368
+          Top = 13
+          Width = 25
+          Height = 23
           Caption = '...'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
@@ -1539,6 +1546,7 @@ object OptDialog: TOptDialog
           Height = 21
           DropDownCount = 16
           TabOrder = 6
+          OnClick = RovAntClick
         end
         object RovPosTypeP: TComboBox
           Left = 6
@@ -1911,21 +1919,23 @@ object OptDialog: TOptDialog
         Top = 167
         Width = 39
         Height = 13
-        Caption = 'Sol Font'
+        Caption = 'Solution Font'
       end
-      object FontLabel: TLabel
-        Left = 309
-        Top = 164
-        Width = 67
+      object FontLabel2: TLabel
+        Left = 265
+        Top = 188
+        Width = 80
         Height = 18
         Alignment = taRightJustify
-        Caption = 'Font Label'
+        Anchors = [akRight, akBottom]
+        Caption = 'Font Label 2'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -15
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
+        Layout = tlCenter
       end
       object Label41: TLabel
         Left = 32
@@ -1969,26 +1979,35 @@ object OptDialog: TOptDialog
         Height = 13
         Caption = 'HTTP / NTRIP Proxy'
       end
-      object Label15: TLabel
-        Left = 8
-        Top = 191
-        Width = 43
-        Height = 13
-        Caption = 'TLE Data'
-      end
-      object Label39: TLabel
-        Left = 8
-        Top = 212
-        Width = 32
-        Height = 13
-        Caption = 'Sat No'
-      end
       object Label43: TLabel
         Left = 32
-        Top = 167
-        Width = 33
+        Top = 214
+        Width = 62
         Height = 13
-        Caption = 'Layout'
+        Caption = 'Panel Layout'
+      end
+      object Label49: TLabel
+        Left = 32
+        Top = 167
+        Width = 51
+        Height = 13
+        Caption = 'Panel Font'
+      end
+      object FontLabel1: TLabel
+        Left = 265
+        Top = 164
+        Width = 80
+        Height = 18
+        Alignment = taRightJustify
+        Anchors = [akRight, akBottom]
+        Caption = 'Font Label 1'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -15
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        Layout = tlCenter
       end
       object SvrCycleE: TEdit
         Left = 248
@@ -2006,11 +2025,11 @@ object OptDialog: TOptDialog
         TabOrder = 5
         Text = '32768'
       end
-      object BtnFont: TButton
-        Left = 381
-        Top = 163
-        Width = 21
-        Height = 23
+      object BtnFont2: TButton
+        Left = 358
+        Top = 185
+        Width = 25
+        Height = 24
         Caption = '...'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
@@ -2019,7 +2038,7 @@ object OptDialog: TOptDialog
         Font.Style = []
         ParentFont = False
         TabOrder = 13
-        OnClick = BtnFontClick
+        OnClick = BtnFont2Click
       end
       object SolBuffSizeE: TEdit
         Left = 248
@@ -2107,54 +2126,10 @@ object OptDialog: TOptDialog
         Height = 21
         TabOrder = 11
       end
-      object TLEFile: TEdit
-        Left = 55
-        Top = 187
-        Width = 325
-        Height = 21
-        TabOrder = 14
-      end
-      object BtnTLEFile: TButton
-        Left = 381
-        Top = 186
-        Width = 21
-        Height = 23
-        Caption = '...'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -9
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
-        TabOrder = 15
-        OnClick = BtnTLEFileClick
-      end
-      object TLESatFile: TEdit
-        Left = 55
-        Top = 209
-        Width = 325
-        Height = 21
-        TabOrder = 16
-      end
-      object BtnTLESatFile: TButton
-        Left = 381
-        Top = 208
-        Width = 21
-        Height = 23
-        Caption = '...'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -9
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
-        TabOrder = 17
-        OnClick = BtnTLESatFileClick
-      end
       object PanelStackE: TComboBox
-        Left = 70
-        Top = 163
-        Width = 71
+        Left = 248
+        Top = 211
+        Width = 134
         Height = 21
         Style = csDropDownList
         ItemIndex = 0
@@ -2164,31 +2139,46 @@ object OptDialog: TOptDialog
           'Horizontal'
           'Vertical')
       end
+      object BtnFont1: TButton
+        Left = 358
+        Top = 160
+        Width = 25
+        Height = 24
+        Caption = '...'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -9
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        TabOrder = 14
+        OnClick = BtnFont1Click
+      end
     end
   end
   object BtnLoad: TButton
-    Left = 0
-    Top = 353
-    Width = 99
+    Left = 4
+    Top = 265
+    Width = 96
     Height = 29
-    Caption = '&Load'
+    Caption = '&Load...'
     TabOrder = 2
     OnClick = BtnLoadClick
   end
   object OpenDialog: TOpenDialog
     Filter = 
       'All (*.*)|*.*|PCV File (*.pcv,*.atx)|*.pcv;*.atx|Position File (' +
-      '*.pos)|*.pos|Options File (*.conf)|*.conf'
+      '*.pos,*.snx)|*.pos;*.snx|Options File (*.conf)|*.conf'
     Options = [ofHideReadOnly, ofNoChangeDir, ofEnableSizing]
     Title = 'Load File'
-    Left = 200
-    Top = 299
+    Left = 188
+    Top = 116
   end
   object SaveDialog: TSaveDialog
     Filter = 'All (*.*)|*.*|Options File (*.conf)|*.conf'
     Title = 'Save File'
-    Left = 146
-    Top = 306
+    Left = 160
+    Top = 117
   end
   object FontDialog: TFontDialog
     Font.Charset = DEFAULT_CHARSET
@@ -2196,7 +2186,7 @@ object OptDialog: TOptDialog
     Font.Height = -11
     Font.Name = 'Tahoma'
     Font.Style = []
-    Left = 246
-    Top = 298
+    Left = 131
+    Top = 115
   end
 end

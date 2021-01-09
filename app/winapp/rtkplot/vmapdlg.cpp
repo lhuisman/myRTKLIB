@@ -15,90 +15,6 @@ __fastcall TVecMapDialog::TVecMapDialog(TComponent* Owner)
 {
 }
 //---------------------------------------------------------------------------
-void __fastcall TVecMapDialog::BtnColor1Click(TObject *Sender)
-{
-    ColorDialog->Color=Color1->Color;
-    if (!ColorDialog->Execute()) return;
-    Color1->Color=ColorDialog->Color;
-}
-//---------------------------------------------------------------------------
-void __fastcall TVecMapDialog::BtnColor2Click(TObject *Sender)
-{
-    ColorDialog->Color=Color2->Color;
-    if (!ColorDialog->Execute()) return;
-    Color2->Color=ColorDialog->Color;
-}
-//---------------------------------------------------------------------------
-void __fastcall TVecMapDialog::BtnColor3Click(TObject *Sender)
-{
-    ColorDialog->Color=Color3->Color;
-    if (!ColorDialog->Execute()) return;
-    Color3->Color=ColorDialog->Color;
-}
-//---------------------------------------------------------------------------
-void __fastcall TVecMapDialog::BtnColor4Click(TObject *Sender)
-{
-    ColorDialog->Color=Color4->Color;
-    if (!ColorDialog->Execute()) return;
-    Color4->Color=ColorDialog->Color;
-}
-//---------------------------------------------------------------------------
-void __fastcall TVecMapDialog::BtnColor5Click(TObject *Sender)
-{
-    ColorDialog->Color=Color5->Color;
-    if (!ColorDialog->Execute()) return;
-    Color5->Color=ColorDialog->Color;
-}
-//---------------------------------------------------------------------------
-void __fastcall TVecMapDialog::BtnColor6Click(TObject *Sender)
-{
-    ColorDialog->Color=Color6->Color;
-    if (!ColorDialog->Execute()) return;
-    Color6->Color=ColorDialog->Color;
-}
-//---------------------------------------------------------------------------
-void __fastcall TVecMapDialog::BtnColor7Click(TObject *Sender)
-{
-    ColorDialog->Color=Color7->Color;
-    if (!ColorDialog->Execute()) return;
-    Color7->Color=ColorDialog->Color;
-}
-//---------------------------------------------------------------------------
-void __fastcall TVecMapDialog::BtnColor8Click(TObject *Sender)
-{
-    ColorDialog->Color=Color8->Color;
-    if (!ColorDialog->Execute()) return;
-    Color8->Color=ColorDialog->Color;
-}
-//---------------------------------------------------------------------------
-void __fastcall TVecMapDialog::BtnColor9Click(TObject *Sender)
-{
-    ColorDialog->Color=Color9->Color;
-    if (!ColorDialog->Execute()) return;
-    Color9->Color=ColorDialog->Color;
-}
-//---------------------------------------------------------------------------
-void __fastcall TVecMapDialog::BtnColor10Click(TObject *Sender)
-{
-    ColorDialog->Color=Color10->Color;
-    if (!ColorDialog->Execute()) return;
-    Color10->Color=ColorDialog->Color;
-}
-//---------------------------------------------------------------------------
-void __fastcall TVecMapDialog::BtnColor11Click(TObject *Sender)
-{
-    ColorDialog->Color=Color11->Color;
-    if (!ColorDialog->Execute()) return;
-    Color11->Color=ColorDialog->Color;
-}
-//---------------------------------------------------------------------------
-void __fastcall TVecMapDialog::BtnColor12Click(TObject *Sender)
-{
-    ColorDialog->Color=Color12->Color;
-    if (!ColorDialog->Execute()) return;
-    Color12->Color=ColorDialog->Color;
-}
-//---------------------------------------------------------------------------
 void __fastcall TVecMapDialog::Layer1Click(TObject *Sender)
 {
 	TRadioButton *layer[]={
@@ -108,6 +24,7 @@ void __fastcall TVecMapDialog::Layer1Click(TObject *Sender)
 	for (int i=0;i<MAXMAPLAYER;i++) {
 		layer[i]->Checked=(layer[i]==(TRadioButton *)Sender);
 	}
+	UpdateMap();
 }
 //---------------------------------------------------------------------------
 void __fastcall TVecMapDialog::BtnUpClick(TObject *Sender)
@@ -119,6 +36,10 @@ void __fastcall TVecMapDialog::BtnUpClick(TObject *Sender)
 	TPanel *color[]={
 		Color1,Color2,Color3,Color4,Color5,Color6,Color7,Color8,Color9,
 		Color10,Color11,Color12
+	};
+	TPanel *colorf[]={
+		Color1F,Color2F,Color3F,Color4F,Color5F,Color6F,Color7F,Color8F,
+		Color9F,Color10F,Color11F,Color12F
 	};
 	TColor col;
 	gisd_t *data;
@@ -138,12 +59,15 @@ void __fastcall TVecMapDialog::BtnUpClick(TObject *Sender)
 	data=Gis.data[i-1];
 	Gis.data[i-1]=Gis.data[i];
 	Gis.data[i]=data;
-	//col=color[i-1]->Color;
-	//color[i-1]->Color=color[i]->Color;
-	//color[i]->Color=col;
+	col=color[i-1]->Color;
+	color[i-1]->Color=color[i]->Color;
+	color[i]->Color=col;
+	col=colorf[i-1]->Color;
+	colorf[i-1]->Color=colorf[i]->Color;
+	colorf[i]->Color=col;
 	layer[i-1]->Checked=true;
 	layer[i]->Checked=false;
-	UpdateLayer();
+	UpdateMap();
 }
 //---------------------------------------------------------------------------
 void __fastcall TVecMapDialog::BtnDownClick(TObject *Sender)
@@ -155,6 +79,10 @@ void __fastcall TVecMapDialog::BtnDownClick(TObject *Sender)
 	TPanel *color[]={
 		Color1,Color2,Color3,Color4,Color5,Color6,Color7,Color8,Color9,
 		Color10,Color11,Color12
+	};
+	TPanel *colorf[]={
+		Color1F,Color2F,Color3F,Color4F,Color5F,Color6F,Color7F,Color8F,
+		Color9F,Color10F,Color11F,Color12F
 	};
 	TColor col;
 	gisd_t *data;
@@ -174,12 +102,15 @@ void __fastcall TVecMapDialog::BtnDownClick(TObject *Sender)
 	data=Gis.data[i+1];
 	Gis.data[i+1]=Gis.data[i];
 	Gis.data[i]=data;
-	//col=color[i+1]->Color;
-	//color[i+1]->Color=color[i]->Color;
-	//color[i]->Color=col;
+	col=color[i+1]->Color;
+	color[i+1]->Color=color[i]->Color;
+	color[i]->Color=col;
+	col=colorf[i+1]->Color;
+	colorf[i+1]->Color=colorf[i]->Color;
+	colorf[i]->Color=col;
 	layer[i+1]->Checked=true;
 	layer[i]->Checked=false;
-	UpdateLayer();
+	UpdateMap();
 }
 //---------------------------------------------------------------------------
 void __fastcall TVecMapDialog::BtnDeleteClick(TObject *Sender)
@@ -195,6 +126,7 @@ void __fastcall TVecMapDialog::Vis1Click(TObject *Sender)
 	for (int i=0;i<MAXMAPLAYER;i++) {
 		if ((TCheckBox *)Sender==vis[i]) Gis.flag[i]=vis[i]->Checked?1:0;
 	}
+	UpdateMap();
 }
 //---------------------------------------------------------------------------
 void __fastcall TVecMapDialog::FormShow(TObject *Sender)
@@ -207,27 +139,50 @@ void __fastcall TVecMapDialog::FormShow(TObject *Sender)
 		Color1,Color2,Color3,Color4,Color5,Color6,Color7,Color8,Color9,
 		Color10,Color11,Color12
 	};
+	TPanel *colorf[]={
+		Color1F,Color2F,Color3F,Color4F,Color5F,Color6F,Color7F,Color8F,
+		Color9F,Color10F,Color11F,Color12F
+	};
 	Gis=Plot->Gis;
 	for (int i=0;i<MAXMAPLAYER;i++) {
 		layer[i]->Checked=false;
-		color[i]->Color=Plot->MapColor[i];
+		color [i]->Color=Plot->MapColor [i];
+		colorf[i]->Color=Plot->MapColorF[i];
 	}
-	UpdateLayer();
+	UpdateMap();
 }
 //---------------------------------------------------------------------------
-void __fastcall TVecMapDialog::BtnOkClick(TObject *Sender)
+void __fastcall TVecMapDialog::BtnApplyClick(TObject *Sender)
+{
+	UpdateMap();
+}
+//---------------------------------------------------------------------------
+void __fastcall TVecMapDialog::BtnCloseClick(TObject *Sender)
+{
+	Close();
+}
+//---------------------------------------------------------------------------
+void __fastcall TVecMapDialog::ColorClick(TObject *Sender)
 {
 	TPanel *color[]={
 		Color1,Color2,Color3,Color4,Color5,Color6,Color7,Color8,Color9,
-		Color10,Color11,Color12
+		Color10,Color11,Color12,Color1F,Color2F,Color3F,Color4F,Color5F,
+		Color6F,Color7F,Color8F,Color9F,Color10F,Color11F,Color12F,NULL
 	};
-	for (int i=0;i<MAXMAPLAYER;i++) {
-		Plot->MapColor[i]=color[i]->Color;
+	int i;
+
+	for (i=0;color[i];i++) {
+		if (color[i]==(TPanel *)Sender) break;
 	}
-	Plot->Gis=Gis;
+	if (color[i]) {
+        ColorDialog->Color=color[i]->Color;
+        if (!ColorDialog->Execute()) return;
+        color[i]->Color=ColorDialog->Color;
+	    UpdateMap();
+	}
 }
 //---------------------------------------------------------------------------
-void __fastcall TVecMapDialog::UpdateLayer(void)
+void __fastcall TVecMapDialog::UpdateMap(void)
 {
 	TRadioButton *layer[]={
 		Layer1,Layer2,Layer3,Layer4,Layer5,Layer6,Layer7,Layer8,Layer9,
@@ -237,9 +192,23 @@ void __fastcall TVecMapDialog::UpdateLayer(void)
 		Vis1,Vis2,Vis3,Vis4,Vis5,Vis6,Vis7,Vis8,Vis9,Vis10,Vis11,Vis12
 	};
 	for (int i=0;i<MAXMAPLAYER;i++) {
+	}
+	TPanel *color[]={
+		Color1,Color2,Color3,Color4,Color5,Color6,Color7,Color8,Color9,
+		Color10,Color11,Color12
+	};
+	TPanel *colorf[]={
+		Color1F,Color2F,Color3F,Color4F,Color5F,Color6F,Color7F,Color8F,
+		Color9F,Color10F,Color11F,Color12F
+	};
+	for (int i=0;i<MAXMAPLAYER;i++) {
 		layer[i]->Caption=Gis.name[i];
 		vis[i]->Checked=Gis.flag[i];
+		Plot->MapColor [i]=color [i]->Color;
+		Plot->MapColorF[i]=colorf[i]->Color;
 	}
+	Plot->Gis=Gis;
+	Plot->UpdatePlot();
 }
 //---------------------------------------------------------------------------
 

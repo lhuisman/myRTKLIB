@@ -194,8 +194,6 @@ __published:
 	void __fastcall BtnPlotType4Click(TObject *Sender);
 	void __fastcall BtnFreqType4Click(TObject *Sender);
 private:
-	tle_t TLEData;
-
 	void __fastcall UpdateLog    (int stat, gtime_t time, double *rr, float *qr,
 								  double *rb, int ns, double age, double ratio);
 	void __fastcall SvrStart     (void);
@@ -218,8 +216,8 @@ private:
 	void __fastcall DrawBL       (TImage *plot, int w, int h);
 	void __fastcall DrawTrk      (TImage *plot);
 	void __fastcall DrawSky      (TCanvas *c, int w, int h, int x0, int y0);
-	void __fastcall DrawText     (TCanvas *c, int x, int y, UnicodeString s,
-								  TColor color, int align);
+	void __fastcall DrawText     (TCanvas *c, int x, int y, UTF8String s,
+								  TColor color, int ha, int va);
 	void __fastcall DrawArrow    (TCanvas *c, int x, int y, int siz,
 								  int ang, TColor color);
 	void __fastcall OpenMoniPort (int port);
@@ -235,6 +233,7 @@ private:
 public:
 	AnsiString IniFile;
 	
+	int TimerCycle,TimerInact;
 	int PanelStack,PanelMode;
 	int SvrCycle,SvrBuffSize,Scale,SolBuffSize,NavSelect,SavedSol;
 	int NmeaReq,NmeaCycle,InTimeTag,InTime64Bit;
@@ -248,7 +247,7 @@ public:
 	int TrkType1,TrkType2,TrkType3,TrkType4;
 	int TrkScale1,TrkScale2,TrkScale3,TrkScale4;
 	int BLMode1,BLMode2,BLMode3,BLMode4;
-	int MoniPort,OpenPort;
+	int MoniPort,OpenPort,AutoRun;
 	
 	int PSol,PSolS,PSolE,Nsat[2],SolCurrentStat;
 	int Sat[2][MAXSAT],Snr[2][MAXSAT][NFREQ],Vsat[2][MAXSAT];
@@ -263,7 +262,7 @@ public:
 	AnsiString OutSwapInterval,LogSwapInterval,ResetCmd;
 	prcopt_t PrcOpt;
 	solopt_t SolOpt;
-	TFont *PosFont;
+	TFont *PanelFont,*PosFont;
 	int DebugTraceF,DebugStatusF,OutputGeoidF,BaselineC;
 	int RovPosTypeF,RefPosTypeF,RovAntPcvF,RefAntPcvF;
 	AnsiString RovAntF,RefAntF,SatPcvFileF,AntPcvFileF;
@@ -271,8 +270,8 @@ public:
 	double Baseline[2];
 	AnsiString History[10],MntpHist[10];
 	
-	AnsiString GeoidDataFileF,StaPosFileF,DCBFileF,EOPFileF,TLEFileF;
-	AnsiString TLESatFileF,LocalDirectory,PntName[MAXMAPPNT];
+	AnsiString GeoidDataFileF,StaPosFileF,DCBFileF,EOPFileF;
+	AnsiString LocalDirectory,PntName[MAXMAPPNT];
 	double PntPos[MAXMAPPNT][3];
 	int NMapPnt;
 	

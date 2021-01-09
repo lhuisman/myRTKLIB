@@ -60,7 +60,7 @@ public:
 	int Stream1,Stream2,Format1,Format2,CmdEna1[2],CmdEna2[2];
 	int TimeForm,DegForm,TimeOutTime,ReConnTime;
 	AnsiString Path,Paths1[4],Paths2[4];
-	AnsiString TcpHistory[MAXHIST],TcpMntpHist[MAXHIST];
+	AnsiString TcpHistory[MAXHIST];
 	AnsiString Cmds1[2],Cmds2[2],FieldSep;
 	__fastcall TConnectDialog(TComponent* Owner);
 };

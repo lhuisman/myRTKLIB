@@ -140,24 +140,20 @@ void __fastcall TConnectDialog::TcpOpt1(int opt)
 {
 	TcpOptDialog->Path=Paths1[1];
 	TcpOptDialog->Opt=opt;
-	for (int i=0;i<MAXHIST;i++) TcpOptDialog->History [i]=TcpHistory [i];
-	for (int i=0;i<MAXHIST;i++) TcpOptDialog->MntpHist[i]=TcpMntpHist[i];
+	for (int i=0;i<MAXHIST;i++) TcpOptDialog->History[i]=TcpHistory[i];
 	if (TcpOptDialog->ShowModal()!=mrOk) return;
 	Paths1[1]=TcpOptDialog->Path;
-	for (int i=0;i<MAXHIST;i++) TcpHistory [i]=TcpOptDialog->History [i];
-	for (int i=0;i<MAXHIST;i++) TcpMntpHist[i]=TcpOptDialog->MntpHist[i];
+	for (int i=0;i<MAXHIST;i++) TcpHistory[i]=TcpOptDialog->History[i];
 }
 //---------------------------------------------------------------------------
 void __fastcall TConnectDialog::TcpOpt2(int opt)
 {
 	TcpOptDialog->Path=Paths2[1];
 	TcpOptDialog->Opt=opt;
-	for (int i=0;i<MAXHIST;i++) TcpOptDialog->History [i]=TcpHistory [i];
-	for (int i=0;i<MAXHIST;i++) TcpOptDialog->MntpHist[i]=TcpMntpHist[i];
+	for (int i=0;i<MAXHIST;i++) TcpOptDialog->History[i]=TcpHistory[i];
 	if (TcpOptDialog->ShowModal()!=mrOk) return;
 	Paths2[1]=TcpOptDialog->Path;
-	for (int i=0;i<MAXHIST;i++) TcpHistory [i]=TcpOptDialog->History [i];
-	for (int i=0;i<MAXHIST;i++) TcpMntpHist[i]=TcpOptDialog->MntpHist[i];
+	for (int i=0;i<MAXHIST;i++) TcpHistory[i]=TcpOptDialog->History[i];
 }
 //---------------------------------------------------------------------------
 void __fastcall TConnectDialog::FileOpt1(int opt)
@@ -190,12 +186,12 @@ void __fastcall TConnectDialog::UpdateEnable(void)
 	Label5      ->Enabled=SolFormat1->ItemIndex!=3||SolFormat2->ItemIndex!=3;
 	Label6      ->Enabled=SolFormat1->ItemIndex==0||SolFormat2->ItemIndex==0;
 	Label7      ->Enabled=SolFormat1->ItemIndex!=3||SolFormat2->ItemIndex!=3;
-	Label8      ->Enabled=2<=SelStream1->ItemIndex&&SelStream1->ItemIndex<=4||
-						  2<=SelStream2->ItemIndex&&SelStream2->ItemIndex<=4;
-	TimeOutTimeE->Enabled=2<=SelStream1->ItemIndex&&SelStream1->ItemIndex<=4||
-						  2<=SelStream2->ItemIndex&&SelStream2->ItemIndex<=4;
-	ReConnTimeE ->Enabled=2<=SelStream1->ItemIndex&&SelStream1->ItemIndex<=4||
-						  2<=SelStream2->ItemIndex&&SelStream2->ItemIndex<=4;
+	Label8      ->Enabled=(2<=SelStream1->ItemIndex&&SelStream1->ItemIndex<=4)||
+						  (2<=SelStream2->ItemIndex&&SelStream2->ItemIndex<=4);
+	TimeOutTimeE->Enabled=(2<=SelStream1->ItemIndex&&SelStream1->ItemIndex<=4)||
+						  (2<=SelStream2->ItemIndex&&SelStream2->ItemIndex<=4);
+	ReConnTimeE ->Enabled=(2<=SelStream1->ItemIndex&&SelStream1->ItemIndex<=4)||
+						  (2<=SelStream2->ItemIndex&&SelStream2->ItemIndex<=4);
 }
 //---------------------------------------------------------------------------
 

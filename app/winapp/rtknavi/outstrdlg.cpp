@@ -143,13 +143,11 @@ void __fastcall TOutputStrDialog::TcpOpt(int index, int opt)
 	TcpOptDialog->Opt=opt;
 	for (int i=0;i<10;i++) {
 		TcpOptDialog->History[i]=History[i];
-		TcpOptDialog->MntpHist[i]=MntpHist[i];
 	}
 	if (TcpOptDialog->ShowModal()!=mrOk) return;
 	Paths[index][1]=TcpOptDialog->Path;
 	for (int i=0;i<10;i++) {
 		History[i]=TcpOptDialog->History[i];
-		MntpHist[i]=TcpOptDialog->MntpHist[i];
 	}
 }
 //---------------------------------------------------------------------------

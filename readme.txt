@@ -8,24 +8,41 @@ The latest version of the user manual is at: https://github.com/rtklibexplorer/R
 
 The demo5_b34_dev branch is a work in progress merging in changes from the 2.4.3 b34 version of RTKLIB.  Current status is:
 
-Functional apps:
-   - RTKPOST
-   - RTKCONV
-   - RNX2RTKP
-   - CONVBIN
+GUI apps:
+   - RTKLAUNCH - builds, runs, no obvious issues
+   - RTKCONV   - builds, runs, no obvious issues
+   - RTKPOST   - builds, runs, no obvious issues
+   - RTKPLOT   - builds, runs, partially functional, some issues
+   - STRSVR    - builds, runs, significant issues
+   - RTKNAVI   - builds, doesn't run
+   - RTKGET    - builds, runs, not tested
+   - SRCTBLBROWS - builds, runs, not tested
+   
+CUI apps:
+   - CONVBIN  - builds, runs, not tested
+   - RNX2RTKP - builds, runs, no obvious issues
+   - POS2KML  - builds, runs, no obvious issues
+
 
 Functional receivers/raw data formats:
    - U-blox, Novatel, Hemisphere, Skytraq, Javad, NVS, Trimble
    - Septentrino, RTCM2, RTCM3, RINEX, BINEX
 
 Non-functional receivers/raw data formats:
-   - SwiftNav
-   - ComNav
-   - Tersus
+   - SwiftNav, ComNav, Tersus
 
 Non-functional features:
    - ????
 
 Some less commonly used features, especially those unique to the demo5 code may not be fully supported yet.  Let me know if you find any features that are working in the demo5 b33 code but not in this code.  
-   
 
+   
+To build and install code for Windows with Embarcadero compiler:
+
+GUIs: 
+1) Build executables with app/winapp/rtklib_winapp.groupproj project file 
+2) Install executables and DLLs to ../RTKLIB/bin by runnning app/winapp/install_winapp.bat
+
+CUIs:
+1) Build executables with app/consapp/rtklib_consapp.groupproj project file 
+2) Install executables to ../RTKLIB/bin by runnning app/consapp/install_consapp.bat

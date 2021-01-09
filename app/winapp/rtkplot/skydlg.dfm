@@ -4,7 +4,7 @@ object SkyImgDialog: TSkyImgDialog
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Sky Image'
-  ClientHeight = 209
+  ClientHeight = 214
   ClientWidth = 366
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
@@ -18,18 +18,18 @@ object SkyImgDialog: TSkyImgDialog
   PixelsPerInch = 96
   TextHeight = 13
   object BtnClose: TButton
-    Left = 289
-    Top = 180
-    Width = 78
+    Left = 296
+    Top = 182
+    Width = 66
     Height = 29
     Caption = '&Close'
     TabOrder = 0
     OnClick = BtnCloseClick
   end
   object BtnSave: TButton
-    Left = -1
-    Top = 180
-    Width = 68
+    Left = 3
+    Top = 182
+    Width = 66
     Height = 29
     Caption = '&Save Tag'
     ModalResult = 1
@@ -37,9 +37,9 @@ object SkyImgDialog: TSkyImgDialog
     OnClick = BtnSaveClick
   end
   object BtnUpdate: TButton
-    Left = 212
-    Top = 180
-    Width = 78
+    Left = 228
+    Top = 182
+    Width = 66
     Height = 29
     Caption = '&Update'
     TabOrder = 1
@@ -498,9 +498,9 @@ object SkyImgDialog: TSkyImgDialog
     end
   end
   object BtnLoad: TButton
-    Left = 66
-    Top = 180
-    Width = 68
+    Left = 71
+    Top = 182
+    Width = 66
     Height = 29
     Caption = '&Load Tag...'
     ModalResult = 1
@@ -508,9 +508,9 @@ object SkyImgDialog: TSkyImgDialog
     OnClick = BtnLoadClick
   end
   object BtnGenMask: TButton
-    Left = 139
-    Top = 180
-    Width = 68
+    Left = 148
+    Top = 182
+    Width = 66
     Height = 29
     Caption = '&Gen Mask'
     ModalResult = 1

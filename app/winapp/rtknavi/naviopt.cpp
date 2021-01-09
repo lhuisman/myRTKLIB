@@ -8,6 +8,7 @@
 #include "refdlg.h"
 #include "navimain.h"
 #include "maskoptdlg.h"
+#include "freqdlg.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma resource "*.dfm"
@@ -93,16 +94,22 @@ __fastcall TOptDialog::TOptDialog(TComponent* Owner)
 	: TForm(Owner)
 {
 	AnsiString label,s;
-	int freq[]={1,2,5,6,7,8,9},nglo=MAXPRNGLO,ngal=MAXPRNGAL,nqzs=MAXPRNQZS;
+	int nglo=MAXPRNGLO,ngal=MAXPRNGAL,nqzs=MAXPRNQZS;
 	int ncmp=MAXPRNCMP,nirn=MAXPRNIRN;
+
 	PrcOpt=prcopt_default;
 	SolOpt=solopt_default;
 	UpdateEnable();
+	PanelFont=new TFont;
 	PosFont=new TFont;
 	
 	Freq->Items->Clear();
+	// TODO ????
 	for (int i=0;i<NFREQ;i++) {
-		label=label+(i>0?"+":"")+s.sprintf("L%d",freq[i]);
+		label="L1";
+	    for (int j=1;j<=i;j++) {
+		    label+=s.sprintf("+%d",j+1);
+		}
 		Freq->Items->Add(label);
 	}
 	if (nglo<=0) NavSys2->Enabled=false;
@@ -291,41 +298,28 @@ void __fastcall TOptDialog::BtnEOPViewClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TOptDialog::BtnLocalDirClick(TObject *Sender)
 {
-#ifdef TCPP
-	AnsiString dir=LocalDir->Text;
-	if (!SelectDirectory("FTP/HTTP Local Directory","",dir)) return;
-	LocalDir->Text=dir;
-#else
     UnicodeString dir=LocalDir->Text;
     TSelectDirExtOpts opt=TSelectDirExtOpts()<<sdNewUI<<sdNewFolder;
     if (!SelectDirectory(L"FTP/HTTP Local Directory",L"",dir,opt)) return;
     LocalDir->Text=dir;
-#endif
 }
 //---------------------------------------------------------------------------
-void __fastcall TOptDialog::BtnFontClick(TObject *Sender)
+void __fastcall TOptDialog::BtnFont1Click(TObject *Sender)
 {
-	AnsiString s;
-	FontDialog->Font=FontLabel->Font;
+	UTF8String s;
+	FontDialog->Font=FontLabel1->Font;
 	if (!FontDialog->Execute()) return;
-	FontLabel->Font=FontDialog->Font;
-	FontLabel->Caption=FontLabel->Font->Name+s.sprintf(" %dpt",FontLabel->Font->Size);
+	FontLabel1->Font=FontDialog->Font;
+	FontLabel1->Caption=FontLabel1->Font->Name+s.sprintf(" %dpt",FontLabel1->Font->Size);
 }
 //---------------------------------------------------------------------------
-void __fastcall TOptDialog::BtnTLESatFileClick(TObject *Sender)
+void __fastcall TOptDialog::BtnFont2Click(TObject *Sender)
 {
-	OpenDialog->Title="TLE Satellite Number File";
-	OpenDialog->FilterIndex=1;
-	if (!OpenDialog->Execute()) return;
-	TLESatFile->Text=OpenDialog->FileName;
-}
-//---------------------------------------------------------------------------
-void __fastcall TOptDialog::BtnTLEFileClick(TObject *Sender)
-{
-	OpenDialog->Title="TLE Data File";
-	OpenDialog->FilterIndex=1;
-	if (!OpenDialog->Execute()) return;
-	TLEFile->Text=OpenDialog->FileName;
+	UTF8String s;
+	FontDialog->Font=FontLabel2->Font;
+	if (!FontDialog->Execute()) return;
+	FontLabel2->Font=FontDialog->Font;
+	FontLabel2->Caption=FontLabel2->Font->Name+s.sprintf(" %dpt",FontLabel2->Font->Size);
 }
 //---------------------------------------------------------------------------
 void __fastcall TOptDialog::FreqChange(TObject *Sender)
@@ -458,6 +452,7 @@ void __fastcall TOptDialog::GetOpt(void)
 	FieldSep	 ->Text     =SolOpt.sep;
 	OutputHead	 ->ItemIndex=SolOpt.outhead;
 	OutputOpt	 ->ItemIndex=SolOpt.outopt;
+	OutputVel	 ->ItemIndex=SolOpt.outvel;
 	OutputSingle ->ItemIndex=PrcOpt.outsingle;
 	MaxSolStd	 ->Text		=s.sprintf("%.2g",SolOpt.maxsolstd);
 	OutputDatum  ->ItemIndex=SolOpt.datum;
@@ -508,8 +503,6 @@ void __fastcall TOptDialog::GetOpt(void)
 	GeoidDataFile->Text     =GeoidDataFileF;
 	DCBFile      ->Text     =DCBFileF;
 	EOPFile      ->Text     =EOPFileF;
-	TLEFile      ->Text     =TLEFileF;
-	TLESatFile   ->Text     =TLESatFileF;
 	LocalDir	 ->Text     =LocalDirectory;
 	ReadAntList();
 	
@@ -528,8 +521,10 @@ void __fastcall TOptDialog::GetOpt(void)
 	SolBuffSizeE ->Text     =s.sprintf("%d",SolBuffSize);
 	PanelStackE  ->ItemIndex=PanelStack;
 	
-	FontLabel->Font->Assign(PosFont);
-	FontLabel->Caption=FontLabel->Font->Name+s.sprintf(" %dpt",FontLabel->Font->Size);
+	FontLabel1->Font->Assign(PanelFont);
+	FontLabel1->Caption=FontLabel1->Font->Name+s.sprintf(" %dpt",FontLabel1->Font->Size);
+	FontLabel2->Font->Assign(PosFont);
+	FontLabel2->Caption=FontLabel2->Font->Name+s.sprintf(" %dpt",FontLabel2->Font->Size);
 	UpdateEnable();
 }
 //---------------------------------------------------------------------------
@@ -596,6 +591,7 @@ void __fastcall TOptDialog::SetOpt(void)
 	strcpy(SolOpt.sep,FieldSep_Text.c_str());
 	SolOpt.outhead   =OutputHead  ->ItemIndex;
 	SolOpt.outopt    =OutputOpt   ->ItemIndex;
+	SolOpt.outvel    =OutputVel   ->ItemIndex;
 	PrcOpt.outsingle =OutputSingle->ItemIndex;
 	SolOpt.maxsolstd =str2dbl(MaxSolStd->Text);
 	SolOpt.datum     =OutputDatum ->ItemIndex;
@@ -646,8 +642,6 @@ void __fastcall TOptDialog::SetOpt(void)
 	GeoidDataFileF   =GeoidDataFile->Text;
 	DCBFileF         =DCBFile     ->Text;
 	EOPFileF         =EOPFile     ->Text;
-	TLEFileF         =TLEFile     ->Text;
-	TLESatFileF      =TLESatFile  ->Text;
 	LocalDirectory   =LocalDir    ->Text;
 	
 	SvrCycle	     =SvrCycleE   ->Text.ToInt();
@@ -664,14 +658,15 @@ void __fastcall TOptDialog::SetOpt(void)
 	MoniPort         =MoniPortE   ->Text.ToInt();
 	PanelStack       =PanelStackE ->ItemIndex;
 	
-	PosFont->Assign(FontLabel->Font);
+	PanelFont->Assign(FontLabel1->Font);
+	PosFont  ->Assign(FontLabel2->Font);
 	UpdateEnable();
 }
 //---------------------------------------------------------------------------
 void __fastcall TOptDialog::LoadOpt(AnsiString file)
 {
     int itype[]={STR_SERIAL,STR_TCPCLI,STR_TCPSVR,STR_NTRIPCLI,STR_FILE,STR_FTP,STR_HTTP};
-    int otype[]={STR_SERIAL,STR_TCPCLI,STR_TCPSVR,STR_NTRIPSVR,STR_NTRIPC_C,STR_FILE};
+    int otype[]={STR_SERIAL,STR_TCPCLI,STR_TCPSVR,STR_NTRIPSVR,STR_NTRIPCAS,STR_FILE};
 	TEdit *editu[]={RovPos1,RovPos2,RovPos3};
 	TEdit *editr[]={RefPos1,RefPos2,RefPos3};
 	AnsiString s;
@@ -717,6 +712,7 @@ void __fastcall TOptDialog::LoadOpt(AnsiString file)
 	
 	PosMode		 ->ItemIndex	=prcopt.mode;
 	Freq		 ->ItemIndex	=prcopt.nf>NFREQ-1?NFREQ-1:prcopt.nf-1;
+	Solution	 ->ItemIndex	=prcopt.soltype;
 	ElMask		 ->Text			=s.sprintf("%.0f",prcopt.elmin*R2D);
 	DynamicModel ->ItemIndex	=prcopt.dynamics;
 	TideCorr	 ->ItemIndex	=prcopt.tidecorr;
@@ -780,6 +776,7 @@ void __fastcall TOptDialog::LoadOpt(AnsiString file)
 	FieldSep	 ->Text			=solopt.sep;
 	OutputHead	 ->ItemIndex	=solopt.outhead;
 	OutputOpt	 ->ItemIndex	=solopt.outopt;
+	OutputVel	 ->ItemIndex	=solopt.outvel;
 	OutputSingle ->ItemIndex	=prcopt.outsingle;
 	MaxSolStd	 ->Text			=s.sprintf("%.2g",solopt.maxsolstd);
 	OutputDatum  ->ItemIndex	=solopt.datum;
@@ -819,8 +816,7 @@ void __fastcall TOptDialog::LoadOpt(AnsiString file)
 	RovPosTypeP	 ->ItemIndex	=0;
 	RefPosTypeP	 ->ItemIndex	=0;
 	if      (prcopt.refpos==POSOPT_RTCM  ) RefPosTypeP->ItemIndex=3;
-	else if (prcopt.refpos==POSOPT_RAW   ) RefPosTypeP->ItemIndex=4;
-	else if (prcopt.refpos==POSOPT_SINGLE) RefPosTypeP->ItemIndex=5;
+	else if (prcopt.refpos==POSOPT_SINGLE) RefPosTypeP->ItemIndex=4;
 	
 	RovPosTypeF					=RovPosTypeP->ItemIndex;
 	RefPosTypeF					=RefPosTypeP->ItemIndex;
@@ -851,7 +847,7 @@ void __fastcall TOptDialog::SaveOpt(AnsiString file)
 	AnsiString DCBFile_Text=DCBFile->Text;
 	AnsiString LocalDir_Text=LocalDir->Text;
     int itype[]={STR_SERIAL,STR_TCPCLI,STR_TCPSVR,STR_NTRIPCLI,STR_FILE,STR_FTP,STR_HTTP};
-    int otype[]={STR_SERIAL,STR_TCPCLI,STR_TCPSVR,STR_NTRIPSVR,STR_NTRIPC_C,STR_FILE};
+    int otype[]={STR_SERIAL,STR_TCPCLI,STR_TCPSVR,STR_NTRIPSVR,STR_NTRIPCAS,STR_FILE};
 	TEdit *editu[]={RovPos1,RovPos2,RovPos3};
 	TEdit *editr[]={RefPos1,RefPos2,RefPos3};
 	char buff[1024],*p,*q,id[32],comment[256],s[64];
@@ -908,7 +904,7 @@ void __fastcall TOptDialog::SaveOpt(AnsiString file)
 			if ((p=strchr(buff,'/'))&&(q=strchr(p+1,':'))) *q='\0';
 			strcpy(strpath[i],buff);
 		}
-		else if (strtype[i]==STR_NTRIPC_S||strtype[i]==STR_NTRIPC_C) {
+		else if (strtype[i]==STR_NTRIPCAS) {
 			strcpy(buff,MainForm->Paths[i][1].c_str());
 			if ((p=strchr(buff,'/'))&&(q=strchr(p+1,':'))) *q='\0';
 			if ((p=strchr(buff,'@'))) {
@@ -939,7 +935,7 @@ void __fastcall TOptDialog::SaveOpt(AnsiString file)
 
 	prcopt.mode		=PosMode	 ->ItemIndex;
 	prcopt.nf		=Freq		 ->ItemIndex+1;
-	prcopt.soltype	=0;   /* forward */
+	prcopt.soltype	=Solution	 ->ItemIndex;
 	prcopt.elmin	=str2dbl(ElMask	->Text)*D2R;
 	prcopt.dynamics	=DynamicModel->ItemIndex;
 	prcopt.tidecorr	=TideCorr	 ->ItemIndex;
@@ -1005,6 +1001,7 @@ void __fastcall TOptDialog::SaveOpt(AnsiString file)
 	strcpy(solopt.sep,FieldSep_Text.c_str());
 	solopt.outhead	=OutputHead	 ->ItemIndex;
 	solopt.outopt	=OutputOpt	 ->ItemIndex;
+	solopt.outvel	=OutputVel	 ->ItemIndex;
 	prcopt.outsingle=OutputSingle->ItemIndex;
 	solopt.maxsolstd=str2dbl(MaxSolStd->Text);
 	solopt.datum	=OutputDatum ->ItemIndex;
@@ -1042,8 +1039,7 @@ void __fastcall TOptDialog::SaveOpt(AnsiString file)
 	prcopt.rovpos=POSOPT_POS;
 	prcopt.refpos=POSOPT_POS;
 	if      (RefPosTypeP->ItemIndex==3) prcopt.refpos=POSOPT_RTCM;
-	else if (RefPosTypeP->ItemIndex==4) prcopt.refpos=POSOPT_RAW;
-	else if (RefPosTypeP->ItemIndex==5) prcopt.refpos=POSOPT_SINGLE;
+	else if (RefPosTypeP->ItemIndex==4) prcopt.refpos=POSOPT_SINGLE;
 	
 	if (prcopt.rovpos==POSOPT_POS) GetPos(RovPosTypeP->ItemIndex,editu,prcopt.ru);
 	if (prcopt.refpos==POSOPT_POS) GetPos(RefPosTypeP->ItemIndex,editr,prcopt.rb);
@@ -1070,6 +1066,7 @@ void __fastcall TOptDialog::UpdateEnable(void)
 	int ar=rtk||ppp;
 	
 	Freq           ->Enabled=rel;
+	Solution       ->Enabled=false;
 	DynamicModel   ->Enabled=rel;
 	TideCorr       ->Enabled=rel||ppp;
 	PosOpt1        ->Enabled=ppp;
@@ -1119,16 +1116,16 @@ void __fastcall TOptDialog::UpdateEnable(void)
 	
 	RovAntPcv      ->Enabled=rel||ppp;
 	RovAnt         ->Enabled=(rel||ppp)&&RovAntPcv->Checked;
-	RovAntE        ->Enabled=(rel||ppp)&&RovAntPcv->Checked;
-	RovAntN        ->Enabled=(rel||ppp)&&RovAntPcv->Checked;
-	RovAntU        ->Enabled=(rel||ppp)&&RovAntPcv->Checked;
-	LabelRovAntD   ->Enabled=(rel||ppp)&&RovAntPcv->Checked;
+	RovAntE        ->Enabled=(rel||ppp)&&RovAntPcv->Checked&&RovAnt->Text!="*";
+	RovAntN        ->Enabled=(rel||ppp)&&RovAntPcv->Checked&&RovAnt->Text!="*";
+	RovAntU        ->Enabled=(rel||ppp)&&RovAntPcv->Checked&&RovAnt->Text!="*";
+	LabelRovAntD   ->Enabled=(rel||ppp)&&RovAntPcv->Checked&&RovAnt->Text!="*";
 	RefAntPcv      ->Enabled=rel;
 	RefAnt         ->Enabled=rel&&RefAntPcv->Checked;
-	RefAntE        ->Enabled=rel&&RefAntPcv->Checked;
-	RefAntN        ->Enabled=rel&&RefAntPcv->Checked;
-	RefAntU        ->Enabled=rel&&RefAntPcv->Checked;
-	LabelRefAntD   ->Enabled=rel&&RefAntPcv->Checked;
+	RefAntE        ->Enabled=rel&&RefAntPcv->Checked&&RefAnt->Text!="*";
+	RefAntN        ->Enabled=rel&&RefAntPcv->Checked&&RefAnt->Text!="*";
+	RefAntU        ->Enabled=rel&&RefAntPcv->Checked&&RefAnt->Text!="*";
+	LabelRefAntD   ->Enabled=rel&&RefAntPcv->Checked&&RefAnt->Text!="*";
 	
 	RovPosTypeP    ->Enabled=PosMode->ItemIndex==PMODE_FIXED||PosMode->ItemIndex==PMODE_PPP_FIXED;
 	RovPos1        ->Enabled=RovPosTypeP->Enabled&&RovPosTypeP->ItemIndex<=2;
@@ -1142,9 +1139,9 @@ void __fastcall TOptDialog::UpdateEnable(void)
 	RefPos3        ->Enabled=RefPosTypeP->Enabled&&RefPosTypeP->ItemIndex<=2;
 	BtnRefPos      ->Enabled=RefPosTypeP->Enabled&&RefPosTypeP->ItemIndex<=2;
 	
-	LabelMaxAveEp  ->Visible=RefPosTypeP->ItemIndex==5;
-	MaxAveEp       ->Visible=RefPosTypeP->ItemIndex==5;
-	ChkInitRestart ->Visible=RefPosTypeP->ItemIndex==5;
+	LabelMaxAveEp  ->Visible=RefPosTypeP->ItemIndex==4;
+	MaxAveEp       ->Visible=RefPosTypeP->ItemIndex==4;
+	ChkInitRestart ->Visible=RefPosTypeP->ItemIndex==4;
 	
 //	SbasSatE       ->Enabled=PosMode->ItemIndex==0;
 }
@@ -1242,4 +1239,20 @@ void __fastcall TOptDialog::ObsWeightChange(TObject *Sender)
 	UpdateEnable();
 }
 //---------------------------------------------------------------------------
+void __fastcall TOptDialog::BtnFreqClick(TObject *Sender)
+{
+	FreqDialog->ShowModal();
+}
+//---------------------------------------------------------------------------
+void __fastcall TOptDialog::RefAntClick(TObject *Sender)
+{
+    UpdateEnable();
+}
+//---------------------------------------------------------------------------
+void __fastcall TOptDialog::RovAntClick(TObject *Sender)
+{
+	UpdateEnable();
+}
+//---------------------------------------------------------------------------
+
 

@@ -59,11 +59,7 @@ void __fastcall TInputStrDialog::FormShow(TObject *Sender)
 	TimeTagC  ->Checked  =TimeTag;
 	TimeSpeedL->Text     =TimeSpeed;
 	TimeStartE->Text     =TimeStart;
-		if (Time64Bit) {
-		  Time64BitL   ->ItemIndex=1;
-		} else {
-		  Time64BitL   ->ItemIndex=0;
-		}
+	Chk64Bit  ->Checked  =Time64Bit;
 	NmeaPos1  ->Text     =s.sprintf("%.9f",NmeaPos[0]);
 	NmeaPos2  ->Text     =s.sprintf("%.9f",NmeaPos[1]);
 	NmeaPos3  ->Text     =s.sprintf("%.3f",NmeaPos[2]);
@@ -83,7 +79,6 @@ void __fastcall TInputStrDialog::BtnOkClick(TObject *Sender)
 	Format[0]  =Format1   ->ItemIndex;
 	Format[1]  =Format2->ItemIndex<NRcv?Format2->ItemIndex:STRFMT_SP3+Format2->ItemIndex-NRcv;
 	Format[2]  =Format3->ItemIndex<NRcv?Format3->ItemIndex:STRFMT_SP3+Format3->ItemIndex-NRcv;
-	Time64Bit  =Time64BitL->ItemIndex;
 	Paths[0][2]=SetFilePath(FilePath1->Text);
 	Paths[1][2]=SetFilePath(FilePath2->Text);
 	Paths[2][2]=SetFilePath(FilePath3->Text);
@@ -91,6 +86,7 @@ void __fastcall TInputStrDialog::BtnOkClick(TObject *Sender)
 	TimeTag    =TimeTagC  ->Checked;
 	TimeSpeed  =TimeSpeedL->Text;
 	TimeStart  =TimeStartE->Text;
+	Time64Bit  =Chk64Bit  ->Checked;
 	NmeaPos[0] =str2dbl(NmeaPos1->Text);
 	NmeaPos[1] =str2dbl(NmeaPos2->Text);
 	NmeaPos[2] =str2dbl(NmeaPos3->Text);
@@ -152,7 +148,7 @@ AnsiString __fastcall TInputStrDialog::SetFilePath(AnsiString path)
 	if (TimeTagC->Checked     ) path+="::T";
 	if (TimeStartE->Text!="0" ) path+="::+"+TimeStartE->Text;
 	path+="::"+TimeSpeedL->Text;
-    if (Time64Bit) { path+="::P=8"; } else { path+="::P=4"; };
+	if (Chk64Bit->Checked     ) path+="::P=8";
 	return path;
 }
 //---------------------------------------------------------------------------
@@ -334,13 +330,11 @@ void __fastcall TInputStrDialog::TcpOpt(int index, int opt)
 	TcpOptDialog->Opt=opt;
 	for (int i=0;i<10;i++) {
 		TcpOptDialog->History[i]=History[i];
-		TcpOptDialog->MntpHist[i]=MntpHist[i];
 	}
 	if (TcpOptDialog->ShowModal()!=mrOk) return;
 	Paths[index][1]=TcpOptDialog->Path;
 	for (int i=0;i<10;i++) {
 		History[i]=TcpOptDialog->History[i];
-		MntpHist[i]=TcpOptDialog->MntpHist[i];
 	}
 }
 //---------------------------------------------------------------------------
@@ -397,9 +391,9 @@ void __fastcall TInputStrDialog::UpdateEnable(void)
 	TimeTagC  ->Enabled=ena1;
 	TimeStartE->Enabled=ena1&&TimeTagC->Checked;
 	TimeSpeedL->Enabled=ena1&&TimeTagC->Checked;
-    Time64BitL->Enabled=ena1&&TimeTagC->Checked;
 	LabelF2   ->Enabled=ena1&&TimeTagC->Checked;
 	LabelF3   ->Enabled=ena1&&TimeTagC->Checked;
+	Chk64Bit  ->Enabled=ena1&&TimeTagC->Checked;
 }
 //---------------------------------------------------------------------------
 

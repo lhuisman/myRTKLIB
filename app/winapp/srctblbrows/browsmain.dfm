@@ -4,7 +4,7 @@ object MainForm: TMainForm
   Caption = 'NTRIP Browser'
   ClientHeight = 322
   ClientWidth = 634
-  Color = clBtnFace
+  Color = clWhite
   Constraints.MinHeight = 150
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -13,7 +13,6 @@ object MainForm: TMainForm
   Font.Style = []
   Menu = MainMenu
   OldCreateOrder = False
-  Scaled = False
   OnClose = FormClose
   OnShow = FormShow
   PixelsPerInch = 96
@@ -25,12 +24,15 @@ object MainForm: TMainForm
     Height = 22
     Align = alTop
     BevelOuter = bvNone
+    Color = clWhite
+    ParentBackground = False
     TabOrder = 0
     object BtnList: TSpeedButton
-      Left = 3
-      Top = 1
+      Left = 4
+      Top = 2
       Width = 21
       Height = 21
+      Hint = 'Update Caster List'
       Flat = True
       Glyph.Data = {
         DE000000424DDE0000000000000076000000280000000D0000000D0000000100
@@ -41,13 +43,16 @@ object MainForm: TMainForm
         F000FFFFFFFFF00FF000FF0FFFFFFF0FF000FF00FFFFFFFFF000FF0007FFFF7F
         F000FF000FFFF0FFF000FF0F70000FFFF000FFFFFFFFFFFFF000FFFFFFFFFFFF
         F000}
+      ParentShowHint = False
+      ShowHint = True
       OnClick = BtnListClick
     end
     object BtnUpdate: TSpeedButton
-      Left = 209
+      Left = 211
       Top = 1
       Width = 21
       Height = 21
+      Hint = 'Update Data Streams'
       Flat = True
       Glyph.Data = {
         DE000000424DDE0000000000000076000000280000000D0000000D0000000100
@@ -58,17 +63,22 @@ object MainForm: TMainForm
         F000F700000000FFF000FF700087008FF000FFF700FFF00FF000FFFF70FFF00F
         F000FFFFF8FFF00FF000FFFFFFFFF00FF000FFFFFFFFF00FF000FFFFFFFFFFFF
         F000}
+      ParentShowHint = False
+      ShowHint = True
       OnClick = BtnUpdateClick
     end
     object TypeStr: TSpeedButton
-      Left = 250
-      Top = 0
+      Left = 251
+      Top = 1
       Width = 25
       Height = 22
+      Hint = 'Data Streams'
       GroupIndex = 1
       Down = True
       Caption = 'STR'
       Flat = True
+      ParentShowHint = False
+      ShowHint = True
       Spacing = 2
       OnClick = TypeStrClick
     end
@@ -77,9 +87,12 @@ object MainForm: TMainForm
       Top = 0
       Width = 27
       Height = 22
+      Hint = 'Casters'
       GroupIndex = 1
       Caption = 'CAS'
       Flat = True
+      ParentShowHint = False
+      ShowHint = True
       Spacing = 2
       OnClick = TypeCasClick
     end
@@ -88,9 +101,12 @@ object MainForm: TMainForm
       Top = 0
       Width = 25
       Height = 22
+      Hint = 'Networks'
       GroupIndex = 1
       Caption = 'NET'
       Flat = True
+      ParentShowHint = False
+      ShowHint = True
       Spacing = 2
       OnClick = TypeNetClick
     end
@@ -99,19 +115,25 @@ object MainForm: TMainForm
       Top = 0
       Width = 25
       Height = 22
+      Hint = 'Source Table'
       GroupIndex = 1
       Caption = 'SRC'
       Flat = True
+      ParentShowHint = False
+      ShowHint = True
       Spacing = 2
       OnClick = TypeSrcClick
     end
     object BtnMap: TSpeedButton
-      Left = 356
+      Left = 357
       Top = 0
       Width = 25
       Height = 22
+      Hint = 'Data Stream Map'
       Caption = 'MAP'
       Flat = True
+      ParentShowHint = False
+      ShowHint = True
       OnClick = BtnMapClick
     end
     object Address: TComboBox
@@ -119,9 +141,13 @@ object MainForm: TMainForm
       Top = 1
       Width = 184
       Height = 21
+      Hint = 'Caster Address:Port'
       DropDownCount = 40
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 0
       OnChange = AddressChange
+      OnCloseUp = AddressCloseUp
       OnKeyPress = AddressKeyPress
     end
     object StaMask: TCheckBox
@@ -176,11 +202,11 @@ object MainForm: TMainForm
     Align = alClient
     BevelInner = bvNone
     BevelOuter = bvNone
-    ColCount = 18
+    ColCount = 19
     DefaultRowHeight = 15
     FixedCols = 0
     RowCount = 100
-    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goColSizing, goEditing, goAlwaysShowEditor]
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goColSizing, goEditing]
     TabOrder = 3
     OnMouseDown = Table2MouseDown
     ColWidths = (
@@ -201,7 +227,8 @@ object MainForm: TMainForm
       8
       9
       12
-      10)
+      10
+      64)
   end
   object Table3: TMemo
     Left = 0
@@ -236,11 +263,11 @@ object MainForm: TMainForm
     Align = alClient
     BevelInner = bvNone
     BevelOuter = bvNone
-    ColCount = 18
+    ColCount = 19
     DefaultRowHeight = 15
     FixedCols = 0
     RowCount = 100
-    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goColSizing, goEditing, goAlwaysShowEditor]
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goColSizing, goEditing]
     TabOrder = 2
     OnMouseDown = Table1MouseDown
     ColWidths = (
@@ -261,7 +288,8 @@ object MainForm: TMainForm
       7
       8
       6
-      6)
+      6
+      64)
   end
   object Table0: TStringGrid
     Left = 0
@@ -275,7 +303,7 @@ object MainForm: TMainForm
     Align = alClient
     BevelInner = bvNone
     BevelOuter = bvNone
-    ColCount = 18
+    ColCount = 19
     DefaultRowHeight = 15
     FixedCols = 0
     RowCount = 100
@@ -301,7 +329,8 @@ object MainForm: TMainForm
       27
       27
       43
-      623)
+      623
+      64)
   end
   object Panel2: TPanel
     Left = 0
@@ -320,6 +349,8 @@ object MainForm: TMainForm
       BevelInner = bvLowered
       BevelOuter = bvNone
       BorderWidth = 1
+      Color = clWhite
+      ParentBackground = False
       TabOrder = 0
       object Message: TLabel
         Left = 4
@@ -416,11 +447,18 @@ object MainForm: TMainForm
       end
     end
   end
-  object Timer: TTimer
+  object Timer2: TTimer
     Enabled = False
     Interval = 100
-    OnTimer = TimerTimer
-    Left = 468
-    Top = 276
+    OnTimer = Timer2Timer
+    Left = 283
+    Top = 277
+  end
+  object Timer1: TTimer
+    Enabled = False
+    Interval = 100
+    OnTimer = Timer1Timer
+    Left = 254
+    Top = 277
   end
 end

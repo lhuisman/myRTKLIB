@@ -58,7 +58,6 @@ void __fastcall TSvrOptDialog::FormShow(TObject *Sender)
 	AntOff1->Text=s.sprintf("%.4f",AntOff[0]);
 	AntOff2->Text=s.sprintf("%.4f",AntOff[1]);
 	AntOff3->Text=s.sprintf("%.4f",AntOff[2]);
-	SrcTblFileF->Text=SrcTblFile;
 	LogFileF->Text=LogFile;
 	UpdateEnable();
 }
@@ -95,7 +94,6 @@ void __fastcall TSvrOptDialog::BtnOkClick(TObject *Sender)
 	AntOff[0]=str2dbl(AntOff1->Text);
 	AntOff[1]=str2dbl(AntOff2->Text);
 	AntOff[2]=str2dbl(AntOff3->Text);
-	SrcTblFile=SrcTblFileF->Text;
 	LogFile=LogFileF->Text;
 }
 //---------------------------------------------------------------------------
@@ -107,6 +105,7 @@ void __fastcall TSvrOptDialog::BtnPosClick(TObject *Sender)
 	RefDialog->RovPos[2]=str2dbl(AntPos3->Text);
 	RefDialog->BtnLoad->Enabled=true;
 	RefDialog->StaPosFile=StaPosFile;
+	RefDialog->Opt=1;
 	if (RefDialog->ShowModal()!=mrOk) return;
 	AntPos1->Text=s.sprintf("%.8f",RefDialog->Pos[0]);
 	AntPos2->Text=s.sprintf("%.8f",RefDialog->Pos[1]);
@@ -151,14 +150,6 @@ void __fastcall TSvrOptDialog::NmeaReqTClick(TObject *Sender)
 void __fastcall TSvrOptDialog::StaInfoSelClick(TObject *Sender)
 {
 	UpdateEnable();
-}
-//---------------------------------------------------------------------------
-void __fastcall TSvrOptDialog::BtnSrcTblFileClick(TObject *Sender)
-{
-	OpenDialog->Title="NTRIP Source Table File";
-	OpenDialog->FileName=SrcTblFileF->Text;
-	if (!OpenDialog->Execute()) return;
-	SrcTblFileF->Text=OpenDialog->FileName;
 }
 //---------------------------------------------------------------------------
 void __fastcall TSvrOptDialog::BtnLogFileClick(TObject *Sender)

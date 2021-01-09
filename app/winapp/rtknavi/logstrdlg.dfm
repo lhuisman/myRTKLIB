@@ -4,8 +4,8 @@ object LogStrDialog: TLogStrDialog
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Log Streams'
-  ClientHeight = 196
-  ClientWidth = 390
+  ClientHeight = 198
+  ClientWidth = 394
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -69,7 +69,7 @@ object LogStrDialog: TLogStrDialog
     Caption = 'H'
   end
   object BtnCancel: TButton
-    Left = 302
+    Left = 303
     Top = 167
     Width = 85
     Height = 27
@@ -78,7 +78,7 @@ object LogStrDialog: TLogStrDialog
     TabOrder = 0
   end
   object BtnOk: TButton
-    Left = 212
+    Left = 215
     Top = 167
     Width = 85
     Height = 27
@@ -127,7 +127,7 @@ object LogStrDialog: TLogStrDialog
     Left = 237
     Top = 16
     Width = 25
-    Height = 23
+    Height = 22
     Caption = '...'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -142,7 +142,7 @@ object LogStrDialog: TLogStrDialog
     Left = 237
     Top = 39
     Width = 25
-    Height = 23
+    Height = 22
     Caption = '...'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -171,7 +171,7 @@ object LogStrDialog: TLogStrDialog
     Left = 363
     Top = 97
     Width = 25
-    Height = 23
+    Height = 22
     Caption = '...'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -186,7 +186,7 @@ object LogStrDialog: TLogStrDialog
     Left = 363
     Top = 119
     Width = 25
-    Height = 23
+    Height = 22
     Caption = '...'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -254,7 +254,7 @@ object LogStrDialog: TLogStrDialog
     Left = 237
     Top = 62
     Width = 25
-    Height = 23
+    Height = 22
     Caption = '...'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -276,7 +276,7 @@ object LogStrDialog: TLogStrDialog
     Left = 363
     Top = 141
     Width = 25
-    Height = 23
+    Height = 22
     Caption = '...'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText

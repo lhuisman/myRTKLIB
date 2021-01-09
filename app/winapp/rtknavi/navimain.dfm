@@ -3,8 +3,8 @@ object MainForm: TMainForm
   Top = 0
   BorderIcons = [biMinimize]
   Caption = 'RTKNAVI'
-  ClientHeight = 299
-  ClientWidth = 575
+  ClientHeight = 300
+  ClientWidth = 660
   Color = clWindow
   Constraints.MaxHeight = 1600
   Constraints.MaxWidth = 2400
@@ -14,7 +14,6 @@ object MainForm: TMainForm
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
-  Scaled = False
   OnClose = FormClose
   OnCreate = FormCreate
   OnShow = FormShow
@@ -24,8 +23,8 @@ object MainForm: TMainForm
     AlignWithMargins = True
     Left = 1
     Top = 51
-    Width = 573
-    Height = 187
+    Width = 658
+    Height = 188
     Margins.Left = 1
     Margins.Top = 1
     Margins.Right = 1
@@ -39,7 +38,7 @@ object MainForm: TMainForm
       Left = 380
       Top = 0
       Width = 4
-      Height = 187
+      Height = 188
       Beveled = True
       Color = clWhite
       ParentColor = False
@@ -51,7 +50,7 @@ object MainForm: TMainForm
       Left = 384
       Top = 0
       Width = 4
-      Height = 187
+      Height = 188
       Beveled = True
       Color = clWhite
       ParentColor = False
@@ -62,7 +61,7 @@ object MainForm: TMainForm
       Left = 376
       Top = 0
       Width = 4
-      Height = 187
+      Height = 188
       Beveled = True
       Color = clWhite
       ParentColor = False
@@ -74,7 +73,7 @@ object MainForm: TMainForm
       Left = 187
       Top = 0
       Width = 4
-      Height = 187
+      Height = 188
       Beveled = True
       Color = clWhite
       ParentColor = False
@@ -85,182 +84,16 @@ object MainForm: TMainForm
       Left = 0
       Top = 0
       Width = 187
-      Height = 187
+      Height = 188
       Align = alLeft
       BevelOuter = bvNone
       Color = clWhite
       ParentBackground = False
       TabOrder = 0
       OnResize = Panel21Resize
-      object Panel211: TPanel
-        Left = 0
-        Top = 17
-        Width = 187
-        Height = 154
-        Align = alClient
-        BevelInner = bvRaised
-        BevelOuter = bvLowered
-        Color = clWhite
-        Constraints.MaxHeight = 1000
-        Constraints.MaxWidth = 1200
-        Constraints.MinHeight = 154
-        Constraints.MinWidth = 187
-        ParentBackground = False
-        TabOrder = 0
-        OnResize = Panel211Resize
-        object LabelNSat: TLabel
-          Left = 1
-          Top = 112
-          Width = 172
-          Height = 17
-          Alignment = taCenter
-          AutoSize = False
-          Caption = 'Age: 0.0 s Ratio: 0.0 NSAT: 0'
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clGray
-          Font.Height = -11
-          Font.Name = 'Tahoma'
-          Font.Style = []
-          ParentFont = False
-        end
-        object LabelStd: TLabel
-          Left = 1
-          Top = 98
-          Width = 172
-          Height = 17
-          Alignment = taCenter
-          AutoSize = False
-          Caption = 'E: 0.000 N: 0.000 U: 0.000 m'
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clGray
-          Font.Height = -11
-          Font.Name = 'Tahoma'
-          Font.Style = []
-          ParentFont = False
-        end
-        object Plabel1: TLabel
-          Left = 13
-          Top = 30
-          Width = 15
-          Height = 18
-          Caption = 'N:'
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clBlack
-          Font.Height = -15
-          Font.Name = 'Tahoma'
-          Font.Style = []
-          ParentFont = False
-        end
-        object Plabel2: TLabel
-          Left = 13
-          Top = 53
-          Width = 13
-          Height = 18
-          Caption = 'E:'
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clBlack
-          Font.Height = -15
-          Font.Name = 'Tahoma'
-          Font.Style = []
-          ParentFont = False
-        end
-        object Plabel3: TLabel
-          Left = 13
-          Top = 76
-          Width = 15
-          Height = 18
-          Caption = 'H:'
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clBlack
-          Font.Height = -15
-          Font.Name = 'Tahoma'
-          Font.Style = []
-          ParentFont = False
-        end
-        object PlabelA: TLabel
-          Left = 12
-          Top = 9
-          Width = 42
-          Height = 13
-          Caption = 'Solution:'
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clSilver
-          Font.Height = -11
-          Font.Name = 'Tahoma'
-          Font.Style = []
-          ParentFont = False
-        end
-        object Pos1: TLabel
-          Left = 64
-          Top = 30
-          Width = 96
-          Height = 18
-          Alignment = taRightJustify
-          Caption = '0 00'#39' 00.0000"'
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clBlack
-          Font.Height = -15
-          Font.Name = 'Tahoma'
-          Font.Style = []
-          ParentFont = False
-        end
-        object Pos2: TLabel
-          Left = 64
-          Top = 53
-          Width = 96
-          Height = 18
-          Alignment = taRightJustify
-          Caption = '0 00'#39' 00.0000"'
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clBlack
-          Font.Height = -15
-          Font.Name = 'Tahoma'
-          Font.Style = []
-          ParentFont = False
-        end
-        object Pos3: TLabel
-          Left = 105
-          Top = 76
-          Width = 55
-          Height = 18
-          Alignment = taRightJustify
-          Caption = '0.000 m'
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clBlack
-          Font.Height = -15
-          Font.Name = 'Tahoma'
-          Font.Style = []
-          ParentFont = False
-        end
-        object Solution: TLabel
-          Left = 93
-          Top = 7
-          Width = 28
-          Height = 19
-          Alignment = taRightJustify
-          Caption = '----'
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clGray
-          Font.Height = -16
-          Font.Name = 'Tahoma'
-          Font.Style = [fsBold]
-          ParentFont = False
-        end
-        object IndSol: TPanel
-          Left = 150
-          Top = 11
-          Width = 13
-          Height = 13
-          BevelInner = bvRaised
-          BevelOuter = bvLowered
-          Color = clWhite
-          ParentBackground = False
-          TabOrder = 0
-        end
-      end
       object Panel213: TPanel
         Left = 0
-        Top = 171
+        Top = 172
         Width = 187
         Height = 16
         Align = alBottom
@@ -307,21 +140,21 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 187
-        Height = 17
+        Height = 18
         Align = alTop
         BevelOuter = bvNone
         TabOrder = 2
         object Plabel0: TLabel
-          Left = 30
-          Top = 2
-          Width = 143
+          Left = 28
+          Top = 1
+          Width = 135
           Height = 13
           AutoSize = False
           BiDiMode = bdLeftToRight
           Caption = 'Lat/Lon/Height'
           Font.Charset = ANSI_CHARSET
           Font.Color = clGray
-          Font.Height = -11
+          Font.Height = -12
           Font.Name = 'Tahoma'
           Font.Style = []
           ParentBiDiMode = False
@@ -350,12 +183,188 @@ object MainForm: TMainForm
           OnClick = BtnSolTypeClick
         end
       end
+      object Panel211: TPanel
+        Left = 0
+        Top = 18
+        Width = 187
+        Height = 154
+        Align = alClient
+        BevelInner = bvRaised
+        BevelOuter = bvLowered
+        Color = clWhite
+        Constraints.MaxHeight = 1000
+        Constraints.MaxWidth = 1200
+        Constraints.MinHeight = 154
+        Constraints.MinWidth = 187
+        ParentBackground = False
+        TabOrder = 0
+        OnResize = Panel211Resize
+        object LabelNSat: TLabel
+          Left = 1
+          Top = 112
+          Width = 172
+          Height = 17
+          Alignment = taCenter
+          AutoSize = False
+          Caption = 'Age: 0.0 s Ratio: 0.0 NSAT: 0'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clGray
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+          Layout = tlCenter
+        end
+        object LabelStd: TLabel
+          Left = 1
+          Top = 99
+          Width = 172
+          Height = 17
+          Alignment = taCenter
+          AutoSize = False
+          Caption = 'E: 0.000 N: 0.000 U: 0.000 m'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clGray
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+          Layout = tlCenter
+        end
+        object Plabel1: TLabel
+          Left = 13
+          Top = 31
+          Width = 15
+          Height = 18
+          Caption = 'N:'
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = -15
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+          Layout = tlCenter
+        end
+        object Plabel2: TLabel
+          Left = 13
+          Top = 53
+          Width = 13
+          Height = 18
+          Caption = 'E:'
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = -15
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+          Layout = tlCenter
+        end
+        object Plabel3: TLabel
+          Left = 13
+          Top = 76
+          Width = 15
+          Height = 18
+          Caption = 'H:'
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = -15
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+          Layout = tlCenter
+        end
+        object PlabelA: TLabel
+          Left = 12
+          Top = 9
+          Width = 42
+          Height = 13
+          Caption = 'Solution:'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clSilver
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+          Layout = tlCenter
+        end
+        object Pos1: TLabel
+          Left = 64
+          Top = 30
+          Width = 96
+          Height = 18
+          Alignment = taRightJustify
+          Caption = '0 00'#39' 00.0000"'
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = -15
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+          Layout = tlCenter
+        end
+        object Pos2: TLabel
+          Left = 64
+          Top = 53
+          Width = 96
+          Height = 18
+          Alignment = taRightJustify
+          Caption = '0 00'#39' 00.0000"'
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = -15
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+          Layout = tlCenter
+        end
+        object Pos3: TLabel
+          Left = 105
+          Top = 76
+          Width = 55
+          Height = 18
+          Alignment = taRightJustify
+          Caption = '0.000 m'
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = -15
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+          Layout = tlCenter
+        end
+        object Solution: TLabel
+          Left = 93
+          Top = 9
+          Width = 28
+          Height = 19
+          Alignment = taRightJustify
+          Caption = '----'
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clGray
+          Font.Height = -16
+          Font.Name = 'Tahoma'
+          Font.Style = [fsBold]
+          ParentFont = False
+          Layout = tlCenter
+        end
+        object IndSol: TPanel
+          Left = 150
+          Top = 11
+          Width = 13
+          Height = 13
+          BevelInner = bvRaised
+          BevelOuter = bvLowered
+          Color = clWhite
+          ParentBackground = False
+          TabOrder = 0
+        end
+      end
     end
     object Panel22: TPanel
       Left = 191
       Top = 0
       Width = 185
-      Height = 187
+      Height = 188
       Align = alLeft
       BevelOuter = bvNone
       Color = clWhite
@@ -372,7 +381,7 @@ object MainForm: TMainForm
         Height = 1000
       end
       object Plot1: TImage
-        Left = 0
+        Left = 1
         Top = 0
         Width = 1200
         Height = 1000
@@ -480,8 +489,8 @@ object MainForm: TMainForm
     object Panel23: TPanel
       Left = 388
       Top = 0
-      Width = 185
-      Height = 187
+      Width = 270
+      Height = 188
       Align = alClient
       BevelOuter = bvNone
       Color = clWhite
@@ -606,8 +615,8 @@ object MainForm: TMainForm
     object Panel24: TPanel
       Left = 388
       Top = 0
-      Width = 185
-      Height = 187
+      Width = 270
+      Height = 188
       Align = alClient
       BevelOuter = bvNone
       Color = clWhite
@@ -732,8 +741,8 @@ object MainForm: TMainForm
     object Panel25: TPanel
       Left = 388
       Top = 0
-      Width = 185
-      Height = 187
+      Width = 270
+      Height = 188
       Align = alClient
       BevelOuter = bvNone
       Color = clWhite
@@ -859,8 +868,8 @@ object MainForm: TMainForm
   object Panel3: TPanel
     AlignWithMargins = True
     Left = 1
-    Top = 240
-    Width = 573
+    Top = 241
+    Width = 658
     Height = 25
     Margins.Left = 1
     Margins.Top = 1
@@ -912,7 +921,7 @@ object MainForm: TMainForm
     object Message: TLabel
       Left = 25
       Top = 2
-      Width = 500
+      Width = 585
       Height = 21
       Align = alClient
       Alignment = taCenter
@@ -932,7 +941,7 @@ object MainForm: TMainForm
       ExplicitHeight = 19
     end
     object BtnAbout: TSpeedButton
-      Left = 548
+      Left = 633
       Top = 2
       Width = 23
       Height = 21
@@ -954,7 +963,7 @@ object MainForm: TMainForm
       ExplicitHeight = 24
     end
     object BtnTaskTray: TSpeedButton
-      Left = 525
+      Left = 610
       Top = 2
       Width = 23
       Height = 21
@@ -992,8 +1001,8 @@ object MainForm: TMainForm
   object Panel4: TPanel
     AlignWithMargins = True
     Left = 0
-    Top = 267
-    Width = 575
+    Top = 268
+    Width = 660
     Height = 31
     Margins.Left = 0
     Margins.Top = 1
@@ -1185,7 +1194,7 @@ object MainForm: TMainForm
     AlignWithMargins = True
     Left = 1
     Top = 30
-    Width = 573
+    Width = 658
     Height = 19
     Margins.Left = 1
     Margins.Top = 1
@@ -1201,7 +1210,7 @@ object MainForm: TMainForm
     OnResize = Panel5Resize
     object SolS: TLabel
       Left = 40
-      Top = 2
+      Top = 1
       Width = 44
       Height = 13
       Alignment = taCenter
@@ -1215,14 +1224,14 @@ object MainForm: TMainForm
       ParentFont = False
     end
     object SolQ: TLabel
-      Left = 86
-      Top = 2
-      Width = 38
-      Height = 13
+      Left = 87
+      Top = 0
+      Width = 44
+      Height = 14
       Caption = 'Solution'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
-      Font.Height = -11
+      Font.Height = -12
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
@@ -1247,8 +1256,8 @@ object MainForm: TMainForm
       OnClick = BtnSolTypeClick
     end
     object IndQ: TPanel
-      Left = 32
-      Top = 4
+      Left = 33
+      Top = 3
       Width = 10
       Height = 10
       BevelInner = bvRaised
@@ -1307,7 +1316,7 @@ object MainForm: TMainForm
     AlignWithMargins = True
     Left = 1
     Top = 1
-    Width = 573
+    Width = 658
     Height = 27
     Margins.Left = 1
     Margins.Top = 1
@@ -1318,7 +1327,7 @@ object MainForm: TMainForm
     BevelOuter = bvLowered
     TabOrder = 0
     object LabelTime: TLabel
-      Left = 4
+      Left = 5
       Top = 6
       Width = 144
       Height = 15
@@ -1359,7 +1368,7 @@ object MainForm: TMainForm
       end
     end
     object Panel12: TPanel
-      Left = 384
+      Left = 469
       Top = 2
       Width = 187
       Height = 23
@@ -1681,9 +1690,10 @@ object MainForm: TMainForm
     end
   end
   object Timer: TTimer
-    Interval = 40
+    Enabled = False
+    Interval = 100
     OnTimer = TimerTimer
-    Left = 292
+    Left = 293
     Top = 156
   end
   object SaveDialog: TSaveDialog
@@ -1744,7 +1754,7 @@ object MainForm: TMainForm
     Left = 274
     Top = 91
     Bitmap = {
-      494C010102000400280110001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010102000400040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000001000000001002000000000000010
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

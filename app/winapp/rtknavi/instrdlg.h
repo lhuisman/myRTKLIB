@@ -62,7 +62,7 @@ __published:
 	TEdit *EditMaxBL;
 	TLabel *LabelMaxBL;
 	TLabel *LabelKm;
-	TComboBox *Time64BitL;
+	TCheckBox *Chk64Bit;
 	void __fastcall BtnOkClick(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall BtnStr1Click(TObject *Sender);
@@ -99,7 +99,7 @@ public:
 	double NmeaPos[3],MaxBL;
 	AnsiString Paths[3][4],Cmds[3][3],CmdsTcp[3][3],TimeStart,TimeSpeed;
 	AnsiString RcvOpt[3],ResetCmd;
-	AnsiString History[10],MntpHist[10];
+	AnsiString History[10];
 	__fastcall TInputStrDialog(TComponent* Owner);
 };
 //---------------------------------------------------------------------------

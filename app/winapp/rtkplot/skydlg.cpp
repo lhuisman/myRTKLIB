@@ -151,7 +151,7 @@ void __fastcall TSkyImgDialog::UpdateEnable(void)
 }
 //---------------------------------------------------------------------------
 void __fastcall TSkyImgDialog::SkyFov2UpDownChangingEx(TObject *Sender, bool &AllowChange,
-          short NewValue, TUpDownDirection Direction)
+          int NewValue, TUpDownDirection Direction)
 {
 	AnsiString s;
 	double fov=str2dbl(SkyFov2->Text);
@@ -163,7 +163,7 @@ void __fastcall TSkyImgDialog::SkyFov2UpDownChangingEx(TObject *Sender, bool &Al
 }
 //---------------------------------------------------------------------------
 void __fastcall TSkyImgDialog::SkyFov1UpDownChangingEx(TObject *Sender, bool &AllowChange,
-          short NewValue, TUpDownDirection Direction)
+          int NewValue, TUpDownDirection Direction)
 {
 	AnsiString s;
 	double fov=str2dbl(SkyFov1->Text);
@@ -175,7 +175,7 @@ void __fastcall TSkyImgDialog::SkyFov1UpDownChangingEx(TObject *Sender, bool &Al
 }
 //---------------------------------------------------------------------------
 void __fastcall TSkyImgDialog::SkyFov3UpDownChangingEx(TObject *Sender, bool &AllowChange,
-          short NewValue, TUpDownDirection Direction)
+          int NewValue, TUpDownDirection Direction)
 {
 	AnsiString s;
 	double fov=str2dbl(SkyFov3->Text);
@@ -187,7 +187,7 @@ void __fastcall TSkyImgDialog::SkyFov3UpDownChangingEx(TObject *Sender, bool &Al
 }
 //---------------------------------------------------------------------------
 void __fastcall TSkyImgDialog::SkyCent1UpDownChangingEx(TObject *Sender, bool &AllowChange,
-          short NewValue, TUpDownDirection Direction)
+          int NewValue, TUpDownDirection Direction)
 {
 	AnsiString s;
 	double cent=str2dbl(SkyCent1->Text);
@@ -198,7 +198,7 @@ void __fastcall TSkyImgDialog::SkyCent1UpDownChangingEx(TObject *Sender, bool &A
 }
 //---------------------------------------------------------------------------
 void __fastcall TSkyImgDialog::SkyCent2UpDownChangingEx(TObject *Sender, bool &AllowChange,
-          short NewValue, TUpDownDirection Direction)
+          int NewValue, TUpDownDirection Direction)
 {
 	AnsiString s;
 	double cent=str2dbl(SkyCent2->Text);
@@ -209,7 +209,7 @@ void __fastcall TSkyImgDialog::SkyCent2UpDownChangingEx(TObject *Sender, bool &A
 }
 //---------------------------------------------------------------------------
 void __fastcall TSkyImgDialog::SkyScaleUpDownChangingEx(TObject *Sender, bool &AllowChange,
-          short NewValue, TUpDownDirection Direction)
+          int NewValue, TUpDownDirection Direction)
 {
 	AnsiString s;
 	double scale=str2dbl(SkyScale->Text);

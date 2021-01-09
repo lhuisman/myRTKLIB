@@ -3,7 +3,7 @@
 //---------------------------------------------------------------------------
 #include "rtklib.h"
 #include "plotmain.h"
-#include "mapdlg.h"
+#include "mapoptdlg.h"
 #include "pntdlg.h"
 
 #define HEADXML "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -13,21 +13,16 @@
 #define MAX_SIMOBS	16384			// max genrated obs epochs
 #define MAX_SKYIMG_R 2048			// max size of resampled sky image
 
-#define THRES_SLIP  2.0             // threshold of cycle-slip
-
 static char path_str[MAXNFILE][1024];
 static const char *XMLNS="http://www.topografix.com/GPX/1/1";
 
 // read solutions -----------------------------------------------------------
 void __fastcall TPlot::ReadSol(TStrings *files, int sel)
 {
-	FILETIME tc,ta,tw;
-	SYSTEMTIME st;
-	HANDLE h;
     solbuf_t sol={0};
     AnsiString s;
     gtime_t ts,te;
-    double tint,ep[6];
+    double tint;
     int i,n=0;
     char *paths[MAXNFILE];
     
@@ -39,23 +34,6 @@ void __fastcall TPlot::ReadSol(TStrings *files, int sel)
     
     ReadWaitStart();
 	
-	s=files->Strings[0];
-    
-	if ((h=CreateFile(s.c_str(),GENERIC_READ,0,NULL,OPEN_EXISTING,
-					  FILE_ATTRIBUTE_NORMAL,0))==INVALID_HANDLE_VALUE) {
-		return;
-	}
-	GetFileTime(h,&tc,&ta,&tw);
-	CloseHandle(h);
-	FileTimeToSystemTime(&tc,&st); // file create time
-	ep[0]=st.wYear;
-	ep[1]=st.wMonth;
-	ep[2]=st.wDay;
-	ep[3]=st.wHour;
-	ep[4]=st.wMinute;
-	ep[5]=st.wSecond;
-	sol.time=utc2gpst(epoch2time(ep));
-    
     for (i=0;i<files->Count&&n<MAXNFILE;i++) {
         strcpy(paths[n++],U2A(files->Strings[i]).c_str());
     }
@@ -93,6 +71,7 @@ void __fastcall TPlot::ReadSol(TStrings *files, int sel)
         UpdateOrigin();
     }
     SolIndex[0]=SolIndex[1]=ObsIndex=0;
+    TimeScroll->Position=0;
     
     GEDataState[sel]=0;
     
@@ -258,6 +237,22 @@ int __fastcall TPlot::ReadObsRnx(TStrings *files, obs_t *obs, nav_t *nav,
             // read brdc navigation data
             memcpy(q+1,"BRDC",4);
             strcpy(p+3,"N"); readrnxt(navfile,1,ts,te,tint,opt,NULL,nav,NULL);
+        }
+        else if (!strcmp(p-1,"O.rnx" )&&(p=strrchr(navfile,'_'))) { /* rinex 3 */
+            *p='\0';
+            if (!(p=strrchr(navfile,'_'))) continue;
+            *p='\0';
+            if (!(p=strrchr(navfile,'_'))) continue;
+            strcpy(p,"_*_*N.rnx"); 
+            
+            n=nav->n;
+            readrnxt(navfile,1,ts,te,tint,opt,NULL,nav,NULL);
+            
+            if (nav->n>n||!(q=strrchr(navfile,'\\'))) continue;
+            
+            // read brdc navigation data
+            memcpy(q+1,"BRDC",4);
+            readrnxt(navfile,1,ts,te,tint,opt,NULL,nav,NULL);
         }
     }
     if (obs->n<=0) {
@@ -436,7 +431,7 @@ void __fastcall TPlot::ReadMapData(AnsiString file)
         image->LoadFromFile(file);
     }
     catch (Exception &exception) {
-        ShowMsg(s.sprintf("map file read error: %s",file));
+        ShowMsg(s.sprintf("map file read error: %s",file.c_str()));
         ShowLegend(NULL);
         return;
     }
@@ -455,7 +450,7 @@ void __fastcall TPlot::ReadMapData(AnsiString file)
     }
     BtnShowImg->Down=true;
     
-    MapAreaDialog->UpdateField();
+    MapOptDialog->UpdateField();
     UpdateOrigin();
     UpdatePlot();
     UpdateEnable();
@@ -476,7 +471,7 @@ void __fastcall TPlot::ReadMapData(AnsiString file)
     pix[1]=(BYTE)(a1*p1[1]+a2*p2[1]+a3*p1[4]+a4*p2[4]);\
     pix[2]=(BYTE)(a1*p1[2]+a2*p2[2]+a3*p1[5]+a4*p2[5]);\
 }
-// rotate coordintates roll-pitch-yaw ---------------------------------------
+// rotate coordinates roll-pitch-yaw ----------------------------------------
 static void RPY(const double *rpy, double *R)
 {
     double sr=sin(-rpy[0]*D2R),cr=cos(-rpy[0]*D2R);
@@ -646,7 +641,7 @@ void __fastcall TPlot::ReadSkyData(AnsiString file)
         image->LoadFromFile(file);
     }
     catch (Exception &exception) {
-        ShowMsg(s.sprintf("sky image file read error: %s",file));
+        ShowMsg(s.sprintf("sky image file read error: %s",file.c_str()));
         ShowLegend(NULL);
         return;
     }
@@ -746,19 +741,15 @@ void __fastcall TPlot::ReadShapeFile(TStrings *files)
     UpdatePlot();
     UpdateEnable();
 }
-// read waypoint ------------------------------------------------------------
-void __fastcall TPlot::ReadWaypoint(AnsiString file)
+// read GPX file ------------------------------------------------------------
+void __fastcall TPlot::ReadGpxFile(AnsiString file)
 {
-    UTF8String label1(L"<ogr:–¼Ì>"),label2(L"<ogr:“_–¼Ì>");
-    AnsiString s;
+    AnsiString label1(L"<ogr:?"),label2(L"<ogr:_?");
     FILE *fp;
     char buff[1024],name[256]="",*p;
     double pos[3]={0};
     
     if (!(fp=fopen(file.c_str(),"r"))) return;
-    
-    ReadWaitStart();
-    ShowMsg(s.sprintf("reading waypoint... %s",file.c_str()));
     
     NWayPnt=0;
     
@@ -789,6 +780,49 @@ void __fastcall TPlot::ReadWaypoint(AnsiString file)
         }
     }
     fclose(fp);
+}
+// read pos file ------------------------------------------------------------
+void __fastcall TPlot::ReadPosFile(AnsiString file)
+{
+    FILE *fp;
+    char buff[1024],id[256],name[256],*p;
+    double pos[3]={0};
+    int n;
+    
+    if (!(fp=fopen(file.c_str(),"r"))) return;
+    
+    NWayPnt=0;
+    
+    while (fgets(buff,sizeof(buff),fp)&&NWayPnt<MAXWAYPNT) {
+        if ((p=strchr(buff,'#'))) *p='\0';
+        
+        n=sscanf(buff,"%lf %lf %lf %255s %255s",pos,pos+1,pos+2,id,name);
+        
+        if (n>=4) {
+            PntPos[NWayPnt][0]=pos[0];
+            PntPos[NWayPnt][1]=pos[1];
+            PntPos[NWayPnt][2]=pos[2];
+            UnicodeString unicode_str=(n>=5)?name:id;
+            AnsiString utf8_str=unicode_str;
+            PntName[NWayPnt++]=utf8_str;
+        }
+    }
+    fclose(fp);
+}
+// read waypoint ------------------------------------------------------------
+void __fastcall TPlot::ReadWaypoint(AnsiString file)
+{
+    AnsiString s;
+    int type=0;
+    char *p;
+    
+    if ((p=strrchr(file.c_str(),'.'))&&!strcmp(p,".gpx")) type=1;
+
+    ReadWaitStart();
+    ShowMsg(s.sprintf("reading waypoint... %s",file.c_str()));
+    
+    if (type) ReadGpxFile(file);
+    else      ReadPosFile(file);
     
     ReadWaitEnd();
     ShowMsg("");
@@ -799,8 +833,8 @@ void __fastcall TPlot::ReadWaypoint(AnsiString file)
     UpdateEnable();
     PntDialog->SetPoint();
 }
-// save waypoint ------------------------------------------------------------
-void __fastcall TPlot::SaveWaypoint(AnsiString file)
+// save GPX file ------------------------------------------------------------
+void __fastcall TPlot::SaveGpxFile(AnsiString file)
 {
     FILE *fp;
     int i;
@@ -816,12 +850,47 @@ void __fastcall TPlot::SaveWaypoint(AnsiString file)
         if (PntPos[i][2]!=0.0) {
             fprintf(fp," <ele>%.4f</ele>\n",PntPos[i][2]);
         }
-        UTF8String str(PntName[i]);
-        fprintf(fp," <name>%s</name>\n",str); // UTF-8
+        AnsiString str(PntName[i]);
+        fprintf(fp," <name>%s</name>\n",str.c_str()); // UTF-8
         fprintf(fp,"</wpt>\n");
     }
     fprintf(fp,"%s\n",TAILGPX);
     fclose(fp);
+}
+// save pos file ------------------------------------------------------------
+void __fastcall TPlot::SavePosFile(AnsiString file)
+{
+    FILE *fp;
+    int i;
+    
+    if (!(fp=fopen(file.c_str(),"w"))) return;
+    
+    fprintf(fp,"# WAYPOINTS by RTKLIB %s\n",VER_RTKLIB);
+     
+    for (i=0;i<NWayPnt;i++) {
+        AnsiString str(PntName[i]);
+        fprintf(fp,"%13.9f %14.9f %10.4f %s\n",PntPos[i][0],PntPos[i][1],
+                PntPos[i][2],str.c_str());
+    }
+    fclose(fp);
+}
+// save waypoint ------------------------------------------------------------
+void __fastcall TPlot::SaveWaypoint(AnsiString file)
+{
+    AnsiString s;
+    int type=0;
+    char *p;
+    
+    if ((p=strrchr(file.c_str(),'.'))&&!strcmp(p,".gpx")) type=1;
+
+    ReadWaitStart();
+    ShowMsg(s.sprintf("saving waypoint... %s",file.c_str()));
+    
+    if (type) SaveGpxFile(file);
+    else      SavePosFile(file);
+    
+    ReadWaitEnd();
+    ShowMsg("");
 }
 // read station position data -----------------------------------------------
 void __fastcall TPlot::ReadStaPos(const char *file, const char *sta,
@@ -864,7 +933,8 @@ void __fastcall TPlot::SaveDop(AnsiString file)
     gtime_t time;
     double azel[MAXOBS*2],dop[4],tow;
     int i,j,ns,week;
-    char tstr[64],*tlabel;
+    char tstr[64];
+    const char *tlabel;
     
     trace(3,"SaveDop: file=%s\n",file.c_str());
     
@@ -915,7 +985,8 @@ void __fastcall TPlot::SaveSnrMp(AnsiString file)
     AnsiString ObsTypeText=ObsType2->Text;
     gtime_t time;
     double tow;
-    char sat[32],mp[32],tstr[64],*tlabel,*code=ObsTypeText.c_str()+1;
+    char sat[32],mp[32],tstr[64],*code=ObsTypeText.c_str()+1;
+    const char *tlabel;
     int i,j,k,week;
     
     trace(3,"SaveSnrMp: file=%s\n",file.c_str());
@@ -936,7 +1007,7 @@ void __fastcall TPlot::SaveSnrMp(AnsiString file)
             if (Obs.data[j].sat!=i+1) continue;
             
             for (k=0;k<NFREQ+NEXOBS;k++) {
-                if (strstr(code2obs(Obs.data[j].code[k],NULL),code)) break;
+                if (strstr(code2obs(Obs.data[j].code[k]),code)) break;
             }
             if (k>=NFREQ+NEXOBS) continue;
             
@@ -956,7 +1027,7 @@ void __fastcall TPlot::SaveSnrMp(AnsiString file)
                 time2str(timeadd(gpst2utc(time),9*3600.0),tstr,1);
             }
             fprintf(fp,"%s %6s %8.1f %8.1f %9.2f %10.4f\n",tstr,sat,Az[j]*R2D,
-                    El[j]*R2D,Obs.data[j].SNR[k]*0.25,!Mp[k]?0.0:Mp[k][j]);
+                    El[j]*R2D,Obs.data[j].SNR[k]*SNR_UNIT,!Mp[k]?0.0:Mp[k][j]);
         }
     }
     fclose(fp);
@@ -987,7 +1058,8 @@ void __fastcall TPlot::SaveElMask(AnsiString file)
 void __fastcall TPlot::Connect(void)
 {
     AnsiString s;
-    char *cmd,*path,buff[MAXSTRPATH],*name[2]={"",""},*p;
+    char *cmd,*path,buff[MAXSTRPATH],*p;
+    const char *name[2]={"",""};
     int i,mode=STR_MODE_R;
     
     trace(3,"Connect\n");
@@ -1022,7 +1094,7 @@ void __fastcall TPlot::Connect(void)
         
         if (StrCmdEna[i][0]) {
             cmd=StrCmds[i][0].c_str();
-            strwrite(Stream+i,(unsigned char *)cmd,strlen(cmd));
+            strwrite(Stream+i,(uint8_t *)cmd,strlen(cmd));
         }
         ConnectState=1;
     }
@@ -1037,6 +1109,7 @@ void __fastcall TPlot::Connect(void)
     BtnSol12  ->Down=false;
     BtnShowTrack->Down=true;
     BtnFixHoriz->Down=true;
+    BtnFixCent ->Down=true;
     BtnReload->Visible=false;
     StrStatus->Left=Panel11->Width-BtnOptions->Width;
     StrStatus->Visible=true;
@@ -1060,7 +1133,7 @@ void __fastcall TPlot::Disconnect(void)
     for (i=0;i<2;i++) {
         if (StrCmdEna[i][1]) {
             cmd=StrCmds[i][1].c_str();
-            strwrite(Stream+i,(unsigned char *)cmd,strlen(cmd));
+            strwrite(Stream+i,(uint8_t *)cmd,strlen(cmd));
         }
         strclose(Stream+i);
     }
@@ -1095,13 +1168,9 @@ int __fastcall TPlot::CheckObs(AnsiString file)
 // update observation data index, azimuth/elevation, satellite list ---------
 void __fastcall TPlot::UpdateObs(int nobs)
 {
-    AnsiString s;
     prcopt_t opt=prcopt_default;
-    gtime_t time;
-    sol_t sol={0};
-    double pos[3],rr[3],e[3],azel[MAXOBS*2]={0},rs[6],dts[2],var;
-    int i,j,k,svh,per,per_=-1;
-    char msg[128],name[16];
+    double rr[3]={0};
+    int per,per_=-1;
     
     trace(3,"UpdateObs\n");
     
@@ -1115,56 +1184,63 @@ void __fastcall TPlot::UpdateObs(int nobs)
     Az=new double[Obs.n];
     El=new double[Obs.n];
     
-    opt.err[0]=900.0;
-    
     ReadWaitStart();
     ShowLegend(NULL);
     
-    for (i=0;i<Obs.n;i=j) {
-        time=Obs.data[i].time;
+    for (int i=0,j=0;i<Obs.n;i=j) {
+        gtime_t time=Obs.data[i].time;
+        double pos[3],azel[2];
+        int svh;
+        
         for (j=i;j<Obs.n;j++) {
             if (timediff(Obs.data[j].time,time)>TTOL) break;
         }
         IndexObs[NObs++]=i;
-        
-        for (k=0;k<j-i;k++) {
-            azel[k*2]=azel[1+k*2]=0.0;
-        }
-        if (RcvPos==0) {
+         
+        if (RcvPos==0) { // single point position
+            sol_t sol={0};
+            char msg[128];
+            
+            opt.err[0]=900.0;
             pntpos(Obs.data+i,j-i,&Nav,&opt,&sol,azel,NULL,msg);
             matcpy(rr,sol.rr,3,1);
             ecef2pos(rr,pos);
         }
-        else {
-            if (RcvPos==1) { // lat/lon/height
-                for (k=0;k<3;k++) pos[k]=OOPos[k];
-                pos2ecef(pos,rr);
-            }
-            else { // rinex header position
-                for (k=0;k<3;k++) rr[k]=Sta.pos[k];
-                ecef2pos(rr,pos);
-            }
-            for (k=0;k<j-i;k++) {
-                azel[k*2]=azel[1+k*2]=0.0;
-                if (!satpos(time,time,Obs.data[i+k].sat,EPHOPT_BRDC,&Nav,rs,dts,
-                            &var,&svh)) continue;
-                if (geodist(rs,rr,e)>0.0) satazel(pos,e,azel+k*2);
-            }
+        else if (RcvPos==1) { // lat/lon/height
+            matcpy(pos,OOPos,3,1);
+            pos2ecef(pos,rr);
         }
-        // satellite azel by tle data
-        for (k=0;k<j-i;k++) {
-            if (azel[k*2]!=0.0||azel[1+k*2]!=0.0) continue;
-            satno2id(Obs.data[i+k].sat,name);
-            if (!tle_pos(time,name,"","",&TLEData,NULL,rs)) continue;
-            if (geodist(rs,rr,e)>0.0) satazel(pos,e,azel+k*2);
+        else { // RINEX header position
+            matcpy(rr,Sta.pos,3,1);
+            ecef2pos(rr,pos);
         }
-        for (k=0;k<j-i;k++) {
-            Az[i+k]=azel[  k*2];
-            El[i+k]=azel[1+k*2];
-            if (Az[i+k]<0.0) Az[i+k]+=2.0*PI;
+        for (int k=0;k<j-i;k++) {
+            double e[3],rs[6],dts[2],var;
+            int sat=Obs.data[i+k].sat;
+            
+            if (SimObs) {
+                char name[16];
+                satno2id(sat,name);
+                if (!tle_pos(time,name,"","",&TLEData,NULL,rs)) continue;
+            }
+            else {
+                if (!satpos(time,time,sat,EPHOPT_BRDC,&Nav,rs,dts,&var,&svh)) {
+                    continue;
+                }
+            }
+            if (geodist(rs,rr,e)>0.0) {
+                satazel(pos,e,azel);
+                if (azel[0]<0.0) azel[0]+=2.0*PI;
+            }
+            else {
+                azel[0]=azel[1]=0.0;
+            }
+            Az[i+k]=azel[0];
+            El[i+k]=azel[1];
         }
         per=(i+1)*100/Obs.n;
         if (per!=per_) {
+            AnsiString s;
             ShowMsg(s.sprintf("updating azimuth/elevation... (%d%%)",(per_=per)));
             Application->ProcessMessages();
         }
@@ -1180,80 +1256,54 @@ void __fastcall TPlot::UpdateMp(void)
 {
     AnsiString s;
     obsd_t *data;
-    double lam1,lam2,I,C,B;
-    int i,j,k,f1,f2,sat,sys,per,per_=-1,n;
+    double freq1,freq2,freq,I,B;
+    int i,j,k,m,n,sat,per,per_=-1;
     
     trace(3,"UpdateMp\n");
     
     for (i=0;i<NFREQ+NEXOBS;i++) {
-        delete [] Mp[i]; Mp[i]=NULL;
+        delete [] Mp[i];
+        Mp[i]=NULL;
     }
     if (Obs.n<=0) return;
     
     for (i=0;i<NFREQ+NEXOBS;i++) {
         Mp[i]=new double[Obs.n];
+        for (j=0;j<Obs.n;j++) Mp[i][j]=0.0;
     }
     ReadWaitStart();
     ShowLegend(NULL);
     
     for (i=0;i<Obs.n;i++) {
         data=Obs.data+i;
-        sys=satsys(data->sat,NULL);
+        freq1=sat2freq(data->sat,data->code[0],&Nav);
+        freq2=sat2freq(data->sat,data->code[1],&Nav);
+        if (data->L[0]==0.0||data->L[1]==0.0||freq1==0.0||freq2==0.0) continue;
+        I=-CLIGHT*(data->L[0]/freq1-data->L[1]/freq2)/(1.0-SQR(freq1/freq2));
         
         for (j=0;j<NFREQ+NEXOBS;j++) {
-            Mp[j][i]=0.0;
-            
-            code2obs(data->code[j],&f1);
-            
-            if (sys==SYS_CMP) {
-                if      (f1==5) f1=2; /* B2 */
-                else if (f1==4) f1=3; /* B3 */
-            }
-            if      (sys==SYS_GAL) f2=f1==1?2:1; /* E1/E5b */
-            else if (sys==SYS_SBS) f2=f1==1?3:1; /* L1/L5 */
-            else if (sys==SYS_CMP) f2=f1==1?2:1; /* B1/B2 */
-            else                   f2=f1==1?2:1; /* L1/L2 */
-            
-            lam1=satwavelen(data->sat,f1-1,&Nav);
-            lam2=satwavelen(data->sat,f2-1,&Nav);
-            if (lam1==0.0||lam2==0.0) continue;
-            
-            if (data->P[j]!=0.0&&data->L[j]!=0.0&&data->L[f2-1]) {
-                C=SQR(lam1)/(SQR(lam1)-SQR(lam2));
-                I=lam1*data->L[j]-lam2*data->L[f2-1];
-                Mp[j][i]=data->P[j]-lam1*data->L[j]+2.0*C*I;
-            }
+            freq=sat2freq(data->sat,data->code[j],&Nav);
+            if (data->P[j]==0.0||data->L[j]==0.0||freq==0.0) continue;
+            Mp[j][i]=data->P[j]-CLIGHT*data->L[j]/freq-2.0*SQR(freq1/freq)*I;
         }
     }
-    for (sat=1;sat<=MAXSAT;sat++) for (i=0;i<NFREQ+NEXOBS;i++) {
-        sys=satsys(sat,NULL);
-        
-        for (j=k=n=0,B=0.0;j<Obs.n;j++) {
-            if (Obs.data[j].sat!=sat) continue;
-            
-            code2obs(Obs.data[j].code[i],&f1);
-            
-            if (sys==SYS_CMP) {
-                if      (f1==5) f1=2; /* B2 */
-                else if (f1==4) f1=3; /* B3 */
+    for (sat=1;sat<=MAXSAT;sat++) {
+        for (j=0;j<NFREQ+NEXOBS;j++) {
+            for (i=n=m=0,B=0.0;i<Obs.n;i++) {
+                data=Obs.data+i;
+                if (data->sat!=sat) continue;
+                if ((data->LLI[j]&1)||(data->LLI[0]&1)||(data->LLI[1]&1)||
+                    fabs(Mp[j][i]-B)>5.0) {
+                    for (k=m;k<i;k++) {
+                        if (Obs.data[k].sat==sat&&Mp[j][k]!=0.0) Mp[j][k]-=B;
+                    }
+                    n=0; m=i; B=0.0;
+                }
+                if (Mp[j][i]!=0.0) B+=(Mp[j][i]-B)/++n;
             }
-            if      (sys==SYS_GAL) f2=f1==1?3:1;
-            else if (sys==SYS_CMP) f2=f1==1?2:1;
-            else                   f2=f1==1?2:1;
-            
-            if ((Obs.data[j].LLI[i]&1)||(Obs.data[j].LLI[f2-1]&1)||
-                fabs(Mp[i][j]-B)>THRES_SLIP) {
-                
-                for (;k<j;k++) if (Obs.data[k].sat==sat) Mp[i][k]-=B;
-                B=Mp[i][j]; n=1; k=j;
+            for (k=m;k<Obs.n;k++) {
+                if (Obs.data[k].sat==sat&&Mp[j][k]!=0.0) Mp[j][k]-=B;
             }
-            else {
-                if (n==0) k=j;
-                B+=(Mp[i][j]-B)/++n;
-            }
-        }
-        if (n>0) {
-            for (;k<j;k++) if (Obs.data[k].sat==sat) Mp[i][k]-=B;
         }
         per=sat*100/MAXSAT;
         if (per!=per_) {
@@ -1291,6 +1341,7 @@ void __fastcall TPlot::ConnectPath(const char *path, int ch)
     BtnShowTrack->Down=true;
     BtnFixHoriz ->Down=true;
     BtnFixVert  ->Down=true;
+    BtnFixCent  ->Down=true;
 }
 // clear obs data --------------------------------------------------------------
 void __fastcall TPlot::ClearObs(void)
@@ -1366,8 +1417,10 @@ void __fastcall TPlot::Clear(void)
         initsolbuf(SolData  ,1,RtBuffSize+1);
         initsolbuf(SolData+1,1,RtBuffSize+1);
     }
-
     for (i=0;i<=360;i++) ElMaskData[i]=0.0;
+    
+    NWayPnt=0;
+    SelWayPnt=-1;
     
     UpdateTime();
     UpdatePlot();

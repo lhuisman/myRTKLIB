@@ -22,7 +22,7 @@
 
 #define MAXNFILE    256                 // max number of solution files
 #define MAXSTRBUFF  1024                // max length of stream buffer
-#define MAXWAYPNT   99                  // max number of waypoints
+#define MAXWAYPNT   4096                // max number of waypoints
 #define MAXMAPPATH  4096                // max number of map paths
 #define MAXMAPLAYER 12                  // max number of map layers
 
@@ -49,12 +49,13 @@
 #define PLOT_SOLA   3                   // plot-type: accel-plot
 #define PLOT_NSAT   4                   // plot-type: number-of-satellite-plot
 #define PLOT_RES    5                   // plot-type: residual-plot
-#define PLOT_OBS    6                   // plot-type: observation-data-plot
-#define PLOT_SKY    7                   // plot-type: sky-plot
-#define PLOT_DOP    8                   // plot-type: dop-plot
-#define PLOT_SNR    9                   // plot-type: snr/mp-plot
-#define PLOT_SNRE   10                  // plot-type: snr/mp-el-plot
-#define PLOT_MPS    11                  // plot-type: mp-skyplot
+#define PLOT_RESE   6                   // plot-type: residual-elevation plot
+#define PLOT_OBS    7                   // plot-type: observation-data-plot
+#define PLOT_SKY    8                   // plot-type: sky-plot
+#define PLOT_DOP    9                   // plot-type: dop-plot
+#define PLOT_SNR    10                  // plot-type: snr/mp-plot
+#define PLOT_SNRE   11                  // plot-type: snr/mp-el-plot
+#define PLOT_MPS    12                  // plot-type: mp-skyplot
 
 #define ORG_STARTPOS 0                  // plot-origin: start position
 #define ORG_ENDPOS  1                   // plot-origin: end position
@@ -170,7 +171,6 @@ __published:
 	TMenuItem *MenuWaypnt;
 	TMenuItem *MenuSrcSol;
 	TMenuItem *MenuSrcObs;
-	TMenuItem *MenuQcObs;
 	TMenuItem *MenyCopy;
 	TMenuItem *MenuOptions;
 	
@@ -219,7 +219,6 @@ __published:
 	TMenuItem *MenuSaveImage;
 	TSavePictureDialog *SaveImageDialog;
 	TMenuItem *N15;
-	TMenuItem *MenuGE;
 	TComboBox *FrqType;
 	TComboBox *ObsType2;
 	TMenuItem *MenuVisAna;
@@ -227,17 +226,15 @@ __published:
 	TSpeedButton *BtnOptions;
 	TSpeedButton *BtnFixCent;
 	TMenuItem *MenuFixCent;
-	TSpeedButton *BtnGM;
+	TSpeedButton *BtnMapView;
 	TMenuItem *MenuSaveSnrMp;
-	TMenuItem *MenuGM;
+	TMenuItem *MenuMapView;
 	TMenuItem *MenuOpenSkyImage;
 	TMenuItem *MenuSkyImg;
 	TMenuItem *MenuShowSkyplot;
 	TMenuItem *Windows1;
 	TMenuItem *MenuMax;
-	TMenuItem *MenuPlotGE;
-	TMenuItem *MenuPlotGM;
-	TMenuItem *MenuPlotGEGM;
+	TMenuItem *MenuPlotMapView;
 	TMenuItem *N17;
 	TPanel *Panel101;
 	TPanel *Panel102;
@@ -264,6 +261,7 @@ __published:
 	TMenuItem *MenuShowGrid;
 	TPanel *Panel4;
 	TSpeedButton *BtnUdList;
+	TSpeedButton *BtnFreq;
 	
 	void __fastcall FormCreate			(TObject *Sender);
 	void __fastcall FormShow			(TObject *Sender);
@@ -290,7 +288,6 @@ __published:
 	void __fastcall MenuWaypointClick	(TObject *Sender);
 	void __fastcall MenuSrcSolClick		(TObject *Sender);
 	void __fastcall MenuSrcObsClick		(TObject *Sender);
-	void __fastcall MenuQcObsClick		(TObject *Sender);
 	void __fastcall MenyCopyClick		(TObject *Sender);
 	void __fastcall MenuOptionsClick	(TObject *Sender);
 	
@@ -359,15 +356,14 @@ __published:
 	void __fastcall BtnOptionsClick(TObject *Sender);
 	void __fastcall BtnFixCentClick(TObject *Sender);
 	void __fastcall MenuFixCentClick(TObject *Sender);
-	void __fastcall BtnGMClick(TObject *Sender);
-	void __fastcall MenuGMClick(TObject *Sender);
+	void __fastcall BtnMapViewClick(TObject *Sender);
+	void __fastcall MenuMapViewClick(TObject *Sender);
 	void __fastcall MenuSaveSnrMpClick(TObject *Sender);
 	void __fastcall MenuOpenSkyImageClick(TObject *Sender);
 	void __fastcall MenuSkyImgClick(TObject *Sender);
 	void __fastcall MenuShowSkyplotClick(TObject *Sender);
 	void __fastcall BtnShowSkyplotClick(TObject *Sender);
-	void __fastcall MenuPlotGMClick(TObject *Sender);
-	void __fastcall MenuPlotGEGMClick(TObject *Sender);
+	void __fastcall MenuPlotMapViewClick(TObject *Sender);
 	void __fastcall MenuMaxClick(TObject *Sender);
 	void __fastcall DispGesture(TObject *Sender, const TGestureEventInfo &EventInfo,
           bool &Handled);
@@ -384,6 +380,8 @@ __published:
 	void __fastcall MenuShowGridClick(TObject *Sender);
 	void __fastcall BtnShowGridClick(TObject *Sender);
 	void __fastcall BtnUdListClick(TObject *Sender);
+	void __fastcall BtnFreqClick(TObject *Sender);
+
 
 
 protected:
@@ -428,7 +426,7 @@ private:
     
     int Drag,Xn,Yn;
     double X0,Y0,Xc,Yc,Xs,Ys,Xcent,Xcent0;
-    unsigned int MouseDownTick;
+    uint32_t MouseDownTick;
     
     int GEState,GEDataState[2];
     double GEHeading;
@@ -492,19 +490,20 @@ private:
     void __fastcall DrawTrkImage (int level);
     void __fastcall DrawTrkMap   (int level);
     void __fastcall DrawTrkPnt   (const TIMEPOS *pos, int level, int style);
-    void __fastcall DrawTrkPos   (const double *rr, int type, int siz, TColor color, AnsiString label);
-    void __fastcall DrawTrkStat  (const TIMEPOS *pos, AnsiString header, int p);
+    void __fastcall DrawTrkPos   (const double *rr, int type, int siz, TColor color, UTF8String label);
+    void __fastcall DrawTrkStat  (const TIMEPOS *pos, UTF8String header, int p);
     void __fastcall DrawTrkError (const TIMEPOS *pos, int style);
     void __fastcall DrawTrkArrow (const TIMEPOS *pos);
     void __fastcall DrawTrkVel   (const TIMEPOS *vel);
-    void __fastcall DrawLabel    (TGraph *g, TPoint p, AnsiString label, int ha, int va);
+    void __fastcall DrawLabel    (TGraph *g, TPoint p, UTF8String label, int ha, int va);
     void __fastcall DrawMark     (TGraph *g, TPoint p, int mark, TColor color, int size,
                                   int rot);
     void __fastcall DrawSol      (int level, int type);
     void __fastcall DrawSolPnt   (const TIMEPOS *pos, int level, int style);
-    void __fastcall DrawSolStat  (const TIMEPOS *pos, AnsiString unit, int p);
+    void __fastcall DrawSolStat  (const TIMEPOS *pos, UTF8String unit, int p);
     void __fastcall DrawNsat     (int level);
     void __fastcall DrawRes      (int level);
+    void __fastcall DrawResE     (int level);
     void __fastcall DrawPolyS    (TGraph *graph, double *x, double *y, int n,
                                   TColor color, int style);
     
@@ -532,7 +531,7 @@ private:
                                   double &std, double &rms);
     int __fastcall  FitPos       (gtime_t *time, double *opos, double *ovel);
     
-    AnsiString __fastcall LatLonStr(const double *pos, int ndec);
+    UTF8String __fastcall LatLonStr(const double *pos, int ndec);
     TColor __fastcall ObsColor   (const obsd_t *obs, double az, double el);
     TColor __fastcall SysColor   (int sat);
     TColor __fastcall SnrColor   (double snr);
@@ -543,8 +542,8 @@ private:
     double __fastcall TimePos    (gtime_t time);
     void __fastcall TimeStr(gtime_t time, int n, int tsys, char *str);
     int  __fastcall ExecCmd      (AnsiString cmd);
-    void __fastcall ShowMsg      (AnsiString msg);
-    void __fastcall ShowLegend   (AnsiString *msgs);
+    void __fastcall ShowMsg      (UTF8String msg);
+    void __fastcall ShowLegend   (UTF8String *msgs);
     void __fastcall LoadOpt      (void);
     void __fastcall SaveOpt      (void);
     
@@ -559,10 +558,9 @@ public:
     AnsiString MapImageFile;
     AnsiString SkyImageFile;
     AnsiString RnxOpts;
-    AnsiString ApiKey;
     tle_t TLEData;
     gis_t Gis;
-    
+
     // connection settings
     int RtStream[2];
     AnsiString RtPath1,RtPath2;
@@ -584,7 +582,7 @@ public:
     gtime_t TimeEnd;
     double TimeInt;
     
-    // map options 
+    // map image options 
     int MapSize[2],MapScaleEq;
     double MapScaleX,MapScaleY;
     double MapLat,MapLon;
@@ -624,26 +622,32 @@ public:
     double OOPos[3];
     TColor MColor[2][8]; // {{mark1 0-7},{mark2 0-7}}
     TColor CColor[4];    // {background,grid,text,line}
-    TColor MapColor[MAXMAPLAYER]; // mapcolors
+    TColor MapColor [MAXMAPLAYER]; // mapcolor line
+    TColor MapColorF[MAXMAPLAYER]; // mapcolor fill
     int PlotStyle;
     int MarkSize;
     int AnimCycle;
     int RefCycle;
     int Trace;
-    AnsiString QcCmd,QcOpt;
+    AnsiString FontName;
+    int FontSize;
+    AnsiString ShapeFile;
     AnsiString TLEFile;
     AnsiString TLESatFile;
     
+	// map view options
+	int MapApi;
+    AnsiString MapStrs[6][3],ApiKey;
+    
     AnsiString Title;
-    AnsiString PntName[MAXWAYPNT];
+    UnicodeString PntName[MAXWAYPNT];
     double PntPos[MAXWAYPNT][3];
     int NWayPnt,SelWayPnt;
     int OPosType;
     double OPos[3],OVel[3];
     
-    AnsiString StrHistory [10];
-    AnsiString StrMntpHist[10];
-    
+    AnsiString StrHistory[10];
+	
     __fastcall TPlot(TComponent* Owner);
     void __fastcall ReadSol    (TStrings *files, int sel);
     void __fastcall ReadObs    (TStrings *files);
@@ -651,16 +655,20 @@ public:
     void __fastcall ReadMapData(AnsiString file);
     void __fastcall ReadSkyData(AnsiString file);
     void __fastcall ReadSkyTag (AnsiString file);
+    void __fastcall ReadGpxFile(AnsiString file);
+    void __fastcall ReadPosFile(AnsiString file);
     void __fastcall ReadWaypoint(AnsiString file);
+    void __fastcall SaveGpxFile(AnsiString file);
+    void __fastcall SavePosFile(AnsiString file);
     void __fastcall SaveWaypoint(AnsiString file);
     void __fastcall UpdateSky  (void);
+    void __fastcall UpdatePlot (void);
+    void __fastcall GenObsSlip(int *LLI);
     void __fastcall ReadElMaskData(AnsiString file);
     int __fastcall GetCurrentPos(double *rr);
     int __fastcall GetCenterPos(double *rr);
     void __fastcall SetTrkCent(double lat, double lon);
-    void __fastcall UpdatePlot(void);
-    void __fastcall Refresh_GEView(void);
-	void __fastcall Refresh_GMView(void);
+	void __fastcall Refresh_MapView(void);
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TPlot *Plot;

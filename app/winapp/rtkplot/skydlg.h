@@ -78,17 +78,17 @@ __published:
 	void __fastcall BtnCloseClick(TObject *Sender);
 	void __fastcall BtnUpdateClick(TObject *Sender);
 	void __fastcall BtnSaveClick(TObject *Sender);
-	void __fastcall SkyFov2UpDownChangingEx(TObject *Sender, bool &AllowChange, short NewValue,
+	void __fastcall SkyFov2UpDownChangingEx(TObject *Sender, bool &AllowChange, int NewValue,
           TUpDownDirection Direction);
-	void __fastcall SkyFov1UpDownChangingEx(TObject *Sender, bool &AllowChange, short NewValue,
+	void __fastcall SkyFov1UpDownChangingEx(TObject *Sender, bool &AllowChange, int NewValue,
           TUpDownDirection Direction);
-	void __fastcall SkyFov3UpDownChangingEx(TObject *Sender, bool &AllowChange, short NewValue,
+	void __fastcall SkyFov3UpDownChangingEx(TObject *Sender, bool &AllowChange, int NewValue,
           TUpDownDirection Direction);
-	void __fastcall SkyCent1UpDownChangingEx(TObject *Sender, bool &AllowChange, short NewValue,
+	void __fastcall SkyCent1UpDownChangingEx(TObject *Sender, bool &AllowChange, int NewValue,
           TUpDownDirection Direction);
-	void __fastcall SkyCent2UpDownChangingEx(TObject *Sender, bool &AllowChange, short NewValue,
+	void __fastcall SkyCent2UpDownChangingEx(TObject *Sender, bool &AllowChange, int NewValue,
           TUpDownDirection Direction);
-	void __fastcall SkyScaleUpDownChangingEx(TObject *Sender, bool &AllowChange, short NewValue,
+	void __fastcall SkyScaleUpDownChangingEx(TObject *Sender, bool &AllowChange, int NewValue,
           TUpDownDirection Direction);
 	void __fastcall SkyElMaskMouseUp(TObject *Sender, TMouseButton Button, TShiftState Shift,
           int X, int Y);

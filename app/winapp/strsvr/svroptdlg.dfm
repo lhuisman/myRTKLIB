@@ -4,7 +4,7 @@ object SvrOptDialog: TSvrOptDialog
   BorderIcons = []
   BorderStyle = bsDialog
   Caption = 'Options'
-  ClientHeight = 351
+  ClientHeight = 328
   ClientWidth = 435
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
@@ -19,17 +19,10 @@ object SvrOptDialog: TSvrOptDialog
   TextHeight = 13
   object Label15: TLabel
     Left = 9
-    Top = 298
+    Top = 275
     Width = 36
     Height = 13
     Caption = 'Log File'
-  end
-  object Label14: TLabel
-    Left = 9
-    Top = 276
-    Width = 95
-    Height = 13
-    Caption = 'NTRIP Source Table'
   end
   object Label10: TLabel
     Left = 9
@@ -137,8 +130,8 @@ object SvrOptDialog: TSvrOptDialog
     Caption = 'Progress Bar Range (KB)'
   end
   object BtnOk: TButton
-    Left = 232
-    Top = 318
+    Left = 233
+    Top = 296
     Width = 95
     Height = 29
     Caption = '&OK'
@@ -148,7 +141,7 @@ object SvrOptDialog: TSvrOptDialog
   end
   object BtnCancel: TButton
     Left = 331
-    Top = 318
+    Top = 296
     Width = 95
     Height = 29
     Caption = '&Cancel'
@@ -246,9 +239,9 @@ object SvrOptDialog: TSvrOptDialog
   end
   object BtnPos: TButton
     Left = 401
-    Top = 140
+    Top = 139
     Width = 25
-    Height = 21
+    Height = 22
     Caption = '...'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -360,14 +353,14 @@ object SvrOptDialog: TSvrOptDialog
     TabOrder = 13
     OnClick = StaInfoSelClick
   end
-  object SrcTblFileF: TEdit
+  object LogFileF: TEdit
     Left = 108
     Top = 272
     Width = 292
     Height = 21
     TabOrder = 27
   end
-  object BtnSrcTblFile: TButton
+  object BtnLogFile: TButton
     Left = 401
     Top = 272
     Width = 25
@@ -380,28 +373,6 @@ object SvrOptDialog: TSvrOptDialog
     Font.Style = []
     ParentFont = False
     TabOrder = 28
-    OnClick = BtnSrcTblFileClick
-  end
-  object LogFileF: TEdit
-    Left = 108
-    Top = 294
-    Width = 292
-    Height = 21
-    TabOrder = 29
-  end
-  object BtnLogFile: TButton
-    Left = 401
-    Top = 294
-    Width = 25
-    Height = 21
-    Caption = '...'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -9
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
-    TabOrder = 30
     OnClick = BtnLogFileClick
   end
   object RelayMsg: TComboBox
@@ -410,14 +381,15 @@ object SvrOptDialog: TSvrOptDialog
     Width = 85
     Height = 21
     Style = csDropDownList
-    ItemIndex = 0
     TabOrder = 9
-    Text = 'None'
     Items.Strings = (
       'None'
       '(1)  -> (0)'
       '(2)  -> (0)'
-      '(3)  -> (0)')
+      '(3)  -> (0)'
+      '(4)  -> (0)'
+      '(5)  -> (0)'
+      '(6)  -> (0)')
   end
   object ProgBarR: TEdit
     Left = 131
@@ -429,7 +401,7 @@ object SvrOptDialog: TSvrOptDialog
   end
   object OpenDialog: TOpenDialog
     Filter = 'All (*.*)|*.*'
-    Left = 113
-    Top = 250
+    Left = 38
+    Top = 210
   end
 end

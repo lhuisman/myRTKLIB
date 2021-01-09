@@ -4,11 +4,11 @@ object PntDialog: TPntDialog
   BorderIcons = [biSystemMenu]
   Caption = 'Waypoint'
   ClientHeight = 344
-  ClientWidth = 294
+  ClientWidth = 374
   Color = clWhite
-  Constraints.MaxWidth = 310
+  Constraints.MaxWidth = 390
   Constraints.MinHeight = 200
-  Constraints.MinWidth = 310
+  Constraints.MinWidth = 390
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -22,13 +22,14 @@ object PntDialog: TPntDialog
   object Panel1: TPanel
     Left = 0
     Top = 0
-    Width = 294
+    Width = 374
     Height = 17
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 0
+    ExplicitWidth = 294
     object Label2: TLabel
-      Left = 213
+      Left = 290
       Top = 2
       Width = 27
       Height = 13
@@ -48,26 +49,34 @@ object PntDialog: TPntDialog
       Height = 13
       Caption = 'Longitude ('#176')'
     end
+    object Label4: TLabel
+      Left = 200
+      Top = 2
+      Width = 50
+      Height = 13
+      Caption = 'Height (m)'
+    end
   end
   object Panel2: TPanel
     Left = 0
     Top = 17
-    Width = 294
+    Width = 374
     Height = 290
     Align = alClient
     BevelInner = bvLowered
     BevelOuter = bvNone
     Caption = 'Panel2'
     TabOrder = 1
+    ExplicitWidth = 294
     object PntList: TStringGrid
       Left = 1
       Top = 1
-      Width = 292
+      Width = 372
       Height = 288
       Align = alClient
       BorderStyle = bsNone
       Color = clSilver
-      ColCount = 3
+      ColCount = 4
       DefaultRowHeight = 17
       FixedColor = clWhite
       FixedCols = 0
@@ -80,22 +89,26 @@ object PntDialog: TPntDialog
       OnClick = PntListClick
       OnDblClick = PntListDblClick
       OnSetEditText = PntListSetEditText
+      ExplicitTop = 0
+      ExplicitWidth = 382
       ColWidths = (
         89
         95
-        76)
+        76
+        64)
     end
   end
   object Panel3: TPanel
     Left = 0
     Top = 307
-    Width = 294
+    Width = 374
     Height = 37
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 2
+    ExplicitWidth = 294
     object BtnAdd: TButton
-      Left = 1
+      Left = 3
       Top = 6
       Width = 75
       Height = 29
@@ -104,7 +117,7 @@ object PntDialog: TPntDialog
       OnClick = BtnAddClick
     end
     object BtnClose: TButton
-      Left = 214
+      Left = 296
       Top = 6
       Width = 75
       Height = 29
@@ -113,7 +126,7 @@ object PntDialog: TPntDialog
       OnClick = BtnCloseClick
     end
     object BtnDel: TButton
-      Left = 78
+      Left = 80
       Top = 6
       Width = 75
       Height = 29

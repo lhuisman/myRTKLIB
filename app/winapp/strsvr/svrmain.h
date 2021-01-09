@@ -17,7 +17,7 @@
 #include "tcpoptdlg.h"
 #include <System.ImageList.hpp>
 
-#define MAXSTR        4    // number of streams
+#define MAXSTR        7    // number of streams
 
 //---------------------------------------------------------------------------
 class TMainForm : public TForm
@@ -48,13 +48,12 @@ __published:
 	TPanel *IndOutput2;
 	TLabel *Label5;
 	TTimer *Timer1;
-	TPanel *Panel3;
-	TLabel *LabelOutput3;
-	TComboBox *Output3;
-	TButton *BtnOutput3;
-	TLabel *Output3Byte;
-	TLabel *Output3Bps;
-	TPanel *IndOutput3;
+	TLabel *LabelOutput5;
+	TComboBox *Output5;
+	TButton *BtnOutput5;
+	TLabel *Output5Byte;
+	TLabel *Output5Bps;
+	TPanel *IndOutput5;
 	TButton *BtnCmd;
 	TLabel *Label1;
 	TPanel *Panel4;
@@ -79,7 +78,7 @@ __published:
 	TLabel *Time;
 	TButton *BtnConv1;
 	TButton *BtnConv2;
-	TButton *BtnConv3;
+	TButton *BtnConv5;
 	TLabel *Label2;
 	TBitBtn *BtnStart;
 	TBitBtn *BtnStop;
@@ -87,21 +86,65 @@ __published:
 	TBitBtn *BtnExit;
 	TButton *BtnCmd1;
 	TButton *BtnCmd2;
+	TButton *BtnCmd5;
+	TPanel *Panel5;
+	TPanel *Panel12;
+	TPanel *Panel11;
+	TPanel *Panel13;
+	TPanel *Panel14;
+	TPanel *Panel17;
+	TPanel *Panel16;
+	TLabel *LabelOutput4;
+	TLabel *Output4Bps;
+	TLabel *Output4Byte;
+	TButton *BtnCmd4;
+	TButton *BtnConv4;
+	TButton *BtnOutput4;
+	TPanel *IndOutput4;
+	TComboBox *Output4;
+	TPanel *Panel15;
+	TLabel *LabelOutput3;
+	TLabel *Output3Bps;
+	TLabel *Output3Byte;
 	TButton *BtnCmd3;
+	TButton *BtnConv3;
+	TButton *BtnOutput3;
+	TPanel *IndOutput3;
+	TComboBox *Output3;
+	TLabel *Label9;
+	TButton *BtnLog1;
+	TButton *BtnLog2;
+	TButton *BtnLog3;
+	TButton *BtnLog4;
+	TButton *BtnLog5;
+	TPanel *Panel18;
+	TLabel *LabelOutput6;
+	TLabel *Output6Bps;
+	TLabel *Output6Byte;
+	TButton *BtnCmd6;
+	TButton *BtnConv6;
+	TButton *BtnOutput6;
+	TPanel *IndOutput6;
+	TComboBox *Output6;
+	TButton *BtnLog6;
+	TButton *BtnLog;
+	TPanel *IndLog;
+	TPanel *IndLog1;
+	TPanel *IndLog2;
+	TPanel *IndLog3;
+	TPanel *IndLog4;
+	TPanel *IndLog5;
+	TPanel *IndLog6;
 	void __fastcall BtnExitClick(TObject *Sender);
 	void __fastcall BtnInputClick(TObject *Sender);
-	void __fastcall BtnOutput1Click(TObject *Sender);
-	void __fastcall BtnOutput2Click(TObject *Sender);
+	void __fastcall BtnOutputClick(TObject *Sender);
 	void __fastcall BtnStartClick(TObject *Sender);
 	void __fastcall BtnStopClick(TObject *Sender);
 	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
 	void __fastcall Timer1Timer(TObject *Sender);
 	void __fastcall BtnOptClick(TObject *Sender);
-	void __fastcall Output1Change(TObject *Sender);
-	void __fastcall Output2Change(TObject *Sender);
+	void __fastcall OutputChange(TObject *Sender);
 	void __fastcall InputChange(TObject *Sender);
-	void __fastcall BtnOutput3Click(TObject *Sender);
-	void __fastcall Output3Change(TObject *Sender);
 	void __fastcall BtnCmdClick(TObject *Sender);
 	void __fastcall BtnAboutClick(TObject *Sender);
 	void __fastcall BtnStrMonClick(TObject *Sender);
@@ -113,32 +156,35 @@ __published:
 	void __fastcall MenuStopClick(TObject *Sender);
 	void __fastcall MenuExitClick(TObject *Sender);
 	void __fastcall FormCreate(TObject *Sender);
-	void __fastcall BtnConv1Click(TObject *Sender);
-	void __fastcall BtnConv2Click(TObject *Sender);
-	void __fastcall BtnConv3Click(TObject *Sender);
+	void __fastcall BtnConvClick(TObject *Sender);
 	void __fastcall EnaOut1Click(TObject *Sender);
-	void __fastcall EnaOut2Click(TObject *Sender);
-	void __fastcall EnaOut3Click(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall TrayIconMouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift,
           int X, int Y);
+	void __fastcall BtnLogClick(TObject *Sender);
 private:
 	AnsiString IniFile;
-	AnsiString Paths[MAXSTR][4],Cmds[MAXSTR][3],CmdsTcp[MAXSTR][3];
+	AnsiString Paths[MAXSTR][7],Cmds[MAXSTR][3],CmdsTcp[MAXSTR][3];
 	AnsiString TcpHistory[MAXHIST],TcpMntpHist[MAXHIST];
 	AnsiString StaPosFile,ExeDirectory,LocalDirectory,SwapInterval;
-	AnsiString ProxyAddress,SrcTblFile,LogFile;
+	AnsiString ProxyAddress,LogFile;
 	AnsiString ConvMsg[MAXSTR-1],ConvOpt[MAXSTR-1],AntType,RcvType;
+	AnsiString PathLog[MAXSTR];
 	int ConvEna[MAXSTR-1],ConvInp[MAXSTR-1],ConvOut[MAXSTR-1],StaId,StaSel;
 	int TraceLevel,SvrOpt[6],CmdEna[MAXSTR][3],CmdEnaTcp[MAXSTR][3];
-	int NmeaReq,FileSwapMargin,RelayBack,ProgBarRange;
+	int NmeaReq,FileSwapMargin,RelayBack,ProgBarRange,PathEna[MAXSTR];
 	double AntPos[3],AntOff[3];
 	gtime_t StartTime,EndTime;
 	
-	void __fastcall SerialOpt(int index, int opt);
-	void __fastcall TcpOpt(int index, int opt);
-	void __fastcall FileOpt(int index, int opt);
-	void __fastcall FtpOpt(int index, int opt);
+	void __fastcall SerialOpt(int index, int path);
+	void __fastcall TcpCliOpt(int index, int path);
+	void __fastcall TcpSvrOpt(int index, int path);
+	void __fastcall NtripSvrOpt(int index, int path);
+	void __fastcall NtripCliOpt(int index, int path);
+	void __fastcall NtripCasOpt(int index, int path);
+	void __fastcall UdpCliOpt(int index, int path);
+	void __fastcall UdpSvrOpt(int index, int path);
+	void __fastcall FileOpt(int index, int path);
 	void __fastcall ShowMsg(AnsiString msg);
 	void __fastcall SvrStart(void);
 	void __fastcall SvrStop(void);

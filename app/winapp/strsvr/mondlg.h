@@ -39,11 +39,11 @@ private:
 	rtcm_t rtcm;
 	raw_t raw;
 	
-	void __fastcall AddConsole(unsigned char *msg, int len, int mode);
+	void __fastcall AddConsole(uint8_t *msg, int len, int mode);
 public:
 	int StrFmt;
 	__fastcall TStrMonDialog(TComponent* Owner);
-	void __fastcall AddMsg(unsigned char *buff, int n);
+	void __fastcall AddMsg(uint8_t *buff, int n);
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TStrMonDialog *StrMonDialog;

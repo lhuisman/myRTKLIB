@@ -1,6 +1,7 @@
 //---------------------------------------------------------------------------
 // plotinfo.c: rtkplot info functions
 //---------------------------------------------------------------------------
+#include <stdlib.h>
 #include "rtklib.h"
 #include "plotmain.h"
 
@@ -24,11 +25,11 @@ void __fastcall TPlot::UpdateInfo(void)
 // update time-information for observation-data plot ------------------------
 void __fastcall TPlot::UpdateTimeObs(void)
 {
-    AnsiString msgs1[]={" OBS=L1/2 "," L1 "," L2 "," L1/2/5 "," L1/5 ",""," L5 "};
-    AnsiString msgs2[]={" SNR=...45.","..40.","..35.","..30.","..25 ",""," <25 "};
-    AnsiString msgs3[]={" SYS=GPS ","GLO ","GAL ","QZS ","BDS ","SBS ",""};
-    AnsiString msgs4[]={" MP=..0.6","..0.3","..0.0..","-0.3..","-0.6..","",""};
-    AnsiString msg,msgs[8],s;
+    UTF8String msgs1[]={" #FRQ=5 "," 4 "," 3 "," 2 "," 1 ","",""};
+    UTF8String msgs2[]={" SNR=...45.","..40.","..35.","..30.","..25 ",""," <25 "};
+    UTF8String msgs3[]={" SYS=GPS ","GLO ","GAL ","QZS ","BDS ","IRN ","SBS "};
+    UTF8String msgs4[]={" MP=..0.6","..0.3","..0.0..","-0.3..","-0.6..","",""};
+    UTF8String msg,msgs[8],s;
     double azel[MAXOBS*2],dop[4]={0};
     int i,ns=0,no=0,ind=ObsIndex;
     char tstr[64];
@@ -80,7 +81,7 @@ void __fastcall TPlot::UpdateTimeSol(void)
 {
     const char *unit[]={"m","m/s","m/s2"},*u;
     const char *sol[]={"","FIX","FLOAT","SBAS","DGPS","Single","PPP"};
-    AnsiString msg,msgs[8],s;
+    UTF8String msg,msgs[8],s;
     sol_t *data;
     double xyz[3],pos[3],r,az,el;
     int sel=BtnSol1->Down||!BtnSol2->Down?0:1,ind=SolIndex[sel];
@@ -98,10 +99,11 @@ void __fastcall TPlot::UpdateTimeSol(void)
         msg+=" : ";
         
         if (PLOT_SOLP<=PlotType&&PlotType<=PLOT_SOLA) {
-            PosToXyz(data->time,data->rr,data->type,xyz);
+            TIMEPOS *p=SolToPos(SolData+sel,ind,0,PlotType-PLOT_SOLP);
             u=unit[PlotType-PLOT_SOLP];
             msg+=s.sprintf("E=%7.4f%s N=%7.4f%s U=%7.4f%s Q=",
-                           xyz[0],u,xyz[1],u,xyz[2],u);
+                           p->x[0],u,p->y[0],u,p->z[0],u);
+            delete p;
         }
         else if (PlotType==PLOT_NSAT) {
             msg+=s.sprintf("NS=%d AGE=%.1f RATIO=%.1f Q=",data->ns,data->age,
@@ -122,21 +124,21 @@ void __fastcall TPlot::UpdateTimeSol(void)
             msgs[data->stat-1]=s.sprintf("%d:%s",data->stat,sol[data->stat]);
         }
     }
-    ShowMsg(A2U(msg));
+    ShowMsg(msg);
     ShowLegend(msgs);
 }
 // update statistics-information for observation-data plot ------------------
 void __fastcall TPlot::UpdateInfoObs(void)
 {
-    AnsiString msgs0[]={"  NSAT"," GDOP"," PDOP"," HDOP"," VDOP","",""};
-    AnsiString msgs1[]={" OBS=L1/2 "," L1 "," L2 "," L1/2/5 "," L1/5 ",""," L5 "};
-    AnsiString msgs2[]={" SNR=...45.","..40.","..35.","..30.","..25 ",""," <25 "};
-    AnsiString msgs3[]={" SYS=GPS ","GLO ","GAL ","QZS ","BDS ","SBS ",""};
-    AnsiString msgs4[]={" MP=..0.6","..0.3","..0.0..","-0.3..","-0.6..","",""};
-    AnsiString msg,msgs[8];
+    UTF8String msgs0[]={"  NSAT"," GDOP"," PDOP"," HDOP"," VDOP","",""};
+    UTF8String msgs1[]={" #FRQ= 5 "," 4 "," 3 "," 2 "," 1 ","",""};
+    UTF8String msgs2[]={" SNR=...45.","..40.","..35.","..30.","..25 ",""," <25 "};
+    UTF8String msgs3[]={" SYS=GPS ","GLO ","GAL ","QZS ","BDS ","IRN ","SBS "};
+    UTF8String msgs4[]={" MP=..0.6","..0.3","..0.0..","-0.3..","-0.6..","",""};
+    UTF8String msg,msgs[8];
     gtime_t ts={0},te={0},t,tp={0};
     int i,n=0,ne=0;
-    char s1[64],s2[64];
+    char s1[64],s2[64],*p;
     
     trace(3,"UpdateInfoObs:\n");
     
@@ -151,6 +153,7 @@ void __fastcall TPlot::UpdateInfoObs(void)
     if (n>0) {
         TimeStr(ts,0,0,s1);
         TimeStr(te,0,1,s2);
+        if (TimeLabel&&(p=strrchr(s1,' '))) *p='\0';
         msg.sprintf("[1]%s-%s : EP=%d N=%d",s1,s2+(TimeLabel?5:0),ne,n);
         
         for (i=0;i<7;i++) {
@@ -174,13 +177,13 @@ void __fastcall TPlot::UpdateInfoObs(void)
 // update statistics-information for solution plot --------------------------
 void __fastcall TPlot::UpdateInfoSol(void)
 {
-    AnsiString msg,msgs[8],s;
+    UTF8String msg,msgs[8],s;
     TIMEPOS *pos=NULL,*pos1,*pos2;
     sol_t *data;
     gtime_t ts={0},te={0};
     double r[3],b,bl[2]={1E9,0.0};
     int i,j,n=0,nq[8]={0},sel=BtnSol1->Down||!BtnSol2->Down?0:1;
-    char s1[64],s2[64];
+    char s1[64],s2[64],*p;
     
     trace(3,"UpdateInfoSol:\n");
     
@@ -202,7 +205,7 @@ void __fastcall TPlot::UpdateInfoSol(void)
         }
         delete pos;
     }
-    for (i=0;data=getsol(SolData+sel,i);i++) {
+    for (i=0;(data=getsol(SolData+sel,i));i++) {
         if (data->type) {
             b=norm(data->rr,3);
         }
@@ -219,6 +222,7 @@ void __fastcall TPlot::UpdateInfoSol(void)
         
         TimeStr(ts,0,0,s1);
         TimeStr(te,0,1,s2);
+        if (TimeLabel&&(p=strrchr(s1,' '))) *p='\0';
         msg+=s.sprintf("%s-%s : N=%d",s1,s2+(TimeLabel?5:0),n);
         
         if (bl[0]+100.0<bl[1]) {
@@ -260,6 +264,7 @@ void __fastcall TPlot::UpdatePlotType(void)
     }
     if (SolStat[0].n>0||SolStat[1].n>0) {
         PlotTypeS->AddItem(PTypes[PLOT_RES ],NULL);
+        PlotTypeS->AddItem(PTypes[PLOT_RESE],NULL);
     }
     if (NObs>0) {
         PlotTypeS->AddItem(PTypes[PLOT_SNR ],NULL);
@@ -301,6 +306,7 @@ void __fastcall TPlot::UpdateSatList(void)
             case SYS_GAL: strcpy(s,"E"); break;
             case SYS_QZS: strcpy(s,"J"); break;
             case SYS_CMP: strcpy(s,"C"); break;
+            case SYS_IRN: strcpy(s,"I"); break;
             case SYS_SBS: strcpy(s,"S"); break;
         }
         SatList->Items->Add(s);
@@ -314,12 +320,17 @@ void __fastcall TPlot::UpdateSatList(void)
     
     UpdateSatSel();
 }
+// string compare --------------------------------------------------------------
+static int _strcmp(const void *str1, const void *str2)
+{
+    return strcmp(*(const char **)str1, *(const char **)str2);
+}
 // update observation type pull-down menu --------------------------------------
 void __fastcall TPlot::UpdateObsType(void)
 {
-    AnsiString s;
-    char *codes[MAXCODE+1],freqs[]="125678";
-    int i,j,n=0,cmask[MAXCODE+1]={0},fmask[6]={0};
+    UTF8String s;
+    char *obs,*codes[MAXCODE+1];
+    int i,j,n=0,cmask[MAXCODE+1]={0},fmask[10]={0};
     
     trace(3,"UpdateObsType\n");
     
@@ -328,21 +339,22 @@ void __fastcall TPlot::UpdateObsType(void)
     }
     for (i=1;i<=MAXCODE;i++) {
         if (!cmask[i]) continue;
-        codes[n++]=code2obs(i,&j);
-        fmask[j-1]=1;
+        if (!*(obs=code2obs((uint8_t)i))) continue;
+        codes[n++]=obs;
     }
+    qsort(codes,n,sizeof(char *),_strcmp);
+
     ObsType ->Items->Clear();
     ObsType2->Items->Clear();
     ObsType ->Items->Add("ALL");
     
-    for (i=0;i<6;i++) {
-        if (!fmask[i]) continue;
-        ObsType ->Items->Add(s.sprintf("L%c",freqs[i]));
-        ObsType2->Items->Add(s.sprintf("L%c",freqs[i]));
+    for (i=0;i<NFREQ;i++) {
+        ObsType ->Items->Add(s.sprintf("L%d",i+1));
+        ObsType2->Items->Add(s.sprintf("L%d",i+1));
     }
     for (i=0;i<n;i++) {
-        ObsType ->Items->Add(s.sprintf("L%s",codes[i]));
-        ObsType2->Items->Add(s.sprintf("L%s",codes[i]));
+        ObsType ->Items->Add(s.sprintf("%s",codes[i]));
+        ObsType2->Items->Add(s.sprintf("%s",codes[i]));
     }
     ObsType ->ItemIndex=0;
     ObsType2->ItemIndex=0;
@@ -355,7 +367,7 @@ void __fastcall TPlot::UpdatePoint(int x, int y)
     double enu[3]={0},rr[3],pos[3],xx,yy,r,xl[2],yl[2],q[2],az,el,snr;
     int i;
     char tstr[64];
-    AnsiString msg;
+    UTF8String msg;
     
     trace(4,"UpdatePoint: x=%d y=%d\n",x,y);
     
@@ -392,7 +404,7 @@ void __fastcall TPlot::UpdatePoint(int x, int y)
             msg.sprintf("AZ=%5.1f" CHARDEG " EL=%4.1f" CHARDEG,az,el);
         }
     }
-    else if (PlotType==PLOT_SNRE) { // snr-el-plot
+    else if (PlotType==PLOT_SNRE||PlotType==PLOT_RESE) { // snr-el-plot
         GraphE[0]->ToPos(p,q[0],q[1]);
         msg.sprintf("EL=%4.1f " CHARDEG,q[0]);
     }
@@ -405,6 +417,6 @@ void __fastcall TPlot::UpdatePoint(int x, int y)
         msg=tstr;
     }
     Panel22->Visible=true;
-    Message2->Caption=A2U(msg);
+    Message2->Caption=msg;
 }
 //---------------------------------------------------------------------------

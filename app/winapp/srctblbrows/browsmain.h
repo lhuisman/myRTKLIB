@@ -52,10 +52,11 @@ __published:
 	TLabel *Message;
 	TPanel *Panel3;
 	TSpeedButton *BtnMap;
-	TTimer *Timer;
+	TTimer *Timer2;
 	TComboBox *FiltFmt;
 	TCheckBox *StaMask;
 	TButton *BtnSta;
+	TTimer *Timer1;
 	
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall BtnUpdateClick(TObject *Sender);
@@ -85,10 +86,12 @@ __published:
 	void __fastcall TypeNetClick(TObject *Sender);
 	void __fastcall TypeSrcClick(TObject *Sender);
 	void __fastcall BtnMapClick(TObject *Sender);
-	void __fastcall TimerTimer(TObject *Sender);
+	void __fastcall Timer2Timer(TObject *Sender);
 	void __fastcall Table0SelectCell(TObject *Sender, int ACol, int ARow, bool &CanSelect);
 	void __fastcall BtnStaClick(TObject *Sender);
 	void __fastcall StaMaskClick(TObject *Sender);
+	void __fastcall AddressCloseUp(TObject *Sender);
+	void __fastcall Timer1Timer(TObject *Sender);
 
 private:
 	AnsiString AddrList,AddrCaster,SrcTable,IniFile;

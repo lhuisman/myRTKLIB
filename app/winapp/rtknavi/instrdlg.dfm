@@ -4,8 +4,8 @@ object InputStrDialog: TInputStrDialog
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Input Streams'
-  ClientHeight = 257
-  ClientWidth = 400
+  ClientHeight = 261
+  ClientWidth = 405
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -32,7 +32,7 @@ object InputStrDialog: TInputStrDialog
     Caption = 'Opt'
   end
   object Label10: TLabel
-    Left = 40
+    Left = 41
     Top = 3
     Width = 63
     Height = 13
@@ -61,24 +61,24 @@ object InputStrDialog: TInputStrDialog
   end
   object LabelF2: TLabel
     Left = 155
-    Top = 234
+    Top = 236
     Width = 5
     Height = 13
     Caption = 's'
   end
   object LabelF3: TLabel
-    Left = 103
-    Top = 234
+    Left = 101
+    Top = 236
     Width = 8
     Height = 13
     Caption = '+'
   end
   object LabelNmea: TLabel
-    Left = 8
-    Top = 87
-    Width = 185
+    Left = 9
+    Top = 88
+    Width = 172
     Height = 13
-    Caption = 'Transmit NMEA GPGGA to Base Station'
+    Caption = 'Transmit NMEA GGA to Base Station'
   end
   object Label1: TLabel
     Left = 375
@@ -110,7 +110,7 @@ object InputStrDialog: TInputStrDialog
   end
   object StreamC2: TCheckBox
     Left = 8
-    Top = 43
+    Top = 44
     Width = 121
     Height = 17
     Caption = '(2) Base Station'
@@ -128,7 +128,7 @@ object InputStrDialog: TInputStrDialog
   end
   object TimeTagC: TCheckBox
     Left = 7
-    Top = 233
+    Top = 234
     Width = 47
     Height = 17
     Caption = 'Time'
@@ -136,8 +136,8 @@ object InputStrDialog: TInputStrDialog
     OnClick = TimeTagCClick
   end
   object BtnCancel: TButton
-    Left = 311
-    Top = 229
+    Left = 313
+    Top = 230
     Width = 85
     Height = 27
     Caption = '&Cancel'
@@ -145,8 +145,8 @@ object InputStrDialog: TInputStrDialog
     TabOrder = 0
   end
   object BtnOk: TButton
-    Left = 220
-    Top = 229
+    Left = 224
+    Top = 230
     Width = 85
     Height = 27
     Caption = '&OK'
@@ -175,7 +175,7 @@ object InputStrDialog: TInputStrDialog
     Left = 224
     Top = 17
     Width = 25
-    Height = 23
+    Height = 22
     Caption = '...'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -188,7 +188,7 @@ object InputStrDialog: TInputStrDialog
   end
   object Stream2: TComboBox
     Left = 120
-    Top = 41
+    Top = 42
     Width = 103
     Height = 21
     Style = csDropDownList
@@ -205,9 +205,9 @@ object InputStrDialog: TInputStrDialog
   end
   object BtnStr2: TButton
     Left = 224
-    Top = 40
+    Top = 41
     Width = 25
-    Height = 23
+    Height = 22
     Caption = '...'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -229,7 +229,7 @@ object InputStrDialog: TInputStrDialog
   end
   object Format2: TComboBox
     Left = 275
-    Top = 41
+    Top = 42
     Width = 97
     Height = 21
     Style = csDropDownList
@@ -240,7 +240,7 @@ object InputStrDialog: TInputStrDialog
     Left = 249
     Top = 17
     Width = 25
-    Height = 23
+    Height = 22
     Caption = '...'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -253,9 +253,9 @@ object InputStrDialog: TInputStrDialog
   end
   object BtnCmd2: TButton
     Left = 249
-    Top = 40
+    Top = 41
     Width = 25
-    Height = 23
+    Height = 22
     Caption = '...'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -282,7 +282,7 @@ object InputStrDialog: TInputStrDialog
   end
   object TimeStartE: TEdit
     Left = 113
-    Top = 231
+    Top = 232
     Width = 39
     Height = 21
     TabOrder = 30
@@ -292,7 +292,7 @@ object InputStrDialog: TInputStrDialog
     Left = 373
     Top = 160
     Width = 25
-    Height = 23
+    Height = 22
     Caption = '...'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -307,7 +307,7 @@ object InputStrDialog: TInputStrDialog
     Left = 373
     Top = 182
     Width = 25
-    Height = 23
+    Height = 22
     Caption = '...'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -335,8 +335,8 @@ object InputStrDialog: TInputStrDialog
       'Reset and Single Sol')
   end
   object TimeSpeedL: TComboBox
-    Left = 55
-    Top = 231
+    Left = 50
+    Top = 232
     Width = 49
     Height = 21
     DropDownCount = 20
@@ -372,7 +372,7 @@ object InputStrDialog: TInputStrDialog
     Left = 373
     Top = 101
     Width = 25
-    Height = 23
+    Height = 22
     Caption = '...'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -394,7 +394,7 @@ object InputStrDialog: TInputStrDialog
     Left = 373
     Top = 204
     Width = 25
-    Height = 23
+    Height = 22
     Caption = '...'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -407,7 +407,7 @@ object InputStrDialog: TInputStrDialog
   end
   object StreamC3: TCheckBox
     Left = 8
-    Top = 66
+    Top = 68
     Width = 121
     Height = 17
     Caption = '(3) Correction'
@@ -416,7 +416,7 @@ object InputStrDialog: TInputStrDialog
   end
   object Stream3: TComboBox
     Left = 120
-    Top = 64
+    Top = 66
     Width = 103
     Height = 21
     Style = csDropDownList
@@ -435,9 +435,9 @@ object InputStrDialog: TInputStrDialog
   end
   object BtnStr3: TButton
     Left = 224
-    Top = 63
+    Top = 65
     Width = 25
-    Height = 23
+    Height = 22
     Caption = '...'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -450,7 +450,7 @@ object InputStrDialog: TInputStrDialog
   end
   object Format3: TComboBox
     Left = 275
-    Top = 64
+    Top = 66
     Width = 97
     Height = 21
     Style = csDropDownList
@@ -459,9 +459,9 @@ object InputStrDialog: TInputStrDialog
   end
   object BtnCmd3: TButton
     Left = 249
-    Top = 63
+    Top = 65
     Width = 25
-    Height = 23
+    Height = 22
     Caption = '...'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -476,7 +476,7 @@ object InputStrDialog: TInputStrDialog
     Left = 373
     Top = 17
     Width = 25
-    Height = 23
+    Height = 22
     Caption = '...'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -489,9 +489,9 @@ object InputStrDialog: TInputStrDialog
   end
   object BtnRcvOpt2: TButton
     Left = 373
-    Top = 40
+    Top = 41
     Width = 25
-    Height = 23
+    Height = 22
     Caption = '...'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -504,9 +504,9 @@ object InputStrDialog: TInputStrDialog
   end
   object BtnRcvOpt3: TButton
     Left = 373
-    Top = 63
+    Top = 65
     Width = 25
-    Height = 23
+    Height = 22
     Caption = '...'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -540,16 +540,13 @@ object InputStrDialog: TInputStrDialog
     TabOrder = 35
     Text = '10'
   end
-  object Time64BitL: TComboBox
+  object Chk64Bit: TCheckBox
     Left = 166
-    Top = 232
-    Width = 48
-    Height = 21
+    Top = 234
+    Width = 40
+    Height = 17
+    Caption = '64bit'
     TabOrder = 36
-    Text = '32bit'
-    Items.Strings = (
-      '32bit'
-      '64bit')
   end
   object OpenDialog: TOpenDialog
     Filter = 

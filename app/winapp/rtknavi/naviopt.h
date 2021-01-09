@@ -36,6 +36,7 @@ __published:
 	TComboBox *TropOpt;
 	TComboBox *PosMode;
 	TComboBox *Freq;
+	TComboBox *Solution;
 	TComboBox *SatEphem;
 	TEdit *ExSatsE;
 	TTabSheet *TabSheet2;
@@ -135,8 +136,8 @@ __published:
 	TEdit *SvrCycleE;
 	TEdit *SvrBuffSizeE;
 	TLabel *Label40;
-	TButton *BtnFont;
-	TLabel *FontLabel;
+	TButton *BtnFont2;
+	TLabel *FontLabel2;
 	TFontDialog *FontDialog;
 	TLabel *Label41;
 	TEdit *SolBuffSizeE;
@@ -206,12 +207,6 @@ __published:
 	TCheckBox *PosOpt2;
 	TCheckBox *PosOpt3;
 	TCheckBox *PosOpt4;
-	TEdit *TLEFile;
-	TLabel *Label15;
-	TButton *BtnTLEFile;
-	TLabel *Label39;
-	TEdit *TLESatFile;
-	TButton *BtnTLESatFile;
 	TCheckBox *PosOpt5;
 	TButton *BtnSnrMask;
 	TComboBox *SyncSol;
@@ -226,7 +221,11 @@ __published:
 	TCheckBox *NavSys7;
 	TComboBox *OutputSingle;
 	TEdit *MaxSolStd;
+	TComboBox *OutputVel;
+	TSpeedButton *BtnFreq;
     TLabel *Label49;
+    TLabel *FontLabel1;
+	TButton *BtnFont1;
     TEdit *MinFixSats;
     TEdit *MinHoldSats;
     TComboBox *ARFilter;
@@ -268,7 +267,7 @@ __published:
 	void __fastcall RovPosTypePChange(TObject *Sender);
 	void __fastcall GetPos(int type, TEdit **edit, double *pos);
 	void __fastcall SetPos(int type, TEdit **edit, double *pos);
-	void __fastcall BtnFontClick(TObject *Sender);
+	void __fastcall BtnFont2Click(TObject *Sender);
 	void __fastcall NmeaReqCClick(TObject *Sender);
 	void __fastcall DgpsCorrLChange(TObject *Sender);
 	void __fastcall BtnGeoidDataFileClick(TObject *Sender);
@@ -279,11 +278,13 @@ __published:
 	void __fastcall BtnLocalDirClick(TObject *Sender);
 	void __fastcall BtnEOPFileClick(TObject *Sender);
 	void __fastcall BtnEOPViewClick(TObject *Sender);
-	void __fastcall BtnTLESatFileClick(TObject *Sender);
-	void __fastcall BtnTLEFileClick(TObject *Sender);
 	void __fastcall BtnSnrMaskClick(TObject *Sender);
 	void __fastcall NavSys6Click(TObject *Sender);
 	void __fastcall ObsWeightChange(TObject *Sender);
+	void __fastcall BtnFreqClick(TObject *Sender);
+	void __fastcall BtnFont1Click(TObject *Sender);
+	void __fastcall RefAntClick(TObject *Sender);
+	void __fastcall RovAntClick(TObject *Sender);
 private:
 	void __fastcall GetOpt(void);
 	void __fastcall SetOpt(void);
@@ -294,7 +295,7 @@ private:
 public:
 	prcopt_t PrcOpt;
 	solopt_t SolOpt;
-	TFont *PosFont;
+	TFont *PanelFont,*PosFont;
 	int SvrCycle,SvrBuffSize,SolBuffSize,NavSelect,SavedSol;
 	int NmeaReq,NmeaCycle,TimeoutTime,ReconTime,DgpsCorr,SbasCorr;
 	int DebugTraceF,DebugStatusF;
@@ -302,7 +303,7 @@ public:
 	int MoniPort,FileSwapMargin,PanelStack;
 	AnsiString ExSats,LocalDirectory;
 	AnsiString RovAntF,RefAntF,SatPcvFileF,AntPcvFileF,StaPosFileF;
-	AnsiString GeoidDataFileF,DCBFileF,EOPFileF,TLEFileF,TLESatFileF;
+	AnsiString GeoidDataFileF,DCBFileF,EOPFileF;
 	AnsiString ProxyAddr;
 	double RovAntDel[3],RefAntDel[3],RovPos[3],RefPos[3];
 	double Baseline[2],NmeaIntv[2];

@@ -22,3 +22,4 @@ cd ..
 cd rtklaunch
 call install.bat
 cd ..
+xcopy ..\..\dll ..\..\..\RTKLIB_bin\bin

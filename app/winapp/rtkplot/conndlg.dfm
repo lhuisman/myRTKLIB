@@ -3,7 +3,7 @@ object ConnectDialog: TConnectDialog
   Top = 0
   BorderStyle = bsDialog
   Caption = 'Connection Settings'
-  ClientHeight = 164
+  ClientHeight = 169
   ClientWidth = 283
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
@@ -17,7 +17,7 @@ object ConnectDialog: TConnectDialog
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
-    Left = 30
+    Left = 37
     Top = 6
     Width = 61
     Height = 13
@@ -31,7 +31,7 @@ object ConnectDialog: TConnectDialog
     Caption = 'Opt'
   end
   object Label3: TLabel
-    Left = 176
+    Left = 180
     Top = 6
     Width = 75
     Height = 13
@@ -45,21 +45,21 @@ object ConnectDialog: TConnectDialog
     Caption = 'Cmd'
   end
   object Label5: TLabel
-    Left = 26
+    Left = 28
     Top = 72
     Width = 59
     Height = 13
     Caption = 'Time Format'
   end
   object Label6: TLabel
-    Left = 124
+    Left = 128
     Top = 72
     Width = 73
     Height = 13
     Caption = 'Lat/Lon Format'
   end
   object Label7: TLabel
-    Left = 224
+    Left = 226
     Top = 72
     Width = 43
     Height = 13
@@ -87,7 +87,7 @@ object ConnectDialog: TConnectDialog
     Caption = '(2)'
   end
   object BtnOk: TButton
-    Left = 94
+    Left = 95
     Top = 134
     Width = 89
     Height = 29
@@ -187,9 +187,9 @@ object ConnectDialog: TConnectDialog
       'hh:mm:ss JST')
   end
   object DegFormS: TComboBox
-    Left = 114
+    Left = 115
     Top = 86
-    Width = 105
+    Width = 104
     Height = 21
     Style = csDropDownList
     ItemIndex = 0
@@ -203,12 +203,12 @@ object ConnectDialog: TConnectDialog
   object FieldSepS: TEdit
     Left = 220
     Top = 86
-    Width = 53
+    Width = 54
     Height = 21
     TabOrder = 12
   end
   object TimeOutTimeE: TEdit
-    Left = 164
+    Left = 166
     Top = 110
     Width = 53
     Height = 21
@@ -218,7 +218,7 @@ object ConnectDialog: TConnectDialog
   object ReConnTimeE: TEdit
     Left = 220
     Top = 110
-    Width = 53
+    Width = 54
     Height = 21
     TabOrder = 14
     Text = '10000'

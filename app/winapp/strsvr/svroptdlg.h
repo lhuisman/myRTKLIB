@@ -49,9 +49,6 @@ __published:
 	TLabel *Label13;
 	TEdit *StationId;
 	TCheckBox *StaInfoSel;
-	TLabel *Label14;
-	TEdit *SrcTblFileF;
-	TButton *BtnSrcTblFile;
 	TLabel *Label15;
 	TEdit *LogFileF;
 	TButton *BtnLogFile;
@@ -66,13 +63,12 @@ __published:
 	void __fastcall NmeaReqTClick(TObject *Sender);
 	void __fastcall BtnLocalDirClick(TObject *Sender);
 	void __fastcall StaInfoSelClick(TObject *Sender);
-	void __fastcall BtnSrcTblFileClick(TObject *Sender);
 	void __fastcall BtnLogFileClick(TObject *Sender);
 private:
 	void __fastcall UpdateEnable(void);
 public:
 	AnsiString StaPosFile,ExeDirectory,LocalDirectory,ProxyAddress;
-	AnsiString AntType,RcvType,SrcTblFile,LogFile;
+	AnsiString AntType,RcvType,LogFile;
 	int SvrOpt[6],TraceLevel,NmeaReq,FileSwapMargin,StaId,StaSel,RelayBack;
 	int ProgBarRange;
 	double AntPos[3],AntOff[3];

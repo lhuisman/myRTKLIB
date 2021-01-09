@@ -57,7 +57,7 @@ private:
 public:
 	int StreamC[2],Stream[2],Format[2],OutTimeTag,OutAppend;
 	AnsiString Paths[2][4],SwapInterval;
-	AnsiString History[10],MntpHist[10];
+	AnsiString History[10];
 	__fastcall TOutputStrDialog(TComponent* Owner);
 };
 //---------------------------------------------------------------------------

@@ -25,6 +25,7 @@ __published:
 	TOpenDialog *OpenDialog;
 	TSaveDialog *SaveDialog;
 	TPanel *Panel3;
+	TLabel *Label4;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall BtnDelClick(TObject *Sender);
 	void __fastcall BtnAddClick(TObject *Sender);

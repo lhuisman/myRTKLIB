@@ -65,7 +65,7 @@ void __fastcall TStrMonDialog::SelFmtChange(TObject *Sender)
 	Console->Invalidate();
 }
 //---------------------------------------------------------------------------
-void __fastcall TStrMonDialog::AddMsg(unsigned char *msg, int len)
+void __fastcall TStrMonDialog::AddMsg(uint8_t *msg, int len)
 {
 	char buff[256];
 	int i,n;
@@ -77,7 +77,7 @@ void __fastcall TStrMonDialog::AddMsg(unsigned char *msg, int len)
 			input_rtcm2(&rtcm,msg[i]);
 			if (rtcm.msgtype[0]) {
 				n=sprintf(buff,"%s\n",rtcm.msgtype);
-				AddConsole((unsigned char *)buff,n,1);
+				AddConsole((uint8_t *)buff,n,1);
 				rtcm.msgtype[0]='\0';
 			}
 	    }
@@ -87,7 +87,7 @@ void __fastcall TStrMonDialog::AddMsg(unsigned char *msg, int len)
 			input_rtcm3(&rtcm,msg[i]);
 			if (rtcm.msgtype[0]) {
 				n=sprintf(buff,"%s\n",rtcm.msgtype);
-				AddConsole((unsigned char *)buff,n,1);
+				AddConsole((uint8_t *)buff,n,1);
 				rtcm.msgtype[0]='\0';
 			}
 	    }
@@ -97,7 +97,7 @@ void __fastcall TStrMonDialog::AddMsg(unsigned char *msg, int len)
 			input_raw(&raw,StrFmt-3,msg[i]);
 			if (raw.msgtype[0]) {
 				n=sprintf(buff,"%s\n",raw.msgtype);
-				AddConsole((unsigned char *)buff,n,1);
+				AddConsole((uint8_t *)buff,n,1);
 				raw.msgtype[0]='\0';
 			}
 	    }
@@ -112,13 +112,14 @@ void __fastcall TStrMonDialog::AddMsg(unsigned char *msg, int len)
 	}
 }
 //---------------------------------------------------------------------------
-void __fastcall TStrMonDialog::AddConsole(unsigned char *msg, int n, int mode)
+void __fastcall TStrMonDialog::AddConsole(uint8_t *msg, int n, int mode)
 {
+	AnsiString str=ConBuff->Strings[ConBuff->Count-1];
 	char buff[MAXLEN+16],*p=buff,c;
 	
 	if (n<=0||Stop) return;
 	
-	p+=sprintf(p,"%s",ConBuff->Strings[ConBuff->Count-1].c_str());
+	p+=sprintf(p,"%s",str.c_str());
 	
 	for (int i=0;i<n;i++) {
 		if (mode) {

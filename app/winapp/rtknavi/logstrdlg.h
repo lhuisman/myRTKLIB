@@ -64,7 +64,7 @@ private:
 public:
 	int StreamC[3],Stream[3],LogTimeTag,LogAppend;
 	AnsiString Paths[3][4],SwapInterval;
-	AnsiString History[10],MntpHist[10];
+	AnsiString History[10];
 	__fastcall TLogStrDialog(TComponent* Owner);
 };
 //---------------------------------------------------------------------------

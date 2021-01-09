@@ -4,8 +4,8 @@ object OutputStrDialog: TOutputStrDialog
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Output Streams'
-  ClientHeight = 156
-  ClientWidth = 390
+  ClientHeight = 158
+  ClientWidth = 393
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -116,7 +116,7 @@ object OutputStrDialog: TOutputStrDialog
     Left = 237
     Top = 17
     Width = 25
-    Height = 23
+    Height = 22
     Caption = '...'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -131,7 +131,7 @@ object OutputStrDialog: TOutputStrDialog
     Left = 237
     Top = 40
     Width = 25
-    Height = 23
+    Height = 22
     Caption = '...'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -199,7 +199,7 @@ object OutputStrDialog: TOutputStrDialog
     Left = 361
     Top = 79
     Width = 25
-    Height = 23
+    Height = 22
     Caption = '...'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -221,7 +221,7 @@ object OutputStrDialog: TOutputStrDialog
     Left = 361
     Top = 101
     Width = 25
-    Height = 23
+    Height = 22
     Caption = '...'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
