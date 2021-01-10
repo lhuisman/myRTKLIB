@@ -34,6 +34,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
          Application->CreateForm(__classid(TSerialOptDialog), &SerialOptDialog);
          Application->CreateForm(__classid(TFtpOptDialog), &FtpOptDialog);
          Application->CreateForm(__classid(TAboutDialog), &AboutDialog);
+         Application->CreateForm(__classid(TConfDialog), &ConfDialog);
          Application->CreateForm(__classid(TRefDialog), &RefDialog);
          Application->CreateForm(__classid(TTcpOptDialog), &TcpOptDialog);
          Application->CreateForm(__classid(TKeyDialog), &KeyDialog);

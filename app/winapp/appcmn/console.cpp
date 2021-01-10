@@ -9,7 +9,7 @@
 #pragma package(smart_init)
 #pragma resource "*.dfm"
 
-#define MAXLEN		200
+#define MAXLEN		256
 #define MAXLINE		2048
 #define TOPMARGIN	2
 #define LEFTMARGIN	3

@@ -5,8 +5,8 @@ object ConfDialog: TConfDialog
   BorderStyle = bsDialog
   Caption = 'Confirmation'
   ClientHeight = 95
-  ClientWidth = 315
-  Color = clBtnFace
+  ClientWidth = 335
+  Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -19,7 +19,7 @@ object ConfDialog: TConfDialog
   object Label1: TLabel
     Left = 4
     Top = 8
-    Width = 305
+    Width = 325
     Height = 13
     Alignment = taCenter
     AutoSize = False
@@ -28,7 +28,7 @@ object ConfDialog: TConfDialog
   object Label2: TLabel
     Left = 4
     Top = 24
-    Width = 305
+    Width = 325
     Height = 37
     Alignment = taCenter
     AutoSize = False
@@ -41,8 +41,8 @@ object ConfDialog: TConfDialog
     WordWrap = True
   end
   object BtnOverwrite: TButton
-    Left = 82
-    Top = 65
+    Left = 91
+    Top = 63
     Width = 75
     Height = 29
     Caption = '&Overwrite'
@@ -56,8 +56,8 @@ object ConfDialog: TConfDialog
     TabOrder = 1
   end
   object BtnCancel: TButton
-    Left = 158
-    Top = 65
+    Left = 169
+    Top = 63
     Width = 75
     Height = 29
     Caption = '&Cancel'

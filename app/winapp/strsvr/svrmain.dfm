@@ -171,7 +171,6 @@ object MainForm: TMainForm
     BevelInner = bvRaised
     BevelOuter = bvLowered
     TabOrder = 1
-    ExplicitHeight = 133
     object Panel12: TPanel
       Left = 2
       Top = 22
@@ -1487,7 +1486,6 @@ object MainForm: TMainForm
     MarqueeInterval = 0
     Step = 1
     TabOrder = 4
-    ExplicitTop = 165
   end
   object Timer1: TTimer
     Interval = 50
