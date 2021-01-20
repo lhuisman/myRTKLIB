@@ -5,7 +5,7 @@ object MaskOptDialog: TMaskOptDialog
   Caption = 'SNR Mask'
   ClientHeight = 145
   ClientWidth = 369
-  Color = clBtnFace
+  Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -307,7 +307,7 @@ object MaskOptDialog: TMaskOptDialog
       Top = 3
       Width = 11
       Height = 13
-      Caption = 'L5'
+      Caption = 'L3'
     end
     object Mask_3_1: TEdit
       Left = 35

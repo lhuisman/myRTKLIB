@@ -77,7 +77,7 @@
         <BCC_IncludePath>..\..\..\..\src;$(BDS)\include;$(BCC_IncludePath)</BCC_IncludePath>
         <DCC_UnitSearchPath>..\..\..\..\src;..\;G:\rtklib_2.2.0b\app\pos2kml;G:\rtklib_2.2.0b\app\pos2kml\bcc;C:\Users\ttaka\Documents\Borland Studio Projects;$(BDS)\lib;$(BDS)\lib\obj;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <DCC_ResourcePath>..\..\..\..\src;..\;G:\rtklib_2.2.0b\app\pos2kml;G:\rtklib_2.2.0b\app\pos2kml\bcc;$(DCC_ResourcePath)</DCC_ResourcePath>
-        <ILINK_LibraryPath>..\..\..\..\src\;..\..\..\..\src;..\;G:\rtklib_2.2.0b\app\pos2kml;G:\rtklib_2.2.0b\app\pos2kml\bcc;$(BDS)\lib;$(ILINK_LibraryPath)</ILINK_LibraryPath>
+        <ILINK_LibraryPath>..\..\..\..\src\;..\..\..\..\src;..\;$(BDS)\lib;$(ILINK_LibraryPath)</ILINK_LibraryPath>
         <DCC_CBuilderOutput>JPHNE</DCC_CBuilderOutput>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
@@ -140,6 +140,8 @@
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win64)'!=''">
         <BCC_Defines>NDEBUG;$(BCC_Defines);$(BCC_Defines)</BCC_Defines>
+        <VerInfo_Locale>1033</VerInfo_Locale>
+        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
     </PropertyGroup>
     <ItemGroup>
         <CppCompile Include="..\pos2kml.c">
@@ -233,7 +235,10 @@
                     <Parameters Name="LoadAllSymbols">True</Parameters>
                     <Parameters Name="LoadUnspecifiedSymbols">False</Parameters>
                 </Parameters>
-                <Excluded_Packages/>
+                <Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\bcboffice2k260.bpl">Embarcadero C++Builder Office 2000 Servers Package</Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\bcbofficexp260.bpl">Embarcadero C++Builder Office XP Servers Package</Excluded_Packages>
+                </Excluded_Packages>
                 <ProjectProperties>
                     <ProjectProperties Name="AutoShowDeps">False</ProjectProperties>
                     <ProjectProperties Name="ManagePaths">True</ProjectProperties>

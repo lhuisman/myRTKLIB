@@ -101,7 +101,7 @@ object OptDialog: TOptDialog
     Top = 1
     Width = 411
     Height = 377
-    ActivePage = TabSheet3
+    ActivePage = TabSheet1
     TabOrder = 4
     object TabSheet1: TTabSheet
       Caption = 'Setting&1'
@@ -222,9 +222,7 @@ object OptDialog: TOptDialog
         Height = 21
         Style = csDropDownList
         DropDownCount = 10
-        ItemIndex = 0
         TabOrder = 0
-        Text = 'Single'
         OnChange = PosModeChange
         Items.Strings = (
           'Single'
@@ -859,7 +857,7 @@ object OptDialog: TOptDialog
       object Label20: TLabel
         Left = 24
         Top = 31
-        Width = 201
+        Width = 183
         Height = 13
         Caption = 'Output Header / Process Options / Vel'
       end

@@ -13,8 +13,8 @@ GUI apps:
    - RTKCONV   - builds, runs, no obvious issues
    - RTKPOST   - builds, runs, no obvious issues
    - RTKPLOT   - builds, runs, partially functional, some issues
-   - STRSVR    - builds, runs, significant issues
-   - RTKNAVI   - builds, doesn't run
+   - STRSVR    - builds, runs, no obvious issues
+   - RTKNAVI   - builds, runs, not tested
    - RTKGET    - builds, runs, not tested
    - SRCTBLBROWS - builds, runs, not tested
    

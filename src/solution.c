@@ -553,6 +553,23 @@ static int decode_solenu(char *buff, const solopt_t *opt, sol_t *sol)
     if (i<n) sol->age  =(float)val[i++];
     if (i<n) sol->ratio=(float)val[i++];
 
+    if (i+3<=n) { /* velocity */
+        for (j=0;j<3;j++) {
+            sol->rr[j+3]=val[i++]; /* vel-enu */
+        }
+    }
+    if (i+3<=n) {
+        for (j=0;j<9;j++) Q[j]=0.0;
+        Q[0]=val[i]*val[i]; i++; /* sde */
+        Q[4]=val[i]*val[i]; i++; /* sdn */
+        Q[8]=val[i]*val[i]; i++; /* sdu */
+        if (i+3<=n) {
+            Q[1]=Q[3]=SQR(val[i]); i++; /* sden */
+            Q[5]=Q[7]=SQR(val[i]); i++; /* sdnu */
+            Q[2]=Q[6]=SQR(val[i]); i++; /* sdue */
+        }
+        covtosol_vel(Q,sol);
+    }
     sol->type=1; /* postion type = enu */
     
     if (MAXSOLQ<sol->stat) sol->stat=SOLQ_NONE;
@@ -1406,11 +1423,11 @@ extern int outprcopts(uint8_t *buff, const prcopt_t *opt)
         SYS_GPS,SYS_GLO,SYS_GAL,SYS_QZS,SYS_CMP,SYS_IRN,SYS_SBS,0
     };
     const char *s1[]={
-        "Single","DGPS","Kinematic","Static","Moving-Base","Fixed",
+        "Single","DGPS","Kinematic","Static","Static-Start","Moving-Base","Fixed",
         "PPP Kinematic","PPP Static","PPP Fixed","","",""
     };
     const char *s2[]={
-        "L1","L1+2","L1+2+3","L1+2+3+4","L1+2+3+4+5","L1+2+3+4+5+6","","",""
+        "L1","L1+L2/E5b","L1+L2/E5b+L5","L1+L2/E5b+L5+L6","L1+2+3+4+5","L1+2+3+4+5+6","","",""
     };
     const char *s3[]={
         "Forward","Backward","Combined","","",""
@@ -1557,6 +1574,11 @@ extern int outsolheads(uint8_t *buff, const solopt_t *opt)
                    "Q",sep,"ns",sep,"sde(m)",sep,"sdn(m)",sep,"sdu(m)",sep,
                    "sden(m)",sep,"sdnu(m)",sep,"sdue(m)",sep,"age(s)",sep,
                    "ratio");
+        if (opt->outvel) {
+            p+=sprintf(p,"%s%10s%s%10s%s%10s%s%9s%s%8s%s%8s%s%8s%s%8s%s%8s",
+                       sep,"ve(m/s)",sep,"vn(m/s)",sep,"vu(m/s)",sep,"sdve",sep,
+                       "sdvn",sep,"sdvu",sep,"sdven",sep,"sdvnu",sep,"sdvue");
+        }
         }
     p+=sprintf(p,"\r\n");
     return p-(char *)buff;

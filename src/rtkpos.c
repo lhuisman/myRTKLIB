@@ -88,24 +88,6 @@
 #define IL(f,opt)   (NP(opt)+NI(opt)+NT(opt)+(f))   /* receiver h/w bias */
 #define IB(s,f,opt) (NR(opt)+MAXSAT*(f)+(s)-1) /* phase bias (s:satno,f:freq) */
 
-#ifdef EXTGSI
-
-extern int resamb_WLNL(rtk_t *rtk, const obsd_t *obs, const int *sat,
-                       const int *iu, const int *ir, int ns, const nav_t *nav,
-                       const double *azel);
-extern int resamb_TCAR(rtk_t *rtk, const obsd_t *obs, const int *sat,
-                       const int *iu, const int *ir, int ns, const nav_t *nav,
-                       const double *azel);
-#else
-
-extern int resamb_WLNL(rtk_t *rtk, const obsd_t *obs, const int *sat,
-                       const int *iu, const int *ir, int ns, const nav_t *nav,
-                       const double *azel) {return 0;}
-extern int resamb_TCAR(rtk_t *rtk, const obsd_t *obs, const int *sat,
-                       const int *iu, const int *ir, int ns, const nav_t *nav,
-                       const double *azel) {return 0;}
-#endif
-
 /* global variables ----------------------------------------------------------*/
 static int statlevel=0;          /* rtk status output level (0:off) */
 static FILE *fp_stat=NULL;       /* rtk status file pointer */

@@ -714,10 +714,10 @@ static void udbias_ppp(rtk_t *rtk, const obsd_t *obs, int n, const nav_t *nav)
                 freq1=sat2freq(sat,obs[i].code[0],nav);
                 freq2=sat2freq(sat,obs[i].code[f],nav);
                 slip[i]=rtk->ssat[sat-1].slip[f];
-                if (obs[i].P[0]==0.0||obs[i].P[1]==0.0||freq1==0.0||freq2==0.0) {
-                    continue;
-                }
-                ion=(obs[i].P[0]-obs[i].P[f])/(1.0-SQR(freq1/freq2));
+                if (f==0||obs[i].P[0]==0.0||obs[i].P[f]==0.0||freq1==0.0||freq2==0.0)
+                    ion=0;
+                else
+                    ion=(obs[i].P[0]-obs[i].P[f])/(1.0-SQR(freq1/freq2));
                 bias[i]=L[f]-P[f]+2.0*ion*SQR(freq1/freq2);
             }
             if (rtk->x[j]==0.0||slip[i]||bias[i]==0.0) continue;

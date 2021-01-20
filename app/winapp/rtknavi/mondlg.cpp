@@ -358,9 +358,9 @@ void __fastcall TMonitorDialog::ShowRtk(void)
 	AnsiString s,exsats,navsys="";
 	AnsiString svrstate[]={"Stop","Run"};
 	AnsiString sol[]={"-","Fix","Float","SBAS","DGPS","Single","PPP",""};
-	AnsiString mode[]={"Single","DGPS","Kinematic","Static","Moving-Base",
+	AnsiString mode[]={"Single","DGPS","Kinematic","Static","Static-Start","Moving-Base",
 					   "Fixed","PPP-Kinematic","PPP-Static",""};
-	AnsiString freq[]={"-","L1","L1+L2","L1+L2+L3","L1+L2+L3+L4","L1+L2+L3+L4+L5",""};
+	AnsiString freq[]={"-","L1","L1+L2","L1+L2+L5","L1+L2+L5+L6","L1+L2+L5+L6+L7",""};
 	double *del,*off,runtime,rt[3]={0},dop[4]={0};
 	double azel[MAXSAT*2],pos[3],vel[3],rr[3]={0},enu[3]={0};
 	int i,j,k,thread,cycle,state,rtkstat,nsat0,nsat1,prcout,nave;
