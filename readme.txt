@@ -12,7 +12,7 @@ GUI apps:
    - RTKLAUNCH - builds, runs, no obvious issues
    - RTKCONV   - builds, runs, no obvious issues
    - RTKPOST   - builds, runs, no obvious issues
-   - RTKPLOT   - builds, runs, partially functional, some issues
+   - RTKPLOT   - builds, runs, no obvious issues
    - STRSVR    - builds, runs, no obvious issues
    - RTKNAVI   - builds, runs, not tested
    - RTKGET    - builds, runs, not tested

@@ -279,9 +279,9 @@ extern "C" {
 
 #define FREQTYPE_L1 0x01                /* frequency type: L1/E1/B1 */
 #define FREQTYPE_L2 0x02                /* frequency type: L2/E5b/B2 */
-#define FREQTYPE_L5 0x04                /* frequency type: L5/E5a/L3 */
-#define FREQTYPE_L6 0x08                /* frequency type: L6/E6/B3 */
-#define FREQTYPE_E5ab 0x10                /* frequency type: E5ab */
+#define FREQTYPE_L3 0x04                /* frequency type: L5/E5a/L3 */
+#define FREQTYPE_L4 0x08                /* frequency type: L6/E6/B3 */
+#define FREQTYPE_L5 0x10                /* frequency type: E5ab */
 #define FREQTYPE_ALL 0xFF               /* frequency type: all */
 
 #define CODE_NONE   0                   /* obs code: none or unknown */
@@ -462,12 +462,12 @@ extern "C" {
 #define STRFMT_BINEX 10                 /* stream format: BINEX */
 #define STRFMT_RT17  11                 /* stream format: Trimble RT17 */
 #define STRFMT_SEPT  12                 /* stream format: Septentrio */
-#define STRFMT_RINEX 13                 /* stream format: RINEX */
-#define STRFMT_SP3   14                 /* stream format: SP3 */
-#define STRFMT_RNXCLK 15                /* stream format: RINEX CLK */
-#define STRFMT_SBAS  16                 /* stream format: SBAS messages */
-#define STRFMT_NMEA  17                 /* stream format: NMEA 0183 */
-#define STRFMT_TERSUS 18                /* stream format: TERSUS */
+#define STRFMT_TERSUS 13                /* stream format: TERSUS */
+#define STRFMT_RINEX 14                 /* stream format: RINEX */
+#define STRFMT_SP3   15                 /* stream format: SP3 */
+#define STRFMT_RNXCLK 16                /* stream format: RINEX CLK */
+#define STRFMT_SBAS  17                 /* stream format: SBAS messages */
+#define STRFMT_NMEA  18                 /* stream format: NMEA 0183 */
 #define MAXRCVFMT    13                 /* max number of receiver format */
 
 #define STR_MODE_R  0x1                 /* stream mode: read */

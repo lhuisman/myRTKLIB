@@ -3858,7 +3858,7 @@ extern void antmodel(const pcv_t *pcv, const double *del, const double *azel,
         
         dant[i]=-dot(off,e,3)+(opt?interpvar(90.0-azel[1]*R2D,pcv->var[i]):0.0);
     }
-    trace(5,"antmodel: dant=%6.3f %6.3f\n",dant[0],dant[1]);
+    trace(4,"antmodel: dant=%6.3f %6.3f\n",dant[0],dant[1]);
 }
 /* satellite antenna model ------------------------------------------------------
 * compute satellite antenna phase center parameters
@@ -3876,7 +3876,7 @@ extern void antmodel_s(const pcv_t *pcv, double nadir, double *dant)
     for (i=0;i<NFREQ;i++) {
         dant[i]=interpvar(nadir*R2D*5.0,pcv->var[i]);
     }
-    trace(5,"antmodel_s: dant=%6.3f %6.3f\n",dant[0],dant[1]);
+    trace(4,"antmodel_s: dant=%6.3f %6.3f\n",dant[0],dant[1]);
 }
 /* sun and moon position in eci (ref [4] 5.1.1, 5.2.1) -----------------------*/
 static void sunmoonpos_eci(gtime_t tut, double *rsun, double *rmoon)

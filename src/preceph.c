@@ -78,7 +78,8 @@ static int readsp3h(FILE *fp, gtime_t *time, char *type, int *sats,
     char buff[1024];
     
     trace(3,"readsp3h:\n");
-    
+
+    /* TODO: Still using b33 code due to issues with b34 */    
     while (fgets(buff,sizeof(buff),fp)) {
 
         if (buff[0]=='#'&&(buff[1]=='c'||buff[1]=='d')) {

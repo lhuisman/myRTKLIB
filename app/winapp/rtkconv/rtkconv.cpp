@@ -16,7 +16,6 @@ USEFORM("convmain.cpp", MainWindow);
 USEFORM("convopt.cpp", ConvOptDialog);
 USEFORM("startdlg.cpp", StartDialog);
 //---------------------------------------------------------------------------
-//---------------------------------------------------------------------------
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
     try

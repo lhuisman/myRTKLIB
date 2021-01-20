@@ -422,7 +422,7 @@ extern void seph2pos(gtime_t time, const seph_t *seph, double *rs, double *dts,
 static eph_t *seleph(gtime_t time, int sat, int iode, const nav_t *nav)
 {
     double t,tmax,tmin;
-    int i,j=-1,sys,sel;
+    int i,j=-1,sys,sel=0;
     
     trace(4,"seleph  : time=%s sat=%2d iode=%d\n",time_str(time,3),sat,iode);
     
