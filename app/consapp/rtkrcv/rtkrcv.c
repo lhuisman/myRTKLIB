@@ -264,7 +264,7 @@ static void *sendkeepalive(void *arg)
     trace(3,"sendkeepalive: start\n");
     
     while (keepalive) {
-        strwrite(&moni,(unsigned char *)"\r",1);
+        strwrite(&moni,(uint8_t *)"\r",1);
         sleepms(INTKEEPALIVE);
     }
     trace(3,"sendkeepalive: stop\n");
@@ -292,7 +292,7 @@ static void closemoni(void)
     keepalive=0;
     
     /* send disconnect message */
-    strwrite(&moni,(unsigned char *)MSG_DISCONN,strlen(MSG_DISCONN));
+    strwrite(&moni,(uint8_t *)MSG_DISCONN,strlen(MSG_DISCONN));
     
     /* wait fin from clients */
     sleepms(1000);
@@ -436,7 +436,7 @@ static int startsvr(vt_t *vt)
     readant(vt,&prcopt,&svr.nav);
     
     /* read dcb file */
-    if (filopt.dcb) {
+    if (*filopt.dcb) {
         strcpy(sta[0].name,sta_name);
         readdcb(filopt.dcb,&svr.nav,sta);
     }
@@ -852,7 +852,7 @@ static void probserv(vt_t *vt, int nf)
         for (j=0;j<nf;j++) vt_printf(vt,"%13.3f",obs[i].P[j]);
         for (j=0;j<nf;j++) vt_printf(vt,"%14.3f",obs[i].L[j]);
         for (j=0;j<nf;j++) vt_printf(vt,"%8.1f" ,obs[i].D[j]);
-        for (j=0;j<nf;j++) vt_printf(vt,"%3.0f" ,obs[i].SNR[j]*0.25);
+        for (j=0;j<nf;j++) vt_printf(vt,"%3.0f" ,obs[i].SNR[j]*SNR_UNIT);
         for (j=0;j<nf;j++) vt_printf(vt,"%2d"   ,obs[i].LLI[j]);
         vt_printf(vt,"\n");
     }
@@ -862,10 +862,10 @@ static void prnavidata(vt_t *vt)
 {
     eph_t eph[MAXSAT];
     geph_t geph[MAXPRNGLO];
-    double ion[8],utc[4];
+    double ion[8],utc[8];
     gtime_t time;
     char id[32],s1[64],s2[64],s3[64];
-    int i,valid,prn,leaps;
+    int i,valid,prn;
     
     trace(4,"prnavidata:\n");
     
@@ -874,8 +874,7 @@ static void prnavidata(vt_t *vt)
     for (i=0;i<MAXSAT;i++) eph[i]=svr.nav.eph[i];
     for (i=0;i<MAXPRNGLO;i++) geph[i]=svr.nav.geph[i];
     for (i=0;i<8;i++) ion[i]=svr.nav.ion_gps[i];
-    for (i=0;i<4;i++) utc[i]=svr.nav.utc_gps[i];
-    leaps=svr.nav.leaps;
+    for (i=0;i<8;i++) utc[i]=svr.nav.utc_gps[i];
     rtksvrunlock(&svr);
     
     vt_printf(vt,"\n%s%3s %3s %3s %3s %3s %3s %3s %19s %19s %19s %3s %3s%s\n",
@@ -908,7 +907,7 @@ static void prnavidata(vt_t *vt)
     vt_printf(vt,"ION: %9.2E %9.2E %9.2E %9.2E %9.2E %9.2E %9.2E %9.2E\n",
             ion[0],ion[1],ion[2],ion[3],ion[4],ion[5],ion[6],ion[7]);
     vt_printf(vt,"UTC: %9.2E %9.2E %9.2E %9.2E  LEAPS: %d\n",utc[0],utc[1],utc[2],
-            utc[3],leaps);
+            utc[3],utc[4]);
 }
 /* print error/warning messages ----------------------------------------------*/
 static void prerror(vt_t *vt)

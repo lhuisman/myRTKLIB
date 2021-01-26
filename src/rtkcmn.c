@@ -2808,8 +2808,6 @@ static void uniqseph(nav_t *nav)
 *-----------------------------------------------------------------------------*/
 extern void uniqnav(nav_t *nav)
 {
-    int i,j;
-    
     trace(3,"uniqnav: neph=%d ngeph=%d nseph=%d\n",nav->n,nav->ng,nav->ns);
     
     /* unique ephemeris */
@@ -2984,12 +2982,12 @@ extern int savenav(const char *file, const nav_t *nav)
                 nav->geph[i].acc[0],nav->geph[i].acc[1],nav->geph[i].acc[2],
                 nav->geph[i].taun,nav->geph[i].gamn,nav->geph[i].dtaun);
     }
-    fprintf(fp,"IONUTC,%.14E,%.14E,%.14E,%.14E,%.14E,%.14E,%.14E,%.14E,%.14E,"
+    /*fprintf(fp,"IONUTC,%.14E,%.14E,%.14E,%.14E,%.14E,%.14E,%.14E,%.14E,%.14E,"
                "%.14E,%.14E,%.14E,%.0f",
             nav->ion_gps[0],nav->ion_gps[1],nav->ion_gps[2],nav->ion_gps[3],
             nav->ion_gps[4],nav->ion_gps[5],nav->ion_gps[6],nav->ion_gps[7],
             nav->utc_gps[0],nav->utc_gps[1],nav->utc_gps[2],nav->utc_gps[3],
-            nav->utc_gps[4]);
+            nav->utc_gps[4]);*/
     
     fclose(fp);
     return 1;

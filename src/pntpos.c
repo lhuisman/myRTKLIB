@@ -48,10 +48,17 @@
 /* pseudorange measurement error variance ------------------------------------*/
 static double varerr(const prcopt_t *opt, double el, double snr_rover, int sys)
 {
-    double fact,varr;
-    double a, b, snr_max;
-    
-    fact=sys==SYS_GLO?EFACT_GLO:(sys==SYS_SBS?EFACT_SBS:EFACT_GPS);
+    double fact=1.0,varr;
+
+    switch (sys) {
+        case SYS_GPS: fact *= EFACT_GPS; break;
+        case SYS_GLO: fact *= EFACT_GLO; break;
+        case SYS_SBS: fact *= EFACT_SBS; break;
+        case SYS_CMP: fact *= EFACT_CMP; break;
+        case SYS_QZS: fact *= EFACT_QZS; break;
+        case SYS_IRN: fact *= EFACT_IRN; break;
+        default:      fact *= EFACT_GPS; break;
+    }
     if (el<MIN_EL) el=MIN_EL;
     if (opt->weightmode==WEIGHTOPT_ELEVATION) {
         /* var = R^2 * (a^2 + b^2 / sin(el)) */

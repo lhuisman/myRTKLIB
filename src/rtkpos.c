@@ -397,7 +397,7 @@ static double varerr(int sat, int sys, double el, double snr_rover, double snr_b
     double d = CLIGHT * opt->sclkstab * dt;
     double fact = 1.0;
     double sinel = sin(el);
-    int i, nf = NF(opt), frq, code;
+    int nf = NF(opt), frq, code;
 
     frq=f%nf;code=f<nf?0:1;
 
@@ -1127,8 +1127,7 @@ static int ddres(rtk_t *rtk, const nav_t *nav, const obsd_t *obs, double dt, con
 {
     prcopt_t *opt=&rtk->opt;
     double bl,dr[3],posu[3],posr[3],didxi=0.0,didxj=0.0,*im,icb,threshadj;
-    double *tropr,*tropu,*dtdxr,*dtdxu,*Ri,*Rj,freqi,freqj,*Hi=NULL;
-    double fi,fj,df;
+    double *tropr,*tropu,*dtdxr,*dtdxu,*Ri,*Rj,freqi,freqj,*Hi=NULL,df;
     int i,j,k,m,f,nv=0,nb[NFREQ*4*2+2]={0},b=0,sysi,sysj,nf=NF(opt);
     int ii,jj,frq,code;
     
@@ -1569,7 +1568,7 @@ static int resamb_LAMBDA(rtk_t *rtk, double *bias, double *xa,int gps,int glo,in
     prcopt_t *opt=&rtk->opt;
     int i,j,nb,info,nx=rtk->nx,na=rtk->na;
     double *DP,*y,*b,*db,*Qb,*Qab,*QQ,s[2];
-    int *ix, ny;
+    int *ix;
     double var=0;
     double QQb[MAXSAT];
         

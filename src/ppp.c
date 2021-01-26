@@ -1176,8 +1176,7 @@ extern void pppos(rtk_t *rtk, const obsd_t *obs, int n, const nav_t *nav)
     }
     if (stat==SOLQ_PPP) {
         
-        /* ambiguity resolution in ppp - not supported */
-        /*if (ppp_ar(rtk,obs,n,exc,nav,azel,xp,Pp)&&
+        if (ppp_ar(rtk,obs,n,exc,nav,azel,xp,Pp)&&
             ppp_res(9,obs,n,rs,dts,var,svh,dr,exc,nav,xp,rtk,v,H,R,azel)) {
             
             matcpy(rtk->xa,xp,rtk->nx,1);
@@ -1186,19 +1185,18 @@ extern void pppos(rtk_t *rtk, const obsd_t *obs, int n, const nav_t *nav)
             for (i=0;i<3;i++) std[i]=sqrt(Pp[i+i*rtk->nx]);
             if (norm(std,3)<MAX_STD_FIX) stat=SOLQ_FIX;
         }
-        else { */
+        else { 
             rtk->nfix=0;
-        /* } */
+        }
         /* update solution status */
         update_stat(rtk,obs,n,stat);
         
-        /* hold fixed ambiguities - not supported */
-        /*if (stat==SOLQ_FIX&&test_hold_amb(rtk)) {
+        if (stat==SOLQ_FIX&&test_hold_amb(rtk)) {
             matcpy(rtk->x,xp,rtk->nx,1);
             matcpy(rtk->P,Pp,rtk->nx,rtk->nx);
             trace(2,"%s hold ambiguity\n",str);
             rtk->nfix=0;
-        } */
+        } 
     }
     free(rs); free(dts); free(var); free(azel);
     free(xp); free(Pp); free(v); free(H); free(R);

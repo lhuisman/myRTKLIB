@@ -8,7 +8,7 @@ The latest version of the user manual is at: https://github.com/rtklibexplorer/R
 
 The demo5_b34_dev branch is a work in progress merging in changes from the 2.4.3 b34 version of RTKLIB.  Current status is:
 
-GUI apps:
+Windows GUI apps:
    - RTKLAUNCH - builds, runs, no obvious issues
    - RTKCONV   - builds, runs, no obvious issues
    - RTKPOST   - builds, runs, no obvious issues
@@ -18,12 +18,21 @@ GUI apps:
    - RTKGET    - builds, runs, not tested
    - SRCTBLBROWS - builds, runs, not tested
    
-CUI apps:
+Windows CUI apps:
    - CONVBIN  - builds, runs, not tested
    - RNX2RTKP - builds, runs, no obvious issues
    - POS2KML  - builds, runs, no obvious issues
-
-
+   
+Linux CUI apps:
+   - STR2STR  - builds, runs, no obvious issues
+   - RTKRCV   - builds, runs, no obvious issues
+   - CONVBIN  - builds, runs, no obvious issues
+   - RNX2RTKP - builds, runs, no obvious issues
+   - POS2KML  - builds, runs, not tested
+   
+Linux GUI apps (Qt)
+    - Currently not supported in b34 code 
+ 
 Functional receivers/raw data formats:
    - U-blox, Novatel, Hemisphere, Skytraq, Javad, NVS, Trimble
    - Septentrino, RTCM2, RTCM3, RINEX, BINEX
