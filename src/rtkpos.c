@@ -689,17 +689,17 @@ static void detslp_gf(rtk_t *rtk, const obsd_t *obs, int i, int j,
     trace(4,"detslp_gf: i=%d j=%d\n",i,j);
     
     for (k=1;k<rtk->opt.nf;k++) {
-        if ((g1=gfobs(obs,i,j,k,nav))==0.0) return;
+        if ((g1=gfobs(obs,i,j,k,nav))==0.0) continue;
     
         g0=rtk->ssat[sat-1].gf[k-1];
         rtk->ssat[sat-1].gf[k-1]=g1;
         
-    if (g0!=0.0&&fabs(g1-g0)>rtk->opt.thresslip) {
-        rtk->ssat[sat-1].slip[0]|=1;
+        if (g0!=0.0&&fabs(g1-g0)>rtk->opt.thresslip) {
+            rtk->ssat[sat-1].slip[0]|=1;
             rtk->ssat[sat-1].slip[k]|=1;
             errmsg(rtk,"slip detected GF jump (sat=%2d L1-L%d GF=%.3f %.3f)\n",
-                   sat,k+1,g0,g1);
-}
+                sat,k+1,g0,g1);
+        }
     }
 }
 /* detect cycle slip by doppler and phase difference -------------------------*/
@@ -1421,7 +1421,7 @@ static int ddidx(rtk_t *rtk, int *ix, int gps, int glo, int sbs)
                 }
                 if (sbs==0 && satsys(j-k+1,NULL)==SYS_SBS) continue; 
                 if (rtk->ssat[j-k].lock[f]>=0&&!(rtk->ssat[j-k].slip[f]&2)&&
-                    rtk->ssat[i-k].vsat[f]&&
+                    rtk->ssat[j-k].vsat[f]&&
                     rtk->ssat[j-k].azel[1]>=rtk->opt.elmaskar&&!nofix) {
                     /* set D coeffs to subtract sat j from sat i */
                     ix[nb*2  ]=i; /* state index of ref bias */

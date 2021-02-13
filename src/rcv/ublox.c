@@ -398,9 +398,9 @@ static int decode_rxmrawx(raw_t *raw)
             continue;
         }
         /* offset by time tag adjustment */
-        if (toff!=0.0&&L!=0.0) {
-            P-=toff*CLIGHT;
-            L-=toff*code2freq(sys,code,frqid-7);
+        if (toff!=0.0) {
+            P-=P!=0.0?toff*CLIGHT:0.0;
+            L-=L!=0.0?toff*code2freq(sys,code,frqid-7):0.0;
         }
         /* half-cycle shift correction for BDS GEO */
         if (sys==SYS_CMP&&(prn<=5||prn>=59)&&L!=0.0) {

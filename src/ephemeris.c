@@ -587,15 +587,15 @@ static int satpos_sbas(gtime_t time, gtime_t teph, int sat, const nav_t *nav,
         if (sbs->sat==sat) break;
     }
     if (i>=nav->sbssat.nsat) {
-        trace(2,"no sbas correction for orbit: %s sat=%2d\n",time_str(time,0),sat);
+        trace(2,"no sbas, use brdcast: %s sat=%2d\n",time_str(time,0),sat);
         ephpos(time,teph,sat,nav,-1,rs,dts,var,svh);
-        *svh=-1;
-        return 0;
+        /* *svh=-1; */ /* use broadcast if no sbas */
+        return 1;
     }
     /* satellite postion and clock by broadcast ephemeris */
     if (!ephpos(time,teph,sat,nav,sbs->lcorr.iode,rs,dts,var,svh)) return 0;
-    
-    /* sbas satellite correction (long term and fast) */
+
+        /* sbas satellite correction (long term and fast) */
     if (sbssatcorr(time,sat,nav,rs,dts,var)) return 1;
     *svh=-1;
     return 0;
@@ -721,7 +721,7 @@ extern int satpos(gtime_t time, gtime_t teph, int sat, int ephopt,
     trace(4,"satpos  : time=%s sat=%2d ephopt=%d\n",time_str(time,3),sat,ephopt);
     
     *svh=0;
-    
+
     switch (ephopt) {
         case EPHOPT_BRDC  : return ephpos     (time,teph,sat,nav,-1,rs,dts,var,svh);
         case EPHOPT_SBAS  : return satpos_sbas(time,teph,sat,nav,   rs,dts,var,svh);
