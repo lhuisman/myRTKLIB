@@ -244,14 +244,16 @@ const char *formatstrs[32]={    /* stream format strings */
     "BINEX",                    /* 10 */
     "Trimble RT17",             /* 11 */
     "Septentrio SBF",           /* 12 */
-    "RINEX",                    /* 13 */
-    "SP3",                      /* 14 */
-    "RINEX CLK",                /* 15 */
-    "SBAS",                     /* 16 */
-    "NMEA 0183",                /* 17 */
-    "TERSUS",                   /* 18 */
+    "Tersus",                   /* 13 */
+    "RINEX",                    /* 14 */
+    "SP3",                      /* 15 */
+    "RINEX CLK",                /* 16 */
+    "SBAS",                     /* 17 */
+    "NMEA 0183",                /* 18 */
+    "TERSUS",                   /* 19 */
     NULL
 };
+
 static char *obscodes[]={       /* observation code strings */
     
     ""  ,"1C","1P","1W","1Y", "1M","1N","1S","1L","1E", /*  0- 9 */
@@ -264,8 +266,8 @@ static char *obscodes[]={       /* observation code strings */
 };
 static char codepris[7][MAXFREQ][16]={  /* code priority for each freq-index */
    /* L1/E1/B1   L2/E5b/B2    L5/E5a/L3 E6/LEX    E5(a+b)         */
-    {"CPYWMNSL","PYWCMNDLSX","IQX"     ,""       ,""       ,""}, /* GPS */
-    {"CPABX"   ,"PCABX"     ,"IQX"     ,""       ,""       ,""}, /* GLO */
+    {"CPYWMNSL","CPYWMNDLSX","IQX"     ,""       ,""       ,""}, /* GPS */
+    {"CPABX"   ,"CPABX"     ,"IQX"     ,""       ,""       ,""}, /* GLO */
     {"CABXZ"   ,"IQX"       ,"IQX"     ,"ABCXZ"  ,"IQX"    ,""}, /* GAL */
     {"CLSXZ"   ,"LSX"       ,"IQXDPZ"  ,"LSXEZ"  ,""       ,""}, /* QZS */
     {"C"       ,"IQX"       ,""        ,""       ,""       ,""}, /* SBS */

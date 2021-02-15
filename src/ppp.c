@@ -539,7 +539,7 @@ static void udpos_ppp(rtk_t *rtk)
         }
         return;
     }
-	/* check variance of estimated position */
+    /* check variance of estimated position */
     for (i=0;i<3;i++) var+=rtk->P[i+i*rtk->nx];
     var/=3.0;
     

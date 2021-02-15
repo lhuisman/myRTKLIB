@@ -14,7 +14,7 @@
 *         Version 2.12, June 23, 2009
 *     [5] W.Gurtner and L.Estey, RINEX The Receiver Independent Exchange Format
 *         Version 3.01, June 22, 2009
-*     [6] J.Ray and W.Gurtner, RINEX extentions to handle clock information
+*     [6] J.Ray and W.Gurtner, RINEX extensions to handle clock information
 *         version 3.02, September 2, 2010
 *     [7] RINEX The Receiver Independent Exchange Format Version 3.02,
 *         International GNSS Service (IGS), RINEX Working Group and Radio
@@ -624,7 +624,7 @@ static void decode_gnavh(char *buff, nav_t *nav)
     
     trace(4,"decode_gnavh:\n");
     
-    if      (strstr(label,"CORR TO SYTEM TIME"  )) {} /* opt */
+    if      (strstr(label,"CORR TO SYSTEM TIME"  )) {} /* opt */
     else if (strstr(label,"LEAP SECONDS"        )) {} /* opt */
 }
 /* decode GEO NAV header -----------------------------------------------------*/
@@ -986,14 +986,14 @@ static void set_index(double ver, int sys, const char *opt,
     }
     for (i=0;i<n;i++) {
         if (!ind->code[i]||!ind->pri[i]||ind->pos[i]>=0) continue;
-        trace(4,"reject obs type: sys=%2d, obs=%s\n",sys,tobs[i]);
+        trace(3,"reject obs type: sys=%2d, obs=%s\n",sys,tobs[i]);
     }
     ind->n=n;
     
 #if 0 /* for debug */
     for (i=0;i<n;i++) {
         trace(2,"set_index: sys=%2d,tobs=%s code=%2d pri=%2d idx=%d pos=%d shift=%5.2f\n",
-			  sys,tobs[i],ind->code[i],ind->pri[i],ind->idx[i],ind->pos[i],
+              sys,tobs[i],ind->code[i],ind->pri[i],ind->idx[i],ind->pos[i],
               ind->shift[i]);
     }
 #endif
@@ -1060,7 +1060,7 @@ static int readrnxobs(FILE *fp, gtime_t ts, gtime_t te, double tint,
     int i,n,n1=0,flag=0,stat=0;
     double dtime1=0;
     
-    trace(4,"readrnxobs: rcv=%d ver=%.2f tsys=%d\n",rcv,ver,tsys);
+    trace(4,"readrnxobs: rcv=%d ver=%.2f tsys=%d\n",rcv,ver,*tsys);
     
     if (!obs||rcv>MAXRCV) return 0;
     
@@ -1108,6 +1108,7 @@ static int readrnxobs(FILE *fp, gtime_t ts, gtime_t te, double tint,
             /* save obs data */
             if ((stat=addobsdata(obs,data+i))<0) break;
         }
+        n1=n;dtime1=timediff(data[0].time,time1);time1=data[0].time;
     }
     trace(4,"readrnxobs: nobs=%d stat=%d\n",obs->n,stat);
     
@@ -1810,7 +1811,7 @@ extern void free_rnxctr(rnxctr_t *rnx)
     free(rnx->nav.seph); rnx->nav.seph=NULL; rnx->nav.ns=0;
 }
 /* open RINEX data -------------------------------------------------------------
-* fetch next RINEX message and input a messsage from file
+* fetch next RINEX message and input a message from file
 * args   : rnxctr_t *rnx IO  RINEX control struct
 *          FILE  *fp    I    file pointer
 * return : status (-2: end of file, 0: no message, 1: input observation data,
@@ -2157,7 +2158,7 @@ static void outrnxobsf(FILE *fp, double obs, int lli, int qual)
     }
     if (qual<=0) fprintf(fp," "); else fprintf(fp,"%1.1x",qual);
 }
-/* search obsservattion data index -------------------------------------------*/
+/* search observation data index -------------------------------------------*/
 static int obsindex(int rnxver, int sys, const uint8_t *code, const char *tobs,
                     const char *mask)
 {
@@ -2286,7 +2287,7 @@ extern int outrnxobsb(FILE *fp, const rnxopt_t *opt, const obsd_t *obs, int n,
     }
     if (opt->rnxver<=299) { /* ver.2 */
         fprintf(fp," %02d %02.0f %02.0f %02.0f %02.0f %010.7f  %d%3d",
-                (int)ep[0]%100,ep[1],ep[2],ep[3],ep[4],ep[5],flag,ns);
+                (int)ep[0]%100,ep[1],ep[2],ep[3],ep[4],ep[5],0,ns);
         for (i=0;i<ns;i++) {
             if (i>0&&i%12==0) fprintf(fp,"\n%32s","");
             fprintf(fp,"%-3s",sats[i]);
@@ -2294,7 +2295,7 @@ extern int outrnxobsb(FILE *fp, const rnxopt_t *opt, const obsd_t *obs, int n,
     }
     else { /* ver.3 */
         fprintf(fp,"> %04.0f %02.0f %02.0f %02.0f %02.0f %010.7f  %d%3d%21s\n",
-                ep[0],ep[1],ep[2],ep[3],ep[4],ep[5],flag,ns,"");
+                ep[0],ep[1],ep[2],ep[3],ep[4],ep[5],0,ns,"");
     }
     for (i=0;i<ns;i++) {
         sys=satsys(obs[ind[i]].sat,NULL);

@@ -1279,8 +1279,8 @@ static int ddres(rtk_t *rtk, const nav_t *nav, const obsd_t *obs, double dt, con
                 ii=IB(sat[i],frq,opt);
                 jj=IB(sat[j],frq,opt);
                 /* adjust threshold by error stdev ratio unless one of the phase biases was just initialized*/
-                threshadj=code||(rtk->P[ii+rtk->nx*ii]>SQR(rtk->opt.std[0]/2))||
-                          (rtk->P[jj+rtk->nx*jj]>SQR(rtk->opt.std[0]/2))?opt->eratio[frq]:1;
+                threshadj=code||(rtk->P[ii+rtk->nx*ii]==SQR(rtk->opt.std[0]))||
+                          (rtk->P[jj+rtk->nx*jj]==SQR(rtk->opt.std[0]))?opt->eratio[frq]:1;
                 if (opt->maxinno>0.0&&fabs(v[nv])>opt->maxinno*threshadj) {
                        rtk->ssat[sat[j]-1].vsat[frq]=0;
                        rtk->ssat[sat[j]-1].rejc[frq]++;
