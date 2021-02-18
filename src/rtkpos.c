@@ -687,10 +687,14 @@ static void detslp_gf(rtk_t *rtk, const obsd_t *obs, int i, int j,
     double g0,g1;
     
     trace(4,"detslp_gf: i=%d j=%d\n",i,j);
+
+    /* skip check if slip already detected */
+    for (k=1;k<rtk->opt.nf;k++)
+        if (rtk->ssat[sat-1].slip[k]&1) return;
     
     for (k=1;k<rtk->opt.nf;k++) {
         if ((g1=gfobs(obs,i,j,k,nav))==0.0) continue;
-    
+
         g0=rtk->ssat[sat-1].gf[k-1];
         rtk->ssat[sat-1].gf[k-1]=g1;
         
@@ -926,6 +930,7 @@ static void zdres_sat(int base, double r, const obsd_t *obs, const nav_t *nav,
         I   n    = # of sats
         I   rs [(0:2)+i*6]= sat position {x,y,z} (m)
         I   dts[(0:1)+i*2]= sat clock {bias,drift} (s|s/s)
+        I   var  = variance of ephemeris
         I   svh  = sat health flags
         I   nav  = sat nav data
         I   rr   = rcvr pos (x,y,z)

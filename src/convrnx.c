@@ -519,7 +519,7 @@ static void setopt_sta(const strfile_t *str, rnxopt_t *opt)
         if (!p->next) break;
         if (opt->ts.time&&timediff(p->next->te,opt->ts)<0.0) break;
     }
-    if (p->sta.name[0]!='\0') {
+    if (p&&p->sta.name[0]!='\0') {
         sta=&p->sta;
         setopt_sta_list(str,opt);
     }
