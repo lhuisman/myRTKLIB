@@ -216,11 +216,11 @@ object MaskOptDialog: TMaskOptDialog
     BevelOuter = bvNone
     TabOrder = 4
     object Label13: TLabel
-      Left = 10
-      Top = 3
-      Width = 11
+      Left = 1
+      Top = 2
+      Width = 33
       Height = 13
-      Caption = 'L2'
+      Caption = 'L2/E5b'
     end
     object Mask_2_1: TEdit
       Left = 35
@@ -303,11 +303,11 @@ object MaskOptDialog: TMaskOptDialog
     BevelOuter = bvNone
     TabOrder = 5
     object Label14: TLabel
-      Left = 10
-      Top = 3
-      Width = 11
+      Left = 2
+      Top = 2
+      Width = 33
       Height = 13
-      Caption = 'L3'
+      Caption = 'L5/E5a'
     end
     object Mask_3_1: TEdit
       Left = 35

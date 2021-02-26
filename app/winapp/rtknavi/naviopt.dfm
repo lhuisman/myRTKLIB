@@ -45,9 +45,9 @@ object OptDialog: TOptDialog
   end
   object BtnSave: TButton
     Left = 100
-    Top = 355
+    Top = 354
     Width = 99
-    Height = 30
+    Height = 28
     Caption = '&Save'
     TabOrder = 3
     OnClick = BtnSaveClick
@@ -57,7 +57,7 @@ object OptDialog: TOptDialog
     Top = 0
     Width = 413
     Height = 353
-    ActivePage = TabSheet8
+    ActivePage = TabSheet1
     Align = alTop
     TabOrder = 4
     object TabSheet1: TTabSheet
@@ -225,9 +225,9 @@ object OptDialog: TOptDialog
         OnChange = FreqChange
         Items.Strings = (
           'L1'
-          'L1+L2'
-          'L1+L2+L5'
-          'L1+L2+L5+L6')
+          'L1+L2/E5b'
+          'L1+L2/E5b+L5/E5a'
+          'L1+L2/E5b+L5/E5a+L6')
       end
       object Solution: TComboBox
         Left = 325

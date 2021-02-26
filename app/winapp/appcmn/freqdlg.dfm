@@ -16,8 +16,8 @@ object FreqDialog: TFreqDialog
   PixelsPerInch = 96
   TextHeight = 13
   object BtnOk: TButton
-    Left = 214
-    Top = 166
+    Left = 216
+    Top = 161
     Width = 72
     Height = 29
     Caption = '&OK'
@@ -42,7 +42,6 @@ object FreqDialog: TFreqDialog
       Color = clWhite
       ParentBackground = False
       TabOrder = 0
-      ExplicitLeft = 250
     end
     object Panel16: TPanel
       Left = 200
@@ -55,7 +54,6 @@ object FreqDialog: TFreqDialog
       Color = clWhite
       ParentBackground = False
       TabOrder = 1
-      ExplicitLeft = 208
     end
     object Panel17: TPanel
       Left = 120
@@ -68,7 +66,6 @@ object FreqDialog: TFreqDialog
       Color = clWhite
       ParentBackground = False
       TabOrder = 2
-      ExplicitLeft = 168
     end
     object Panel18: TPanel
       Left = 80
@@ -81,7 +78,6 @@ object FreqDialog: TFreqDialog
       Color = clWhite
       ParentBackground = False
       TabOrder = 3
-      ExplicitLeft = 128
     end
     object Panel19: TPanel
       Left = 160
@@ -94,7 +90,6 @@ object FreqDialog: TFreqDialog
       Color = clWhite
       ParentBackground = False
       TabOrder = 4
-      ExplicitLeft = 168
     end
   end
   object Panel2: TPanel
@@ -122,7 +117,6 @@ object FreqDialog: TFreqDialog
       Color = clWhite
       ParentBackground = False
       TabOrder = 0
-      ExplicitLeft = 250
     end
     object Panel11: TPanel
       Left = 80
@@ -135,7 +129,6 @@ object FreqDialog: TFreqDialog
       Color = clWhite
       ParentBackground = False
       TabOrder = 1
-      ExplicitLeft = 120
     end
     object Panel12: TPanel
       Left = 120
@@ -148,7 +141,6 @@ object FreqDialog: TFreqDialog
       Color = clWhite
       ParentBackground = False
       TabOrder = 2
-      ExplicitLeft = 150
     end
     object Panel13: TPanel
       Left = 160
@@ -161,7 +153,6 @@ object FreqDialog: TFreqDialog
       Color = clWhite
       ParentBackground = False
       TabOrder = 3
-      ExplicitLeft = 180
     end
     object Panel14: TPanel
       Left = 200
@@ -174,7 +165,6 @@ object FreqDialog: TFreqDialog
       Color = clWhite
       ParentBackground = False
       TabOrder = 4
-      ExplicitLeft = 210
     end
   end
   object Panel3: TPanel
@@ -202,7 +192,6 @@ object FreqDialog: TFreqDialog
       Color = clWhite
       ParentBackground = False
       TabOrder = 0
-      ExplicitLeft = 250
     end
     object Panel21: TPanel
       Left = 200
@@ -215,7 +204,6 @@ object FreqDialog: TFreqDialog
       Color = clWhite
       ParentBackground = False
       TabOrder = 1
-      ExplicitLeft = 208
     end
     object Panel22: TPanel
       Left = 120
@@ -228,7 +216,6 @@ object FreqDialog: TFreqDialog
       Color = clWhite
       ParentBackground = False
       TabOrder = 2
-      ExplicitLeft = 168
     end
     object Panel23: TPanel
       Left = 80
@@ -241,7 +228,6 @@ object FreqDialog: TFreqDialog
       Color = clWhite
       ParentBackground = False
       TabOrder = 3
-      ExplicitLeft = 128
     end
     object Panel24: TPanel
       Left = 160
@@ -254,7 +240,6 @@ object FreqDialog: TFreqDialog
       Color = clWhite
       ParentBackground = False
       TabOrder = 4
-      ExplicitLeft = 168
     end
   end
   object Panel4: TPanel
@@ -282,7 +267,6 @@ object FreqDialog: TFreqDialog
       Color = clWhite
       ParentBackground = False
       TabOrder = 0
-      ExplicitLeft = 250
     end
     object Panel26: TPanel
       Left = 200
@@ -295,7 +279,6 @@ object FreqDialog: TFreqDialog
       Color = clWhite
       ParentBackground = False
       TabOrder = 1
-      ExplicitLeft = 208
     end
     object Panel27: TPanel
       Left = 120
@@ -308,7 +291,6 @@ object FreqDialog: TFreqDialog
       Color = clWhite
       ParentBackground = False
       TabOrder = 2
-      ExplicitLeft = 168
     end
     object Panel28: TPanel
       Left = 80
@@ -321,7 +303,6 @@ object FreqDialog: TFreqDialog
       Color = clWhite
       ParentBackground = False
       TabOrder = 3
-      ExplicitLeft = 128
     end
     object Panel29: TPanel
       Left = 160
@@ -334,7 +315,6 @@ object FreqDialog: TFreqDialog
       Color = clWhite
       ParentBackground = False
       TabOrder = 4
-      ExplicitLeft = 168
     end
   end
   object Panel5: TPanel
@@ -362,7 +342,6 @@ object FreqDialog: TFreqDialog
       Color = clWhite
       ParentBackground = False
       TabOrder = 0
-      ExplicitLeft = 250
     end
     object Panel31: TPanel
       Left = 200
@@ -375,7 +354,6 @@ object FreqDialog: TFreqDialog
       Color = clWhite
       ParentBackground = False
       TabOrder = 1
-      ExplicitLeft = 208
     end
     object Panel32: TPanel
       Left = 120
@@ -388,7 +366,6 @@ object FreqDialog: TFreqDialog
       Color = clWhite
       ParentBackground = False
       TabOrder = 2
-      ExplicitLeft = 168
     end
     object Panel33: TPanel
       Left = 80
@@ -401,7 +378,6 @@ object FreqDialog: TFreqDialog
       Color = clWhite
       ParentBackground = False
       TabOrder = 3
-      ExplicitLeft = 128
     end
     object Panel34: TPanel
       Left = 160
@@ -414,7 +390,6 @@ object FreqDialog: TFreqDialog
       Color = clWhite
       ParentBackground = False
       TabOrder = 4
-      ExplicitLeft = 168
     end
   end
   object Panel6: TPanel
@@ -442,7 +417,6 @@ object FreqDialog: TFreqDialog
       Color = clWhite
       ParentBackground = False
       TabOrder = 0
-      ExplicitLeft = 250
     end
     object Panel36: TPanel
       Left = 200
@@ -455,7 +429,6 @@ object FreqDialog: TFreqDialog
       Color = clWhite
       ParentBackground = False
       TabOrder = 1
-      ExplicitLeft = 208
     end
     object Panel37: TPanel
       Left = 120
@@ -468,7 +441,6 @@ object FreqDialog: TFreqDialog
       Color = clWhite
       ParentBackground = False
       TabOrder = 2
-      ExplicitLeft = 168
     end
     object Panel38: TPanel
       Left = 80
@@ -481,7 +453,6 @@ object FreqDialog: TFreqDialog
       Color = clWhite
       ParentBackground = False
       TabOrder = 3
-      ExplicitLeft = 128
     end
     object Panel39: TPanel
       Left = 160
@@ -494,7 +465,6 @@ object FreqDialog: TFreqDialog
       Color = clWhite
       ParentBackground = False
       TabOrder = 4
-      ExplicitLeft = 168
     end
   end
   object Panel8: TPanel
@@ -522,7 +492,6 @@ object FreqDialog: TFreqDialog
       Color = clWhite
       ParentBackground = False
       TabOrder = 0
-      ExplicitLeft = 250
     end
     object Panel46: TPanel
       Left = 200
@@ -535,7 +504,6 @@ object FreqDialog: TFreqDialog
       Color = clWhite
       ParentBackground = False
       TabOrder = 1
-      ExplicitLeft = 208
     end
     object Panel47: TPanel
       Left = 120
@@ -548,7 +516,6 @@ object FreqDialog: TFreqDialog
       Color = clWhite
       ParentBackground = False
       TabOrder = 2
-      ExplicitLeft = 168
     end
     object Panel48: TPanel
       Left = 80
@@ -561,7 +528,6 @@ object FreqDialog: TFreqDialog
       Color = clWhite
       ParentBackground = False
       TabOrder = 3
-      ExplicitLeft = 128
     end
     object Panel49: TPanel
       Left = 160
@@ -574,7 +540,6 @@ object FreqDialog: TFreqDialog
       Color = clWhite
       ParentBackground = False
       TabOrder = 4
-      ExplicitLeft = 168
     end
   end
   object Panel9: TPanel
@@ -602,7 +567,6 @@ object FreqDialog: TFreqDialog
       Color = clWhite
       ParentBackground = False
       TabOrder = 0
-      ExplicitLeft = 250
     end
     object Panel51: TPanel
       Left = 200
@@ -615,7 +579,6 @@ object FreqDialog: TFreqDialog
       Color = clWhite
       ParentBackground = False
       TabOrder = 1
-      ExplicitLeft = 208
     end
     object Panel52: TPanel
       Left = 120
@@ -628,7 +591,6 @@ object FreqDialog: TFreqDialog
       Color = clWhite
       ParentBackground = False
       TabOrder = 2
-      ExplicitLeft = 168
     end
     object Panel53: TPanel
       Left = 80
@@ -641,7 +603,6 @@ object FreqDialog: TFreqDialog
       Color = clWhite
       ParentBackground = False
       TabOrder = 3
-      ExplicitLeft = 128
     end
     object Panel54: TPanel
       Left = 160
@@ -654,7 +615,6 @@ object FreqDialog: TFreqDialog
       Color = clWhite
       ParentBackground = False
       TabOrder = 4
-      ExplicitLeft = 168
     end
   end
   object Panel7: TPanel

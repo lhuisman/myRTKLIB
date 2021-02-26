@@ -7,7 +7,7 @@ BINDIR = /usr/local/bin
 SRC    = ../../../../src
 
 INCLUDE= -I$(SRC)
-OPTIONS= -DTRACE -DENAGLO -DENAQZS -DENAGAL -DENACMP -DENAIRN -DNFREQ=5 -DNEXOBS=3
+OPTIONS= -DTRACE -DENAGLO -DENAQZS -DENAGAL -DENACMP -DENAIRN -DNFREQ=3 -DNEXOBS=3
 
 CFLAGS = -O3 -ansi -pedantic -Wall -Wno-unused-but-set-variable $(INCLUDE) $(OPTIONS) -g
 
@@ -18,8 +18,7 @@ all  : convbin
 convbin    : convbin.o rtkcmn.o rinex.o sbas.o preceph.o rcvraw.o convrnx.o
 convbin    : rtcm.o rtcm2.o rtcm3.o rtcm3e.o pntpos.o ephemeris.o ionex.o
 convbin    : novatel.o ublox.o crescent.o skytraq.o javad.o nvs.o
-convbin    : binex.o rt17.o septentrio.o
-#convbin    : swiftnav.o tersus.o comnav.o
+convbin    : binex.o rt17.o septentrio.o swiftnav.o
 
 convbin.o  : ../convbin.c
 	$(CC) -c $(CFLAGS) ../convbin.c
@@ -69,6 +68,8 @@ rt17.o     : $(SRC)/rcv/rt17.c
 	$(CC) -c $(CFLAGS) $(SRC)/rcv/rt17.c
 septentrio.o: $(SRC)/rcv/septentrio.c
 	$(CC) -c $(CFLAGS) $(SRC)/rcv/septentrio.c
+swiftnav.o: $(SRC)/rcv/septentrio.c
+	$(CC) -c $(CFLAGS) $(SRC)/rcv/swiftnav.c
 
 convbin.o  : $(SRC)/rtklib.h
 rtkcmn.o   : $(SRC)/rtklib.h
@@ -94,6 +95,7 @@ nvs.o      : $(SRC)/rtklib.h
 binex.o    : $(SRC)/rtklib.h
 rt17.o     : $(SRC)/rtklib.h
 septentrio.o: $(SRC)/rtklib.h
+swiftnav.o : $(SRC)/rtklib.h
 
 DATDIR = ../../../test/data/rcvraw
 

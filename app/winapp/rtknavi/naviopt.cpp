@@ -45,9 +45,9 @@ static char proxyaddr[MAXSTR]="";       /* proxy address */
 #define TIMOPT  "0:gpst,1:utc,2:jst,3:tow"
 #define CONOPT  "0:dms,1:deg,2:xyz,3:enu,4:pyl"
 #define FLGOPT  "0:off,1:std+2:age/ratio/ns"
-#define ISTOPT  "0:off,1:serial,2:file,3:tcpsvr,4:tcpcli,7:ntripcli,8:ftp,9:http"
-#define OSTOPT  "0:off,1:serial,2:file,3:tcpsvr,4:tcpcli,6:ntripsvr"
-#define FMTOPT  "0:rtcm2,1:rtcm3,2:oem4,3:oem3,4:ubx,5:swift,6:hemis,7:skytraq,8:gw10,9:javad,10:nvs,11:binex,12:rt17,13:sbf,14:cmr,15:tersus,17:sp3"
+#define ISTOPT  "0:off,1:serial,2:file,3:tcpsvr,4:tcpcli,6:ntripcli,7:ftp,8:http"
+#define OSTOPT  "0:off,1:serial,2:file,3:tcpsvr,4:tcpcli,5:ntripsvr,9:ntripcas"
+#define FMTOPT  "0:rtcm2,1:rtcm3,2:oem4,4:ubx,5:swift,6:hemis,7:skytraq,8:javad,9:nvs,10:binex,11:rt17,12:sbf,15:sp3"
 #define NMEOPT  "0:off,1:latlon,2:single"
 #define SOLOPT  "0:llh,1:xyz,2:enu,3:nmea"
 #define MSGOPT  "0:all,1:rover,2:base,3:corr"
@@ -94,7 +94,7 @@ __fastcall TOptDialog::TOptDialog(TComponent* Owner)
 	: TForm(Owner)
 {
 	AnsiString label,s;
-	int nglo=MAXPRNGLO,ngal=MAXPRNGAL,nqzs=MAXPRNQZS;
+	int freq[]={1,2,5,6,7,8,9},nglo=MAXPRNGLO,ngal=MAXPRNGAL,nqzs=MAXPRNQZS;
 	int ncmp=MAXPRNCMP,nirn=MAXPRNIRN;
 
 	PrcOpt=prcopt_default;
@@ -104,12 +104,8 @@ __fastcall TOptDialog::TOptDialog(TComponent* Owner)
 	PosFont=new TFont;
 	
 	Freq->Items->Clear();
-	// TODO ????
 	for (int i=0;i<NFREQ;i++) {
-		label="L1";
-	    for (int j=1;j<=i;j++) {
-		    label+=s.sprintf("+%d",j+1);
-		}
+		label=label+(i>0?"+":"")+s.sprintf("L%d",freq[i]);
 		Freq->Items->Add(label);
 	}
 	if (nglo<=0) NavSys2->Enabled=false;
@@ -667,6 +663,7 @@ void __fastcall TOptDialog::LoadOpt(AnsiString file)
 {
     int itype[]={STR_SERIAL,STR_TCPCLI,STR_TCPSVR,STR_NTRIPCLI,STR_FILE,STR_FTP,STR_HTTP};
     int otype[]={STR_SERIAL,STR_TCPCLI,STR_TCPSVR,STR_NTRIPSVR,STR_NTRIPCAS,STR_FILE};
+    int num_itype=7,num_otype=6;
 	TEdit *editu[]={RovPos1,RovPos2,RovPos3};
 	TEdit *editr[]={RefPos1,RefPos2,RefPos3};
 	AnsiString s;
@@ -684,7 +681,7 @@ void __fastcall TOptDialog::LoadOpt(AnsiString file)
 	for (int i=0;i<8;i++) {
 		MainForm->StreamC[i]=strtype[i]!=STR_NONE;
 		MainForm->Stream[i]=STR_NONE;
-		for (int j=0;j<(i<3?7:5);j++) {
+		for (int j=0;j<(i<3?num_itype:num_otype);j++) {
 			if (strtype[i]!=(i<3?itype[j]:otype[j])) continue;
 			MainForm->Stream[i]=j;
 			break;

@@ -319,7 +319,8 @@ TColor __fastcall TPlot::ObsColor(const obsd_t *obs, double az, double el)
         }
         color=MColor[0][6-n];
     }
-    else if (sscanf(obstype,"L%d",&freq)==1) {
+    else if (sscanf(obstype,"L%1d",&freq)==1) {
+        freq-=freq>2?2:0;  /* L1,L2,L5,L6 ... */
         if (obs->L[freq-1]==0.0&&obs->P[freq-1]==0.0) {
             return clBlack;
         }

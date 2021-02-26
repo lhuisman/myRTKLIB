@@ -331,7 +331,8 @@ void __fastcall TPlot::UpdateObsType(void)
     UTF8String s;
     char *obs,*codes[MAXCODE+1];
     int i,j,n=0,cmask[MAXCODE+1]={0},fmask[10]={0};
-    
+    const char *obstypes[] =  {"L1/LC","L2/E5b","L5/E5a","L6","L7","L8"};
+
     trace(3,"UpdateObsType\n");
     
     for (i=0;i<Obs.n;i++) for (j=0;j<NFREQ+NEXOBS;j++) {
@@ -349,8 +350,8 @@ void __fastcall TPlot::UpdateObsType(void)
     ObsType ->Items->Add("ALL");
     
     for (i=0;i<NFREQ;i++) {
-        ObsType ->Items->Add(s.sprintf("L%d",i+1));
-        ObsType2->Items->Add(s.sprintf("L%d",i+1));
+        ObsType ->Items->Add(s.sprintf("%s",obstypes[i]));
+        ObsType2 ->Items->Add(s.sprintf("%s",obstypes[i]));
     }
     for (i=0;i<n;i++) {
         ObsType ->Items->Add(s.sprintf("%s",codes[i]));

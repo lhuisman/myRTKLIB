@@ -34,7 +34,6 @@ object Plot: TPlot
     Color = clWhite
     ParentBackground = False
     TabOrder = 3
-    ExplicitWidth = 624
     object Disp: TPaintBox
       AlignWithMargins = True
       Left = 154
@@ -210,7 +209,6 @@ object Plot: TPlot
     Color = clWindow
     ParentBackground = False
     TabOrder = 0
-    ExplicitWidth = 624
     object BtnMessage2: TSpeedButton
       Left = 630
       Top = 0
@@ -242,12 +240,11 @@ object Plot: TPlot
       BorderWidth = 1
       TabOrder = 0
       Visible = False
-      ExplicitLeft = 430
       object Message2: TLabel
         Left = 2
         Top = 2
-        Width = 3
-        Height = 13
+        Width = 174
+        Height = 14
         Align = alClient
         Alignment = taCenter
         Color = clWhite
@@ -258,6 +255,8 @@ object Plot: TPlot
         Font.Style = []
         ParentColor = False
         ParentFont = False
+        ExplicitWidth = 3
+        ExplicitHeight = 13
       end
     end
     object Panel21: TPanel
@@ -278,83 +277,90 @@ object Plot: TPlot
       Font.Style = []
       ParentFont = False
       TabOrder = 1
-      ExplicitWidth = 430
       object QL3: TLabel
         Left = 11
         Top = 2
         Width = 3
-        Height = 13
+        Height = 14
         Margins.Left = 0
         Margins.Right = 0
         Align = alLeft
         Caption = ' '
+        ExplicitHeight = 13
       end
       object Message1: TLabel
         Left = 2
         Top = 2
         Width = 3
-        Height = 13
+        Height = 14
         Align = alLeft
+        ExplicitHeight = 13
       end
       object QL1: TLabel
         Left = 5
         Top = 2
         Width = 3
-        Height = 13
+        Height = 14
         Margins.Left = 0
         Margins.Right = 0
         Align = alLeft
         Caption = ' '
+        ExplicitHeight = 13
       end
       object QL2: TLabel
         Left = 8
         Top = 2
         Width = 3
-        Height = 13
+        Height = 14
         Margins.Left = 0
         Margins.Right = 0
         Align = alLeft
         Caption = ' '
+        ExplicitHeight = 13
       end
       object QL4: TLabel
         Left = 14
         Top = 2
         Width = 3
-        Height = 13
+        Height = 14
         Margins.Left = 0
         Margins.Right = 0
         Align = alLeft
         Caption = ' '
+        ExplicitHeight = 13
       end
       object QL5: TLabel
         Left = 17
         Top = 2
         Width = 3
-        Height = 13
+        Height = 14
         Margins.Left = 0
         Margins.Right = 0
         Align = alLeft
         Caption = ' '
+        ExplicitHeight = 13
       end
       object QL6: TLabel
         Left = 20
         Top = 2
         Width = 3
-        Height = 13
+        Height = 14
         Margins.Left = 0
         Margins.Right = 0
         Align = alLeft
         Caption = ' '
+        ExplicitHeight = 13
       end
       object QL7: TLabel
         Left = 23
         Top = 2
         Width = 3
-        Height = 13
+        Height = 14
         Margins.Left = 0
         Margins.Right = 0
         Align = alLeft
         Caption = ' '
+        ExplicitHeight = 13
       end
     end
   end
@@ -372,7 +378,6 @@ object Plot: TPlot
     Color = clWindow
     ParentBackground = False
     TabOrder = 1
-    ExplicitWidth = 624
     object Panel11: TPanel
       Left = 530
       Top = 0
@@ -383,7 +388,6 @@ object Plot: TPlot
       BevelOuter = bvNone
       TabOrder = 0
       TabStop = True
-      ExplicitLeft = 532
       object BtnReload: TSpeedButton
         Left = 70
         Top = 0
@@ -411,7 +415,7 @@ object Plot: TPlot
         Left = 0
         Top = 0
         Width = 3
-        Height = 13
+        Height = 25
         Align = alRight
         Alignment = taRightJustify
         Font.Charset = DEFAULT_CHARSET
@@ -421,6 +425,7 @@ object Plot: TPlot
         Font.Style = []
         ParentFont = False
         Layout = tlCenter
+        ExplicitHeight = 13
       end
       object BtnClear: TSpeedButton
         Left = 26
@@ -1386,7 +1391,7 @@ object Plot: TPlot
           Left = 0
           Top = 1
           Width = 48
-          Height = 25
+          Height = 21
           Hint = 'Obs Type'
           Margins.Left = 0
           Margins.Top = 1
@@ -1584,7 +1589,6 @@ object Plot: TPlot
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 2
-      ExplicitWidth = 140
       object BtnAnimate: TSpeedButton
         Left = 0
         Top = 0
@@ -1695,10 +1699,6 @@ object Plot: TPlot
         TabOrder = 0
         TabStop = False
         OnChange = TimeScrollChange
-        ExplicitLeft = 24
-        ExplicitTop = 3
-        ExplicitWidth = 107
-        ExplicitHeight = 16
       end
     end
   end

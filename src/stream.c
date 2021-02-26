@@ -2624,8 +2624,7 @@ extern void strinit(stream_t *stream)
 *                                 STR_TCPCLI   = TCP client
 *                                 STR_NTRIPSVR = NTRIP server
 *                                 STR_NTRIPCLI = NTRIP client
-*                                 STR_NTRIPC_S = NTRIP caster server
-*                                 STR_NTRIPC_C = NTRIP caster client
+*                                 STR_NTRIPCAS = NTRIP caster client
 *                                 STR_UDPSVR   = UDP server (read only)
 *                                 STR_UDPCLI   = UDP client (write only)
 *                                 STR_MEMBUF   = memory buffer (FIFO)

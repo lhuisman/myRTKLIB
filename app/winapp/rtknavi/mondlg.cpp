@@ -457,7 +457,7 @@ void __fastcall TMonitorDialog::ShowRtk(void)
 				  rtk.opt.snrmask.mask[1][3],rtk.opt.snrmask.mask[1][4],rtk.opt.snrmask.mask[1][5],
 				  rtk.opt.snrmask.mask[1][6],rtk.opt.snrmask.mask[1][7],rtk.opt.snrmask.mask[1][8]);
 
-	Tbl->Cells[0][i  ]="SNR Mask L3 (dBHz)";
+	Tbl->Cells[0][i  ]="SNR Mask L5 (dBHz)";
 	Tbl->Cells[1][i++]=!rtk.opt.snrmask.ena[0]?s.sprintf(""):
 		s.sprintf("%.0f, %.0f, %.0f, %.0f, %.0f, %.0f, %.0f, %.0f, %.0f",
 				  rtk.opt.snrmask.mask[2][0],rtk.opt.snrmask.mask[2][1],rtk.opt.snrmask.mask[2][2],

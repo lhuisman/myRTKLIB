@@ -12,9 +12,9 @@ USEFORM("..\appcmn\aboutdlg.cpp", AboutDialog);
 USEFORM("..\appcmn\confdlg.cpp", ConfDialog);
 USEFORM("..\appcmn\freqdlg.cpp", FreqDialog);
 USEFORM("..\appcmn\glofcndlg.cpp", GloFcnDialog);
+USEFORM("startdlg.cpp", StartDialog);
 USEFORM("convmain.cpp", MainWindow);
 USEFORM("convopt.cpp", ConvOptDialog);
-USEFORM("startdlg.cpp", StartDialog);
 //---------------------------------------------------------------------------
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {

@@ -163,14 +163,13 @@ static const char *helptxt[]={
 };
 static const char *pathopts[]={         /* path options help */
     "stream path formats",
-    "serial   : port[:bit_rate[:byte[:parity(n|o|e)[:stopb[:fctr(off|on)]]]]]",
+    "serial   : port[:bit_rate[:byte[:parity(n|o|e)[:stopb[:fctr(off|on)[#port]]]]]]]",
     "file     : path[::T[::+offset][::xspeed]]",
     "tcpsvr   : :port",
     "tcpcli   : addr:port",
-    "ntripsvr : user:passwd@addr:port/mntpnt[:str]",
+    "ntripsvr : [passwd@]addr:port/mntpnt[:str]",
     "ntripcli : user:passwd@addr:port/mntpnt",
-    "ntripc_s : :passwd@:port",
-    "ntripc_c : user:passwd@:port",
+    "ntripcas : user:passwd@:[port]/mpoint[:srctbl]",
     "ftp      : user:passwd@addr/path[::T=poff,tint,off,rint]",
     "http     : addr/path[::T=poff,tint,off,rint]",
     ""
@@ -179,9 +178,9 @@ static const char *pathopts[]={         /* path options help */
 #define TIMOPT  "0:gpst,1:utc,2:jst,3:tow"
 #define CONOPT  "0:dms,1:deg,2:xyz,3:enu,4:pyl"
 #define FLGOPT  "0:off,1:std+2:age/ratio/ns"
-#define ISTOPT  "0:off,1:serial,2:file,3:tcpsvr,4:tcpcli,7:ntripcli,8:ftp,9:http"
-#define OSTOPT  "0:off,1:serial,2:file,3:tcpsvr,4:tcpcli,6:ntripsvr,11:ntripc_c"
-#define FMTOPT  "0:rtcm2,1:rtcm3,2:oem4,3:oem3,4:ubx,5:swiftnav,6:hemis,7:skytraq,8:gw10,9:javad,10:nvs,11:binex,12:rt17,13:sbf,14:cmr,15:tersus,18:sp3"
+#define ISTOPT  "0:off,1:serial,2:file,3:tcpsvr,4:tcpcli,6:ntripcli,7:ftp,8:http"
+#define OSTOPT  "0:off,1:serial,2:file,3:tcpsvr,4:tcpcli,5:ntripsvr,9:ntripcas"
+#define FMTOPT  "0:rtcm2,1:rtcm3,2:oem4,4:ubx,5:swift,6:hemis,7:skytraq,8:javad,9:nvs,10:binex,11:rt17,12:sbf,14,15:sp3"
 #define NMEOPT  "0:off,1:latlon,2:single"
 #define SOLOPT  "0:llh,1:xyz,2:enu,3:nmea,4:stat"
 #define MSGOPT  "0:all,1:rover,2:base,3:corr"
@@ -933,10 +932,10 @@ static void prstream(vt_t *vt)
     };
     const char *type[]={
         "-","serial","file","tcpsvr","tcpcli","udp","ntrips","ntripc","ftp",
-        "http","ntripc_s","ntripc_c"
+        "http","ntripcas"
     };
-    const char *fmt[]={"rtcm2","rtcm3","oem4","oem3","ubx","sbp","hemis","skytreq",
-                       "gw10","javad","nvs","binex","rt17","sbf","cmr","trs","","","sp3",""};
+    const char *fmt[]={"rtcm2","rtcm3","oem4","","ubx","swift","hemis","skytreq",
+                       "javad","nvs","binex","rt17","sbf","","","sp3",""};
     const char *sol[]={"llh","xyz","enu","nmea","stat","-"};
     stream_t stream[9];
     int i,format[9]={0};

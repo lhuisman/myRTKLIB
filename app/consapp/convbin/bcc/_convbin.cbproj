@@ -198,6 +198,9 @@
             <BuildOrder>6</BuildOrder>
             <BuildOrder>13</BuildOrder>
         </CppCompile>
+        <CppCompile Include="..\..\..\..\src\rcv\swiftnav.c">
+            <BuildOrder>24</BuildOrder>
+        </CppCompile>
         <CppCompile Include="..\..\..\..\src\rcv\ublox.c">
             <BuildOrder>7</BuildOrder>
             <BuildOrder>12</BuildOrder>
@@ -410,6 +413,12 @@
                 </DeployFile>
                 <DeployFile LocalName="$(BDS)\Redist\osx32\libcgsqlite3.dylib" Class="DependencyModule">
                     <Platform Name="OSX32">
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="..\..\..\..\src\rcv\swiftnav.c" Configuration="Release" Class="ProjectFile">
+                    <Platform Name="Win64">
+                        <RemoteDir>.\</RemoteDir>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
