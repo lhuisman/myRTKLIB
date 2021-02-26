@@ -247,6 +247,9 @@
         <CppCompile Include="..\..\..\src\rcv\skytraq.c">
             <BuildOrder>10</BuildOrder>
         </CppCompile>
+        <CppCompile Include="..\..\..\src\rcv\swiftnav.c">
+            <BuildOrder>21</BuildOrder>
+        </CppCompile>
         <CppCompile Include="..\..\..\src\rcv\ublox.c">
             <BuildOrder>7</BuildOrder>
         </CppCompile>
@@ -479,6 +482,12 @@
                 </DeployFile>
                 <DeployFile LocalName="..\..\..\src\geoid.c" Configuration="Release" Class="ProjectFile">
                     <Platform Name="Win32">
+                        <RemoteDir>.\</RemoteDir>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="..\..\..\src\rcv\swiftnav.c" Configuration="Release" Class="ProjectFile">
+                    <Platform Name="Win64">
                         <RemoteDir>.\</RemoteDir>
                         <Overwrite>true</Overwrite>
                     </Platform>
