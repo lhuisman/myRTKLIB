@@ -57,7 +57,6 @@ __published:
 	TCheckBox *Nav5;
 	TComboBox *TraceLevel;
 	TLabel *Label3;
-	TCheckBox *Freq5;
 	TLabel *Label8;
 	TEdit *RcvOption;
 	TLabel *Label9;

@@ -205,6 +205,41 @@ static int ubx_sig(int sys, int sigid)
     }
     return CODE_NONE;
 }
+/* UBX SigId to signal - combine codes ------------------------*/
+static int ubx_sig_combined(int sys, int sigid)
+{
+    if (sys == SYS_GPS) {
+        if (sigid == 0) return CODE_L1C; /* L1C/A */
+        if (sigid==3) return CODE_L2X; /* L2CL */
+        if (sigid==4) return CODE_L2X; /* L2CM */
+    }
+    else if (sys == SYS_GLO) {
+        if (sigid == 0) return CODE_L1C; /* G1C/A (GLO L1 OF) */
+        if (sigid == 2) return CODE_L2C; /* G2C/A (GLO L2 OF) */
+    }
+    else if (sys == SYS_GAL) {
+        if (sigid==0) return CODE_L1X; /* E1C */
+        if (sigid==1) return CODE_L1X; /* E1B */
+        if (sigid==5) return CODE_L7X; /* E5bI */
+        if (sigid==6) return CODE_L7X; /* E5bQ */
+    }
+    else if (sys == SYS_QZS) {
+        if (sigid == 0) return CODE_L1C; /* L1C/A */
+        if (sigid==1) return CODE_L1C; /* L1S */
+        if (sigid==4) return CODE_L2X; /* L2CM */
+        if (sigid==5) return CODE_L2X; /* L2CL */
+    }
+    else if (sys == SYS_CMP) {
+        if (sigid==0) return CODE_L2I; /* B1I D1 */
+        if (sigid==1) return CODE_L2I; /* B1I D2 */
+        if (sigid == 2) return CODE_L7I; /* B2I D1 */
+        if (sigid == 3) return CODE_L7I; /* B2I D2 */
+    }
+    else if (sys == SYS_SBS) {
+        if (sigid==0) return CODE_L1C; /* L1C/A */
+    }
+    return CODE_NONE;
+}
 /* signal index in obs data --------------------------------------------------*/
 static int sig_idx(int sys, uint8_t code)
 {
@@ -308,6 +343,7 @@ static int decode_rxmrawx(raw_t *raw)
     double tow,P,L,D,tn,tadj=0.0,toff=0.0;
     int i,j,k,idx,sys,prn,sat,code,slip,halfv,halfc,LLI,n=0,cpstd_valid,cpstd_slip;
     int week,nmeas,ver,gnss,svid,sigid,frqid,lockt,cn0,cpstd,prstd,tstat;
+    int multicode=0;
 
     trace(4,"decode_rxmrawx: len=%d\n",raw->len);
     
@@ -347,6 +383,8 @@ static int decode_rxmrawx(raw_t *raw)
     if ((q=strstr(raw->opt,"-STD_SLIP="))) {
         sscanf(q,"-STD_SLIP=%d",&cpstd_slip);
     } else cpstd_slip=CPSTD_SLIP;
+    /* use multiple codes for each freq (-MULTICODE) */
+    if ((q=strstr(raw->opt,"-MULTICODE"))) multicode=1;
 
     /* time tag adjustment */
     if (tadj>0.0) {
@@ -387,8 +425,11 @@ static int decode_rxmrawx(raw_t *raw)
             raw->nav.glo_fcn[prn-1]=frqid-7+8;
         }
         if (ver>=1) {
-            code=ubx_sig(sys,sigid);
-            }
+            if (multicode)
+                code=ubx_sig(sys,sigid);
+            else
+                code=ubx_sig_combined(sys,sigid);
+        }
         else {
             code=(sys==SYS_CMP)?CODE_L2I:((sys==SYS_GAL)?CODE_L1X:CODE_L1C);
         }
