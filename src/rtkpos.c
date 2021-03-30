@@ -1320,7 +1320,7 @@ static int ddres(rtk_t *rtk, const nav_t *nav, const obsd_t *obs, double dt, con
                 trace(3,"sat=%3d-%3d %s%d v=%13.3f R=%9.6f %9.6f icb=%9.3f lock=%5d x=%9.3f\n",sat[i],
                         sat[j],code?"P":"L",frq+1,v[nv],Ri[nv],Rj[nv],icb,
                         rtk->ssat[sat[j]-1].lock[frq],rtk->x[IB(sat[j],frq,&rtk->opt)]);
-            
+
                 vflg[nv++]=(sat[i]<<16)|(sat[j]<<8)|((code?1:0)<<4)|(frq);
                 nb[b]++;
             }
@@ -1384,7 +1384,7 @@ static double intpres(gtime_t time, const obsd_t *obs, int n, const nav_t *nav,
 /* index for single to double-difference transformation matrix (D') --------------------*/
 static int ddidx(rtk_t *rtk, int *ix, int gps, int glo, int sbs)
 {
-    int i,j,k,m,f,nb=0,na=rtk->na,nf=NF(&rtk->opt),nofix;
+    int i,j,k,m,f,n,nb=0,na=rtk->na,nf=NF(&rtk->opt),nofix;
     double fix[MAXSAT],ref[MAXSAT];
     
     trace(3,"ddmat: gps=%d/%d glo=%d/%d sbs=%d\n",gps,rtk->opt.gpsmodear,glo,rtk->opt.glomodear,sbs);
@@ -1419,7 +1419,7 @@ static int ddidx(rtk_t *rtk, int *ix, int gps, int glo, int sbs)
             }
             if (rtk->ssat[i-k].fix[f]!=2) continue;  /* no good sat found */
             /* step through all sats (j=state index, j-k=sat index, i-k=first good sat) */
-            for (j=k;j<k+MAXSAT;j++) {
+            for (n=0,j=k;j<k+MAXSAT;j++) {
                 if (i==j||rtk->x[j]==0.0||!test_sys(rtk->ssat[j-k].sys,m)||
                     !rtk->ssat[j-k].vsat[f]) {
                     continue;
@@ -1435,10 +1435,13 @@ static int ddidx(rtk_t *rtk, int *ix, int gps, int glo, int sbs)
                     ref[nb]=i-k+1;
                     fix[nb++]=j-k+1;
                     rtk->ssat[j-k].fix[f]=2; /* fix */
+                    n++; /* count # of sat pairs for this freq/constellation */
                 }
                 /* else don't use this sat for fixing ambiguity */
                 else rtk->ssat[j-k].fix[f]=1;
             }
+            /* don't use ref sat if no sat pairs */
+            if (n==0) rtk->ssat[i-k].fix[f]=1;
         }
     }
 
@@ -1583,7 +1586,7 @@ static int resamb_LAMBDA(rtk_t *rtk, double *bias, double *xa,int gps,int glo,in
     int *ix;
     double var=0;
     double QQb[MAXSAT];
-        
+
     trace(3,"resamb_LAMBDA : nx=%d\n",nx);
     
     rtk->sol.ratio=0.0;
@@ -1692,7 +1695,7 @@ static int resamb_LAMBDA(rtk_t *rtk, double *bias, double *xa,int gps,int glo,in
         nb=0;
     }
     free(ix);
-    free(y); free(DP); free(b); free(db); free(Qb); free(Qab); free(QQ);
+    free(y); free(DP); free(b); free(db); free(Qb); free(Qab); free(QQ); free(Qbb);
     
     return nb; /* number of ambiguities */
 }

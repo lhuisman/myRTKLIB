@@ -24,7 +24,7 @@ static double str2dbl(AnsiString str)
 __fastcall TPntDialog::TPntDialog(TComponent* Owner)
 	: TForm(Owner)
 {
-	PntList->RowCount=1;
+	PntList->RowCount=MAXWAYPNT;
 }
 //---------------------------------------------------------------------------
 void __fastcall TPntDialog::FormShow(TObject *Sender)
@@ -114,7 +114,6 @@ void __fastcall TPntDialog::SetPoint(void)
 		PntList->Cells[2][i]=s.sprintf("%.4f",Plot->PntPos[i][2]);
 		PntList->Cells[3][i]=Plot->PntName[i];
 	}
-	PntList->RowCount=Plot->NWayPnt;
 }
 //---------------------------------------------------------------------------
 void __fastcall TPntDialog::PntListClick(TObject *Sender)

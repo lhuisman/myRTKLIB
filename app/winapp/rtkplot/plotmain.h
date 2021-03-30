@@ -22,7 +22,7 @@
 
 #define MAXNFILE    256                 // max number of solution files
 #define MAXSTRBUFF  1024                // max length of stream buffer
-#define MAXWAYPNT   4096                // max number of waypoints
+#define MAXWAYPNT   99                  // max number of waypoints
 #define MAXMAPPATH  4096                // max number of map paths
 #define MAXMAPLAYER 12                  // max number of map layers
 
