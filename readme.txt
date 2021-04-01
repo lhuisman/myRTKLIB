@@ -14,3 +14,5 @@ GUIs:
 CUIs:
 1) Build executables with app/consapp/rtklib_consapp.groupproj project file 
 2) Install executables to ../RTKLIB/bin by runnning app/consapp/install_consapp.bat
+
+The Qt files for building linux GUIs are still included in the repository but are out of date and no longer build.
