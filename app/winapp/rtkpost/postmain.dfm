@@ -16,7 +16,6 @@ object MainForm: TMainForm
   Font.Style = []
   OldCreateOrder = False
   Position = poScreenCenter
-  Scaled = False
   OnClose = FormClose
   OnCreate = FormCreate
   OnShow = FormShow

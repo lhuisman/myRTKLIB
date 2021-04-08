@@ -96,7 +96,6 @@ __published:
 	TBitBtn *BtnToKML;
 	TBitBtn *BtnExit;
 	TLabel *Debug;
-	TPanel *Panel6;
 	
 	void __fastcall FormCreate         (TObject *Sender);
 	void __fastcall FormShow           (TObject *Sender);

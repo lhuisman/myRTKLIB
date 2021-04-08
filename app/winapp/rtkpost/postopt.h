@@ -214,7 +214,6 @@ __published:
 	TCheckBox *PosOpt5;
 	TComboBox *SyncSol;
 	TComboBox *BdsAmbRes;
-	TEdit *ARIter;
 	TCheckBox *PosOpt6;
 	TLabel *Label23;
 	TEdit *PPPOpts;

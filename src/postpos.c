@@ -396,8 +396,8 @@ static void procpos(FILE *fp, FILE *fptm, const prcopt_t *popt, const solopt_t *
     solstatic=sopt->solstatic&&
               (popt->mode==PMODE_STATIC||popt->mode==PMODE_STATIC_START||popt->mode==PMODE_PPP_STATIC);
     
-    /* initialize unless running backwards on a combined run with continuous AR in which case keep the current states */
-    if (mode==0 || !revs || popt->modear==ARMODE_FIXHOLD)
+    /* initialize unless running backwards on a combined run with phase reset disabled */
+    if (mode==0 || !revs || popt->soltype==2)
         rtkinit(rtk,popt);
     
     rtcm_path[0]='\0';

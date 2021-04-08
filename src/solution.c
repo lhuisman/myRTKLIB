@@ -1430,7 +1430,7 @@ extern int outprcopts(uint8_t *buff, const prcopt_t *opt)
         "L1","L1+L2/E5b","L1+L2/E5b+L5","L1+L2/E5b+L5+L6","L1+2+3+4+5","L1+2+3+4+5+6","","",""
     };
     const char *s3[]={
-        "Forward","Backward","Combined","","",""
+        "Forward","Backward","Combined-Phase Reset","Combined-No Phase Reset","",""
     };
     const char *s4[]={
         "OFF","Broadcast","SBAS","Iono-Free LC","Estimate TEC","IONEX TEC",

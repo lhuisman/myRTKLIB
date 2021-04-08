@@ -214,7 +214,6 @@ __published:
 	TComboBox *PanelStackE;
 	TComboBox *BdsAmbRes;
 	TCheckBox *PosOpt6;
-	TEdit *ARIter;
 	TLabel *LabelMaxAveEp;
 	TEdit *MaxAveEp;
 	TCheckBox *ChkInitRestart;
@@ -242,6 +241,7 @@ __published:
 	TComboBox *ObsWeightMode;
 	TLabel *Label53;
 	TEdit *Edit1;
+    TEdit *ARIter;
 	void __fastcall BtnOkClick(TObject *Sender);
 	void __fastcall RovAntPcvClick(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);

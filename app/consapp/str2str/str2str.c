@@ -63,7 +63,7 @@ static const char *help[]={
 " -out stream[#format] output stream path and format",
 "",
 "  stream path",
-"    serial       : serial://port[:brate[:bsize[:parity[:stopb[:fctr]]]]]",
+"    serial       : serial://port[:brate[:bsize[:parity[:stopb[:fctr]]]]][#tcp_port]",
 "    tcp server   : tcpsvr://:port",
 "    tcp client   : tcpcli://addr[:port]",
 "    ntrip client : ntrip://[user[:passwd]@]addr[:port][/mntpnt]",

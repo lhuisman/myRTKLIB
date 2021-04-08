@@ -486,9 +486,9 @@ object OptDialog: TOptDialog
       object Label37: TLabel
         Left = 24
         Top = 193
-        Width = 155
+        Width = 69
         Height = 13
-        Caption = 'Max # of AR Iter/# of Filter Iter'
+        Caption = '# of Filter Iter'
       end
       object Label54: TLabel
         Left = 24
@@ -591,11 +591,11 @@ object OptDialog: TOptDialog
         Text = '30'
       end
       object NumIter: TEdit
-        Left = 325
-        Top = 188
+        Left = 248
+        Top = 193
         Width = 75
-        Height = 21
-        TabOrder = 12
+        Height = 13
+        TabOrder = 11
         Text = '1'
       end
       object GloAmbRes: TComboBox
@@ -620,7 +620,7 @@ object OptDialog: TOptDialog
         Width = 181
         Height = 17
         Caption = 'Baseline Length Constraint (m)'
-        TabOrder = 13
+        TabOrder = 12
         OnClick = BaselineConstClick
       end
       object BaselineLen: TEdit
@@ -628,7 +628,7 @@ object OptDialog: TOptDialog
         Top = 210
         Width = 75
         Height = 21
-        TabOrder = 14
+        TabOrder = 13
         Text = '0.000'
       end
       object BaselineSig: TEdit
@@ -636,7 +636,7 @@ object OptDialog: TOptDialog
         Top = 209
         Width = 75
         Height = 21
-        TabOrder = 15
+        TabOrder = 14
         Text = '0.000'
       end
       object FixCntHoldAmb: TEdit
@@ -644,7 +644,7 @@ object OptDialog: TOptDialog
         Top = 96
         Width = 75
         Height = 21
-        TabOrder = 16
+        TabOrder = 15
         Text = '10'
       end
       object ElMaskHold: TEdit
@@ -652,7 +652,7 @@ object OptDialog: TOptDialog
         Top = 96
         Width = 75
         Height = 21
-        TabOrder = 17
+        TabOrder = 16
         Text = '10'
       end
       object RejectGdop: TEdit
@@ -684,27 +684,19 @@ object OptDialog: TOptDialog
         Height = 21
         Style = csDropDownList
         ItemIndex = 0
-        TabOrder = 18
+        TabOrder = 17
         Text = 'OFF'
         OnChange = AmbResChange
         Items.Strings = (
           'OFF'
           'ON')
       end
-      object ARIter: TEdit
-        Left = 248
-        Top = 188
-        Width = 75
-        Height = 21
-        TabOrder = 11
-        Text = '1'
-      end
       object MinFixSats: TEdit
         Left = 248
         Top = 232
         Width = 75
         Height = 21
-        TabOrder = 19
+        TabOrder = 18
         Text = '3'
       end
       object MinHoldSats: TEdit
@@ -712,7 +704,7 @@ object OptDialog: TOptDialog
         Top = 232
         Width = 75
         Height = 21
-        TabOrder = 20
+        TabOrder = 19
         Text = '5'
       end
       object ARFilter: TComboBox
@@ -722,7 +714,7 @@ object OptDialog: TOptDialog
         Height = 21
         Style = csDropDownList
         ItemIndex = 0
-        TabOrder = 21
+        TabOrder = 20
         Text = 'OFF'
         OnChange = AmbResChange
         Items.Strings = (
@@ -734,7 +726,7 @@ object OptDialog: TOptDialog
         Top = 278
         Width = 75
         Height = 21
-        TabOrder = 22
+        TabOrder = 21
         Text = '0.1'
       end
       object RcvStds: TComboBox
@@ -744,7 +736,7 @@ object OptDialog: TOptDialog
         Height = 21
         Style = csDropDownList
         ItemIndex = 0
-        TabOrder = 23
+        TabOrder = 22
         Text = 'OFF'
         OnChange = AmbResChange
         Items.Strings = (
@@ -756,7 +748,7 @@ object OptDialog: TOptDialog
         Top = 255
         Width = 75
         Height = 21
-        TabOrder = 24
+        TabOrder = 23
         Text = '20'
       end
       object VarHoldAmb: TEdit
@@ -764,7 +756,7 @@ object OptDialog: TOptDialog
         Top = 301
         Width = 75
         Height = 21
-        TabOrder = 25
+        TabOrder = 24
         Text = '0.001'
       end
       object GainHoldAmb: TEdit
@@ -772,7 +764,7 @@ object OptDialog: TOptDialog
         Top = 301
         Width = 75
         Height = 21
-        TabOrder = 26
+        TabOrder = 25
         Text = '0.01'
       end
       object GloHwBias: TEdit
@@ -782,8 +774,16 @@ object OptDialog: TOptDialog
         Height = 21
         ParentShowHint = False
         ShowHint = True
-        TabOrder = 27
+        TabOrder = 26
         Text = '0.0'
+      end
+      object ARIter: TEdit
+        Left = 248
+        Top = 188
+        Width = 75
+        Height = 21
+        TabOrder = 27
+        Text = '1'
       end
     end
     object TabSheet3: TTabSheet
