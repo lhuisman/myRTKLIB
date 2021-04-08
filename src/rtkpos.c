@@ -116,7 +116,7 @@ static gtime_t time_stat={0};    /* rtk status file time */
 *          velef/velnf/veluf : velocity e/n/u (m/s) fixed
 *          accef/accnf/accuf : acceleration e/n/u (m/s^2) fixed
 *
-*   $CLK,week,tow,stat,clk1,clk2,clk3,clk4
+*   $CLK,week,tow,stat,clk1,clk2,clk3,clk4,cmn_bias
 *          week/tow : gps week no/time of week (s)
 *          stat     : solution status
 *          clk1     : receiver clock bias GPS (ns)
@@ -147,7 +147,7 @@ static gtime_t time_stat={0};    /* rtk status file time */
 *          bias     : h/w bias coefficient (m/MHz) float
 *          biasf    : h/w bias coefficient (m/MHz) fixed
 *
-*   $SAT,week,tow,sat,frq,az,el,resp,resc,vsat,snr,fix,slip,lock,outc,slipc,rejc
+*   $SAT,week,tow,sat,frq,az,el,resp,resc,vsat,snr,fix,slip,lock,outc,slipc,rejc,icbias,bias,bias_var,lambda
 *          week/tow : gps week no/time of week (s)
 *          sat/frq  : satellite id/frequency (1:L1,2:L2,...)
 *          az/el    : azimuth/elevation angle (deg)
@@ -162,7 +162,7 @@ static gtime_t time_stat={0};    /* rtk status file time */
 *          slipc    : cycle-slip count
 *          rejc     : data reject (outlier) count
 *          icbias   : interchannel bias (GLONASS)
-*          bias     : phase bias 
+*          bias     : phase bias
 *          bias_var : variance of phase bias
 *          lambda   : wavelength
 *

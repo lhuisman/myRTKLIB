@@ -110,7 +110,8 @@ typedef enum { false, true } bool;
 
 #define P2_10       0.0009765625 /* 2^-10 */
 
-#define MAX_CPSTD_VALID 5       /* max std-dev for valid carrier-phase  */
+#define MAX_CPSTD_VALID_GEN8 5       /* max std-dev for valid carrier-phase  */
+#define MAX_CPSTD_VALID_GEN9 8       /* max std-dev for valid carrier-phase  */
 #define CPSTD_SLIP 15           /* std-dev threshold for slip */
 
 #define ROUND(x)    (int)floor((x)+0.5)
@@ -378,7 +379,10 @@ static int decode_rxmrawx(raw_t *raw)
     /* max valid std-dev of carrier-phase (-MAX_STD_CP) */
     if ((q=strstr(raw->opt,"-MAX_STD_CP="))) {
         sscanf(q,"-MAX_STD_CP=%d",&cpstd_valid);
-    } else cpstd_valid=MAX_CPSTD_VALID;
+    } 
+    else if (ver>=1) cpstd_valid=MAX_CPSTD_VALID_GEN9;  /* F9P */
+    else cpstd_valid=MAX_CPSTD_VALID_GEN8;  /* M8T, M8P */
+
     /* slip threshold of std-dev of carrier-phase (-STD_SLIP) */
     if ((q=strstr(raw->opt,"-STD_SLIP="))) {
         sscanf(q,"-STD_SLIP=%d",&cpstd_slip);

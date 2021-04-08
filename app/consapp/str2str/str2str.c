@@ -76,7 +76,7 @@ static const char *help[]={
 "    rtcm3        : RTCM 3",
 "    nov          : NovAtel OEMV/4/6,OEMStar (only in)",
 "    cnav         : ComNav (only in)",
-"    ubx          : ublox LEA-4T/5T/6T (only in)",
+"    ubx          : ublox LEA-4T/5T/6T/8/9 (only in)",
 "    swiftnav     : SwiftNav Piksi Multi",
 "    hemis        : Hemisphere Eclipse/Crescent (only in)",
 "    stq          : SkyTraq S1315F (only in)",
