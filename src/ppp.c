@@ -507,7 +507,7 @@ static void detslp_mw(rtk_t *rtk, const obsd_t *obs, int n, const nav_t *nav)
 /* temporal update of position -----------------------------------------------*/
 static void udpos_ppp(rtk_t *rtk)
 {
-    double *F,*P,*FP,*x,*xp,pos[3],Q[9]={0},Qv[9],var=0.0;;
+    double *F,*P,*FP,*x,*xp,pos[3],Q[9]={0},Qv[9],var=0.0;
     int i,j,*ix,nx;
     
     trace(3,"udpos_ppp:\n");

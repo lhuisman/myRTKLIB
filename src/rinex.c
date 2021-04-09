@@ -233,11 +233,19 @@ static double sisa_value(int sisa)
 /* Galileo SISA value (m) to SISA index --------------------------------------*/
 static int sisa_index(double value)
 {
+    /* 
+     * kudos to https://core.ac.uk/download/pdf/328854682.pdf for this ...
+     * Signal-in-Space Accuracy : SISA flag is a prediction at 1-sigma standard deviation of the quality of
+     * the transmitted signal.The flag can take values from 0 to 255. The transmitted standard index is 107 that
+     * corresponds to a SISA value of 3.12m.If the prediction is not available, the transmitted index is 255 and
+     * corresponds to No Accurate Prediction Available(NAPA).NAPA is an indicator of a potential anomalous
+     * signal-in-space[6].Please notice that SISA flag refers to the dual-frequency signal combinations.
+     */
     if (value<0.0 || value>6.0) return 255; /* unknown or NAPA */
     else if (value<=0.5) return (int)(value/0.01);
     else if (value<=1.0) return (int)((value-0.5)/0.02)+50;
     else if (value<=2.0) return (int)((value-1.0)/0.04)+75;
-    return ((int)(value-2.0)/0.16)+100;
+    return (int)((value-2.0)/0.16)+100;
 }
 /* initialize station parameter ----------------------------------------------*/
 static void init_sta(sta_t *sta)
@@ -700,7 +708,7 @@ static int decode_obsepoch(FILE *fp, char *buff, double ver, gtime_t *time,
                            int *flag, int *sats)
 {
     int i,j,n;
-    char satid[8]="";
+    char satid[8]={'\0'};
     
     trace(4,"decode_obsepoch: ver=%.2f\n",ver);
     
@@ -2351,6 +2359,7 @@ extern int outrnxobsb(FILE *fp, const rnxopt_t *opt, const obsd_t *obs, int n,
         }
 
         /* set trace level to 1 generate CSV file of raw observations   */
+#ifdef TRACE
         if (gettracelevel()==1) {
             trace(1,",%16.2f,%3d,%13.2f,%13.2f,%9.2f,%2.0f,%1d,%1d,%13.2f,%13.2f,%9.2f,%2.0f,%1d,%1d\n",
                 obs[0].time.time + obs[0].time.sec, obs[ind[i]].sat,
@@ -2359,6 +2368,7 @@ extern int outrnxobsb(FILE *fp, const rnxopt_t *opt, const obsd_t *obs, int n,
                 obs[ind[i]].P[1], obs[ind[i]].L[1], obs[ind[i]].D[1],
                 obs[ind[i]].SNR[1]*0.25, obs[ind[i]].LLI[1], obs[ind[i]].qualL[1]);
         }
+#endif
 
         if (opt->rnxver>=300&&fprintf(fp,"\n")==EOF) return 0;
     }

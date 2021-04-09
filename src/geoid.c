@@ -50,7 +50,7 @@ static double geoidh_emb(const double *pos)
 /* get 2 byte signed integer from file ---------------------------------------*/
 static int16_t fget2b(FILE *fp, int32_t off)
 {
-    uint8_t v[2];
+    uint8_t v[2]={0x00};
     if (fseek(fp,off,SEEK_SET)==EOF||fread(v,2,1,fp)<1) {
         trace(2,"geoid data file range error: off=%ld\n",off);
     }
