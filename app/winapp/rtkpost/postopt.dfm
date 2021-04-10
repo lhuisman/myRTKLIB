@@ -256,13 +256,11 @@ object OptDialog: TOptDialog
         Width = 152
         Height = 21
         Style = csDropDownList
-        ItemIndex = 0
         TabOrder = 2
-        Text = 'Forward'
         Items.Strings = (
           'Forward'
           'Backward'
-          'Combined - phase reset'
+          'Combined'
           'Combined - no phase reset')
       end
       object SatEphem: TComboBox
