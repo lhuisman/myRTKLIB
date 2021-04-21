@@ -82,6 +82,24 @@ void __fastcall TPlot::ShowLegend(UTF8String *msgs)
         }
     }
 }
+// show observation legand in status-bar ------------------------------------------------
+void __fastcall TPlot::ShowObsLegend(UTF8String *msgs)
+{
+    TLabel *ql[]={QL1,QL2,QL3,QL4,QL5,QL6,QL7};
+    int i,sel=!BtnSol1->Down&&BtnSol2->Down?1:0;
+
+    trace(3,"ShowLegend\n");
+
+    for (i=0;i<7;i++) {
+        if (!msgs||msgs[i]=="") {
+            ql[i]->Caption=" "; ql[i]->Width=1;
+        }
+        else {
+            ql[i]->Caption=msgs[i];
+            ql[i]->Font->Color=MColor[sel][3+i-(i>2?5:0)];
+        }
+    }
+}
 // get current cursor position ----------------------------------------------
 int __fastcall TPlot::GetCurrentPos(double *rr)
 {
@@ -317,7 +335,7 @@ TColor __fastcall TPlot::ObsColor(const obsd_t *obs, double az, double el)
         if (n==0) {
             return clBlack;
         }
-        color=MColor[0][6-n];
+        color=MColor[0][3-n+(n>2?5:0)];
     }
     else if (sscanf(obstype,"L%1d",&freq)==1) {
         freq-=freq>2?2:0;  /* L1,L2,L5,L6 ... */

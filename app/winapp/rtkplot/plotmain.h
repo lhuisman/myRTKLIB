@@ -544,6 +544,7 @@ private:
     int  __fastcall ExecCmd      (AnsiString cmd);
     void __fastcall ShowMsg      (UTF8String msg);
     void __fastcall ShowLegend   (UTF8String *msgs);
+    void __fastcall ShowObsLegend (UTF8String *msgs);
     void __fastcall LoadOpt      (void);
     void __fastcall SaveOpt      (void);
     

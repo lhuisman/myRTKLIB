@@ -74,7 +74,8 @@ void __fastcall TPlot::UpdateTimeObs(void)
         }
     }
     ShowMsg(msg);
-    ShowLegend(msgs);
+    if (msgs[0]==msgs1[0]) ShowObsLegend(msgs);
+    else ShowLegend(msgs);
 }
 // update time-information for solution plot --------------------------------
 void __fastcall TPlot::UpdateTimeSol(void)
@@ -172,7 +173,8 @@ void __fastcall TPlot::UpdateInfoObs(void)
         }
     }
     ShowMsg(msg);
-    ShowLegend(msgs);
+    if (msgs[0]==msgs1[0]) ShowObsLegend(msgs);
+    else ShowLegend(msgs);
 }
 // update statistics-information for solution plot --------------------------
 void __fastcall TPlot::UpdateInfoSol(void)
