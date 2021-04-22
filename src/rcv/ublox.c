@@ -178,6 +178,8 @@ static int ubx_sig(int sys, int sigid)
         if (sigid == 0) return CODE_L1C; /* L1C/A */
         if (sigid==3) return CODE_L2L; /* L2CL */
         if (sigid==4) return CODE_L2S; /* L2CM */
+        if (sigid==6) return CODE_L5I; /* L5I */
+        if (sigid==7) return CODE_L5Q; /* L5Q */
     }
     else if (sys == SYS_GLO) {
         if (sigid == 0) return CODE_L1C; /* G1C/A (GLO L1 OF) */
@@ -186,20 +188,25 @@ static int ubx_sig(int sys, int sigid)
     else if (sys == SYS_GAL) {
         if (sigid==0) return CODE_L1C; /* E1C */
         if (sigid==1) return CODE_L1B; /* E1B */
+        if (sigid==3) return CODE_L5I; /* E5aI */
+        if (sigid==4) return CODE_L5Q; /* E5aQ */
         if (sigid==5) return CODE_L7I; /* E5bI */
         if (sigid==6) return CODE_L7Q; /* E5bQ */
     }
     else if (sys == SYS_QZS) {
-        if (sigid == 0) return CODE_L1C; /* L1C/A */
+        if (sigid==0) return CODE_L1C; /* L1C/A */
         if (sigid==1) return CODE_L1Z; /* L1S */
         if (sigid==4) return CODE_L2S; /* L2CM */
         if (sigid==5) return CODE_L2L; /* L2CL */
+        if (sigid==8) return CODE_L5I; /* L5I */
+        if (sigid==9) return CODE_L5Q; /* L5Q */
     }
     else if (sys == SYS_CMP) {
         if (sigid==0) return CODE_L2I; /* B1I D1 */
         if (sigid==1) return CODE_L2I; /* B1I D2 */
         if (sigid == 2) return CODE_L7I; /* B2I D1 */
         if (sigid == 3) return CODE_L7I; /* B2I D2 */
+        if (sigid == 7) return CODE_L5X; /* B2a */
     }
     else if (sys == SYS_SBS) {
         if (sigid==0) return CODE_L1C; /* L1C/A */
@@ -213,6 +220,8 @@ static int ubx_sig_combined(int sys, int sigid)
         if (sigid == 0) return CODE_L1C; /* L1C/A */
         if (sigid==3) return CODE_L2X; /* L2CL */
         if (sigid==4) return CODE_L2X; /* L2CM */
+        if (sigid==6) return CODE_L5X; /* L5I */
+        if (sigid==7) return CODE_L5X; /* L5Q */
     }
     else if (sys == SYS_GLO) {
         if (sigid == 0) return CODE_L1C; /* G1C/A (GLO L1 OF) */
@@ -221,20 +230,25 @@ static int ubx_sig_combined(int sys, int sigid)
     else if (sys == SYS_GAL) {
         if (sigid==0) return CODE_L1X; /* E1C */
         if (sigid==1) return CODE_L1X; /* E1B */
+        if (sigid==3) return CODE_L5X; /* E5aI */
+        if (sigid==4) return CODE_L5X; /* E5aQ */
         if (sigid==5) return CODE_L7X; /* E5bI */
         if (sigid==6) return CODE_L7X; /* E5bQ */
-    }
+        }
     else if (sys == SYS_QZS) {
         if (sigid == 0) return CODE_L1C; /* L1C/A */
         if (sigid==1) return CODE_L1C; /* L1S */
         if (sigid==4) return CODE_L2X; /* L2CM */
         if (sigid==5) return CODE_L2X; /* L2CL */
+        if (sigid==8) return CODE_L5X; /* L5I */
+        if (sigid==9) return CODE_L5X; /* L5Q */
     }
     else if (sys == SYS_CMP) {
         if (sigid==0) return CODE_L2I; /* B1I D1 */
         if (sigid==1) return CODE_L2I; /* B1I D2 */
         if (sigid == 2) return CODE_L7I; /* B2I D1 */
         if (sigid == 3) return CODE_L7I; /* B2I D2 */
+        if (sigid == 7) return CODE_L5X; /* B2a */
     }
     else if (sys == SYS_SBS) {
         if (sigid==0) return CODE_L1C; /* L1C/A */

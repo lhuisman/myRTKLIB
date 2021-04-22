@@ -925,7 +925,7 @@ static int ppp_res(int post, const obsd_t *obs, int n, const double *rs,
     double ve[MAXOBS*2*NFREQ]={0},vmax=0;
     char str[32];
     int ne=0,obsi[MAXOBS*2*NFREQ]={0},frqi[MAXOBS*2*NFREQ],maxobs,maxfrq,rej;
-    int i,j,k,sat,sys,nv=0,nx=rtk->nx,stat=1;
+    int i,j,k,sat,sys,nv=0,nx=rtk->nx,nf = NF(opt),stat=1,frq,code;
     
     time2str(obs[0].time,str,2);
     
@@ -967,17 +967,19 @@ static int ppp_res(int post, const obsd_t *obs, int n, const double *rs,
         
         /* stack phase and code residuals {L1,P1,L2,P2,...} */
         for (j=0;j<2*NF(opt);j++) {
-            
+
             dcb=bias=0.0;
+            code=j%2; /* 0=phase, 1=code */
+            frq=j/2;
             
             if (opt->ionoopt==IONOOPT_IFLC) {
-                if ((y=j%2==0?Lc:Pc)==0.0) continue;
+                if ((y=code==0?Lc:Pc)==0.0) continue;
             }
             else {
-                if ((y=j%2==0?L[j/2]:P[j/2])==0.0) continue;
+                if ((y=code==0?L[frq]:P[frq])==0.0) continue;
                 
-                if ((freq=sat2freq(sat,obs[i].code[j/2],nav))==0.0) continue;
-                C=SQR(FREQL1/freq)*ionmapf(pos,azel+i*2)*(j%2==0?-1.0:1.0);
+                if ((freq=sat2freq(sat,obs[i].code[frq],nav))==0.0) continue;
+                C=SQR(FREQL1/freq)*ionmapf(pos,azel+i*2)*(code==0?-1.0:1.0);
             }
             for (k=0;k<nx;k++) H[k+nx*nv]=k<3?-e[k]:0.0;
             
@@ -1001,41 +1003,41 @@ static int ppp_res(int post, const obsd_t *obs, int n, const double *rs,
                 if (rtk->x[II(sat,opt)]==0.0) continue;
                 H[II(sat,opt)+nx*nv]=C;
             }
-            if (j/2==2&&j%2==1) { /* L5-receiver-dcb */
+            if (frq==2&&code==1) { /* L5-receiver-dcb */
                 dcb+=rtk->x[ID(opt)];
                 H[ID(opt)+nx*nv]=1.0;
             }
-            if (j%2==0) { /* phase bias */
-                if ((bias=x[IB(sat,j/2,opt)])==0.0) continue;
-                H[IB(sat,j/2,opt)+nx*nv]=1.0;
+            if (code==0) { /* phase bias */
+                if ((bias=x[IB(sat,frq,opt)])==0.0) continue;
+                H[IB(sat,frq,opt)+nx*nv]=1.0;
             }
             /* residual */
             v[nv]=y-(r+cdtr-CLIGHT*dts[i*2]+dtrp+C*dion+dcb+bias);
             
-            if (j%2==0) rtk->ssat[sat-1].resc[j/2]=v[nv];
-            else        rtk->ssat[sat-1].resp[j/2]=v[nv];
+            if (code==0) rtk->ssat[sat-1].resc[frq]=v[nv];  /* carrier phase */
+            else        rtk->ssat[sat-1].resp[frq]=v[nv];   /* pseudorange */
             
             /* variance */
             var[nv]=varerr(obs[i].sat,sys,azel[1+i*2],
-                    SNR_UNIT*rtk->ssat[sat-1].snr_rover[j/2],
-                    j/2,j%2,opt)+vart+SQR(C)*vari+var_rs[i];
-            if (sys==SYS_GLO&&j%2==1) var[nv]+=VAR_GLO_IFB;
+                    SNR_UNIT*rtk->ssat[sat-1].snr_rover[frq],
+                    frq,code,opt)+vart+SQR(C)*vari+var_rs[i];
+            if (sys==SYS_GLO&&code==1) var[nv]+=VAR_GLO_IFB;
             
             trace(3,"%s sat=%2d %s%d res=%9.4f sig=%9.4f el=%4.1f\n",str,sat,
-                  j%2?"P":"L",j/2+1,v[nv],sqrt(var[nv]),azel[1+i*2]*R2D);
+                  code?"P":"L",frq+1,v[nv],sqrt(var[nv]),azel[1+i*2]*R2D);
             
             /* reject satellite by pre-fit residuals */
             if (!post&&opt->maxinno>0.0&&fabs(v[nv])>opt->maxinno) {
                 trace(2,"outlier (%d) rejected %s sat=%2d %s%d res=%9.4f el=%4.1f\n",
-                      post,str,sat,j%2?"P":"L",j/2+1,v[nv],azel[1+i*2]*R2D);
-                exc[i]=1; rtk->ssat[sat-1].rejc[j%2]++;
+                      post,str,sat,code?"P":"L",frq+1,v[nv],azel[1+i*2]*R2D);
+                exc[i]=1; rtk->ssat[sat-1].rejc[frq]++;
                 continue;
             }
             /* record large post-fit residuals */
             if (post&&fabs(v[nv])>sqrt(var[nv])*THRES_REJECT) {
                 obsi[ne]=i; frqi[ne]=j; ve[ne]=v[nv]; ne++;
             }
-            if (j%2==0) rtk->ssat[sat-1].vsat[j/2]=1;
+            if (code==0) rtk->ssat[sat-1].vsat[frq]=1;
             nv++;
         }
     }
