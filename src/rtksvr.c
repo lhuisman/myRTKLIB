@@ -514,6 +514,7 @@ static void send_nmea(rtksvr_t *svr, uint32_t *tickreset)
 	int i;
 
 	if (svr->stream[1].state!=1) return;
+	sol_nmea.ns=10; /* Some servers don't like when ns = 0 */
 
 	if (svr->nmeareq==1) { /* lat-lon-hgt mode */
 		sol_nmea.stat=SOLQ_SINGLE;

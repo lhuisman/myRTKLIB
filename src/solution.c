@@ -1468,7 +1468,7 @@ extern int outprcopts(uint8_t *buff, const prcopt_t *opt)
         "OFF","Continuous","Instantaneous","Fix and Hold","","",""
     };
     const char *s9[]={
-        "OFF","ON","","",""
+        "OFF","ON","AutoCal","Fix and Hold",""
     };
     int i;
     char *p=(char *)buff;

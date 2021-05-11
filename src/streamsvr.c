@@ -536,6 +536,7 @@ static void *strsvrthread(void *arg)
         /* write nmea messages to input stream */
         if (svr->nmeacycle>0&&(int)(tick-tick_nmea)>=svr->nmeacycle) {
             sol_nmea.stat=SOLQ_SINGLE;
+            sol_nmea.ns=10; /* Some servers don't like when ns = 0 */
             sol_nmea.time=utc2gpst(timeget());
             matcpy(sol_nmea.rr,svr->nmeapos,3,1);
             strsendnmea(svr->stream,&sol_nmea);

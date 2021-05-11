@@ -51,6 +51,7 @@
 
 #define MAXPRCDAYS  100          /* max days of continuous processing */
 #define MAXINFILE   1000         /* max number of input files */
+#define MAXINVALIDTM 100         /* max number of invalid time marks */
 
 /* constants/global variables ------------------------------------------------*/
 
@@ -78,7 +79,7 @@ static char proc_rov [64]="";   /* rover for current processing */
 static char proc_base[64]="";   /* base station for current processing */
 static char rtcm_file[1024]=""; /* rtcm data file */
 static char rtcm_path[1024]=""; /* rtcm data path */
-static gtime_t invalidtm[100]={{0}};/* invalid time marks */
+static gtime_t invalidtm[MAXINVALIDTM]={{0}};/* invalid time marks */
 static rtcm_t rtcm;             /* rtcm control struct */
 static FILE *fp_rtcm=NULL;      /* rtcm data file pointer */
 
@@ -420,7 +421,7 @@ static void procpos(FILE *fp, FILE *fptm, const prcopt_t *popt, const solopt_t *
             if (rtk->sol.eventime.time != 0) {
                 if (mode == 0) {
                     outinvalidtm(fptm, sopt, rtk->sol.eventime);
-                } else if (!revs) {
+                } else if (!revs&&nitm<MAXINVALIDTM) {
                     invalidtm[nitm++] = rtk->sol.eventime;
                 }
             }
