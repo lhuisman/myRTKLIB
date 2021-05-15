@@ -2252,6 +2252,11 @@ static void outrinexevent(FILE *fp, const rnxopt_t *opt, const obsd_t *obs,
     int n;
     double epe[6];
 
+    /* reject invalid time events (> 1 minute from timestamp of epoch)  */
+    if (fabs(epdiff)>60) {
+        return;
+    }
+
     time2epoch(obs[0].eventime,epe);
     n = obs->timevalid ? 0 : 1;
 

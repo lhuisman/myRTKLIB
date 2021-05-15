@@ -759,8 +759,8 @@ object MainForm: TMainForm
         Height = 1000
       end
       object Plot4: TImage
-        Left = 0
-        Top = 0
+        Left = 2
+        Top = 1
         Width = 1200
         Height = 1000
         Visible = False
@@ -882,11 +882,11 @@ object MainForm: TMainForm
     object BtnMonitor: TSpeedButton
       Left = 2
       Top = 2
-      Width = 23
+      Width = 74
       Height = 21
       Hint = 'RTK Monitor'
       Align = alLeft
-      Flat = True
+      Caption = 'Monitor'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
       Font.Height = -9
@@ -916,12 +916,11 @@ object MainForm: TMainForm
       ParentShowHint = False
       ShowHint = True
       OnClick = BtnMonitorClick
-      ExplicitHeight = 24
     end
     object Message: TLabel
-      Left = 25
+      Left = 76
       Top = 2
-      Width = 585
+      Width = 534
       Height = 21
       Align = alClient
       Alignment = taCenter
@@ -935,10 +934,8 @@ object MainForm: TMainForm
       ParentShowHint = False
       ShowHint = False
       Layout = tlCenter
-      ExplicitLeft = 0
-      ExplicitTop = 6
-      ExplicitWidth = 497
-      ExplicitHeight = 19
+      ExplicitLeft = 128
+      ExplicitWidth = 482
     end
     object BtnAbout: TSpeedButton
       Left = 633

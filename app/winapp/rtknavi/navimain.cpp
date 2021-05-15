@@ -2488,7 +2488,7 @@ void __fastcall TMainForm::LoadOpt(void)
     PrcOpt.thresslip=ini->ReadFloat  ("prcopt", "thresslip",     0.05);
     PrcOpt.maxtdiff =ini->ReadFloat  ("prcopt", "maxtdiff",      30.0);
     PrcOpt.maxgdop  =ini->ReadFloat  ("prcopt", "maxgdop",       30.0);
-    PrcOpt.maxinno  =ini->ReadFloat  ("prcopt", "maxinno",     1000.0);
+    PrcOpt.maxinno  =ini->ReadFloat  ("prcopt", "maxinno",       30.0);
     PrcOpt.varholdamb=ini->ReadFloat ("prcopt", "varholdamb",     0.1);
     PrcOpt.gainholdamb=ini->ReadFloat("prcopt", "gainholdamb",   0.01);
     PrcOpt.syncsol  =ini->ReadInteger("prcopt", "syncsol",          0);
