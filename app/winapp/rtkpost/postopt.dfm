@@ -203,9 +203,9 @@ object OptDialog: TOptDialog
         Width = 76
         Height = 21
         Style = csDropDownList
-        ItemIndex = 0
+        ItemIndex = 1
         TabOrder = 8
-        Text = 'OFF'
+        Text = 'Saastamoinen'
         OnChange = TropOptChange
         Items.Strings = (
           'OFF'
@@ -213,7 +213,7 @@ object OptDialog: TOptDialog
           'SBAS'
           'Estimate ZTD'
           'Estimate ZTD+Grad'
-          'Input ZTD')
+          '')
       end
       object PosMode: TComboBox
         Left = 248
