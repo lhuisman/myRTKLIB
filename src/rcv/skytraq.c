@@ -58,7 +58,7 @@
 #define ID_STQBDSD1 0xE2        /* skytraq message id: beidou d1 subframe */
 #define ID_STQBDSD2 0xE3        /* skytraq message id: beidou d2 subframe */
 #define ID_STQRAWX  0xE5        /* skytraq message id: extended raw meas v.1 */
-#define ID_STQGENE  0xE6        /* skytraq message id: general subframe data - currently not supported*/
+#define ID_STQGENE  0xE6        /* skytraq message id: general subframe data */
 #define ID_STQGLOE  0x5C        /* skytraq message id: glonass ephemeris */
 #define ID_STQACK   0x83        /* skytraq message id: ack to request msg */
 #define ID_STQNACK  0x84        /* skytraq message id: nack to request msg */
@@ -378,6 +378,89 @@ static int decode_stqrawx(raw_t *raw)
     raw->obs.n=n;
     return n>0?1:0;
 }
+/* decode galileo ephemeris (0xE6) ----------------------------------------------*/
+static int decode_stqgene(raw_t *raw)
+{
+    eph_t eph={0};
+    int i,j,prn,sat,m,sys;
+    int part1,page1,part2,page2,type;
+    double ion[4]={0},utc[8]={0};
+    uint8_t *p=raw->buff+4,buff[32],crc_buff[26]={0};
+
+    trace(4,"decode_stqgene: len=%d\n",raw->len);
+
+    if (raw->len<44) {
+        trace(2,"stq gene string length error: len=%d\n",raw->len);
+        return -1;
+    }
+    prn=U1(p+3);
+    sys=sky_sys(U1(p+2)&0xF);
+    if (!(sat=satno(sys,prn))) {
+        trace(2,"stq raw satellite number error: sys=%d prn=%d\n",sys,prn);
+        return 0;
+    }
+    if (sys!=SYS_GAL) {
+        trace(2,"stq sys not supported: sys=%d\n",sys);
+        return 0;
+    }
+    if (raw->outtype) {
+        sprintf(raw->msgtype,"SKYTRAQ GENE (%4d): prn=%2d",raw->len,prn);
+    }
+    for (i=0;i<8;i++,p+=4) {
+        setbitu(buff,32*i,32,U4(p+5));
+    }
+    part1=getbitu(buff   ,0,1);
+    page1=getbitu(buff   ,1,1);
+    part2=getbitu(buff,128,1);
+    page2=getbitu(buff,129,1);
+
+    if (part1!=0||part2!=1) {
+        trace(3,"ubx rxmsfrbx enav page even/odd error: sat=%d\n",sat);
+        return -1;
+    }
+    if (page1==1||page2==1) return 0; /* alert page */
+
+    /* test crc (4(pad) + 114 + 82 bits) */
+    for (i=0,j=  4;i<15;i++,j+=8) setbitu(crc_buff,j,8,getbitu(buff   ,i*8,8));
+    for (i=0,j=118;i<11;i++,j+=8) setbitu(crc_buff,j,8,getbitu(buff,i*8+128,8));
+    if (rtk_crc24q(crc_buff,25)!=getbitu(buff,128+82,24)) {
+        trace(2,"ubx rxmsfrbx enav crc error: sat=%d\n",sat);
+        return -1;
+    }
+    type=getbitu(buff,2,6); /* word type */
+
+    if (type>6) return 0;
+
+    /* save 128 (112:even+16:odd) bits word */
+    for (i=0,j=2;i<14;i++,j+=8) {
+        raw->subfrm[sat-1][type*16+i]=getbitu(buff,j,8);
+    }
+    for (i=14,j=130;i<16;i++,j+=8) {
+        raw->subfrm[sat-1][type*16+i]=getbitu(buff,j,8);
+    }
+    if (type!=5) return 0;
+    if (!decode_gal_inav(raw->subfrm[sat-1],&eph,ion,utc)) return 0;
+
+    if (eph.sat!=sat) {
+        trace(2,"skytraq enav satellite error: sat=%d %d\n",sat,eph.sat);
+        return -1;
+    }
+    eph.code|=(1<<0); /* data source: E1 */
+
+    adj_utcweek(raw->time,utc);
+    matcpy(raw->nav.ion_gal,ion,4,1);
+    matcpy(raw->nav.utc_gal,utc,8,1);
+
+    if (!strstr(raw->opt,"-EPHALL")) {
+        if (eph.iode==raw->nav.eph[sat-1].iode&&
+            timediff(eph.toe,raw->nav.eph[sat-1].toe)==0.0&&
+            timediff(eph.toc,raw->nav.eph[sat-1].toc)==0.0) return 0;
+    }
+    raw->nav.eph[sat-1]=eph;
+    raw->ephsat=sat;
+    raw->ephset=0; /* 0:I/NAV */
+    return 2;
+}
 /* save gps/qzss subframe -------------------------------------------------------------*/
 static int save_subfrm_gps(int sat, raw_t *raw)
 {
@@ -517,11 +600,11 @@ static int decode_stqglo(raw_t *raw)
         setbitu(raw->subfrm[sat-1]+(m-1)*10,5+i*8,8,p[3+i]);
     }
     if (m!=4) return 0;
-    
+
     /* decode glonass ephemeris strings */
     geph.tof=raw->time;
     if (!decode_glostr(raw->subfrm[sat-1],&geph,NULL)||geph.sat!=sat) return 0;
-    
+
     if (!strstr(raw->opt,"-EPHALL")) {
         if (geph.iode==raw->nav.geph[prn-1].iode) return 0; /* unchanged */
     }
@@ -680,6 +763,7 @@ static int decode_stq(raw_t *raw)
         case ID_STQGPS  : return decode_stqgps (raw);
         case ID_STQGLO  : return decode_stqglo (raw);
         case ID_STQGLOE : return decode_stqgloe(raw);
+        case ID_STQGENE : return decode_stqgene(raw);
         case ID_STQBDSD1: return decode_stqbds (raw);
         case ID_STQBDSD2: return decode_stqbds (raw);
         /* case ID_STQGENE : return decode_stqgene(raw); */
