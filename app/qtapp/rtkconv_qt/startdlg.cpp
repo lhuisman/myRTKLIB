@@ -61,7 +61,8 @@ void StartDialog::BtnOkClick()
 void StartDialog::BtnFileTimeClick()
 {
     QFileInfo fi(FileName);
-    QDateTime d = fi.birthTime();
+    // QDateTime d = fi.birthTime();  // Older versions of Qt don't support this
+	QDateTime d = fi.created();
 
     Time1->setDateTime(d);
 

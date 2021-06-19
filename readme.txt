@@ -5,7 +5,7 @@ Binaries and tutorials for this code, and sample GPS data sets are available at 
 The latest version of the user manual is at: https://github.com/rtklibexplorer/RTKLIB/blob/demo5/doc/manual_demo5.pdf
 
    
-To build and install code for Windows with Embarcadero compiler:
+WINDOWS: To build and install code for with Windows Embarcadero compiler:
 
 GUIs: 
 1) Build executables with app/winapp/rtklib_winapp.groupproj project file 
@@ -15,4 +15,18 @@ CUIs:
 1) Build executables with app/consapp/rtklib_consapp.groupproj project file 
 2) Install executables to ../RTKLIB/bin by runnning app/consapp/install_consapp.bat
 
-The Qt files for building linux GUIs are still included in the repository but are out of date and no longer build.
+
+
+LINUX: To build and install code
+
+CUIs:
+1) cd app/consapp/<appName>/gcc
+2) make
+
+GUIs (Qt based):
+1) cd app/qtapp
+2) qmake
+3) make
+4) ./install_qtapp
+
+The linux GUI files have been updated from https://github.com/JensReimann/RTKLIB/tree/rtklib_2.4.3 but at this point may not be fully functional
