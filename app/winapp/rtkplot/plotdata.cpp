@@ -1027,7 +1027,7 @@ void __fastcall TPlot::SaveSnrMp(AnsiString file)
             if (Obs.data[j].sat!=i+1) continue;
             
             for (k=0;k<NFREQ+NEXOBS;k++) {
-                if (strstr(code2obs(Obs.data[j].code[k]),code)) break;
+                if (strchr(code2obs(Obs.data[j].code[k]),code[0])) break;
             }
             if (k>=NFREQ+NEXOBS) continue;
             
