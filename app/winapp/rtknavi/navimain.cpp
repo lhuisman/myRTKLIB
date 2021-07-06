@@ -2479,10 +2479,12 @@ void __fastcall TMainForm::LoadOpt(void)
     PrcOpt.prn[4]   =ini->ReadFloat  ("prcopt", "prn4",          1.0);
     PrcOpt.sclkstab =ini->ReadFloat  ("prcopt", "sclkstab",    5E-12);
     PrcOpt.thresar[0]=ini->ReadFloat ("prcopt", "thresar",       3.0);
+    PrcOpt.thresar[0]=ini->ReadFloat ("prcopt", "thresarmin",    3.0);
+    PrcOpt.thresar[0]=ini->ReadFloat ("prcopt", "thresarmax",    3.0);
     PrcOpt.thresar[1]=ini->ReadFloat ("prcopt", "thresar1",      0.1);
     PrcOpt.thresar[2]=ini->ReadFloat ("prcopt", "thresar2",      0.0);
-    PrcOpt.thresar[3]=ini->ReadFloat ("prcopt", "thresar3",      1E-7);
-    PrcOpt.thresar[4]=ini->ReadFloat ("prcopt", "thresar4",      1E-3);
+    PrcOpt.thresar[3]=ini->ReadFloat ("prcopt", "thresar3",      1E-9);
+    PrcOpt.thresar[4]=ini->ReadFloat ("prcopt", "thresar4",      1E-5);
     PrcOpt.elmaskar =ini->ReadFloat  ("prcopt", "elmaskar",  15.0*D2R);
     PrcOpt.elmaskhold=ini->ReadFloat ("prcopt", "elmaskhold",15.0*D2R);
     PrcOpt.thresslip=ini->ReadFloat  ("prcopt", "thresslip",     0.05);
@@ -2742,6 +2744,8 @@ void __fastcall TMainForm::SaveOpt(void)
     ini->WriteFloat  ("prcopt", "thresar2",   PrcOpt.thresar[2]  );
     ini->WriteFloat  ("prcopt", "thresar3",   PrcOpt.thresar[3]  );
     ini->WriteFloat  ("prcopt", "thresar4",   PrcOpt.thresar[4]  );
+    ini->WriteFloat  ("prcopt", "thresarmin", PrcOpt.thresar[5]  );
+    ini->WriteFloat  ("prcopt", "thresarmax", PrcOpt.thresar[6]  );
     ini->WriteFloat  ("prcopt", "elmaskar",   PrcOpt.elmaskar    );
     ini->WriteFloat  ("prcopt", "elmaskhold", PrcOpt.elmaskhold  );
     ini->WriteFloat  ("prcopt", "thresslip",  PrcOpt.thresslip   );

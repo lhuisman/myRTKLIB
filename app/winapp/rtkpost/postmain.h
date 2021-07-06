@@ -207,7 +207,7 @@ public:
 	double SatClkStab,RovAntE,RovAntN,RovAntU,RefAntE,RefAntN,RefAntU;
 	double PrNoise1,PrNoise2,PrNoise3,PrNoise4,PrNoise5;
 	double ValidThresAR,ElMaskAR,ElMaskHold,SlipThres;
-	double MaxPosVarAR,GloHwBias,ThresAR3,ThresAR4;
+	double MaxPosVarAR,GloHwBias,ThresAR3,ThresAR4,ValidThresARMin,ValidThresARMax;
 	double RovPos[3],RefPos[3],BaseLine[2];
 	double MaxSolStd;
 	snrmask_t SnrMask;

@@ -235,6 +235,9 @@ __published:
     TComboBox *RcvStds;
     TEdit *MinDropSats;
     TEdit *GloHwBias;
+    TLabel *Label48;
+    TEdit *ValidThresARMin;
+    TEdit *ValidThresARMax;
 	void __fastcall BtnOkClick(TObject *Sender);
 	void __fastcall RovAntPcvClick(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);

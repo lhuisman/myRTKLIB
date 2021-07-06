@@ -87,6 +87,18 @@
 #define IL(f,opt)   (NP(opt)+NI(opt)+NT(opt)+(f))   /* receiver h/w bias */
 #define IB(s,f,opt) (NR(opt)+MAXSAT*(f)+(s)-1) /* phase bias (s:satno,f:freq) */
 
+/* poly coeffs used to adjust AR ratio by # of sats, derived by fitting to  example from:
+   https://www.tudelft.nl/citg/over-faculteit/afdelingen/geoscience-remote-sensing/research/lambda/lambda*/
+static double ar_poly_coeffs[] = { 
+    -5.28224822e-10,
+    1.15845020e-07,
+    -1.05563009e-05,
+    5.16616681e-04,
+    -1.46341314e-02,
+    2.40165990e-01,
+    -2.13818830e+00,
+    8.76611035e+00};
+
 /* global variables ----------------------------------------------------------*/
 static int statlevel=0;          /* rtk status output level (0:off) */
 static FILE *fp_stat=NULL;       /* rtk status file pointer */
@@ -1588,9 +1600,9 @@ static int resamb_LAMBDA(rtk_t *rtk, double *bias, double *xa,int gps,int glo,in
     double QQb[MAXSAT];
 
     trace(3,"resamb_LAMBDA : nx=%d\n",nx);
-    
+
     rtk->sol.ratio=0.0;
-    
+
     if (rtk->opt.mode<=PMODE_DGPS||rtk->opt.modear==ARMODE_OFF||
         rtk->opt.thresar[0]<1.0) {
         rtk->nb_ar=0;
@@ -1598,7 +1610,7 @@ static int resamb_LAMBDA(rtk_t *rtk, double *bias, double *xa,int gps,int glo,in
     }
     /* skip AR if position variance too high to avoid false fix */
     for (i=0;i<3;i++) var+=rtk->P[i+i*rtk->nx];
-    var=var/3.0; /* maintain compatibility with previous code */ 
+    var=var/3.0; /* maintain compatibility with previous code */
     trace(3,"posvar=%.6f\n",var);
     if (var>rtk->opt.thresar[1]) {
         errmsg(rtk,"position variance too large:  %.4f\n",var);
@@ -1616,9 +1628,9 @@ static int resamb_LAMBDA(rtk_t *rtk, double *bias, double *xa,int gps,int glo,in
     rtk->nb_ar=nb;
     /* nx=# of float states, na=# of fixed states, nb=# of double-diff phase biases */
     y=mat(nb,1); DP=mat(nb,nx-na); b=mat(nb,2); db=mat(nb,1); Qb=mat(nb,nb);
-    Qab=mat(na,nb); QQ=mat(na,nb);    
+    Qab=mat(na,nb); QQ=mat(na,nb);
 
-    
+
     /* phase-bias covariance (Qb) and real-parameters to bias covariance (Qab) */
     /* y=D*xc, Qb=D*Qc*D', Qab=Qac*D' */
     for (i=0;i<nb;i++) {
@@ -1634,21 +1646,29 @@ static int resamb_LAMBDA(rtk_t *rtk, double *bias, double *xa,int gps,int glo,in
         Qab[i+j*na]=rtk->P[i+ix[j*2]*nx]-rtk->P[i+ix[j*2+1]*nx];
     }
     for (i=0;i<nb;i++) QQb[i]=1000*Qb[i+i*nb];
- 
+
     trace(3,"N(0)=     "); tracemat(3,y,1,nb,7,2);
     trace(3,"Qb*1000=  "); tracemat(3,QQb,1,nb,7,4);
-    
+
     /* lambda/mlambda integer least-square estimation */
     /* return best integer solutions */
     /* b are best integer solutions, s are residuals */
     if (!(info=lambda(nb,2,y,Qb,b,s))) {
         trace(3,"N(1)=     "); tracemat(3,b   ,1,nb,7,2);
         trace(3,"N(2)=     "); tracemat(3,b+nb,1,nb,7,2);
-        
+
         rtk->sol.ratio=s[0]>0?(float)(s[1]/s[0]):0.0f;
         if (rtk->sol.ratio>999.9) rtk->sol.ratio=999.9f;
-        
-        rtk->sol.thres=(float)opt->thresar[0];
+
+        /* adjust AR ratio based on # of sats, unless minAR==maxAR */
+        if (opt->thresar[5] != opt->thresar[6]) {
+            rtk->sol.thres = ar_poly_coeffs[0];
+            for (i=1;i<sizeof(ar_poly_coeffs)/sizeof(*ar_poly_coeffs);i++) {
+                rtk->sol.thres = rtk->sol.thres*nb+ar_poly_coeffs[i];
+            }
+            rtk->sol.thres *= (float)opt->thresar[0];
+        } else
+            rtk->sol.thres=(float)opt->thresar[0];
         /* validation by popular ratio-test of residuals*/
         if (s[0]<=0.0||s[1]/s[0]>=rtk->sol.thres) {
             
@@ -1729,8 +1749,8 @@ static int manage_amb_LAMBDA(rtk_t *rtk, double *bias, double *xa, const int *sa
     }
 
     /* skip first try if GLO fix-and-hold enabled and IC biases haven't been set yet */
-    if (rtk->opt.glomodear!=GLO_ARMODE_FIXHOLD || rtk->holdamb) {  
-        /* for inital ambiguity resolution attempt, include all enabled sats 
+    if (rtk->opt.glomodear!=GLO_ARMODE_FIXHOLD || rtk->holdamb) {
+        /* for inital ambiguity resolution attempt, include all enabled sats
                 bias and xa are fixed solution outputs and are only updated if the ambiguities are resolved */
         gps1=1;    /* always enable gps for initial pass */
         glo1=rtk->opt.glomodear>GLO_ARMODE_OFF?1:0;
@@ -1769,13 +1789,13 @@ static int manage_amb_LAMBDA(rtk_t *rtk, double *bias, double *xa, const int *sa
         ratio1=0;
         nb=0;
     }
-        
+
     /* if fix-and-hold gloarmode enabled, re-run AR with final gps/glo settings if differ from above */
     if (rtk->opt.glomodear==GLO_ARMODE_FIXHOLD) {
         /* turn off gloarmode if no fix*/
         glo2=rtk->sol.ratio<rtk->sol.thres?0:1;
         /* turn off gpsmode if not enabled and got good fix (used for debug and eval only) */
-        gps2=rtk->opt.gpsmodear==0&&rtk->sol.ratio>=rtk->sol.thres?0:1;  
+        gps2=rtk->opt.gpsmodear==0&&rtk->sol.ratio>=rtk->sol.thres?0:1;
 
         /* if modes changed since initial AR run or haven't run yet,re-run with new modes */
         if (glo1!=glo2||gps1!=gps2)

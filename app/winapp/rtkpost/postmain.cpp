@@ -120,7 +120,7 @@ __fastcall TMainForm::TMainForm(TComponent* Owner)
     OutCntResetAmb=5; LockCntFixAmb=5; FixCntHoldAmb=10;
     MaxAgeDiff=30.0; RejectThres=30.0; RejectGdop=30.0;
     MeasErrR1=MeasErrR2=100.0; MeasErr2=0.004; MeasErr3=0.003; MeasErr4=1.0;
-    SatClkStab=1E-11; ValidThresAR=3.0;
+    SatClkStab=1E-11; ValidThresAR=3.0; ValidThresARMin=3.0; ValidThresARMax=3.0;
     RovAntE=RovAntN=RovAntU=RefAntE=RefAntN=RefAntU=0.0;
     for (i=0;i<3;i++) RovPos[i]=0.0;
     for (i=0;i<3;i++) RefPos[i]=0.0;
@@ -895,6 +895,8 @@ int __fastcall TMainForm::GetOption(prcopt_t &prcopt, solopt_t &solopt,
     prcopt.thresar[2]=GloHwBias;
     prcopt.thresar[3]=ThresAR3;
     prcopt.thresar[4]=ThresAR4;
+    prcopt.thresar[5]=ValidThresARMin;
+    prcopt.thresar[6]=ValidThresARMax;
     prcopt.elmaskar =ElMaskAR*D2R;
     prcopt.elmaskhold=ElMaskHold*D2R;
     prcopt.thresslip=SlipThres;
@@ -1242,8 +1244,10 @@ void __fastcall TMainForm::LoadOpt(void)
     ValidThresAR       =ini->ReadFloat  ("opt","validthresar", 3.0);
     MaxPosVarAR        =ini->ReadFloat  ("opt","maxposvarar", 0.10);
     GloHwBias          =ini->ReadFloat  ("opt","glohwbias",   0.00);
-    ThresAR3           =ini->ReadFloat  ("opt","thresar3",    1E-7);
-    ThresAR4           =ini->ReadFloat  ("opt","thresar4",    1E-3);
+    ThresAR3           =ini->ReadFloat  ("opt","thresar3",    1E-9);
+    ThresAR4           =ini->ReadFloat  ("opt","thresar4",    1E-5);
+    ValidThresARMin    =ini->ReadFloat  ("opt","validthresarmin", 3.0);
+    ValidThresARMax    =ini->ReadFloat  ("opt","validthresarmax", 3.0);
     LockCntFixAmb      =ini->ReadInteger("opt","lockcntfixamb",  0);
     FixCntHoldAmb      =ini->ReadInteger("opt","fixcntholdamb", 20);
     ElMaskAR           =ini->ReadFloat  ("opt","elmaskar",    15.0);
@@ -1266,7 +1270,7 @@ void __fastcall TMainForm::LoadOpt(void)
     BaseLine[0]        =ini->ReadFloat  ("opt","baselinelen",  0.0);
     BaseLine[1]        =ini->ReadFloat  ("opt","baselinesig",  0.0);
     BaseLineConst      =ini->ReadInteger("opt","baselineconst",  0);
-    
+
     SolFormat          =ini->ReadInteger("opt","solformat",      0);
     TimeFormat         =ini->ReadInteger("opt","timeformat",     1);
     TimeDecimal        =ini->ReadInteger("opt","timedecimal",    3);
@@ -1462,6 +1466,8 @@ void __fastcall TMainForm::SaveOpt(void)
     ini->WriteFloat  ("opt","glohwbias",   GloHwBias   );
     ini->WriteFloat  ("opt","thresar3",    ThresAR3    );
     ini->WriteFloat  ("opt","thresar4",    ThresAR4    );
+    ini->WriteFloat  ("opt","validthresarmin",ValidThresARMin);
+    ini->WriteFloat  ("opt","validthresarmax",ValidThresARMax);
     ini->WriteInteger("opt","lockcntfixamb",LockCntFixAmb);
     ini->WriteInteger("opt","fixcntholdamb",FixCntHoldAmb);
     ini->WriteFloat  ("opt","elmaskar",    ElMaskAR    );

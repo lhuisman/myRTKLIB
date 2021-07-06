@@ -242,6 +242,9 @@ __published:
 	TLabel *Label53;
 	TEdit *Edit1;
     TEdit *ARIter;
+    TLabel *Label15;
+    TEdit *ValidThresARMin;
+    TEdit *ValidThresARMax;
 	void __fastcall BtnOkClick(TObject *Sender);
 	void __fastcall RovAntPcvClick(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);

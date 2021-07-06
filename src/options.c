@@ -93,6 +93,8 @@ EXPORT opt_t sysopts[]={
     {"pos2-bdsarmode",  3,  (void *)&prcopt_.bdsmodear,  SWTOPT },
     {"pos2-arfilter",   3,  (void *)&prcopt_.arfilter,   SWTOPT },
     {"pos2-arthres",    1,  (void *)&prcopt_.thresar[0], ""     },
+    {"pos2-arthresmin", 1,  (void *)&prcopt_.thresar[5], ""     },
+    {"pos2-arthresmax", 1,  (void *)&prcopt_.thresar[6], ""     },
     {"pos2-arthres1",   1,  (void *)&prcopt_.thresar[1], ""     },
     {"pos2-arthres2",   1,  (void *)&prcopt_.thresar[2], ""     },
     {"pos2-arthres3",   1,  (void *)&prcopt_.thresar[3], ""     },

@@ -463,9 +463,9 @@ object OptDialog: TOptDialog
       object LabelRatio: TLabel
         Left = 24
         Top = 32
-        Width = 196
+        Width = 181
         Height = 13
-        Caption = 'Min Ratio to Fix Ambiguity / GLO HW Bias'
+        Caption = 'Ratio to Fix Ambiguity (Min/Nom/Max)'
       end
       object Label13: TLabel
         Left = 25
@@ -537,6 +537,13 @@ object OptDialog: TOptDialog
         Height = 13
         Caption = 'Hold Amb Var / Hold Amb Gain'
       end
+      object Label48: TLabel
+        Left = 26
+        Top = 53
+        Width = 62
+        Height = 13
+        Caption = 'GLO HW Bias'
+      end
       object AmbRes: TComboBox
         Left = 248
         Top = 5
@@ -555,9 +562,9 @@ object OptDialog: TOptDialog
           'PPP-AR')
       end
       object ValidThresAR: TEdit
-        Left = 248
-        Top = 30
-        Width = 75
+        Left = 299
+        Top = 28
+        Width = 49
         Height = 21
         TabOrder = 3
         Text = '3.0'
@@ -790,12 +797,28 @@ object OptDialog: TOptDialog
         Text = '20'
       end
       object GloHwBias: TEdit
-        Left = 325
-        Top = 30
+        Left = 248
+        Top = 52
         Width = 75
         Height = 21
         TabOrder = 26
         Text = '0.0'
+      end
+      object ValidThresARMin: TEdit
+        Left = 248
+        Top = 28
+        Width = 48
+        Height = 21
+        TabOrder = 27
+        Text = '3.0'
+      end
+      object ValidThresARMax: TEdit
+        Left = 352
+        Top = 28
+        Width = 48
+        Height = 21
+        TabOrder = 28
+        Text = '3.0'
       end
     end
     object TabSheet3: TTabSheet

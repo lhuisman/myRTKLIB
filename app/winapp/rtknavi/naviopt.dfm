@@ -62,6 +62,10 @@ object OptDialog: TOptDialog
     TabOrder = 4
     object TabSheet1: TTabSheet
       Caption = 'Setting&1'
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Label3: TLabel
         Left = 24
         Top = 137
@@ -444,9 +448,9 @@ object OptDialog: TOptDialog
       object Label24: TLabel
         Left = 24
         Top = 33
-        Width = 196
+        Width = 181
         Height = 13
-        Caption = 'Min Ratio to Fix Ambiguity / GLO HW Bias'
+        Caption = 'Ratio to Fix Ambiguity (Min/Nom/Max)'
       end
       object Label13: TLabel
         Left = 24
@@ -518,6 +522,13 @@ object OptDialog: TOptDialog
         Height = 13
         Caption = 'Hold Amb Var / Hold Amb Gain'
       end
+      object Label15: TLabel
+        Left = 26
+        Top = 54
+        Width = 62
+        Height = 13
+        Caption = 'GLO HW Bias'
+      end
       object AmbRes: TComboBox
         Left = 248
         Top = 4
@@ -535,9 +546,9 @@ object OptDialog: TOptDialog
           'Fix and Hold')
       end
       object ValidThresAR: TEdit
-        Left = 248
-        Top = 30
-        Width = 75
+        Left = 300
+        Top = 28
+        Width = 49
         Height = 21
         TabOrder = 2
         Text = '3.0'
@@ -594,7 +605,7 @@ object OptDialog: TOptDialog
         Left = 248
         Top = 193
         Width = 75
-        Height = 13
+        Height = 21
         TabOrder = 11
         Text = '1'
       end
@@ -768,8 +779,8 @@ object OptDialog: TOptDialog
         Text = '0.01'
       end
       object GloHwBias: TEdit
-        Left = 325
-        Top = 30
+        Left = 249
+        Top = 51
         Width = 75
         Height = 21
         ParentShowHint = False
@@ -785,10 +796,30 @@ object OptDialog: TOptDialog
         TabOrder = 27
         Text = '1'
       end
+      object ValidThresARMin: TEdit
+        Left = 248
+        Top = 28
+        Width = 50
+        Height = 21
+        TabOrder = 28
+        Text = '3.0'
+      end
+      object ValidThresARMax: TEdit
+        Left = 350
+        Top = 28
+        Width = 50
+        Height = 21
+        TabOrder = 29
+        Text = '3.0'
+      end
     end
     object TabSheet3: TTabSheet
       Caption = 'O&utput'
       ImageIndex = 2
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object LabelSolFormat: TLabel
         Left = 24
         Top = 7
@@ -1088,6 +1119,10 @@ object OptDialog: TOptDialog
     object TabSheet4: TTabSheet
       Caption = 'S&tatistics'
       ImageIndex = 3
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Label29: TLabel
         Left = 34
         Top = 213
@@ -1282,6 +1317,10 @@ object OptDialog: TOptDialog
     object TabSheet5: TTabSheet
       Caption = '&Positions'
       ImageIndex = 4
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Label4: TLabel
         Left = 12
         Top = 12
@@ -1598,6 +1637,10 @@ object OptDialog: TOptDialog
     object TabSheet7: TTabSheet
       Caption = '&Files'
       ImageIndex = 6
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Label1: TLabel
         Left = 6
         Top = 93
@@ -1936,6 +1979,10 @@ object OptDialog: TOptDialog
     object TabSheet8: TTabSheet
       Caption = '&Misc'
       ImageIndex = 6
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       DesignSize = (
         405
         325)
