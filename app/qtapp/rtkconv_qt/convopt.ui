@@ -532,10 +532,10 @@
          <number>4</number>
         </property>
         <property name="minimum">
-         <double>-1000000.000000000000000</double>
+         <double>-9000000.000000000000000</double>
         </property>
         <property name="maximum">
-         <double>1000000.000000000000000</double>
+         <double>9000000.000000000000000</double>
         </property>
        </widget>
       </item>
@@ -548,10 +548,10 @@
          <number>4</number>
         </property>
         <property name="minimum">
-         <double>-1000000.000000000000000</double>
+         <double>-9000000.000000000000000</double>
         </property>
         <property name="maximum">
-         <double>1000000.000000000000000</double>
+         <double>9000000.000000000000000</double>
         </property>
        </widget>
       </item>
@@ -564,10 +564,10 @@
          <number>4</number>
         </property>
         <property name="minimum">
-         <double>-1000000.000000000000000</double>
+         <double>-9000000.000000000000000</double>
         </property>
         <property name="maximum">
-         <double>1000000.000000000000000</double>
+         <double>9000000.000000000000000</double>
         </property>
        </widget>
       </item>
