@@ -1602,10 +1602,10 @@ static int resamb_LAMBDA(rtk_t *rtk, double *bias, double *xa,int gps,int glo,in
     trace(3,"resamb_LAMBDA : nx=%d\n",nx);
 
     rtk->sol.ratio=0.0;
+    rtk->nb_ar=0;
 
     if (rtk->opt.mode<=PMODE_DGPS||rtk->opt.modear==ARMODE_OFF||
         rtk->opt.thresar[0]<1.0) {
-        rtk->nb_ar=0;
         return 0;
     }
     /* skip AR if position variance too high to avoid false fix */
@@ -1614,7 +1614,6 @@ static int resamb_LAMBDA(rtk_t *rtk, double *bias, double *xa,int gps,int glo,in
     trace(3,"posvar=%.6f\n",var);
     if (var>rtk->opt.thresar[1]) {
         errmsg(rtk,"position variance too large:  %.4f\n",var);
-        rtk->nb_ar=0;
         return 0;
     }
     /* Create index of single to double-difference transformation matrix (D')
