@@ -89,15 +89,10 @@
 
 /* poly coeffs used to adjust AR ratio by # of sats, derived by fitting to  example from:
    https://www.tudelft.nl/citg/over-faculteit/afdelingen/geoscience-remote-sensing/research/lambda/lambda*/
-static double ar_poly_coeffs[] = { 
-    -5.28224822e-10,
-    1.15845020e-07,
-    -1.05563009e-05,
-    5.16616681e-04,
-    -1.46341314e-02,
-    2.40165990e-01,
-    -2.13818830e+00,
-    8.76611035e+00};
+static double ar_poly_coeffs[3][5] = {
+    {-1.94058448e-01, -7.79023476e+00, 1.24231120e+02, -4.03126050e+02,  3.50413202e+02},
+    {6.42237302e-01, -8.39813962e+00,  2.92107285e+01, -2.37577308e+01, -1.14307128e+00},
+    {-2.22600390e-02,  3.23169103e-01, -1.39837429e+00, 2.19282996e+00, -5.34583971e-02}};
 
 /* global variables ----------------------------------------------------------*/
 static int statlevel=0;          /* rtk status output level (0:off) */
@@ -1593,10 +1588,10 @@ static void holdamb(rtk_t *rtk, const double *xa)
 static int resamb_LAMBDA(rtk_t *rtk, double *bias, double *xa,int gps,int glo,int sbs)
 {
     prcopt_t *opt=&rtk->opt;
-    int i,j,nb,info,nx=rtk->nx,na=rtk->na;
+    int i,j,nb,nb1,info,nx=rtk->nx,na=rtk->na;
     double *DP,*y,*b,*db,*Qb,*Qab,*QQ,s[2];
     int *ix;
-    double var=0;
+    double var=0,coeff[3];
     double QQb[MAXSAT];
 
     trace(3,"resamb_LAMBDA : nx=%d\n",nx);
@@ -1660,12 +1655,20 @@ static int resamb_LAMBDA(rtk_t *rtk, double *bias, double *xa,int gps,int glo,in
         if (rtk->sol.ratio>999.9) rtk->sol.ratio=999.9f;
 
         /* adjust AR ratio based on # of sats, unless minAR==maxAR */
-        if (opt->thresar[5] != opt->thresar[6]) {
-            rtk->sol.thres = ar_poly_coeffs[0];
-            for (i=1;i<sizeof(ar_poly_coeffs)/sizeof(*ar_poly_coeffs);i++) {
-                rtk->sol.thres = rtk->sol.thres*nb+ar_poly_coeffs[i];
+        if (opt->thresar[5]!=opt->thresar[6]) {
+            nb1=nb<50?nb:50; /* poly only fitted for upto 50 sat pairs */
+            /* generate poly coeffs based on nominal AR ratio */
+            for ((i=0);i<3;i++) {
+                 coeff[i] = ar_poly_coeffs[i][0];
+                 for ((j=1);j<5;j++)
+                    coeff[i] = coeff[i]*opt->thresar[0]+ar_poly_coeffs[i][j];
             }
-            rtk->sol.thres *= (float)opt->thresar[0];
+            /* generate adjusted AR ratio based on # of sat pairs */
+            rtk->sol.thres = coeff[0];
+            for (i=1;i<3;i++) {
+                rtk->sol.thres = rtk->sol.thres*1/(nb1+1)+coeff[i];
+            }
+            rtk->sol.thres = MIN(MAX(rtk->sol.thres,opt->thresar[5]),opt->thresar[6]);
         } else
             rtk->sol.thres=(float)opt->thresar[0];
         /* validation by popular ratio-test of residuals*/

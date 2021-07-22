@@ -715,6 +715,7 @@ void __fastcall TOptDialog::LoadOpt(AnsiString file)
 	Freq		 ->ItemIndex	=prcopt.nf>NFREQ-1?NFREQ-1:prcopt.nf-1;
 	Solution	 ->ItemIndex	=prcopt.soltype;
 	ElMask		 ->Text			=s.sprintf("%.0f",prcopt.elmin*R2D);
+    PrcOpt.snrmask              =prcopt.snrmask;
 	DynamicModel ->ItemIndex	=prcopt.dynamics;
 	TideCorr	 ->ItemIndex	=prcopt.tidecorr;
 	IonoOpt		 ->ItemIndex	=prcopt.ionoopt;
@@ -940,6 +941,7 @@ void __fastcall TOptDialog::SaveOpt(AnsiString file)
 	prcopt.nf		=Freq		 ->ItemIndex+1;
 	prcopt.soltype	=Solution	 ->ItemIndex;
 	prcopt.elmin	=str2dbl(ElMask	->Text)*D2R;
+    prcopt.snrmask	=PrcOpt.snrmask;
 	prcopt.dynamics	=DynamicModel->ItemIndex;
 	prcopt.tidecorr	=TideCorr	 ->ItemIndex;
 	prcopt.ionoopt	=IonoOpt	 ->ItemIndex;
