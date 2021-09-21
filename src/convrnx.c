@@ -71,7 +71,7 @@ typedef struct halfc_tag {      /* half-cycle ambiguity list type */
 } halfc_t;
 
 typedef struct {                /* stream file type */
-    int    format;              /* stream format (STRFMT_???) */
+    int format;                 /* stream format (STRFMT_???) */
     int staid;                  /* station ID */
     int ephsat,ephset;          /* satelite and set of input ephemeris */
     gtime_t time;               /* current time */
@@ -270,7 +270,7 @@ static int input_strfile(strfile_t *str)
             str->ephset=str->rnx.ephset;
             str->staid=0;
         }
-        }
+    }
     if (!str->tstart.time&&str->time.time) {
         str->tstart=str->time;
     }
@@ -331,7 +331,7 @@ static void setopt_file(int format, char **paths, int n, const int *mask,
                         rnxopt_t *opt)
 {
     int i,j;
-    
+
     for (i=0;i<MAXCOMMENT;i++) {
         if (!*opt->comment[i]) break;
     }
@@ -396,8 +396,8 @@ static void setopt_obstype(const uint8_t *codes, const uint8_t *types, int sys,
             if (ver<'0'||ver>'0'+opt->rnxver-300) {
                 trace(2,"unsupported obs type: rnxver=%.2f sys=%d code=%s\n",
                       opt->rnxver/100.0,sys,code2obs(codes[i]));
-            continue;
-        }
+                continue;
+            }
         }
         for (j=0;j<4;j++) {
             if (!(opt->obstype&(1<<j))) continue;
@@ -617,9 +617,9 @@ static void dump_stas(const strfile_t *str)
               "%6.3f %6.3f %6.3f\n",s1,s2,p->staid,p->sta.name,p->sta.antdes,
               p->sta.rectype,pos[0]*R2D,pos[1]*R2D,pos[2],p->sta.deltype,
               p->sta.del[0],p->sta.del[1],p->sta.del[2]);
-        }
-#endif
     }
+#endif
+}
 /* add half-cycle ambiguity list ---------------------------------------------*/
 static int add_halfc(strfile_t *str, int sat, int idx, gtime_t time)
 {
@@ -652,7 +652,7 @@ static void update_halfc(strfile_t *str, obsd_t *obs)
             }
             str->halfc[sat-1][i]->te=obs->time;
             str->halfc[sat-1][i]->stat=1; /* unresolved */
-            }
+        }
         else if (str->halfc[sat-1][i]->stat==1) { /* halfcyc unknown -> known */
             if (obs->LLI[i]&LLI_HALFA) {
                 str->halfc[sat-1][i]->stat=2; /* resolved with added */
@@ -697,7 +697,7 @@ static void resolve_halfc(const strfile_t *str, obsd_t *data, int n)
     
     for (i=0;i<n;i++) for (j=0;j<NFREQ+NEXOBS;j++) {
         sat=data[i].sat;
-    
+        
         for (p=str->halfc[sat-1][j];p;p=p->next) {
             if (p->stat<=1) continue;
             if (timediff(data[i].time,p->ts)<-DTTOL||
@@ -769,7 +769,7 @@ static int scan_file(char **files, int nf, rnxopt_t *opt, strfile_t *str,
                 }
                 /* update station list */
                 update_stas(str);
-                }
+            }
             else if (type==5) { /* station info */
                 /* update station info */
                 update_stainf(str);
@@ -804,7 +804,7 @@ static int scan_file(char **files, int nf, rnxopt_t *opt, strfile_t *str,
     }
     /* set station info in RINEX options */
     setopt_sta(str,opt);
-
+     
     /* set phase shifts in RINEX options */
     if (opt->phshift) {
         setopt_phshift(opt);
@@ -817,7 +817,7 @@ static int scan_file(char **files, int nf, rnxopt_t *opt, strfile_t *str,
         if (satsys(str->nav->geph[i].sat,&prn)!=SYS_GLO) continue;
         str->nav->glo_fcn[prn-1]=str->nav->geph[i].frq+8;
         str->nav->geph[i]=geph0;
-        }
+    }
     for (i=0;i<str->nav->ns;i++) {
         str->nav->seph[i]=seph0;
     }
@@ -906,43 +906,43 @@ static void outrnxevent(FILE *fp, const rnxopt_t *opt, gtime_t time, int event,
     else if (event==EVENT_NEWSITE) {
         for (q=stas;q;q=q->next) {
             if (q->staid==staid&&timediff(time,q->te)<=0.0) p=q;
-    }
+        }
         fprintf(fp,"%*s%d%3d\n",(opt->rnxver>=300)?31:28,"",event,6);
         fprintf(fp,"%-60s%-20s\n","EVENT: NEW SITE OCCUPATION","COMMENT");
-    if (!p) {
+        if (!p) {
             fprintf(fp,"%04d%56s%-20s\n",staid,"","MARKER NAME");
-        return;
-    }
+            return;
+        }
         fprintf(fp,"%-60s%-20s\n",p->sta.name,"MARKER NAME");
-    fprintf(fp,"%-20.20s%-20.20s%-20.20s%-20s\n",p->sta.recsno,
-            p->sta.rectype,p->sta.recver,"REC # / TYPE / VERS");
-    fprintf(fp,"%-20.20s%-20.20s%-20.20s%-20s\n",p->sta.antsno,
-            p->sta.antdes,"","ANT # / TYPE");
-    fprintf(fp,"%14.4f%14.4f%14.4f%-18s%-20s\n",p->sta.pos[0],
-            p->sta.pos[1],p->sta.pos[2],"","APPROX POSITION XYZ");
-    
-    /* antenna delta */
-    if (norm(p->sta.del,3)>0.0) {
-        if (!p->sta.deltype&&norm(p->sta.del,3)>0.0) { /* enu */
-            del[0]=p->sta.del[2]; /* h */
-            del[1]=p->sta.del[0]; /* e */
-            del[2]=p->sta.del[1]; /* n */
+        fprintf(fp,"%-20.20s%-20.20s%-20.20s%-20s\n",p->sta.recsno,
+                p->sta.rectype,p->sta.recver,"REC # / TYPE / VERS");
+        fprintf(fp,"%-20.20s%-20.20s%-20.20s%-20s\n",p->sta.antsno,
+                p->sta.antdes,"","ANT # / TYPE");
+        fprintf(fp,"%14.4f%14.4f%14.4f%-18s%-20s\n",p->sta.pos[0],
+                p->sta.pos[1],p->sta.pos[2],"","APPROX POSITION XYZ");
+        
+        /* antenna delta */
+        if (norm(p->sta.del,3)>0.0) {
+            if (!p->sta.deltype&&norm(p->sta.del,3)>0.0) { /* enu */
+                del[0]=p->sta.del[2]; /* h */
+                del[1]=p->sta.del[0]; /* e */
+                del[2]=p->sta.del[1]; /* n */
+            }
+            else if (norm(p->sta.pos,3)>0.0) { /* xyz */
+                ecef2pos(p->sta.pos,pos);
+                ecef2enu(pos,p->sta.del,enu);
+                del[0]=enu[2]; /* h */
+                del[1]=enu[0]; /* e */
+                del[2]=enu[1]; /* n */
+            }
         }
-        else if (norm(p->sta.pos,3)>0.0) { /* xyz */
-            ecef2pos(p->sta.pos,pos);
-            ecef2enu(pos,p->sta.del,enu);
-            del[0]=enu[2]; /* h */
-            del[1]=enu[0]; /* e */
-            del[2]=enu[1]; /* n */
-        }
-    }
-    else {
-        del[0]=p->sta.hgt;
+        else {
+            del[0]=p->sta.hgt;
             del[1]=del[2]=0.0;
+        }
+        fprintf(fp,"%14.4f%14.4f%14.4f%-18s%-20s\n",del[0],del[1],del[2],"",
+                "ANTENNA: DELTA H/E/N");
     }
-    fprintf(fp,"%14.4f%14.4f%14.4f%-18s%-20s\n",del[0],del[1],del[2],"",
-            "ANTENNA: DELTA H/E/N");
-}
     else if (event==EVENT_EXTERNAL) {
         time2epoch(time,ep);
         fprintf(fp,"%s %02d %02.0f %02.0f %02.0f %02.0f %010.7f  %d%3d\n",
@@ -999,7 +999,7 @@ static void convobs(FILE **ofp, rnxopt_t *opt, strfile_t *str, int *n,
     /* avoid duplicated data by multiple files handover */
     if (tend->time&&timediff(time,*tend)<opt->ttol) return;
     *tend=time;
-    
+
     /* save cycle slips */
     save_slips(str,str->obs->data,str->obs->n);
     
@@ -1019,8 +1019,8 @@ static void convobs(FILE **ofp, rnxopt_t *opt, strfile_t *str, int *n,
         for (i=0;i<str->obs->n;i++) for (j=0;j<NFREQ+NEXOBS;j++) {
             if (str->obs->data[i].L[j]!=0.0) {
                 str->obs->data[i].LLI[j]|=LLI_SLIP;
+            }
         }
-    }
     }
     /* resolve half-cycle ambiguity */
     if (opt->halfcyc) {
@@ -1143,13 +1143,13 @@ static void convsbs(FILE **ofp, rnxopt_t *opt, strfile_t *str, int *n,
     trace(3,"convsbs :\n");
     
     time=gpst2time(str->raw.sbsmsg.week,str->raw.sbsmsg.tow);
-    
+
     if (!screent(time,opt->ts,opt->te,0.0)) return;
     
     /* avoid duplicated data by multiple files handover */
     if (tend->time&&timediff(time,*tend)<opt->ttol) return;
     *tend=time;
-    
+
     prn=str->raw.sbsmsg.prn;
     if (MINPRNSBS<=prn&&prn<=MAXPRNSBS) {
         sys=SYS_SBS;
@@ -1168,19 +1168,19 @@ static void convsbs(FILE **ofp, rnxopt_t *opt, strfile_t *str, int *n,
     if (ofp[NOUTFILE-1]) {
         sbsoutmsg(ofp[NOUTFILE-1],&str->raw.sbsmsg);
         n[NOUTFILE-1]++;
-        }
+    }
     /* output SBAS ephemeris */
     if ((opt->navsys&SYS_SBS)&&sbsupdatecorr(&str->raw.sbsmsg,str->nav)==9) {
-    
-    if (ofp[1]&&!sep_nav) {
-        outrnxhnavb(ofp[1],opt,str->nav->seph+prn-MINPRNSBS);
-        n[1]++;
-    }
+        
+        if (ofp[1]&&!sep_nav) {
+            outrnxhnavb(ofp[1],opt,str->nav->seph+prn-MINPRNSBS);
+            n[1]++;
+        }
         else if (ofp[3]&&sep_nav) {
-        outrnxhnavb(ofp[3],opt,str->nav->seph+prn-MINPRNSBS);
-        n[3]++;
+            outrnxhnavb(ofp[3],opt,str->nav->seph+prn-MINPRNSBS);
+            n[3]++;
+        }
     }
-}
 }
 /* set approx position in RINEX options --------------------------------------*/
 static void setopt_apppos(strfile_t *str, rnxopt_t *opt)
@@ -1408,7 +1408,7 @@ extern int convrnx(int format, rnxopt_t *opt, const char *file, char **ofile)
             opt_.ts=gpst2time(week,ts+i*tu);
             opt_.te=timeadd(opt_.ts,tu);
             if (opt->trtcm.time) {
-            opt_.trtcm=timeadd(opt->trtcm,timediff(opt_.ts,opt->ts));
+                opt_.trtcm=timeadd(opt->trtcm,timediff(opt_.ts,opt->ts));
             }
             if (timediff(opt_.ts,opt->te)>-opt->ttol) break;
             

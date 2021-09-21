@@ -265,10 +265,10 @@ static char *obscodes[]={       /* observation code strings */
     "6E","7D","7P","7Z","8D", "8P","4A","4B","4X",""    /* 60-69 */
 };
 static char codepris[7][MAXFREQ][16]={  /* code priority for each freq-index */
-   /* L1/E1/B1   L2/E5b/B2    L5/E5a/L3 E6/LEX    E5(a+b)         */
+    /* L1/E1/B1 L2/E5b/B2b   L5/E5a/B2a E6/LEX/B3 E5(a+b)         */
     {"CPYWMNSL","CPYWMNDLSX","IQX"     ,""       ,""       ,""}, /* GPS */
     {"CPABX"   ,"CPABX"     ,"IQX"     ,""       ,""       ,""}, /* GLO */
-    {"CABXZ"   ,"IQX"       ,"IQX"     ,"ABCXZ"  ,"IQX"    ,""}, /* GAL */
+    {"CABXZ"   ,"XIQ"       ,"XIQ"     ,"ABCXZ"  ,"IQX"    ,""}, /* GAL */
     {"CLSXZ"   ,"LSX"       ,"IQXDPZ"  ,"LSXEZ"  ,""       ,""}, /* QZS */
     {"C"       ,"IQX"       ,""        ,""       ,""       ,""}, /* SBS */
     {"IQXDPAN" ,"IQXDPZ"    ,"DPX"     ,"IQXA"   ,"DPX"    ,""}, /* BDS */

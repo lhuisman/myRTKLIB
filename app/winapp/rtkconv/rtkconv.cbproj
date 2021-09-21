@@ -88,7 +88,7 @@
         <DCC_CBuilderOutput>JPHNE</DCC_CBuilderOutput>
         <BCC_IncludePath>..\appcmn;..\rtkpost;..\..\src;$(BDS)\include;$(BCC_IncludePath)</BCC_IncludePath>
         <SanitizedProjectName>rtkconv</SanitizedProjectName>
-        <BCC_Defines>WIN32;TRACE;ENAGLO;ENAGAL;ENAQZS;ENACMP;ENAIRN;NFREQ=5;NEXOBS=3;$(BCC_Defines)</BCC_Defines>
+        <BCC_Defines>WIN32;TRACE;ENAGLO;ENAGAL;ENAQZS;ENACMP;ENAIRN;NFREQ=3;NEXOBS=3;$(BCC_Defines)</BCC_Defines>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
         <DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
@@ -336,9 +336,9 @@
         <FormResources Include="..\appcmn\confdlg.dfm"/>
         <FormResources Include="..\appcmn\freqdlg.dfm"/>
         <FormResources Include="..\appcmn\glofcndlg.dfm"/>
-        <FormResources Include="startdlg.dfm"/>
         <FormResources Include="convmain.dfm"/>
         <FormResources Include="convopt.dfm"/>
+        <FormResources Include="startdlg.dfm"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -405,8 +405,8 @@
                     <Parameters Name="LoadUnspecifiedSymbols">False</Parameters>
                 </Parameters>
                 <Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\bcboffice2k260.bpl">Embarcadero C++Builder Office 2000 サーバー パッケージ</Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\bcbofficexp260.bpl">Embarcadero C++Builder Office XP サーバー パッケージ</Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\bcboffice2k260.bpl">Embarcadero C++Builder Office 2000 Servers Package</Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\bcbofficexp260.bpl">Embarcadero C++Builder Office XP Servers Package</Excluded_Packages>
                 </Excluded_Packages>
                 <ProjectProperties>
                     <ProjectProperties Name="AutoShowDeps">False</ProjectProperties>

@@ -362,7 +362,7 @@ static void decode_obsh(FILE *fp, char *buff, double ver, int *tsys,
     const char *defcodes[]={
         "CWX    ",  /* GPS: L125____ */
         "CCXX X ",  /* GLO: L1234_6_ */
-        "C XXXX ",  /* GAL: L1_5678_ */
+        "CXXXXX ",  /* GAL: L125678_ */
         "CXXX   ",  /* QZS: L1256___ */
         "C X    ",  /* SBS: L1_5____ */
         "XIXIIX ",  /* BDS: L125678_ */
@@ -769,7 +769,7 @@ static int decode_obsdata(FILE *fp, char *buff, double ver, int mask,
     uint8_t lli[MAXOBSTYPE]={0};
     uint8_t qual[MAXOBSTYPE]={0};
     char satid[8]="";
-    int i,j,n,m,q,stat=1,p[MAXOBSTYPE],k[16],l[16],r[16];
+    int i,j,n,m,stat=1,p[MAXOBSTYPE],k[16],l[16];
     
     trace(4,"decode_obsdata: ver=%.2f\n",ver);
     
@@ -814,71 +814,52 @@ static int decode_obsdata(FILE *fp, char *buff, double ver, int mask,
         obs->SNR[i]=obs->LLI[i]=obs->qualL[i]=obs->qualP[i]=obs->code[i]=0;
     }
     /* assign position in observation data */
-    for (i=n=m=q=0;i<ind->n;i++) {
-
-        p[i]=(ver<=2.11)?ind->idx[i]:ind->pos[i];
-
+    for (i=n=m=0;i<ind->n;i++) {
+        
+        p[i]=ind->idx[i];
+        
         if (ind->type[i]==0&&p[i]==0) k[n++]=i; /* C1? index */
         if (ind->type[i]==0&&p[i]==1) l[m++]=i; /* C2? index */
-        if (ind->type[i]==0&&p[i]==2) r[q++]=i; /* C3? index */
     }
-    if (ver<=2.11) {  /* TODO: ??? */
-        /* if multiple codes (C1/P1,C2/P2,C3/P3), select higher priority */
-        if (n>=2) {
-            if (val[k[0]]==0.0&&val[k[1]]==0.0) {
-                p[k[0]]=-1; p[k[1]]=-1;
-            }
-            else if (val[k[0]]!=0.0&&val[k[1]]==0.0) {
-                p[k[0]]=0; p[k[1]]=-1;
-            }
-            else if (val[k[0]]==0.0&&val[k[1]]!=0.0) {
-                p[k[0]]=-1; p[k[1]]=0;
-            }
-            else if (ind->pri[k[1]]>ind->pri[k[0]]) {
-                p[k[1]]=0; p[k[0]]=NEXOBS<1?-1:NFREQ;
-            }
-            else {
-                p[k[0]]=0; p[k[1]]=NEXOBS<1?-1:NFREQ;
-            }
+        
+    /* if multiple codes (C1/P1,C2/P2), select higher priority */
+    if (n>=2) {
+        if (val[k[0]]==0.0&&val[k[1]]==0.0) {
+            p[k[0]]=-1; p[k[1]]=-1;
         }
-        if (m>=2) {
-            if (val[l[0]]==0.0&&val[l[1]]==0.0) {
-                p[l[0]]=-1; p[l[1]]=-1;
-            }
-            else if (val[l[0]]!=0.0&&val[l[1]]==0.0) {
-                p[l[0]]=1; p[l[1]]=-1;
-            }
-            else if (val[l[0]]==0.0&&val[l[1]]!=0.0) {
-                p[l[0]]=-1; p[l[1]]=1; 
-            }
-            else if (ind->pri[l[1]]>ind->pri[l[0]]) {
-                p[l[1]]=1; p[l[0]]=NEXOBS<2?-1:NFREQ+1;
-            }
-            else {
-                p[l[0]]=1; p[l[1]]=NEXOBS<2?-1:NFREQ+1;
-            }
+        else if (val[k[0]]!=0.0&&val[k[1]]==0.0) {
+            p[k[0]]=0; p[k[1]]=-1;
         }
-        if (q>=2) {
-            if (val[r[0]]==0.0&&val[r[1]]==0.0) {
-                p[r[0]]=-1; p[r[1]]=-1;
-            }
-            else if (val[r[0]]!=0.0&&val[r[1]]==0.0) {
-                p[r[0]]=1; p[r[1]]=-1;
-            }
-            else if (val[r[0]]==0.0&&val[r[1]]!=0.0) {
-               p[r[0]]=-1; p[r[1]]=1;
-            }
-            else if (ind->pri[r[1]]>ind->pri[r[0]]) {
-                p[r[1]]=1; p[r[0]]=NEXOBS<2?-1:NFREQ+1;
-            }
-            else {
-                p[r[0]]=1; p[r[1]]=NEXOBS<2?-1:NFREQ+1;
-            }
+        else if (val[k[0]]==0.0&&val[k[1]]!=0.0) {
+            p[k[0]]=-1; p[k[1]]=0;
+        }
+        else if (ind->pri[k[1]]>ind->pri[k[0]]) {
+            p[k[1]]=0; p[k[0]]=NEXOBS<1?-1:NFREQ;
+        }
+        else {
+            p[k[0]]=0; p[k[1]]=NEXOBS<1?-1:NFREQ;
+        }
+    }
+    if (m>=2) {
+        if (val[l[0]]==0.0&&val[l[1]]==0.0) {
+            p[l[0]]=-1; p[l[1]]=-1;
+        }
+        else if (val[l[0]]!=0.0&&val[l[1]]==0.0) {
+            p[l[0]]=1; p[l[1]]=-1;
+        }
+        else if (val[l[0]]==0.0&&val[l[1]]!=0.0) {
+            p[l[0]]=-1; p[l[1]]=1; 
+        }
+        else if (ind->pri[l[1]]>ind->pri[l[0]]) {
+            p[l[1]]=1; p[l[0]]=NEXOBS<2?-1:NFREQ+1;
+        }
+        else {
+            p[l[0]]=1; p[l[1]]=NEXOBS<2?-1:NFREQ+1;
         }
     }
     /* save observation data */
     for (i=0;i<ind->n;i++) {
-        if (p[i]<0||val[i]==0.0) continue;
+        if (p[i]<0||(val[i]==0.0&&lli[i]==0)) continue;
         switch (ind->type[i]) {
             case 0: obs->P[p[i]]=val[i];
                     obs->code[p[i]]=ind->code[i];
@@ -1009,6 +990,7 @@ static void set_index(double ver, int sys, const char *opt,
             if (ind->code[k]==ind->code[j]) ind->pos[k]=NFREQ+i;
         }
     }
+    /* list rejected observation types */
     for (i=0;i<n;i++) {
         if (!ind->code[i]||!ind->pri[i]||ind->pos[i]>=0) continue;
         trace(3,"reject obs type: sys=%2d, obs=%s\n",sys,tobs[i]);
