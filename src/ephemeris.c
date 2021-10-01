@@ -442,8 +442,12 @@ static eph_t *seleph(gtime_t time, int sat, int iode, const nav_t *nav)
         if (iode>=0&&nav->eph[i].iode!=iode) continue;
         if (sys==SYS_GAL) {
             sel=getseleph(SYS_GAL);
-            if (sel==0&&!(nav->eph[i].code&(1<<9))) continue; /* I/NAV */
-            if (sel==1&&!(nav->eph[i].code&(1<<8))) continue; /* F/NAV */
+            /* this code is from 2.4.3 b34 but does not seem to be fully supported,
+               so for now I have dropped back to the b33 code */
+            /* if (sel==0&&!(nav->eph[i].code&(1<<9))) continue; */ /* I/NAV */
+            /*if (sel==1&&!(nav->eph[i].code&(1<<8))) continue; */ /* F/NAV */
+            if (sel==1&&!(nav->eph[i].code&(1<<9))) continue; /* I/NAV */
+            if (sel==2&&!(nav->eph[i].code&(1<<8))) continue; /* F/NAV */
             if (timediff(nav->eph[i].toe,time)>=0.0) continue; /* AOD<=0 */
         }
         if ((t=fabs(timediff(nav->eph[i].toe,time)))>tmax) continue;
@@ -451,8 +455,8 @@ static eph_t *seleph(gtime_t time, int sat, int iode, const nav_t *nav)
         if (t<=tmin) {j=i; tmin=t;} /* toe closest to time */
     }
     if (iode>=0||j<0) {
-        trace(3,"no broadcast ephemeris: %s sat=%2d iode=%3d\n",
-              time_str(time,0),sat,iode);
+        trace(3,"no broadcast ephemeris: %s sat=%2d iode=%3d\n",time_str(time,0),
+              sat,iode);
         return NULL;
     }
     return nav->eph+j;
@@ -813,10 +817,10 @@ extern void satposs(gtime_t teph, const obsd_t *obs, int n, const nav_t *nav,
 * args   : int    sys       I   satellite system (SYS_???)
 *          int    sel       I   selection of ephemeris
 *                                 GPS,QZS : 0:LNAV ,1:CNAV  (default: LNAV)
-*                                 GAL     : 0:I/NAV,1:F/NAV (default: I/NAV)
+*  b33 and demo5 b34:             GAL: 0:any,1:I/NAV,2:F/NAV
+*  2.4.3 b34 but not functional?  GAL     : 0:I/NAV,1:F/NAV (default: I/NAV)
 *                                 others : undefined
 * return : none
-* notes  : default ephemeris selection for galileo is any.
 *-----------------------------------------------------------------------------*/
 extern void setseleph(int sys, int sel)
 {

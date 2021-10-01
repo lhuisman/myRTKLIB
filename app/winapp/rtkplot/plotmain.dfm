@@ -2051,8 +2051,9 @@ object Plot: TPlot
     Filter = 
       'RINEX OBS (*.obs,*.*o,*.*d *O.rnx)|*.obs;*.*o;*.*o.gz;*.*o.Z;*.*' +
       'd;*.*d.gz;*.*d.Z;*O.rnx|RINEX NAV (*.nav,*.gnav,*.hnav,*.qnav,*.' +
-      '*n,*.*g,*.*h,*.*q,*.*p *N.rnx)|*.nav;*.gnav;*.hnav;*.qnav;*.*n;*' +
-      '.*g;*.*h;*.*q;*.*p;*N.rnx|All (*.*)|*.*'
+      '*n,*.*g,*.*h,*.*c,*.*l,*.*j,*.*q,*.*p *N.rnx)|*.nav;*.gnav;*.hna' +
+      'v;*.qnav;*.*n;*.*g;*.*h;*.*l;*.*c;*.*j;*.*q;*.*p;*N.rnx|All (*.*' +
+      ')|*.*'
     Options = [ofHideReadOnly, ofNoChangeDir, ofAllowMultiSelect, ofEnableSizing]
     Title = 'Open Obs/Nav Data'
     Left = 306

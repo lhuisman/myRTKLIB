@@ -152,7 +152,7 @@
         <BT_BuildType>Debug</BT_BuildType>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win64)'!=''">
-        <BCC_Defines>_DEBUG;$(BCC_Defines);NFREQ=3;$(BCC_Defines)</BCC_Defines>
+        <BCC_Defines>_DEBUG;$(BCC_Defines);$(BCC_Defines)</BCC_Defines>
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
         <LinkPackageStatics>rtl.lib;vcl.lib;vclx.lib;vclimg.lib;bindengine.lib;bcbie.lib;vclie.lib</LinkPackageStatics>
         <Debugger_CWD>D:\share</Debugger_CWD>
