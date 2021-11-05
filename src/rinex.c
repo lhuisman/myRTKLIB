@@ -2272,7 +2272,7 @@ extern int outrnxobsb(FILE *fp, const rnxopt_t *opt, const obsd_t *obs, int n,
     
     trace(3,"outrnxobsb: n=%d\n",n);
     
-    time2epoch(obs[0].time,ep);
+    time2epoch_n(obs[0].time,ep,7); /* output rounded to 7 decimals */
     
     for (i=ns=0;i<n&&ns<MAXOBS;i++) {
         sys=satsys(obs[i].sat,NULL);

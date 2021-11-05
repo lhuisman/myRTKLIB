@@ -1471,6 +1471,13 @@ extern void time2epoch(gtime_t t, double *ep)
     ep[0]=1970+days/1461*4+mon/12; ep[1]=mon%12+1; ep[2]=day+1;
     ep[3]=sec/3600; ep[4]=sec%3600/60; ep[5]=sec%60+t.sec;
 }
+/* same as above but output limited to n decimals for formatted output */
+extern void time2epoch_n(gtime_t t, double *ep, int n)
+{
+    if (n<0) n=0; else if (n>12) n=12;
+    if (1.0-t.sec<0.5/pow(10.0,n)) {t.time++; t.sec=0.0;};
+    time2epoch(t,ep);
+}
 /* gps time to time ------------------------------------------------------------
 * convert week and tow in gps time to gtime_t struct
 * args   : int    week      I   week number in gps time
