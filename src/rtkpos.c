@@ -1726,7 +1726,7 @@ static int resamb_LAMBDA(rtk_t *rtk, double *bias, double *xa,int gps,int glo,in
 static int manage_amb_LAMBDA(rtk_t *rtk, double *bias, double *xa, const int *sat, int nf, int ns) 
 {
     int i,f,lockc[NFREQ],ar=0,excflag=0,arsats[MAXOBS]={0};
-    int gps1=-1,glo1=-1,gps2,glo2,nb,rerun,dly;
+    int gps1=-1,glo1=-1,sbas1=-1,gps2,glo2,sbas2,nb,rerun,dly;
     float ratio1;
 
     trace(3,"prevRatios= %.3f %.3f\n",rtk->sol.prev_ratio1,rtk->sol.prev_ratio2);
@@ -1750,14 +1750,15 @@ static int manage_amb_LAMBDA(rtk_t *rtk, double *bias, double *xa, const int *sa
         } else rtk->excsat=0; /* exclude none and reset to beginning of list */
     }
 
-    /* skip first try if GLO fix-and-hold enabled and IC biases haven't been set yet */
-    if (rtk->opt.glomodear!=GLO_ARMODE_FIXHOLD || rtk->holdamb) {
+    /* skip first try if GLO and GLO fix-and-hold enabled and IC biases haven't been set yet */
+    if (1) { //(!(rtk->opt.navsys&SYS_GLO) || rtk->opt.glomodear!=GLO_ARMODE_FIXHOLD || rtk->holdamb) {
         /* for inital ambiguity resolution attempt, include all enabled sats
                 bias and xa are fixed solution outputs and are only updated if the ambiguities are resolved */
         gps1=1;    /* always enable gps for initial pass */
-        glo1=rtk->opt.glomodear>GLO_ARMODE_OFF?1:0;
+        glo1=(rtk->opt.navsys&SYS_GLO)?(((rtk->opt.glomodear==GLO_ARMODE_FIXHOLD)&&!rtk->holdamb)?0:1):0;
+        sbas1=(rtk->opt.navsys&SYS_GLO)?glo1:((rtk->opt.navsys&SYS_SBS)?1:0);
         /* first attempt to resolve ambiguities */
-        nb=resamb_LAMBDA(rtk,bias,xa,gps1,glo1,glo1);
+        nb=resamb_LAMBDA(rtk,bias,xa,gps1,glo1,sbas1);
         ratio1=rtk->sol.ratio;
         /* reject bad satellites if AR filtering enabled */
         if (rtk->opt.arfilter) {
@@ -1782,7 +1783,7 @@ static int manage_amb_LAMBDA(rtk_t *rtk, double *bias, double *xa, const int *sa
             if (rerun) {
                 trace(3,"rerun AR with new sat removed\n");
                 /* try again with new sats removed */
-                nb=resamb_LAMBDA(rtk,bias,xa,gps1,glo1,glo1);
+                nb=resamb_LAMBDA(rtk,bias,xa,gps1,glo1,sbas1);
             }
         }
         rtk->sol.prev_ratio1=ratio1;
@@ -1793,15 +1794,14 @@ static int manage_amb_LAMBDA(rtk_t *rtk, double *bias, double *xa, const int *sa
     }
 
     /* if fix-and-hold gloarmode enabled, re-run AR with final gps/glo settings if differ from above */
-    if (rtk->opt.glomodear==GLO_ARMODE_FIXHOLD) {
-        /* turn off gloarmode if no fix*/
-        glo2=rtk->sol.ratio<rtk->sol.thres?0:1;
+    if ((rtk->opt.navsys&SYS_GLO) && rtk->opt.glomodear==GLO_ARMODE_FIXHOLD && rtk->sol.ratio<rtk->sol.thres) {
+        glo2=sbas2=0;
         /* turn off gpsmode if not enabled and got good fix (used for debug and eval only) */
         gps2=rtk->opt.gpsmodear==0&&rtk->sol.ratio>=rtk->sol.thres?0:1;
 
         /* if modes changed since initial AR run or haven't run yet,re-run with new modes */
         if (glo1!=glo2||gps1!=gps2)
-            nb=resamb_LAMBDA(rtk,bias,xa,gps2,glo2,glo2);
+            nb=resamb_LAMBDA(rtk,bias,xa,gps2,glo2,sbas2);
     }
     /* restore excluded sat if still no fix or significant increase in ar ratio */
     if (excflag && (rtk->sol.ratio<rtk->sol.thres) && (rtk->sol.ratio<(1.5*rtk->sol.prev_ratio2))) {
