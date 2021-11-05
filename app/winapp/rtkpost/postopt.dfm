@@ -101,7 +101,7 @@ object OptDialog: TOptDialog
     Top = 1
     Width = 411
     Height = 377
-    ActivePage = TabSheet1
+    ActivePage = TabSheet4
     TabOrder = 4
     object TabSheet1: TTabSheet
       Caption = 'Setting&1'
@@ -1139,9 +1139,9 @@ object OptDialog: TOptDialog
         object Label6: TLabel
           Left = 35
           Top = 16
-          Width = 179
+          Width = 194
           Height = 13
-          Caption = 'Code/Carrier-Phase Error Ratio L1/L2'
+          Caption = 'Code/Carrier-Phase Error Ratio L1/L2/L5'
         end
         object Label7: TLabel
           Left = 35
@@ -1167,7 +1167,7 @@ object OptDialog: TOptDialog
         object MeasErrR1: TEdit
           Left = 246
           Top = 14
-          Width = 73
+          Width = 50
           Height = 21
           TabOrder = 0
           Text = '100.0'
@@ -1205,11 +1205,19 @@ object OptDialog: TOptDialog
           Text = '0.100'
         end
         object MeasErrR2: TEdit
-          Left = 321
+          Left = 296
           Top = 14
-          Width = 73
+          Width = 49
           Height = 21
           TabOrder = 5
+          Text = '100.0'
+        end
+        object MeasErrR5: TEdit
+          Left = 344
+          Top = 14
+          Width = 50
+          Height = 21
+          TabOrder = 6
           Text = '100.0'
         end
       end

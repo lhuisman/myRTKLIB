@@ -1024,10 +1024,10 @@ object MainForm: TMainForm
   object OpenDialog: TOpenDialog
     Filter = 
       'All (*.*)|*.*|RINEX OBS (*.obs,*.*O,*.*D)|*.obs;*.*O;*.*D|RINEX ' +
-      'NAV (*.*nav,*.*N,*.*P,*.*G,*.*H,*.*Q)|*.*nav;*.*N;*.*P;*.*G;*.*H' +
-      ';*.*Q|Precise Ephemeris/Clock (*.sp3,*.eph*,*.clk*)|*.sp3;*eph*;' +
-      '*.clk*|FCB (*.fcb),IONEX (*.*i,*.ionex),SBAS (*.sbs,*.ems)|*.fcb' +
-      ';*.*i;*.ionex;*.sbs;*.ems'
+      'NAV (*.*nav,*.*N,*.*P,*.*G,*.*H,*.*Q,*.*C,*.*L,*.*J)|*.*nav;*.*N' +
+      ';*.*P;*.*G;*.*H;*.*Q;*.*C;*.*L;*.*J|Precise Ephemeris/Clock (*.s' +
+      'p3,*.eph*,*.clk*)|*.sp3;*eph*;*.clk*|FCB (*.fcb),IONEX (*.*i,*.i' +
+      'onex),SBAS (*.sbs,*.ems)|*.fcb;*.*i;*.ionex;*.sbs;*.ems'
     Options = [ofHideReadOnly, ofNoChangeDir, ofAllowMultiSelect, ofEnableSizing]
     Left = 334
     Top = 235

@@ -328,7 +328,7 @@ static double varerr(int sat, int sys, double el, double snr_rover, int idx,
     double a, b, snr_max;
     double fact=1.0,sinel=sin(el);
     
-    if (type==1) fact*=opt->eratio[idx==0?0:1];
+    if (type==1) fact*=opt->eratio[idx];
     switch (sys) {
         case SYS_GPS: fact *= EFACT_GPS; break;
         case SYS_GLO: fact *= EFACT_GLO; break;

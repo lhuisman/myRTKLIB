@@ -203,7 +203,7 @@ public:
 	int SolStatic,SbasSat,MapFunc;
 	int PosOpt[6];
 	double ElMask,MaxAgeDiff,RejectThres,VarHoldAmb,GainHoldAmb,RejectGdop;
-	double MeasErrR1,MeasErrR2,MeasErr2,MeasErr3,MeasErr4,MeasErr5;
+	double MeasErrR1,MeasErrR2,MeasErrR5,MeasErr2,MeasErr3,MeasErr4,MeasErr5;
 	double SatClkStab,RovAntE,RovAntN,RovAntU,RefAntE,RefAntN,RefAntU;
 	double PrNoise1,PrNoise2,PrNoise3,PrNoise4,PrNoise5;
 	double ValidThresAR,ElMaskAR,ElMaskHold,SlipThres;

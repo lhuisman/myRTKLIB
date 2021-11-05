@@ -427,6 +427,7 @@ void __fastcall TOptDialog::GetOpt(void)
 	
 	MeasErrR1	 ->Text			=s.sprintf("%.1f",MainForm->MeasErrR1);
 	MeasErrR2	 ->Text			=s.sprintf("%.1f",MainForm->MeasErrR2);
+	MeasErrR5	 ->Text			=s.sprintf("%.1f",MainForm->MeasErrR5);
 	MeasErr2	 ->Text			=s.sprintf("%.3f",MainForm->MeasErr2);
 	MeasErr3	 ->Text			=s.sprintf("%.3f",MainForm->MeasErr3);
 	MeasErr4	 ->Text			=s.sprintf("%.3f",MainForm->MeasErr4);
@@ -558,6 +559,7 @@ void __fastcall TOptDialog::SetOpt(void)
 	
 	MainForm->MeasErrR1	  =str2dbl(MeasErrR1  ->Text);
 	MainForm->MeasErrR2	  =str2dbl(MeasErrR2  ->Text);
+	MainForm->MeasErrR5	  =str2dbl(MeasErrR5  ->Text);
 	MainForm->MeasErr2	  =str2dbl(MeasErr2   ->Text);
 	MainForm->MeasErr3	  =str2dbl(MeasErr3   ->Text);
 	MainForm->MeasErr4	  =str2dbl(MeasErr4   ->Text);
@@ -704,6 +706,7 @@ int ppp=PosMode->ItemIndex>=PMODE_PPP_KINEMA;
 	
 	MeasErrR1	 ->Text			=s.sprintf("%.1f",prcopt.eratio[0]);
 	MeasErrR2	 ->Text			=s.sprintf("%.1f",prcopt.eratio[1]);
+	MeasErrR5	 ->Text			=s.sprintf("%.1f",prcopt.eratio[2]);
 	MeasErr2	 ->Text			=s.sprintf("%.3f",prcopt.err[1]);
 	MeasErr3	 ->Text			=s.sprintf("%.3f",prcopt.err[2]);
 	MeasErr4	 ->Text			=s.sprintf("%.3f",prcopt.err[3]);
@@ -862,6 +865,7 @@ int ppp=PosMode->ItemIndex>=PMODE_PPP_KINEMA;
 	
 	prcopt.eratio[0]=str2dbl(MeasErrR1->Text);
 	prcopt.eratio[1]=str2dbl(MeasErrR2->Text);
+	prcopt.eratio[2]=str2dbl(MeasErrR5->Text);
 	prcopt.err[1]	=str2dbl(MeasErr2->Text);
 	prcopt.err[2]	=str2dbl(MeasErr3->Text);
 	prcopt.err[3]	=str2dbl(MeasErr4->Text);
@@ -1114,4 +1118,5 @@ void __fastcall TOptDialog::BtnFreqClick(TObject *Sender)
     FreqDialog->ShowModal();
 }
 //---------------------------------------------------------------------------
+
 
