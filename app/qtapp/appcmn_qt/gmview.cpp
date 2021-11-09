@@ -58,9 +58,11 @@ int GoogleMapView::setApiKey(QString ApiKey)
 {
     htmlPage.replace("_APIKEY_", ApiKey);
 #ifdef QWEBKIT
+    /*
     WebBrowser->load(QUrl::fromLocalFile(dir));
     WebBrowser->show();
     loaded = true;
+    */
 #endif
 #ifdef QWEBENGINE
     WebBrowser->setHtml(htmlPage);

@@ -205,9 +205,9 @@ void MapView::ShowMapLL(void)
 
 
 #ifdef QWEBKIT
-    WebBrowser->load(QUrl::fromLocalFile(ofile));
+    /*WebBrowser->load(QUrl::fromLocalFile(ofile));
     WebBrowser->show();
-    loaded = true;
+    loaded = true;*/
 #endif
 #ifdef QWEBENGINE
     WebBrowser->setHtml(pageSource);
@@ -257,9 +257,11 @@ void MapView::ShowMapGM(void)
     ifp.close();
 
 #ifdef QWEBKIT
+    /*
     WebBrowser->load(QUrl::fromLocalFile(ofile));
     WebBrowser->show();
     loaded = true;
+    */
 #endif
 #ifdef QWEBENGINE
     WebBrowser->setHtml(pageSource);
