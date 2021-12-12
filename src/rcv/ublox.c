@@ -110,8 +110,11 @@ typedef enum { false, true } bool;
 
 #define P2_10       0.0009765625 /* 2^-10 */
 
-#define MAX_CPSTD_VALID_GEN8 5       /* max std-dev for valid carrier-phase  */
-#define MAX_CPSTD_VALID_GEN9 8       /* max std-dev for valid carrier-phase  */
+/* max std-dev for valid carrier-phases, current code is unable to correctly 
+   distinguish between Gen8 and Gen9 modules,so use Gen8 values for both */
+#define MAX_CPSTD_VALID_GEN8 5       /* optimal value for Gen8 modules  */
+#define MAX_CPSTD_VALID_GEN9 5       /* temp value for Gen9 modules   */
+/* #define MAX_CPSTD_VALID_GEN9 8 */ /* optimal value for Gen9 modules  */
 #define CPSTD_SLIP 15           /* std-dev threshold for slip */
 
 #define ROUND(x)    (int)floor((x)+0.5)
