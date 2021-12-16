@@ -322,39 +322,49 @@ static int model_phw(gtime_t time, int sat, const char *type, int opt,
     return 1;
 }
 /* measurement error variance ------------------------------------------------*/
-static double varerr(int sat, int sys, double el, double snr_rover, int idx, 
-                     int type, const prcopt_t *opt)
+static double varerr(int sat, int sys, double el, double snr_rover,
+                     int f, const prcopt_t *opt, const obsd_t *obs)
 {
-    double a, b, snr_max;
-    double fact=1.0,sinel=sin(el);
-    
-    if (type==1) fact*=opt->eratio[idx];
+    double a,b,e;
+    double snr_max=opt->err[5];
+    double fact=1.0;
+    double sinel=sin(el),var;
+    int nf=NF(opt),frq,code;
+
+    frq=f%nf;code=f<nf?0:1;
+    /* increase variance for pseudoranges */
+    if (code) fact=opt->eratio[frq];
+    if (fact<=0.0) fact=opt->eratio[0];
+    /* adjust variances for constellation */
     switch (sys) {
-        case SYS_GPS: fact *= EFACT_GPS; break;
-        case SYS_GLO: fact *= EFACT_GLO; break;
-        case SYS_GAL: fact *= EFACT_GAL; break;
-        case SYS_CMP: fact *= EFACT_CMP; break;
-        case SYS_SBS: fact *= EFACT_SBS; break;
-        default:      fact *= EFACT_GPS; break;
+        case SYS_GPS: fact*=EFACT_GPS;break;
+        case SYS_GLO: fact*=EFACT_GLO;break;
+        case SYS_GAL: fact*=EFACT_GAL;break;
+        case SYS_SBS: fact*=EFACT_SBS;break;
+        case SYS_QZS: fact*=EFACT_QZS;break;
+        case SYS_CMP: fact*=EFACT_CMP;break;
+        case SYS_IRN: fact*=EFACT_IRN;break;
+        default:      fact*=EFACT_GPS;break;
     }
-    
     if (sys==SYS_GPS||sys==SYS_QZS) {
-        if (idx==2) fact*=EFACT_GPS_L5; /* GPS/QZS L5 error factor */
+        if (frq==2) fact*=EFACT_GPS_L5; /* GPS/QZS L5 error factor */
     }
-        
-    a = fact * opt->err[1];
-    b = fact * opt->err[2];
-    snr_max = opt->err[5];
-    
-    /* note: SQR(3.0) is approximated scale factor for error variance 
-       in the case of iono-free combination */
-    fact = (opt->ionoopt == IONOOPT_IFLC) ? SQR(3.0) : 1.0;
-    switch (opt->weightmode) {
-        case WEIGHTOPT_ELEVATION: return fact * ( SQR(a) + SQR(b / sinel) );
-        case WEIGHTOPT_SNR      : return fact * SQR(a) * pow(10, 0.1 * MAX(snr_max - snr_rover, 0)); 
-                                                   ;
-        default: return 0;
+    /* adjust variance for config parameters */
+    a=fact*opt->err[1];  /* base term */
+    b=fact*opt->err[2];  /* el term */
+    /* calculate variance */
+    var=(a*a+b*b/sinel/sinel);
+    if (opt->err[6]>0) {  /* add SNR term */
+        e=fact*opt->err[6];
+        var+=e*e*(pow(10,0.1*MAX(snr_max-snr_rover,0)));
     }
+    if (opt->err[7]>0.0) {   /* add rcvr stdevs term */
+        if (code) var+=SQR(opt->err[7]*0.01*(1<<(obs->Pstd[frq]+5))); /* 0.01*2^(n+5) */
+        else var+=SQR(opt->err[7]*obs->Lstd[frq]*0.004*0.2); /* 0.004 cycles -> m) */
+    }
+
+    var*=(opt->ionoopt==IONOOPT_IFLC)?SQR(3.0):1.0;
+    return var;
 }
 /* initialize state and covariance -------------------------------------------*/
 static void initx(rtk_t *rtk, double xi, double var, int i)
@@ -1020,7 +1030,8 @@ static int ppp_res(int post, const obsd_t *obs, int n, const double *rs,
             /* variance */
             var[nv]=varerr(obs[i].sat,sys,azel[1+i*2],
                     SNR_UNIT*rtk->ssat[sat-1].snr_rover[frq],
-                    frq,code,opt)+vart+SQR(C)*vari+var_rs[i];
+                    j,opt,obs+i);
+            var[nv] +=vart+SQR(C)*vari+var_rs[i];
             if (sys==SYS_GLO&&code==1) var[nv]+=VAR_GLO_IFB;
             
             trace(3,"%s sat=%2d %s%d res=%9.4f sig=%9.4f el=%4.1f\n",str,sat,

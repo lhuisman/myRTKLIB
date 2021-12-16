@@ -66,7 +66,6 @@
 #define INIT_ZWD    0.15     /* initial zwd (m) */
 
 #define GAP_RESION  120      /* gap to reset ionosphere parameters (epochs) */
-#define MAXACC      30.0     /* max accel for doppler slip detection (m/s^2) */
 
 #define TTOL_MOVEB  (1.0+2*DTTOL)
                              /* time sync tolerance for moving-baseline (s) */
@@ -398,45 +397,46 @@ static double gfobs(const obsd_t *obs, int i, int j, int k, const nav_t *nav)
 static double varerr(int sat, int sys, double el, double snr_rover, double snr_base, 
                      double bl, double dt, int f, const prcopt_t *opt, const obsd_t *obs)
 {
-    double a, b, c = opt->err[3] * bl / 1E4;
-    double snr_max = opt->err[5];
-    double d = CLIGHT * opt->sclkstab * dt;
-    double fact = 1.0;
-    double sinel = sin(el);
-    int nf = NF(opt), frq, code;
+    double a,b,c,d,e;
+    double snr_max=opt->err[5];
+    double fact=1.0;
+    double sinel=sin(el),var;
+    int nf=NF(opt),frq,code;
 
     frq=f%nf;code=f<nf?0:1;
-
-    if (opt->rcvstds&& obs->qualL[frq]!='\0'&&obs->qualP[frq]!='\0') {
-       /* include err ratio and measurement std (P or L) from receiver */
-       if (code) fact=opt->eratio[frq]*obs->qualP[frq];
-       else fact=obs->qualL[frq];
-    } else if (code) fact=opt->eratio[frq]; /* use err ratio only */
-    if (fact <= 0.0) fact = opt->eratio[0];
-        switch (sys) {
-            case SYS_GPS: fact *= EFACT_GPS; break;
-            case SYS_GLO: fact *= EFACT_GLO; break;
-            case SYS_GAL: fact *= EFACT_GAL; break;
-            case SYS_SBS: fact *= EFACT_SBS; break;
-            case SYS_QZS: fact *= EFACT_QZS; break;
-            case SYS_CMP: fact *= EFACT_CMP; break;
-            case SYS_IRN: fact *= EFACT_IRN; break;
-            default:      fact *= EFACT_GPS; break;
-        }
-        
-    a = fact * opt->err[1];
-    b = fact * opt->err[2];
-
-    /* note: SQR(3.0) is approximated scale factor for error variance 
-       in the case of iono-free combination */
-    fact = (opt->ionoopt == IONOOPT_IFLC) ? SQR(3.0) : 1.0;
-    switch (opt->weightmode) {
-        case WEIGHTOPT_ELEVATION: return fact * 2.0 * ( SQR(a) + SQR(b / sinel) + SQR(c) ) + SQR(d);
-        case WEIGHTOPT_SNR      : return fact * ( SQR(a) * 
-                                                  (pow(10, 0.1 * MAX(snr_max - snr_rover, 0)) + 
-                                                   pow(10, 0.1 * MAX(snr_max - snr_base,  0))) + SQR(c) ) + SQR(d);
-        default: return 0;
+    /* increase variance for pseudoranges */
+    if (code) fact=opt->eratio[frq]; 
+    if (fact<=0.0) fact=opt->eratio[0];
+    /* adjust variances for constellation */
+    switch (sys) {
+        case SYS_GPS: fact*=EFACT_GPS;break;
+        case SYS_GLO: fact*=EFACT_GLO;break;
+        case SYS_GAL: fact*=EFACT_GAL;break;
+        case SYS_SBS: fact*=EFACT_SBS;break;
+        case SYS_QZS: fact*=EFACT_QZS;break;
+        case SYS_CMP: fact*=EFACT_CMP;break;
+        case SYS_IRN: fact*=EFACT_IRN;break;
+        default:      fact*=EFACT_GPS;break;
     }
+    /* adjust variance for config parameters */
+    a=fact*opt->err[1];  /* base term */
+    b=fact*opt->err[2];  /* el term */
+    c=opt->err[3]*bl/1E4; /* baseline term */
+    d=CLIGHT*opt->sclkstab*dt; /* clock term */
+    /* calculate variance */
+    var=2.0*(a*a+b*b/sinel/sinel+c*c)+d*d;
+    if (opt->err[6]>0) {  /* add SNR term */
+        e=fact*opt->err[6];
+        var+=e*e*(pow(10,0.1*MAX(snr_max-snr_rover,0))+
+                  pow(10,0.1*MAX(snr_max-snr_base, 0)));
+    }
+    if (opt->err[7]>0.0) {   /* add rcvr stdevs term */
+        if (code) var+=SQR(opt->err[7]*0.01*(1<<(obs->Pstd[frq]+5))); /* 0.01*2^(n+5) */
+        else var+=SQR(opt->err[7]*obs->Lstd[frq]*0.004*0.2); /* 0.004 cycles -> m) */
+    }
+
+    var*=(opt->ionoopt==IONOOPT_IFLC)?SQR(3.0):1.0;
+    return var;
 }
 /* baseline length -----------------------------------------------------------*/
 static double baseline(const double *ru, const double *rb, double *dr)
@@ -691,25 +691,26 @@ static void detslp_gf(rtk_t *rtk, const obsd_t *obs, int i, int j,
                            const nav_t *nav)
 {
     int k,sat=obs[i].sat;
-    double g0,g1;
+    double gf0,gf1;
     
     trace(4,"detslp_gf: i=%d j=%d\n",i,j);
 
     /* skip check if slip already detected */
-    for (k=1;k<rtk->opt.nf;k++)
+    for (k=0;k<rtk->opt.nf;k++)
         if (rtk->ssat[sat-1].slip[k]&1) return;
     
     for (k=1;k<rtk->opt.nf;k++) {
-        if ((g1=gfobs(obs,i,j,k,nav))==0.0) continue;
+        /* calc SD geomotry free LC of phase between freq0 and freqk */
+        if ((gf1=gfobs(obs,i,j,k,nav))==0.0) continue;
 
-        g0=rtk->ssat[sat-1].gf[k-1];
-        rtk->ssat[sat-1].gf[k-1]=g1;
-        
-        if (g0!=0.0&&fabs(g1-g0)>rtk->opt.thresslip) {
+        gf0=rtk->ssat[sat-1].gf[k-1];    /* retrieve previous gf */
+        rtk->ssat[sat-1].gf[k-1]=gf1;    /* save current gf for next epoch */
+
+        if (gf0!=0.0&&fabs(gf1-gf0)>rtk->opt.thresslip) {
             rtk->ssat[sat-1].slip[0]|=1;
             rtk->ssat[sat-1].slip[k]|=1;
-            errmsg(rtk,"slip detected GF jump (sat=%2d L1-L%d GF=%.3f %.3f)\n",
-                sat,k+1,g0,g1);
+            errmsg(rtk,"slip detected GF jump (sat=%2d L1-L%d dGF=%.3f)\n",
+                sat,k+1,gf0-gf1);
         }
     }
 }
@@ -717,34 +718,37 @@ static void detslp_gf(rtk_t *rtk, const obsd_t *obs, int i, int j,
 static void detslp_dop(rtk_t *rtk, const obsd_t *obs, int i, int rcv,
                        const nav_t *nav)
 {
-#if 0 /* detection with doppler disabled because of clock-jump issue (v.2.3.0) */
     int f,sat=obs[i].sat;
-    double tt,dph,dpt,lam,thres;
+    double tt,dph,dpt,lam,thres,maxacc;
     
     trace(4,"detslp_dop: i=%d rcv=%d\n",i,rcv);
+    if (rtk->opt.thresdop<=0) return;  /* skip test if doppler thresh <= 0 */
     
     for (f=0;f<rtk->opt.nf;f++) {
-        if (obs[i].L[f]==0.0||obs[i].D[f]==0.0||rtk->ph[rcv-1][sat-1][f]==0.0) {
+        if (obs[i].L[f]==0.0||obs[i].D[f]==0.0||rtk->ssat[sat-1].ph[rcv-1][f]==0.0) {
             continue;
         }
-        if (fabs(tt=timediff(obs[i].time,rtk->pt[rcv-1][sat-1][f]))<DTTOL) continue;
-        if ((lam=nav->lam[sat-1][f])<=0.0) continue;
-        
+        if (fabs(tt=timediff(obs[i].time,rtk->ssat[sat-1].pt[rcv-1][f]))<DTTOL) continue;
+        if ((lam=sat2freq(obs[i].sat,obs[i].code[f],nav))<=0.0) continue;
+
         /* cycle slip threshold (cycle) */
-        thres=MAXACC*tt*tt/2.0/lam+rtk->opt.err[4]*fabs(tt)*4.0;
-        
+        if (rtk->opt.mode==PMODE_STATIC||rtk->opt.mode==PMODE_PPP_STATIC)
+            maxacc=0;
+        else
+            maxacc=rtk->opt.prn[3]*4; /* set max accel to 4 stdevs of haccel */
+        thres=maxacc*tt*tt/2.0/lam+rtk->opt.thresdop*fabs(tt);
+
         /* phase difference and doppler x time (cycle) */
-        dph=obs[i].L[f]-rtk->ph[rcv-1][sat-1][f];
+        dph=obs[i].L[f]-rtk->ssat[sat-1].ph[rcv-1][f];
         dpt=-obs[i].D[f]*tt;
         
         if (fabs(dph-dpt)<=thres) continue;
         
-        rtk->slip[sat-1][f]|=1;
+        rtk->ssat[sat-1].slip[f]|=1;
         
-        errmsg(rtk,"slip detected (sat=%2d rcv=%d L%d=%.3f %.3f thres=%.3f)\n",
-               sat,rcv,f+1,dph,dpt,thres);
+        errmsg(rtk,"slip detected doppler (sat=%2d rcv=%d dL%d=%.3f thres=%.3f)\n",
+               sat,rcv,f+1,dph-dpt,thres);
     }
-#endif
 }
 /* temporal update of phase biases -------------------------------------------*/
 static void udbias(rtk_t *rtk, double tt, const obsd_t *obs, const int *sat,
@@ -761,14 +765,14 @@ static void udbias(rtk_t *rtk, double tt, const obsd_t *obs, const int *sat,
         for (k=0;k<rtk->opt.nf;k++) rtk->ssat[sat[i]-1].slip[k]&=0xFC;
         detslp_ll(rtk,obs,iu[i],1);
         detslp_ll(rtk,obs,ir[i],2);
-        
-        /* detect cycle slip by geometry-free phase jump */
-        detslp_gf(rtk,obs,iu[i],ir[i],nav);
-        
+
         /* detect cycle slip by doppler and phase difference */
         detslp_dop(rtk,obs,iu[i],1,nav);
         detslp_dop(rtk,obs,ir[i],2,nav);
         
+        /* detect cycle slip by geometry-free phase jump */
+        detslp_gf(rtk,obs,iu[i],ir[i],nav);
+
         /* update half-cycle valid flag */
         for (k=0;k<nf;k++) {
             rtk->ssat[sat[i]-1].half[k]=
@@ -852,7 +856,7 @@ static void udbias(rtk_t *rtk, double tt, const obsd_t *obs, const int *sat,
             freqi=sat2freq(sat[i],obs[iu[i]].code[k],nav);
             sysi=rtk->ssat[sat[i]-1].sys;
             initx(rtk,(bias[i]-rtk->com_bias)*freqi/CLIGHT,SQR(rtk->opt.std[0]),IB(sat[i],k,&rtk->opt));
-            trace(3,"     sat=%3d: init phase=%.3f\n",sat[i],(bias[i]-rtk->com_bias*freqi/CLIGHT));
+            trace(3,"     sat=%3d, F=%d: init phase=%.3f\n",sat[i],k+1, (bias[i]-rtk->com_bias*freqi/CLIGHT));
             rtk->ssat[sat[i]-1].lock[k]=-rtk->opt.minlock;
         }
         free(bias);
@@ -1021,7 +1025,7 @@ static int validobs(int i, int j, int f, int nf, double *y)
 *   nb[n]:  # of sat pairs in group
 *   n:      # of groups (2 for each system, phase and code)
 *   Ri[nv]: variances of first sats in double diff pairs
-*   Rj[nv]: variances of 2nd sats in double diff pairs              
+*   Rj[nv]: variances of 2nd sats in double diff pairs
 *   nv:     total # of sat pairs 
 *   R[nv][nv]:  double diff measurement err covariance matrix       */
 static void ddcov(const int *nb, int n, const double *Ri, const double *Rj,
@@ -1188,6 +1192,7 @@ static int ddres(rtk_t *rtk, const nav_t *nav, const obsd_t *obs, double dt, con
                 sysi=rtk->ssat[sat[j]-1].sys;
                 if (!test_sys(sysi,m) || sysi==SYS_SBS) continue;
                 if (!validobs(iu[j],ir[j],f,nf,y)) continue;
+                if (rtk->ssat[sat[j]-1].slip[frq]&LLI_SLIP) continue;
                 if (i<0||azel[1+iu[j]*2]>=azel[1+iu[i]*2]) i=j;
             }
             if (i<0) continue;
@@ -1292,24 +1297,24 @@ static int ddres(rtk_t *rtk, const nav_t *nav, const obsd_t *obs, double dt, con
                 jj=IB(sat[j],frq,opt);
                 /* adjust threshold by error stdev ratio unless one of the phase biases was just initialized*/
                 threshadj=code||(rtk->P[ii+rtk->nx*ii]==SQR(rtk->opt.std[0]))||
-                          (rtk->P[jj+rtk->nx*jj]==SQR(rtk->opt.std[0]))?opt->eratio[frq]:1;
+                        (rtk->P[jj+rtk->nx*jj]==SQR(rtk->opt.std[0]))?opt->eratio[frq]:1;
                 if (opt->maxinno>0.0&&fabs(v[nv])>opt->maxinno*threshadj) {
-                       rtk->ssat[sat[j]-1].vsat[frq]=0;
-                       rtk->ssat[sat[j]-1].rejc[frq]++;
-                       errmsg(rtk,"outlier rejected (sat=%3d-%3d %s%d v=%.3f)\n",
+                    rtk->ssat[sat[j]-1].vsat[frq]=0;
+                    rtk->ssat[sat[j]-1].rejc[frq]++;
+                    errmsg(rtk,"outlier rejected (sat=%3d-%3d %s%d v=%.3f)\n",
                             sat[i],sat[j],code?"P":"L",frq+1,v[nv]);
                     continue;
                 }
 
-                /* single-differenced measurement error variances */
-                Ri[nv] = varerr(sat[i], sysi, azel[1+iu[i]*2], 
-                                SNR_UNIT * rtk->ssat[sat[i]-1].snr_rover[frq],
-                                SNR_UNIT * rtk->ssat[sat[i]-1].snr_base[frq],
-                                bl, dt, f, opt,&obs[iu[i]]);
+                /* single-differenced measurement error variances (m) */
+                Ri[nv] = varerr(sat[i], sysi, azel[1+iu[i]*2],
+                                SNR_UNIT*rtk->ssat[sat[i]-1].snr_rover[frq],
+                                SNR_UNIT*rtk->ssat[sat[i]-1].snr_base[frq],
+                                bl,dt,f,opt,&obs[iu[i]]);
                 Rj[nv] = varerr(sat[j], sysj, azel[1+iu[j]*2], 
-                                SNR_UNIT * rtk->ssat[sat[j]-1].snr_rover[frq],
-                                SNR_UNIT * rtk->ssat[sat[j]-1].snr_base[frq],
-                                bl, dt, f, opt,&obs[iu[j]]);
+                                SNR_UNIT*rtk->ssat[sat[j]-1].snr_rover[frq],
+                                SNR_UNIT*rtk->ssat[sat[j]-1].snr_base[frq],
+                                bl,dt,f,opt,&obs[iu[j]]);
             
                 /* set valid data flags */
                 if (opt->mode>PMODE_DGPS) {
@@ -2183,8 +2188,7 @@ extern void rtkfree(rtk_t *rtk)
 *                .outc [f]  IO  freq(f+1) carrier outage count
 *                .slipc[f]  IO  freq(f+1) cycle slip count
 *                .rejc [f]  IO  freq(f+1) data reject count
-*                .gf        IO  geometry-free phase (L1-L2) (m)
-*                .gf2       IO  geometry-free phase (L1-L5) (m)
+*                .gf        IO  geometry-free phase (L1-L2 or L1-L5) (m)
 *            rtk->nfix      IO  number of continuous fixes of ambiguity
 *            rtk->neb       IO  bytes of error message buffer
 *            rtk->errbuf    IO  error message buffer

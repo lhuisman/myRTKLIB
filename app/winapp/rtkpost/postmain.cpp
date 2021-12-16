@@ -875,7 +875,6 @@ int __fastcall TMainForm::GetOption(prcopt_t &prcopt, solopt_t &solopt,
     prcopt.minholdsats=MinHoldSats;
     prcopt.mindropsats=MinDropSats;
     prcopt.arfilter=ARFilter;
-    prcopt.rcvstds=RcvStds;
     prcopt.intpref  =IntpRefObs;
     prcopt.sbassatsel=SbasSat;
     prcopt.eratio[0]=MeasErrR1;
@@ -885,6 +884,9 @@ int __fastcall TMainForm::GetOption(prcopt_t &prcopt, solopt_t &solopt,
     prcopt.err[2]   =MeasErr3;
     prcopt.err[3]   =MeasErr4;
     prcopt.err[4]   =MeasErr5;
+    prcopt.err[5]   =MeasErr6;
+    prcopt.err[6]   =MeasErr7;
+    prcopt.err[7]   =MeasErr8;
     prcopt.prn[0]   =PrNoise1;
     prcopt.prn[1]   =PrNoise2;
     prcopt.prn[2]   =PrNoise3;
@@ -901,6 +903,7 @@ int __fastcall TMainForm::GetOption(prcopt_t &prcopt, solopt_t &solopt,
     prcopt.elmaskar =ElMaskAR*D2R;
     prcopt.elmaskhold=ElMaskHold*D2R;
     prcopt.thresslip=SlipThres;
+    prcopt.thresdop=DopThres;
     prcopt.maxtdiff =MaxAgeDiff;
     prcopt.maxgdop  =RejectGdop;
     prcopt.maxinno  =RejectThres;
@@ -1255,6 +1258,7 @@ void __fastcall TMainForm::LoadOpt(void)
     ElMaskHold         =ini->ReadFloat  ("opt","elmaskhold",  15.0);
     OutCntResetAmb     =ini->ReadInteger("opt","outcntresetbias",20);
     SlipThres          =ini->ReadFloat  ("opt","slipthres",   0.05);
+    DopThres           =ini->ReadFloat  ("opt","dopthres",     0.0);
     MaxAgeDiff         =ini->ReadFloat  ("opt","maxagediff",  30.0);
     RejectThres        =ini->ReadFloat  ("opt","rejectthres", 30.0);
     VarHoldAmb         =ini->ReadFloat  ("opt","varholdamb",   0.1);
@@ -1266,7 +1270,6 @@ void __fastcall TMainForm::LoadOpt(void)
     MinHoldSats        =ini->ReadInteger("opt","minholdsats",    5);
     MinDropSats        =ini->ReadInteger("opt","mindropsats",   10);
     ARFilter           =ini->ReadInteger("opt","arfilter",       1);
-    RcvStds            =ini->ReadInteger("opt","rcvstds",        0);
     CodeSmooth         =ini->ReadInteger("opt","codesmooth",     0);
     BaseLine[0]        =ini->ReadFloat  ("opt","baselinelen",  0.0);
     BaseLine[1]        =ini->ReadFloat  ("opt","baselinesig",  0.0);
@@ -1296,6 +1299,9 @@ void __fastcall TMainForm::LoadOpt(void)
     MeasErr3           =ini->ReadFloat  ("opt","measerr3",   0.003);
     MeasErr4           =ini->ReadFloat  ("opt","measerr4",   0.000);
     MeasErr5           =ini->ReadFloat  ("opt","measerr5",   1.000);
+    MeasErr6           =ini->ReadFloat  ("opt","measerr6",   52.00);
+    MeasErr7           =ini->ReadFloat  ("opt","measerr7",   0.000);
+    MeasErr8           =ini->ReadFloat  ("opt","measerr8",   0.000);
     SatClkStab         =ini->ReadFloat  ("opt","satclkstab", 5E-12);
     PrNoise1           =ini->ReadFloat  ("opt","prnoise1",    1E-4);
     PrNoise2           =ini->ReadFloat  ("opt","prnoise2",    1E-3);
@@ -1476,6 +1482,7 @@ void __fastcall TMainForm::SaveOpt(void)
     ini->WriteFloat  ("opt","elmaskhold",  ElMaskHold  );
     ini->WriteInteger("opt","outcntresetbias",OutCntResetAmb);
     ini->WriteFloat  ("opt","slipthres",   SlipThres   );
+    ini->WriteFloat  ("opt","dopthres",    DopThres    );
     ini->WriteFloat  ("opt","maxagediff",  MaxAgeDiff  );
     ini->WriteFloat  ("opt","rejectgdop",  RejectGdop  );
     ini->WriteFloat  ("opt","rejectthres", RejectThres );
@@ -1487,7 +1494,6 @@ void __fastcall TMainForm::SaveOpt(void)
     ini->WriteInteger("opt","minholdsats", MinHoldSats );
     ini->WriteInteger("opt","mindropsats", MinDropSats );
     ini->WriteInteger("opt","arfilter",    ARFilter    );
-    ini->WriteInteger("opt","rcvstds",     RcvStds     );
     ini->WriteInteger("opt","codesmooth",  CodeSmooth  );
     ini->WriteFloat  ("opt","baselinelen", BaseLine[0] );
     ini->WriteFloat  ("opt","baselinesig", BaseLine[1] );
@@ -1517,6 +1523,9 @@ void __fastcall TMainForm::SaveOpt(void)
     ini->WriteFloat  ("opt","measerr3",    MeasErr3    );
     ini->WriteFloat  ("opt","measerr4",    MeasErr4    );
     ini->WriteFloat  ("opt","measerr5",    MeasErr5    );
+    ini->WriteFloat  ("opt","measerr6",    MeasErr6    );
+    ini->WriteFloat  ("opt","measerr7",    MeasErr7    );
+    ini->WriteFloat  ("opt","measerr8",    MeasErr8    );
     ini->WriteFloat  ("opt","satclkstab",  SatClkStab  );
     ini->WriteFloat  ("opt","prnoise1",    PrNoise1    );
     ini->WriteFloat  ("opt","prnoise2",    PrNoise2    );

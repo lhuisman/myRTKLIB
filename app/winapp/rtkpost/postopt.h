@@ -146,7 +146,6 @@ __published:
 	TEdit *BaselineLen;
 	TEdit *BaselineSig;
 	TLabel *Label64;
-	TEdit *MeasErr5;
 	TCheckBox *BaselineConst;
 	TLabel *Label10;
 	TEdit *PrNoise4;
@@ -232,13 +231,19 @@ __published:
     TLabel *Label47;
     TEdit *VarHoldAmb;
     TEdit *GainHoldAmb;
-    TComboBox *RcvStds;
     TEdit *MinDropSats;
     TEdit *GloHwBias;
     TLabel *Label48;
     TEdit *ValidThresARMin;
     TEdit *ValidThresARMax;
     TEdit *MeasErrR5;
+    TEdit *MeasErr8;
+    TLabel *Label51;
+    TEdit *MeasErr7;
+    TEdit *MeasErr6;
+    TEdit *DopThres;
+    TLabel *Label52;
+    TEdit *MeasErr5;
 	void __fastcall BtnOkClick(TObject *Sender);
 	void __fastcall RovAntPcvClick(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);
@@ -290,6 +295,7 @@ __published:
 	void __fastcall BtnMaskClick(TObject *Sender);
 	void __fastcall NavSys6Click(TObject *Sender);
 	void __fastcall BtnFreqClick(TObject *Sender);
+
 private:
 	snrmask_t SnrMask;
 	int RovPosTypeP,RefPosTypeP;

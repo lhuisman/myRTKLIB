@@ -46,9 +46,9 @@
 #define MIN_EL      (5.0*D2R)   /* min elevation for measurement error (rad) */
 
 /* pseudorange measurement error variance ------------------------------------*/
-static double varerr(const prcopt_t *opt, double el, double snr_rover, int sys)
+static double varerr(const prcopt_t *opt, const ssat_t *ssat, const obsd_t *obs, double el, int sys)
 {
-    double fact=1.0,varr;
+    double fact=1.0,varr,snr_rover;
 
     switch (sys) {
         case SYS_GPS: fact *= EFACT_GPS; break;
@@ -60,14 +60,16 @@ static double varerr(const prcopt_t *opt, double el, double snr_rover, int sys)
         default:      fact *= EFACT_GPS; break;
     }
     if (el<MIN_EL) el=MIN_EL;
-    if (opt->weightmode==WEIGHTOPT_ELEVATION) {
-        /* var = R^2 * (a^2 + b^2 / sin(el)) */
-        varr=SQR(opt->eratio[0])*(SQR(opt->err[1])+SQR(opt->err[2])/sin(el));
-    } else { /* WEIGHTOPT_SNR */
-        /* var = R^2 * (a^2 * (10^(0.1*(snr_max-snr_rover)) */
-        varr=SQR(opt->eratio[0])*SQR(opt->err[1])*pow(10,0.1*MAX(opt->err[5]-snr_rover,0));
-    } 
-
+    /* var = R^2*(a^2 + (b^2/sin(el) + c^2*(10^(0.1*(snr_max-snr_rover)))) + (d*rcv_std)^2) */
+    varr=SQR(opt->err[1])+SQR(opt->err[2])/sin(el);
+    if (opt->err[6]>0.0) {  /* if snr term not zero */
+        snr_rover=(ssat)?SNR_UNIT*ssat->snr_rover[0]:opt->err[5];
+        varr+=SQR(opt->err[6])*pow(10,0.1*MAX(opt->err[5]-snr_rover,0));
+    }
+    varr*=SQR(opt->eratio[0]);
+    if (opt->err[7]>0.0) {
+        varr+=SQR(opt->err[7]*0.01*(1<<(obs->Pstd[0]+5)));  /* 0.01*2^(n+5) m */
+    }
     if (opt->ionoopt==IONOOPT_IFLC) varr*=SQR(3.0); /* iono-free */
     return SQR(fact)*varr;
 }
@@ -266,12 +268,11 @@ extern int tropcorr(gtime_t time, const nav_t *nav, const double *pos,
 static int rescode(int iter, const obsd_t *obs, int n, const double *rs,
                    const double *dts, const double *vare, const int *svh,
                    const nav_t *nav, const double *x, const prcopt_t *opt,
-                   const ssat_t *ssat, double *v, double *H, double *var, 
+                   const ssat_t *ssat, double *v, double *H, double *var,
                    double *azel, int *vsat, double *resp, int *ns)
 {
     gtime_t time;
     double r,freq,dion=0.0,dtrp=0.0,vmeas,vion=0.0,vtrp=0.0,rr[3],pos[3],dtr,e[3],P;
-    double snr_rover = (ssat) ? SNR_UNIT * ssat->snr_rover[0] : opt->err[5];
     int i,j,nv=0,sat,sys,mask[NX-3]={0};
     
     trace(3,"resprng : n=%d\n",n);
@@ -340,8 +341,7 @@ static int rescode(int iter, const obsd_t *obs, int n, const double *rs,
         vsat[i]=1; resp[i]=v[nv]; (*ns)++;
         
         /* variance of pseudorange error */
-        var[nv++]=varerr(opt,azel[1+i*2],snr_rover,sys)+vare[i]+vmeas+vion+vtrp;
-        
+        var[nv++]=varerr(opt,&ssat[i],&obs[i],azel[1+i*2],sys)+vare[i]+vmeas+vion+vtrp;
         trace(4,"sat=%2d azel=%5.1f %4.1f res=%7.3f sig=%5.3f\n",obs[i].sat,
               azel[i*2]*R2D,azel[1+i*2]*R2D,resp[i],sqrt(var[nv-1]));
     }
@@ -651,7 +651,7 @@ extern int pntpos(const obsd_t *obs, int n, const nav_t *nav,
     if (ssat) {
         for (i=0;i<MAXSAT;i++) {
             ssat[i].snr_rover[0]=0;
-            ssat[i].snr_base[0] =0;
+            ssat[i].snr_base[0]=0;
         }
         for (i=0;i<n;i++)
             ssat[obs[i].sat-1].snr_rover[0]=obs[i].SNR[0];

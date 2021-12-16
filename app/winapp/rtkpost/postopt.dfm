@@ -469,45 +469,45 @@ object OptDialog: TOptDialog
       end
       object Label13: TLabel
         Left = 25
-        Top = 76
+        Top = 77
         Width = 164
         Height = 13
         Caption = 'Min Lock / Elevation ('#176') to Fix Amb'
       end
       object LabelHold: TLabel
         Left = 24
-        Top = 98
+        Top = 99
         Width = 164
         Height = 13
         Caption = 'Min Fix / Elevation ('#176') to Hold Amb'
       end
       object Label22: TLabel
         Left = 24
-        Top = 125
-        Width = 173
+        Top = 123
+        Width = 206
         Height = 13
-        Caption = 'Outage to Reset Amb/Slip Thres (m)'
+        Caption = 'Slip Threshs: Doppler (Hz) / Geom-Free (m)'
       end
       object Label14: TLabel
-        Left = 24
-        Top = 147
-        Width = 165
+        Left = 25
+        Top = 148
+        Width = 192
         Height = 13
-        Caption = 'Max Age of Diff (s) / Sync Solution'
+        Caption = 'Max Age of Diff (s) / Outs to Reset Amb'
       end
       object Label11: TLabel
         Left = 24
-        Top = 169
+        Top = 170
         Width = 176
         Height = 13
         Caption = 'Reject Threshold of GDOP/Innov (m)'
       end
       object Label37: TLabel
         Left = 25
-        Top = 188
-        Width = 69
+        Top = 192
+        Width = 143
         Height = 13
-        Caption = '# of Filter Iter'
+        Caption = '# of Filter Iter / Sync Solution'
       end
       object Label49: TLabel
         Left = 24
@@ -526,9 +526,9 @@ object OptDialog: TOptDialog
       object Label33: TLabel
         Left = 24
         Top = 260
-        Width = 158
+        Width = 69
         Height = 13
-        Caption = 'Min Drop Sats / Use Rcv StdDevs'
+        Caption = 'Min Drop Sats '
       end
       object Label47: TLabel
         Left = 25
@@ -538,8 +538,8 @@ object OptDialog: TOptDialog
         Caption = 'Hold Amb Var / Hold Amb Gain'
       end
       object Label48: TLabel
-        Left = 26
-        Top = 53
+        Left = 25
+        Top = 55
         Width = 62
         Height = 13
         Caption = 'GLO HW Bias'
@@ -578,8 +578,8 @@ object OptDialog: TOptDialog
         Text = '5'
       end
       object OutCntResetAmb: TEdit
-        Left = 248
-        Top = 123
+        Left = 325
+        Top = 145
         Width = 75
         Height = 21
         TabOrder = 7
@@ -594,8 +594,8 @@ object OptDialog: TOptDialog
         Text = '0'
       end
       object SlipThres: TEdit
-        Left = 325
-        Top = 123
+        Left = 329
+        Top = 118
         Width = 75
         Height = 21
         TabOrder = 8
@@ -692,7 +692,7 @@ object OptDialog: TOptDialog
       end
       object SyncSol: TComboBox
         Left = 325
-        Top = 145
+        Top = 189
         Width = 75
         Height = 21
         Style = csDropDownList
@@ -774,26 +774,12 @@ object OptDialog: TOptDialog
         TabOrder = 23
         Text = '0.01'
       end
-      object RcvStds: TComboBox
-        Left = 325
-        Top = 256
-        Width = 75
-        Height = 21
-        Style = csDropDownList
-        ItemIndex = 0
-        TabOrder = 24
-        Text = 'OFF'
-        OnChange = AmbResChange
-        Items.Strings = (
-          'OFF'
-          'ON')
-      end
       object MinDropSats: TEdit
         Left = 248
         Top = 256
         Width = 75
         Height = 21
-        TabOrder = 25
+        TabOrder = 24
         Text = '20'
       end
       object GloHwBias: TEdit
@@ -801,7 +787,7 @@ object OptDialog: TOptDialog
         Top = 52
         Width = 75
         Height = 21
-        TabOrder = 26
+        TabOrder = 25
         Text = '0.0'
       end
       object ValidThresARMin: TEdit
@@ -809,7 +795,7 @@ object OptDialog: TOptDialog
         Top = 28
         Width = 48
         Height = 21
-        TabOrder = 27
+        TabOrder = 26
         Text = '3.0'
       end
       object ValidThresARMax: TEdit
@@ -817,8 +803,16 @@ object OptDialog: TOptDialog
         Top = 28
         Width = 48
         Height = 21
-        TabOrder = 28
+        TabOrder = 27
         Text = '3.0'
+      end
+      object DopThres: TEdit
+        Left = 248
+        Top = 120
+        Width = 75
+        Height = 21
+        TabOrder = 28
+        Text = '0.100'
       end
     end
     object TabSheet3: TTabSheet
@@ -1124,16 +1118,16 @@ object OptDialog: TOptDialog
       ImageIndex = 3
       object Label29: TLabel
         Left = 34
-        Top = 213
+        Top = 272
         Width = 132
         Height = 13
         Caption = 'Satellite Clock Stability (s/s)'
       end
       object GroupBox3: TGroupBox
-        Left = 2
+        Left = 3
         Top = 0
         Width = 397
-        Height = 105
+        Height = 160
         Caption = 'Measurement Errors (1-sigma)'
         TabOrder = 0
         object Label6: TLabel
@@ -1145,24 +1139,38 @@ object OptDialog: TOptDialog
         end
         object Label7: TLabel
           Left = 35
-          Top = 38
-          Width = 160
+          Top = 39
+          Width = 164
           Height = 13
-          Caption = 'Carrier-Phase Error a+b/sinEl (m)'
+          Caption = 'Carrier-Phase Error: a+b/sinEl (m)'
         end
         object Label16: TLabel
           Left = 34
-          Top = 60
-          Width = 184
+          Top = 61
+          Width = 187
           Height = 13
-          Caption = 'Carrier-Phase Error/Baseline (m/10km)'
+          Caption = 'Carrier-Phase Error: Baseline (m/10km)'
         end
         object Label64: TLabel
-          Left = 34
-          Top = 82
-          Width = 114
+          Left = 35
+          Top = 84
+          Width = 185
           Height = 13
-          Caption = 'Doppler Frequency (Hz)'
+          Caption = 'Carrier Phase Error: SNR / SNR maxDb'
+        end
+        object Label51: TLabel
+          Left = 37
+          Top = 106
+          Width = 139
+          Height = 13
+          Caption = 'Carrier Phase Error: Rcv Errs'
+        end
+        object Label52: TLabel
+          Left = 35
+          Top = 127
+          Width = 112
+          Height = 13
+          Caption = 'Doppler Freq Error (Hz)'
         end
         object MeasErrR1: TEdit
           Left = 246
@@ -1191,25 +1199,17 @@ object OptDialog: TOptDialog
         object MeasErr4: TEdit
           Left = 246
           Top = 58
-          Width = 148
+          Width = 74
           Height = 21
           TabOrder = 3
           Text = '0.000'
-        end
-        object MeasErr5: TEdit
-          Left = 246
-          Top = 80
-          Width = 148
-          Height = 21
-          TabOrder = 4
-          Text = '0.100'
         end
         object MeasErrR2: TEdit
           Left = 296
           Top = 14
           Width = 49
           Height = 21
-          TabOrder = 5
+          TabOrder = 4
           Text = '100.0'
         end
         object MeasErrR5: TEdit
@@ -1217,13 +1217,45 @@ object OptDialog: TOptDialog
           Top = 14
           Width = 50
           Height = 21
-          TabOrder = 6
+          TabOrder = 5
           Text = '100.0'
+        end
+        object MeasErr8: TEdit
+          Left = 246
+          Top = 103
+          Width = 73
+          Height = 21
+          TabOrder = 6
+          Text = '0.000'
+        end
+        object MeasErr7: TEdit
+          Left = 246
+          Top = 81
+          Width = 73
+          Height = 21
+          TabOrder = 7
+          Text = '0.000'
+        end
+        object MeasErr6: TEdit
+          Left = 321
+          Top = 81
+          Width = 73
+          Height = 21
+          TabOrder = 8
+          Text = '52'
+        end
+        object MeasErr5: TEdit
+          Left = 246
+          Top = 124
+          Width = 73
+          Height = 21
+          TabOrder = 9
+          Text = '0.000'
         end
       end
       object GroupBox4: TGroupBox
-        Left = 2
-        Top = 104
+        Left = 3
+        Top = 166
         Width = 397
         Height = 105
         Caption = 'Process Noises (1-sigma/sqrt(s))'
@@ -1266,7 +1298,7 @@ object OptDialog: TOptDialog
         end
         object PrNoise2: TEdit
           Left = 246
-          Top = 58
+          Top = 53
           Width = 148
           Height = 21
           TabOrder = 3
@@ -1298,8 +1330,8 @@ object OptDialog: TOptDialog
         end
       end
       object SatClkStab: TEdit
-        Left = 248
-        Top = 211
+        Left = 252
+        Top = 269
         Width = 148
         Height = 21
         TabOrder = 2
@@ -2153,13 +2185,13 @@ object OptDialog: TOptDialog
     Options = [ofHideReadOnly, ofNoChangeDir, ofEnableSizing]
     Title = 'Load File'
     Left = 121
-    Top = 309
+    Top = 325
   end
   object SaveDialog: TSaveDialog
     Filter = 'All (*.*)|*.*|Options File (*.conf)|*.conf'
     Options = [ofHideReadOnly, ofNoChangeDir, ofEnableSizing]
     Title = 'Save File'
-    Left = 171
-    Top = 309
+    Left = 163
+    Top = 325
   end
 end

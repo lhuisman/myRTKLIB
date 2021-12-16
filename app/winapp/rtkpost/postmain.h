@@ -191,7 +191,7 @@ public:
 	
 	// options
 	int PosMode,Freq,Solution,DynamicModel,IonoOpt,TropOpt,RcvBiasEst;
-	int ARIter,MinFixSats,MinHoldSats,MinDropSats,ARFilter,RcvStds;
+	int ARIter,MinFixSats,MinHoldSats,MinDropSats,ARFilter;
 	int NumIter,CodeSmooth,TideCorr;
 	int OutCntResetAmb,FixCntHoldAmb,LockCntFixAmb,RovPosType,RefPosType;
 	int SatEphem,NavSys;
@@ -204,9 +204,10 @@ public:
 	int PosOpt[6];
 	double ElMask,MaxAgeDiff,RejectThres,VarHoldAmb,GainHoldAmb,RejectGdop;
 	double MeasErrR1,MeasErrR2,MeasErrR5,MeasErr2,MeasErr3,MeasErr4,MeasErr5;
+    double MeasErr6,MeasErr7,MeasErr8;
 	double SatClkStab,RovAntE,RovAntN,RovAntU,RefAntE,RefAntN,RefAntU;
 	double PrNoise1,PrNoise2,PrNoise3,PrNoise4,PrNoise5;
-	double ValidThresAR,ElMaskAR,ElMaskHold,SlipThres;
+	double ValidThresAR,ElMaskAR,ElMaskHold,SlipThres,DopThres;
 	double MaxPosVarAR,GloHwBias,ThresAR3,ThresAR4,ValidThresARMin,ValidThresARMax;
 	double RovPos[3],RefPos[3],BaseLine[2];
 	double MaxSolStd;

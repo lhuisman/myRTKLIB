@@ -421,6 +421,7 @@ void __fastcall TOptDialog::GetOpt(void)
 	VarHoldAmb   ->Text     =s.sprintf("%.4f",PrcOpt.varholdamb);
 	GainHoldAmb  ->Text     =s.sprintf("%.4f",PrcOpt.gainholdamb);
 	SlipThres	 ->Text     =s.sprintf("%.3f",PrcOpt.thresslip);
+	DopThres	 ->Text     =s.sprintf("%.3f",PrcOpt.thresdop);
 	ARIter		 ->Text     =s.sprintf("%d",  PrcOpt.armaxiter);
 	NumIter		 ->Text     =s.sprintf("%d",  PrcOpt.niter);
 	MinFixSats	 ->Text     =s.sprintf("%d",  PrcOpt.minfixsats);
@@ -428,7 +429,6 @@ void __fastcall TOptDialog::GetOpt(void)
 	MinDropSats	 ->Text     =s.sprintf("%d",  PrcOpt.mindropsats);
 	SyncSol		 ->ItemIndex=PrcOpt.syncsol;
 	ARFilter	 ->ItemIndex=PrcOpt.arfilter;
-	RcvStds	     ->ItemIndex=PrcOpt.rcvstds;
 	ExSatsE		 ->Text     =ExSats;
 	NavSys1		 ->Checked  =PrcOpt.navsys&SYS_GPS;
 	NavSys2		 ->Checked  =PrcOpt.navsys&SYS_GLO;
@@ -467,10 +467,14 @@ void __fastcall TOptDialog::GetOpt(void)
 	
 	MeasErrR1	 ->Text     =s.sprintf("%.1f",PrcOpt.eratio[0]);
 	MeasErrR2	 ->Text     =s.sprintf("%.1f",PrcOpt.eratio[1]);
+	MeasErrR5	 ->Text     =s.sprintf("%.1f",PrcOpt.eratio[2]);
 	MeasErr2	 ->Text     =s.sprintf("%.3f",PrcOpt.err[1]);
 	MeasErr3	 ->Text     =s.sprintf("%.3f",PrcOpt.err[2]);
 	MeasErr4	 ->Text     =s.sprintf("%.3f",PrcOpt.err[3]);
 	MeasErr5	 ->Text     =s.sprintf("%.3f",PrcOpt.err[4]);
+	MeasErr6	 ->Text     =s.sprintf("%.3f",PrcOpt.err[5]);
+	MeasErr7	 ->Text     =s.sprintf("%.3f",PrcOpt.err[6]);
+	MeasErr8	 ->Text     =s.sprintf("%.3f",PrcOpt.err[7]);
 	PrNoise1	 ->Text     =s.sprintf("%.2E",PrcOpt.prn[0]);
 	PrNoise2	 ->Text     =s.sprintf("%.2E",PrcOpt.prn[1]);
 	PrNoise3	 ->Text     =s.sprintf("%.2E",PrcOpt.prn[2]);
@@ -558,7 +562,8 @@ void __fastcall TOptDialog::SetOpt(void)
 	PrcOpt.maxinno   =str2dbl(RejectThres->Text);
 	PrcOpt.varholdamb=str2dbl(VarHoldAmb->Text);
 	PrcOpt.gainholdamb=str2dbl(GainHoldAmb->Text);
-	PrcOpt.thresslip =str2dbl(SlipThres  ->Text);
+	PrcOpt.thresslip  =str2dbl(SlipThres  ->Text);
+	PrcOpt.thresdop   =str2dbl(DopThres   ->Text);
 	PrcOpt.armaxiter =ARIter      ->Text.ToInt();
 	PrcOpt.minfixsats =MinFixSats ->Text.ToInt();
 	PrcOpt.minholdsats =MinHoldSats->Text.ToInt();
@@ -566,7 +571,6 @@ void __fastcall TOptDialog::SetOpt(void)
 	PrcOpt.niter     =NumIter     ->Text.ToInt();
 	PrcOpt.syncsol   =SyncSol     ->ItemIndex;
 	PrcOpt.arfilter  =ARFilter    ->ItemIndex;
-	PrcOpt.rcvstds   =RcvStds     ->ItemIndex;
 	ExSats			 =ExSatsE	  ->Text;
 	PrcOpt.navsys    =0;
 	if (NavSys1->Checked) PrcOpt.navsys|=SYS_GPS;
@@ -608,10 +612,14 @@ void __fastcall TOptDialog::SetOpt(void)
 	
 	PrcOpt.eratio[0] =str2dbl(MeasErrR1 ->Text);
 	PrcOpt.eratio[1] =str2dbl(MeasErrR2 ->Text);
+	PrcOpt.eratio[2] =str2dbl(MeasErrR5 ->Text);
 	PrcOpt.err[1]    =str2dbl(MeasErr2  ->Text);
 	PrcOpt.err[2]    =str2dbl(MeasErr3  ->Text);
 	PrcOpt.err[3]    =str2dbl(MeasErr4  ->Text);
 	PrcOpt.err[4]    =str2dbl(MeasErr5  ->Text);
+	PrcOpt.err[5]    =str2dbl(MeasErr6  ->Text);
+	PrcOpt.err[6]    =str2dbl(MeasErr7  ->Text);
+	PrcOpt.err[7]    =str2dbl(MeasErr8  ->Text);
 	PrcOpt.prn[0]    =str2dbl(PrNoise1  ->Text);
 	PrcOpt.prn[1]    =str2dbl(PrNoise2  ->Text);
 	PrcOpt.prn[2]    =str2dbl(PrNoise3  ->Text);
@@ -761,6 +769,7 @@ void __fastcall TOptDialog::LoadOpt(AnsiString file)
 	VarHoldAmb   ->Text			=s.sprintf("%.4f",prcopt.varholdamb);
 	GainHoldAmb  ->Text			=s.sprintf("%.4f",prcopt.gainholdamb);
 	SlipThres	 ->Text			=s.sprintf("%.3f",prcopt.thresslip);
+	DopThres	 ->Text			=s.sprintf("%.3f",prcopt.thresdop);
 	ARIter		 ->Text			=s.sprintf("%d",  prcopt.armaxiter);
 	MinFixSats	 ->Text         =s.sprintf("%d",  prcopt.minfixsats);
 	MinHoldSats	 ->Text         =s.sprintf("%d",  prcopt.minholdsats);
@@ -768,7 +777,6 @@ void __fastcall TOptDialog::LoadOpt(AnsiString file)
 	NumIter		 ->Text			=s.sprintf("%d",  prcopt.niter    );
 	SyncSol		 ->ItemIndex	=prcopt.syncsol;
 	ARFilter	 ->ItemIndex	=prcopt.arfilter;
-	RcvStds	     ->ItemIndex	=prcopt.rcvstds;
 	BaselineLen	 ->Text			=s.sprintf("%.3f",prcopt.baseline[0]);
 	BaselineSig	 ->Text			=s.sprintf("%.3f",prcopt.baseline[1]);
 	BaselineConst->Checked		=prcopt.baseline[0]>0.0;
@@ -793,10 +801,14 @@ void __fastcall TOptDialog::LoadOpt(AnsiString file)
 	
 	MeasErrR1	 ->Text			=s.sprintf("%.1f",prcopt.eratio[0]);
 	MeasErrR2	 ->Text			=s.sprintf("%.3f",prcopt.eratio[1]);
+	MeasErrR5	 ->Text			=s.sprintf("%.3f",prcopt.eratio[2]);
 	MeasErr2	 ->Text			=s.sprintf("%.3f",prcopt.err[1]);
 	MeasErr3	 ->Text			=s.sprintf("%.3f",prcopt.err[2]);
 	MeasErr4	 ->Text			=s.sprintf("%.3f",prcopt.err[3]);
 	MeasErr5	 ->Text			=s.sprintf("%.3f",prcopt.err[4]);
+	MeasErr6	 ->Text			=s.sprintf("%.3f",prcopt.err[5]);
+	MeasErr7	 ->Text			=s.sprintf("%.3f",prcopt.err[6]);
+	MeasErr8	 ->Text			=s.sprintf("%.3f",prcopt.err[7]);
 	SatClkStab	 ->Text			=s.sprintf("%.2E",prcopt.sclkstab);
 	PrNoise1	 ->Text			=s.sprintf("%.2E",prcopt.prn[0]);
 	PrNoise2	 ->Text			=s.sprintf("%.2E",prcopt.prn[1]);
@@ -988,6 +1000,7 @@ void __fastcall TOptDialog::SaveOpt(AnsiString file)
 	prcopt.varholdamb=str2dbl(VarHoldAmb->Text);
 	prcopt.gainholdamb=str2dbl(GainHoldAmb->Text);
 	prcopt.thresslip=str2dbl(SlipThres	->Text);
+	prcopt.thresdop=str2dbl(DopThres	->Text);
 	prcopt.armaxiter=str2dbl(ARIter		->Text);
 	prcopt.minfixsats=str2dbl(MinFixSats		->Text);
 	prcopt.minholdsats=str2dbl(MinHoldSats		->Text);
@@ -995,7 +1008,6 @@ void __fastcall TOptDialog::SaveOpt(AnsiString file)
 	prcopt.niter	=str2dbl(NumIter	->Text);
 	prcopt.syncsol	=SyncSol->ItemIndex;
 	prcopt.arfilter	=ARFilter->ItemIndex;
-	prcopt.rcvstds	=RcvStds->ItemIndex;
 	if (prcopt.mode==PMODE_MOVEB&&BaselineConst->Checked) {
 		prcopt.baseline[0]=str2dbl(BaselineLen->Text);
 		prcopt.baseline[1]=str2dbl(BaselineSig->Text);
@@ -1021,10 +1033,14 @@ void __fastcall TOptDialog::SaveOpt(AnsiString file)
 	
 	prcopt.eratio[0]=str2dbl(MeasErrR1->Text);
 	prcopt.eratio[1]=str2dbl(MeasErrR2->Text);
+	prcopt.eratio[2]=str2dbl(MeasErrR5->Text);
 	prcopt.err[1]	=str2dbl(MeasErr2->Text);
 	prcopt.err[2]	=str2dbl(MeasErr3->Text);
 	prcopt.err[3]	=str2dbl(MeasErr4->Text);
 	prcopt.err[4]	=str2dbl(MeasErr5->Text);
+	prcopt.err[5]	=str2dbl(MeasErr6->Text);
+	prcopt.err[6]	=str2dbl(MeasErr7->Text);
+	prcopt.err[7]	=str2dbl(MeasErr8->Text);
 	prcopt.sclkstab	=str2dbl(SatClkStab->Text);
 	prcopt.prn[0]	=str2dbl(PrNoise1->Text);
 	prcopt.prn[1]	=str2dbl(PrNoise2->Text);
@@ -1096,6 +1112,7 @@ void __fastcall TOptDialog::UpdateEnable(void)
 	FixCntHoldAmb  ->Enabled=ar&&AmbRes->ItemIndex==3;
 	ElMaskHold     ->Enabled=ar&&AmbRes->ItemIndex==3;
 	SlipThres      ->Enabled=ar||ppp;
+	DopThres       ->Enabled=ar||ppp;
 	MaxAgeDiff     ->Enabled=rel;
 	RejectThres    ->Enabled=rel||ppp;
 	VarHoldAmb     ->Enabled=ar&&AmbRes->ItemIndex==3;
@@ -1107,7 +1124,6 @@ void __fastcall TOptDialog::UpdateEnable(void)
 	NumIter        ->Enabled=rel||ppp;
 	SyncSol        ->Enabled=rel||ppp;
 	ARFilter       ->Enabled=ar||ppp;
-	RcvStds        ->Enabled=rel;
 	BaselineConst  ->Enabled=PosMode->ItemIndex==PMODE_MOVEB;
 	BaselineLen    ->Enabled=BaselineConst->Checked&&PosMode->ItemIndex==PMODE_MOVEB;
 	BaselineSig    ->Enabled=BaselineConst->Checked&&PosMode->ItemIndex==PMODE_MOVEB;

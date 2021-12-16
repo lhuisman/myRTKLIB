@@ -2472,6 +2472,9 @@ void __fastcall TMainForm::LoadOpt(void)
     PrcOpt.err[2]   =ini->ReadFloat  ("prcopt", "err2",        0.003);
     PrcOpt.err[3]   =ini->ReadFloat  ("prcopt", "err3",          0.0);
     PrcOpt.err[4]   =ini->ReadFloat  ("prcopt", "err4",          1.0);
+    PrcOpt.err[5]   =ini->ReadFloat  ("prcopt", "err5",         52.0);
+    PrcOpt.err[6]   =ini->ReadFloat  ("prcopt", "err6",          0.0);
+    PrcOpt.err[7]   =ini->ReadFloat  ("prcopt", "err7",          0.0);
     PrcOpt.prn[0]   =ini->ReadFloat  ("prcopt", "prn0",         1E-4);
     PrcOpt.prn[1]   =ini->ReadFloat  ("prcopt", "prn1",         1E-3);
     PrcOpt.prn[2]   =ini->ReadFloat  ("prcopt", "prn2",         1E-4);
@@ -2487,6 +2490,7 @@ void __fastcall TMainForm::LoadOpt(void)
     PrcOpt.thresar[4]=ini->ReadFloat ("prcopt", "thresar4",      1E-5);
     PrcOpt.elmaskar =ini->ReadFloat  ("prcopt", "elmaskar",  15.0*D2R);
     PrcOpt.elmaskhold=ini->ReadFloat ("prcopt", "elmaskhold",15.0*D2R);
+    PrcOpt.thresdop=ini->ReadFloat    ("prcopt", "thresdop",      0.00);
     PrcOpt.thresslip=ini->ReadFloat  ("prcopt", "thresslip",     0.05);
     PrcOpt.maxtdiff =ini->ReadFloat  ("prcopt", "maxtdiff",      30.0);
     PrcOpt.maxgdop  =ini->ReadFloat  ("prcopt", "maxgdop",       30.0);
@@ -2495,7 +2499,6 @@ void __fastcall TMainForm::LoadOpt(void)
     PrcOpt.gainholdamb=ini->ReadFloat("prcopt", "gainholdamb",   0.01);
     PrcOpt.syncsol  =ini->ReadInteger("prcopt", "syncsol",          0);
     PrcOpt.arfilter =ini->ReadInteger("prcopt", "arfilter",         1);
-    PrcOpt.rcvstds  =ini->ReadInteger("prcopt", "rcvstds",          0);
     ExSats          =ini->ReadString ("prcopt", "exsats",          "");
     PrcOpt.navsys   =ini->ReadInteger("prcopt", "navsys",SYS_GPS|SYS_GLO);
     PrcOpt.posopt[0]=ini->ReadInteger("prcopt", "posopt1",         0);
@@ -2749,6 +2752,7 @@ void __fastcall TMainForm::SaveOpt(void)
     ini->WriteFloat  ("prcopt", "elmaskar",   PrcOpt.elmaskar    );
     ini->WriteFloat  ("prcopt", "elmaskhold", PrcOpt.elmaskhold  );
     ini->WriteFloat  ("prcopt", "thresslip",  PrcOpt.thresslip   );
+    ini->WriteFloat  ("prcopt", "thresdop",   PrcOpt.thresdop    );
     ini->WriteFloat  ("prcopt", "maxtdiff",   PrcOpt.maxtdiff    );
     ini->WriteFloat  ("prcopt", "maxgdop",    PrcOpt.maxgdop     );
     ini->WriteFloat  ("prcopt", "maxinno",    PrcOpt.maxinno     );
@@ -2756,7 +2760,6 @@ void __fastcall TMainForm::SaveOpt(void)
     ini->WriteFloat  ("prcopt", "gainholdamb",PrcOpt.gainholdamb );
     ini->WriteInteger("prcopt", "syncsol",    PrcOpt.syncsol     );
     ini->WriteInteger("prcopt", "arfilter",   PrcOpt.arfilter    );
-    ini->WriteInteger("prcopt", "rcvstds",    PrcOpt.rcvstds     );
     ini->WriteString ("prcopt", "exsats",     ExSats             );
     ini->WriteInteger("prcopt", "navsys",     PrcOpt.navsys      );
     ini->WriteInteger("prcopt", "posopt1",    PrcOpt.posopt[0]   );

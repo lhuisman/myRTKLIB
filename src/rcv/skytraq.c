@@ -348,7 +348,6 @@ static int decode_stqrawx(raw_t *raw)
             raw->obs.data[n].rcv=0;
             for (k=0;k<NFREQ+NEXOBS;k++) {
                 raw->obs.data[n].L[k]=raw->obs.data[n].P[k]=0.0;
-                raw->obs.data[n].qualL[k]=raw->obs.data[n].qualP[k]=0;
                 raw->obs.data[n].D[k]=0.0;
                 raw->obs.data[n].SNR[k]=raw->obs.data[n].LLI[k]=0;
                 raw->obs.data[n].code[k]=CODE_NONE;
