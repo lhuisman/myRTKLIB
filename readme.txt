@@ -2,7 +2,7 @@ A version of RTKLIB optimized for single and dual frequency low cost GPS receive
 
 Binaries and tutorials for this code, and sample GPS data sets are available at http://rtkexplorer.com/  
 
-The latest version of the user manual is at: https://github.com/rtklibexplorer/RTKLIB/blob/demo5/doc/manual_demo5.pdf
+The latest version of the user manual is at: https://rtkexplorer.com/pdfs/manual_demo5.pdf
 
    
 WINDOWS: To build and install code for with Windows Embarcadero compiler:
