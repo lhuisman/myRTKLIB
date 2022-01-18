@@ -715,39 +715,55 @@ static void detslp_gf(rtk_t *rtk, const obsd_t *obs, int i, int j,
     }
 }
 /* detect cycle slip by doppler and phase difference -------------------------*/
-static void detslp_dop(rtk_t *rtk, const obsd_t *obs, int i, int rcv,
-                       const nav_t *nav)
+static void detslp_dop(rtk_t *rtk, const obsd_t *obs, const int *ix, int ns,
+                       int rcv, const nav_t *nav)
 {
-    int f,sat=obs[i].sat;
-    double tt,dph,dpt,lam,thres,maxacc;
-    
-    trace(4,"detslp_dop: i=%d rcv=%d\n",i,rcv);
+    int i,ii,f,sat,ndop=0;
+    double dph,dpt,lam,thres,mean_dop=0;
+    double dopdif[MAXSAT][NFREQ], tt[MAXSAT][NFREQ];
+
+    trace(4,"detslp_dop: rcv=%d\n", rcv);
     if (rtk->opt.thresdop<=0) return;  /* skip test if doppler thresh <= 0 */
-    
-    for (f=0;f<rtk->opt.nf;f++) {
-        if (obs[i].L[f]==0.0||obs[i].D[f]==0.0||rtk->ssat[sat-1].ph[rcv-1][f]==0.0) {
-            continue;
+
+    /* calculate doppler differences for all sats and freqs */
+    for (i=0;i<ns;i++) {
+        ii = ix[i];
+        sat=obs[ii].sat;
+
+        for (f=0;f<rtk->opt.nf;f++) {
+            dopdif[i][f]=0;tt[i][f]=0.00;
+            if (obs[ii].L[f]==0.0||obs[ii].D[f]==0.0||rtk->ssat[sat-1].ph[rcv-1][f]==0.0) continue;
+            if ((tt[i][f]=fabs(timediff(obs[ii].time,rtk->ssat[sat-1].pt[rcv-1][f])))<DTTOL) continue;
+            if ((lam=sat2freq(obs[ii].sat,obs[ii].code[f],nav))<=0.0) continue;
+
+            /* calc phase difference and doppler x time (cycle) */
+            dph=obs[ii].L[f]-rtk->ssat[sat-1].ph[rcv-1][f];
+            dpt=-obs[ii].D[f]*tt[i][f];
+            /* ignore doppler sign due to inconsistencies in sign of doppler/phaserangerate msmts */
+            dopdif[i][f]=(fabs(dph)-fabs(dpt))/tt[i][f];
+
+            /* if not outlier, use this to calculate mean */
+            if (fabs(dopdif[i][f])<3*rtk->opt.thresdop) {
+                mean_dop+=dopdif[i][f];
+                ndop++;
+            }
         }
-        if (fabs(tt=timediff(obs[i].time,rtk->ssat[sat-1].pt[rcv-1][f]))<DTTOL) continue;
-        if ((lam=sat2freq(obs[i].sat,obs[i].code[f],nav))<=0.0) continue;
+    }
+    /* calc mean doppler diff, most likely due to clock error */
+    mean_dop=ndop>0?mean_dop/ndop:0;
 
-        /* cycle slip threshold (cycle) */
-        if (rtk->opt.mode==PMODE_STATIC||rtk->opt.mode==PMODE_PPP_STATIC)
-            maxacc=0;
-        else
-            maxacc=rtk->opt.prn[3]*4; /* set max accel to 4 stdevs of haccel */
-        thres=maxacc*tt*tt/2.0/lam+rtk->opt.thresdop*fabs(tt);
+    /* set slip if doppler difference with mean removed exceeds threshold */
+    for (i=0;i<ns;i++) {
+        sat=obs[ix[i]].sat;
 
-        /* phase difference and doppler x time (cycle) */
-        dph=obs[i].L[f]-rtk->ssat[sat-1].ph[rcv-1][f];
-        dpt=-obs[i].D[f]*tt;
-        
-        if (fabs(dph-dpt)<=thres) continue;
-        
-        rtk->ssat[sat-1].slip[f]|=1;
-        
-        errmsg(rtk,"slip detected doppler (sat=%2d rcv=%d dL%d=%.3f thres=%.3f)\n",
-               sat,rcv,f+1,dph-dpt,thres);
+        for (f=0;f<rtk->opt.nf;f++) {
+            if (dopdif[i][f]==0.00) continue;
+            if (fabs(dopdif[i][f]-mean_dop)>rtk->opt.thresdop) {
+                rtk->ssat[sat-1].slip[f]|=1;
+                errmsg(rtk,"slip detected doppler (sat=%2d rcv=%d dL%d=%.3f off=%.3f tt=%.2f)\n",
+                   sat,rcv,f+1,dopdif[i][f]-mean_dop,mean_dop,tt[i][f]);
+            }
+        }
     }
 }
 /* temporal update of phase biases -------------------------------------------*/
@@ -758,18 +774,21 @@ static void udbias(rtk_t *rtk, double tt, const obsd_t *obs, const int *sat,
     int i,j,k,slip,rejc,reset,nf=NF(&rtk->opt),sysi;
     
     trace(3,"udbias  : tt=%.3f ns=%d\n",tt,ns);
-    
+
+    /* clear cycle slips */
     for (i=0;i<ns;i++) {
-        
-        /* detect cycle slip by LLI */
         for (k=0;k<rtk->opt.nf;k++) rtk->ssat[sat[i]-1].slip[k]&=0xFC;
+    }
+
+    /* detect cycle slip by doppler and phase difference */
+    detslp_dop(rtk,obs,iu,ns,1,nav);
+    detslp_dop(rtk,obs,ir,ns,2,nav);
+
+    for (i=0;i<ns;i++) {
+        /* detect cycle slip by LLI */
         detslp_ll(rtk,obs,iu[i],1);
         detslp_ll(rtk,obs,ir[i],2);
 
-        /* detect cycle slip by doppler and phase difference */
-        detslp_dop(rtk,obs,iu[i],1,nav);
-        detslp_dop(rtk,obs,ir[i],2,nav);
-        
         /* detect cycle slip by geometry-free phase jump */
         detslp_gf(rtk,obs,iu[i],ir[i],nav);
 
@@ -798,7 +817,7 @@ static void udbias(rtk_t *rtk, double tt, const obsd_t *obs, const int *sat,
                 rtk->ssat[i-1].lock[k]=-rtk->opt.minlock;
             }
         }
-        /* reset phase-bias state if detecting cycle slip or outlier */
+        /* update phase bias noise and check for cycle slips */
         for (i=0;i<ns;i++) {
             j=IB(sat[i],k,&rtk->opt);
             rtk->P[j+j*rtk->nx]+=rtk->opt.prn[0]*rtk->opt.prn[0]*fabs(tt);
@@ -806,6 +825,7 @@ static void udbias(rtk_t *rtk, double tt, const obsd_t *obs, const int *sat,
             rejc=rtk->ssat[sat[i]-1].rejc[k];
             if (rtk->opt.ionoopt==IONOOPT_IFLC) slip|=rtk->ssat[sat[i]-1].slip[1];
             if (rtk->opt.modear==ARMODE_INST||(!(slip&1)&&rejc<2)) continue;
+            /* reset phase-bias state if detecting cycle slip or outlier */
             rtk->x[j]=0.0;
             rtk->ssat[sat[i]-1].rejc[k]=0;
             rtk->ssat[sat[i]-1].lock[k]=-rtk->opt.minlock;
@@ -1016,9 +1036,8 @@ static int zdres(int base, const obsd_t *obs, int n, const double *rs,
 /* test valid observation data -----------------------------------------------*/
 static int validobs(int i, int j, int f, int nf, double *y)
 {
-    /* if no phase observable, psudorange is also unusable */
-    return y[f+i*nf*2]!=0.0&&y[f+j*nf*2]!=0.0&&
-           (f<nf||(y[f-nf+i*nf*2]!=0.0&&y[f-nf+j*nf*2]!=0.0));
+    /* check for valid pseudoranges */
+    return y[f+i*nf*2]!=0.0&&y[f+j*nf*2]!=0.0;
 }
 /* double-differenced measurement error covariance ---------------------------
 *
@@ -1192,7 +1211,8 @@ static int ddres(rtk_t *rtk, const nav_t *nav, const obsd_t *obs, double dt, con
                 sysi=rtk->ssat[sat[j]-1].sys;
                 if (!test_sys(sysi,m) || sysi==SYS_SBS) continue;
                 if (!validobs(iu[j],ir[j],f,nf,y)) continue;
-                if (rtk->ssat[sat[j]-1].slip[frq]&LLI_SLIP) continue;
+                /* skip sat with slip unless no other valid sat */
+                if (i>=0&&rtk->ssat[sat[j]-1].slip[frq]&LLI_SLIP) continue;
                 if (i<0||azel[1+iu[j]*2]>=azel[1+iu[i]*2]) i=j;
             }
             if (i<0) continue;
@@ -1596,26 +1616,13 @@ static int resamb_LAMBDA(rtk_t *rtk, double *bias, double *xa,int gps,int glo,in
     int i,j,nb,nb1,info,nx=rtk->nx,na=rtk->na;
     double *DP,*y,*b,*db,*Qb,*Qab,*QQ,s[2];
     int *ix;
-    double var=0,coeff[3];
+    double coeff[3];
     double QQb[MAXSAT];
 
     trace(3,"resamb_LAMBDA : nx=%d\n",nx);
 
     rtk->sol.ratio=0.0;
     rtk->nb_ar=0;
-
-    if (rtk->opt.mode<=PMODE_DGPS||rtk->opt.modear==ARMODE_OFF||
-        rtk->opt.thresar[0]<1.0) {
-        return 0;
-    }
-    /* skip AR if position variance too high to avoid false fix */
-    for (i=0;i<3;i++) var+=rtk->P[i+i*rtk->nx];
-    var=var/3.0; /* maintain compatibility with previous code */
-    trace(3,"posvar=%.6f\n",var);
-    if (var>rtk->opt.thresar[1]) {
-        errmsg(rtk,"position variance too large:  %.4f\n",var);
-        return 0;
-    }
     /* Create index of single to double-difference transformation matrix (D')
           used to translate phase biases to double difference */
     ix=imat(nx,2);
@@ -1732,11 +1739,26 @@ static int manage_amb_LAMBDA(rtk_t *rtk, double *bias, double *xa, const int *sa
 {
     int i,f,lockc[NFREQ],ar=0,excflag=0,arsats[MAXOBS]={0};
     int gps1=-1,glo1=-1,sbas1=-1,gps2,glo2,sbas2,nb,rerun,dly;
-    float ratio1;
+    float ratio1,var=0,posvar=0;
 
+    /* calc position variance, will skip AR if too high to avoid false fix */
+    for (i=0;i<3;i++) posvar+=rtk->P[i+i*rtk->nx];
+    posvar/=3.0; /* maintain compatibility with previous code */
+
+    trace(3,"posvar=%.6f\n",posvar);
     trace(3,"prevRatios= %.3f %.3f\n",rtk->sol.prev_ratio1,rtk->sol.prev_ratio2);
-    /* if no fix on previous sample and enough sats, exclude next sat in list */
     trace(3,"num ambiguities used last AR: %d\n",rtk->nb_ar);
+
+    /* skip AR if don't meet criteria */
+    if (rtk->opt.mode<=PMODE_DGPS||rtk->opt.modear==ARMODE_OFF||
+        rtk->opt.thresar[0]<1.0||posvar>rtk->opt.thresar[1]) {
+        trace(3,"Skip AR\n");
+        rtk->sol.ratio=0.0;
+        rtk->sol.prev_ratio1=rtk->sol.prev_ratio2=0.0;
+        rtk->nb_ar=0;
+        return 0;
+    }
+    /* if no fix on previous sample and enough sats, exclude next sat in list */
     if (rtk->sol.prev_ratio2<rtk->sol.thres&&rtk->nb_ar>=rtk->opt.mindropsats) {
         /* find and count sats used last time for AR */
         for (f=0;f<nf;f++) for (i=0;i<ns;i++) 
@@ -1857,7 +1879,7 @@ static int relpos(rtk_t *rtk, const obsd_t *obs, int nu, int nr,
     
     trace(3,"relpos  : nx=%d nu=%d nr=%d\n",rtk->nx,nu,nr);
     
-    /* time diff between base and rover observations (usually zero) */
+    /* time diff between base and rover observations */
     dt=timediff(time,obs[nu].time);
     
     /* define local matrices, n=total observations, base + rover */
@@ -1996,7 +2018,7 @@ static int relpos(rtk_t *rtk, const obsd_t *obs, int nu, int nr,
                 rtk->ssat[sat[i]-1].outc[f]=0;
                 if (f==0) rtk->sol.ns++; /* valid satellite count by L1 */
             }
-            /* lack of valid satellites */
+            /* too few valid phases */
             if (rtk->sol.ns<4) stat=SOLQ_NONE;
         }
         else stat=SOLQ_NONE;
