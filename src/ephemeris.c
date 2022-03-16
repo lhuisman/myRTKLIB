@@ -126,7 +126,7 @@ static double var_uraeph(int sys, int ura)
     }
     else { /* gps ura (ref [1] 20.3.3.3.1.1) */
         return ura<0||14<ura?SQR(6144.0):SQR(ura_value[ura]);
-}
+	}
 }
 /* variance by ura ssr (ref [10] table 3.3-1 DF389) --------------------------*/
 static double var_urassr(int ura)
@@ -256,7 +256,7 @@ extern void eph2pos(gtime_t time, const eph_t *eph, double *rs, double *dts,
     r+=eph->crs*sin2u+eph->crc*cos2u;
     i+=eph->cis*sin2u+eph->cic*cos2u;
     x=r*cos(u); y=r*sin(u); cosi=cos(i);
-    
+
     /* beidou geo satellite */
     if (sys==SYS_CMP&&(prn<=5||prn>=59)) { /* ref [9] table 4-1 */
         O=eph->OMG0+eph->OMGd*tk-omge*eph->toes;
@@ -284,6 +284,8 @@ extern void eph2pos(gtime_t time, const eph_t *eph, double *rs, double *dts,
     
     /* position and clock error variance */
     *var=var_uraeph(sys,eph->sva);
+    trace(4,"eph2pos: sat=%d, dts=%.10f rs=%.4f %.4f %.4f var=%.3f\n",eph->sat,
+        *dts,rs[0],rs[1],rs[2],*var);
 }
 /* glonass orbit differential equations --------------------------------------*/
 static void deq(const double *x, double *xdot, const double *acc)
@@ -418,7 +420,7 @@ extern void seph2pos(gtime_t time, const seph_t *seph, double *rs, double *dts,
     
     *var=var_uraeph(SYS_SBS,seph->sva);
 }
-/* select ephememeris --------------------------------------------------------*/
+/* select ephemeris --------------------------------------------------------*/
 static eph_t *seleph(gtime_t time, int sat, int iode, const nav_t *nav)
 {
     double t,tmax,tmin;
@@ -455,7 +457,7 @@ static eph_t *seleph(gtime_t time, int sat, int iode, const nav_t *nav)
         if (t<=tmin) {j=i; tmin=t;} /* toe closest to time */
     }
     if (iode>=0||j<0) {
-        trace(3,"no broadcast ephemeris: %s sat=%2d iode=%3d\n",time_str(time,0),
+        trace(2,"no broadcast ephemeris: %s sat=%2d iode=%3d\n",time_str(time,0),
               sat,iode);
         return NULL;
     }
@@ -807,7 +809,7 @@ extern void satposs(gtime_t teph, const obsd_t *obs, int n, const nav_t *nav,
     }
     for (i=0;i<n&&i<2*MAXOBS;i++) {
         trace(4,"%s sat=%2d rs=%13.3f %13.3f %13.3f dts=%12.3f var=%7.3f svh=%02X\n",
-              time_str(time[i],6),obs[i].sat,rs[i*6],rs[1+i*6],rs[2+i*6],
+              time_str(time[i],9),obs[i].sat,rs[i*6],rs[1+i*6],rs[2+i*6],
               dts[i*2]*1E9,var[i],svh[i]);
     }
 }

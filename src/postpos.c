@@ -500,7 +500,7 @@ static int valcomb(const sol_t *solf, const sol_t *solb)
     }
     return 1;
 }
-/* combine forward/backward solutions and output results ---------------------*/
+/* combine forward/backward solutions and save results ---------------------*/
 static void combres(FILE *fp, FILE *fptm, const prcopt_t *popt, const solopt_t *sopt)
 {
     gtime_t time={0};
@@ -933,7 +933,7 @@ static void setpcv(gtime_t time, prcopt_t *popt, nav_t *nav, const pcvs_t *pcvs,
         if (!(satsys(i+1,NULL)&popt->navsys)) continue;
         if (!(pcv=searchpcv(i+1,"",time,pcvs))) {
             satno2id(i+1,id);
-            trace(3,"no satellite antenna pcv: %s\n",id);
+            trace(4,"no satellite antenna pcv: %s\n",id);
             continue;
         }
         nav->pcvs[i]=*pcv;
