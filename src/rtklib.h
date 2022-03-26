@@ -59,7 +59,7 @@ extern "C" {
 
 #define VER_RTKLIB  "demo5"             /* library version */
 
-#define PATCH_LEVEL "b34e"               /* patch level */
+#define PATCH_LEVEL "b34f"               /* patch level */
 
 #define COPYRIGHT_RTKLIB \
             "Copyright (C) 2007-2020 T.Takasu\nAll rights reserved."
@@ -1200,6 +1200,7 @@ typedef struct {        /* receiver raw data control type */
     uint8_t buff[MAXRAWLEN]; /* message buffer */
     char opt[256];      /* receiver dependent options */
     int format;         /* receiver stream format */
+    int rcvtype;        /* receiver type within format */
     void *rcv_data;     /* receiver dependent data */
 } raw_t;
 

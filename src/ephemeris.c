@@ -200,6 +200,9 @@ extern double eph2clk(gtime_t time, const eph_t *eph)
     for (i=0;i<2;i++) {
         t=ts-(eph->f0+eph->f1*t+eph->f2*t*t);
     }
+    trace(4,"ephclk: t=%.12f ts=%.12f dts=%.12f f0=%.12f f1=%.9f f2=%.9f\n",t,ts,
+        eph->f0+eph->f1*t+eph->f2*t*t,eph->f0,eph->f1,eph->f2);
+
     return eph->f0+eph->f1*t+eph->f2*t*t;
 }
 /* broadcast ephemeris to satellite position and clock bias --------------------
@@ -793,7 +796,7 @@ extern void satposs(gtime_t teph, const obsd_t *obs, int n, const nav_t *nav,
             continue;
         }
         time[i]=timeadd(time[i],-dt);
-        
+
         /* satellite position and clock at transmission time */
         if (!satpos(time[i],teph,obs[i].sat,ephopt,nav,rs+i*6,dts+i*2,var+i,
                     svh+i)) {
@@ -806,6 +809,10 @@ extern void satposs(gtime_t teph, const obsd_t *obs, int n, const nav_t *nav,
             dts[1+i*2]=0.0;
             *var=SQR(STD_BRDCCLK);
         }
+        trace(4,"satposs: %d,time=%.9f dt=%.9f pr=%.3f rs=%13.3f %13.3f %13.3f dts=%12.3f var=%7.3f\n",
+            obs[i].sat,time[i].sec,dt,pr,rs[i*6],rs[1+i*6],rs[2+i*6],dts[i*2]*1E9,
+            var[i]);
+
     }
     for (i=0;i<n&&i<2*MAXOBS;i++) {
         trace(4,"%s sat=%2d rs=%13.3f %13.3f %13.3f dts=%12.3f var=%7.3f svh=%02X\n",
