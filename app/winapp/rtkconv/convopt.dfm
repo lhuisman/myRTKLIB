@@ -580,7 +580,7 @@ object ConvOptDialog: TConvOptDialog
     Width = 45
     Height = 21
     TabOrder = 14
-    Text = '0.005'
+    Text = '1.0'
   end
   object BtnFcn: TButton
     Left = 372

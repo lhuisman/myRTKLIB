@@ -293,17 +293,18 @@ void __fastcall TMainWindow::BtnPlotClick(TObject *Sender)
 	AnsiString file6=OutFile6->Text;
 	AnsiString file7=OutFile7->Text;
 	AnsiString file8=OutFile8->Text;
-	AnsiString file[]={file1,file2,file3,file4,file5,file6,file7,file8};
+    AnsiString file9=OutFile9->Text;
+	AnsiString file[]={file1,file2,file3,file4,file5,file6,file7,file8,file9};
 	AnsiString cmd1="rtkplot",cmd2="..\\..\\..\\bin\\rtkplot",opts=" -r";
 	TCheckBox *cb[]={
 		OutFileEna1,OutFileEna2,OutFileEna3,OutFileEna4,OutFileEna5,OutFileEna6,
-		OutFileEna7,OutFileEna8
+		OutFileEna7,OutFileEna8,OutFileEna9
 	};
-	int i,ena[8];
+	int i,ena[9];
 	
-	for (i=0;i<8;i++) ena[i]=cb[i]->Enabled&&cb[i]->Checked;
+	for (i=0;i<9;i++) ena[i]=cb[i]->Enabled&&cb[i]->Checked;
 	
-	for (i=0;i<8;i++) {
+	for (i=0;i<9;i++) {
 		if (ena[i]) opts=opts+" \""+RepPath(file[i])+"\"";
 	}
 	if (opts==" -r") return;
@@ -1081,7 +1082,7 @@ void __fastcall TMainWindow::LoadOpt(void)
 	OutTime				=ini->ReadInteger("opt","outtime",	   0);
 	OutLeaps			=ini->ReadInteger("opt","outleaps",    0);
 	SepNav				=ini->ReadInteger("opt","sepnav",	   0);
-	TimeTol				=ini->ReadFloat  ("opt","timetol", 0.005);
+	TimeTol				=ini->ReadFloat  ("opt","timetol",   1.0);
 	EnaGloFcn           =ini->ReadInteger("opt","glofcnena",   0);
 	for (int i=0;i<27;i++) {
 	    opt.sprintf("glofcn%02d",i+1);
@@ -1111,13 +1112,13 @@ void __fastcall TMainWindow::LoadOpt(void)
 	OutDirEna  ->Checked=ini->ReadInteger("set","outdirena",   0);
 	OutFileEna1->Checked=ini->ReadInteger("set","outfileena1", 1);
 	OutFileEna2->Checked=ini->ReadInteger("set","outfileena2", 1);
-	OutFileEna3->Checked=ini->ReadInteger("set","outfileena3", 1);
-	OutFileEna4->Checked=ini->ReadInteger("set","outfileena4", 1);
-	OutFileEna5->Checked=ini->ReadInteger("set","outfileena5", 1);
-	OutFileEna6->Checked=ini->ReadInteger("set","outfileena6", 1);
-	OutFileEna7->Checked=ini->ReadInteger("set","outfileena7", 1);
-	OutFileEna8->Checked=ini->ReadInteger("set","outfileena8", 1);
-	OutFileEna9->Checked=ini->ReadInteger("set","outfileena9", 1);
+	OutFileEna3->Checked=ini->ReadInteger("set","outfileena3", 0);
+	OutFileEna4->Checked=ini->ReadInteger("set","outfileena4", 0);
+	OutFileEna5->Checked=ini->ReadInteger("set","outfileena5", 0);
+	OutFileEna6->Checked=ini->ReadInteger("set","outfileena6", 0);
+	OutFileEna7->Checked=ini->ReadInteger("set","outfileena7", 0);
+	OutFileEna8->Checked=ini->ReadInteger("set","outfileena8", 0);
+	OutFileEna9->Checked=ini->ReadInteger("set","outfileena9", 0);
 	Format	 ->ItemIndex=ini->ReadInteger("set","format",	   0);
 	
 	InFile->Items=ReadList(ini,"hist","inputfile");

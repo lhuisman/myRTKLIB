@@ -955,6 +955,7 @@ static void zdres_sat(int base, double r, const obsd_t *obs, const nav_t *nav,
             /* residuals = observable - estimated range */
             if (obs->L[i]!=0.0) y[i   ]=obs->L[i]*CLIGHT/freq[i]-r-dant[i];
             if (obs->P[i]!=0.0) y[i+nf]=obs->P[i]               -r-dant[i];
+            trace(4,"zdres_sat: %d: %.6f %.6f %.6f %.6f\n",obs->sat,obs->L[i],obs->P[i],r,dant[i]);
         }
     }
 }
@@ -1025,6 +1026,7 @@ static int zdres(int base, const obsd_t *obs, int n, const double *rs,
                  dant);
         
         /* calc undifferenced phase/code residual for satellite */
+        trace(4,"sat=%d %.6f %.6f %.6f %.6f\n",obs[i].sat,r,CLIGHT*dts[i*2],zhd,mapfh);
         zdres_sat(base,r,obs+i,nav,azel+i*2,dant,opt,y+i*nf*2,freq+i*nf);
     }
     trace(4,"rr_=%.3f %.3f %.3f\n",rr_[0],rr_[1],rr_[2]);
@@ -1498,7 +1500,7 @@ static void restamb(rtk_t *rtk, const double *bias, int nb, double *xa)
     for (i=0;i<rtk->nx;i++) xa[i]=rtk->x [i];  /* init all fixed states to float state values */
     for (i=0;i<rtk->na;i++) xa[i]=rtk->xa[i];  /* overwrite non phase-bias states with fixed values */
     
-    for (m=0;m<5;m++) for (f=0;f<nf;f++) {
+    for (m=0;m<6;m++) for (f=0;f<nf;f++) {
         
         for (n=i=0;i<MAXSAT;i++) {
             if (!test_sys(rtk->ssat[i].sys,m)||rtk->ssat[i].fix[f]!=2) {
@@ -1526,7 +1528,7 @@ static void holdamb(rtk_t *rtk, const double *xa)
     
     v=mat(nb,1); H=zeros(nb,rtk->nx);
     
-    for (m=0;m<5;m++) for (f=0;f<nf;f++) {
+    for (m=0;m<6;m++) for (f=0;f<nf;f++) {
         
         for (n=i=0;i<MAXSAT;i++) {
             if (!test_sys(rtk->ssat[i].sys,m)||rtk->ssat[i].fix[f]!=2||
@@ -1882,10 +1884,9 @@ static int relpos(rtk_t *rtk, const obsd_t *obs, int nu, int nr,
     int stat=rtk->opt.mode<=PMODE_DGPS?SOLQ_DGPS:SOLQ_FLOAT;
     int nf=opt->ionoopt==IONOOPT_IFLC?1:opt->nf;
     
-    trace(3,"relpos  : nx=%d nu=%d nr=%d\n",rtk->nx,nu,nr);
-    
     /* time diff between base and rover observations */
     dt=timediff(time,obs[nu].time);
+    trace(3,"relpos  : nx=%d dt=%.3f nu=%d nr=%d\n",rtk->nx,dt,nu,nr);
 
     /* define local matrices, n=total observations, base + rover */
     rs=mat(6,n);            /* range to satellites */
@@ -2003,8 +2004,7 @@ static int relpos(rtk_t *rtk, const obsd_t *obs, int nu, int nr,
         trace(4,"x(%d)=",i+1); tracemat(4,xp,1,NR(opt),13,4);
     }
     /* calc zero diff residuals again after kalman filter update */
-    if (stat!=SOLQ_NONE&&zdres(0,obs,nu,rs,dts,var,svh,nav,xp,opt,0,y,e,azel,
-                               freq)) {
+    if (stat!=SOLQ_NONE&&zdres(0,obs,nu,rs,dts,var,svh,nav,xp,opt,0,y,e,azel,freq)) {
         
         /* calc double diff residuals again after kalman filter update for float solution */
         nv=ddres(rtk,nav,obs,dt,xp,Pp,sat,y,e,azel,freq,iu,ir,ns,v,NULL,R,vflg);

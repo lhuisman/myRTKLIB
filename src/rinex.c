@@ -507,7 +507,7 @@ static void decode_obsh(FILE *fp, char *buff, double ver, int *tsys,
             nav->utc_gps[6]=str2num(buff,18,6);
         }
     }
-    else if (strstr(label,"# OF SALTELLITES"    )) { /* opt */
+    else if (strstr(label,"# OF SATELLITES"    )) { /* opt */
         /* skip */ ;
     }
     else if (strstr(label,"PRN / # OF OBS"      )) { /* opt */
