@@ -183,7 +183,7 @@ static double prange(const obsd_t *obs, const nav_t *nav, const prcopt_t *opt,
             gamma=SQR(FREQs/FREQL5);
             b1=gettgd(sat,nav,0); /* TGD (m) */
             return P1-gamma*b1;
-    }
+        }
     }
     return P1;
 }
@@ -278,13 +278,12 @@ static int rescode(int iter, const obsd_t *obs, int n, const double *rs,
     gtime_t time;
     double r,freq,dion=0.0,dtrp=0.0,vmeas,vion=0.0,vtrp=0.0,rr[3],pos[3],dtr,e[3],P;
     int i,j,nv=0,sat,sys,mask[NX-3]={0};
-    
-    trace(3,"resprng : n=%d\n",n);
-    
+
     for (i=0;i<3;i++) rr[i]=x[i];
     dtr=x[3];
     
     ecef2pos(rr,pos);
+    trace(3,"rescode: rr=%.3f %.3f %.3f\n",rr[0], rr[1], rr[2]);
     
     for (i=*ns=0;i<n&&i<MAXOBS;i++) {
         vsat[i]=0; azel[i*2]=azel[1+i*2]=resp[i]=0.0;
@@ -327,6 +326,8 @@ static int rescode(int iter, const obsd_t *obs, int n, const double *rs,
         
         /* pseudorange residual */
         v[nv]=P-(r+dtr-CLIGHT*dts[i*2]+dion+dtrp);
+        trace(4,"sat=%d: v=%.3f P=%.3f r=%.3f dtr=%.6f dts=%.6f dion=%.3f dtrp=%.3f\n",
+            sat,v[nv],P,r,dtr,dts[i*2],dion,dtrp);
         
         /* design matrix */
         for (j=0;j<NX;j++) {

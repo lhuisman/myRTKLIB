@@ -339,6 +339,8 @@ extern double geph2clk(gtime_t time, const geph_t *geph)
     for (i=0;i<2;i++) {
         t=ts-(-geph->taun+geph->gamn*t);
     }
+    trace(4,"geph2clk: t=%.12f ts=%.12f taun=%.12f gamn=%.12f\n",t,ts,geph->taun,
+        geph->gamn);
     return -geph->taun+geph->gamn*t;
 }
 /* glonass ephemeris to satellite position and clock bias ----------------------
@@ -362,7 +364,8 @@ extern void geph2pos(gtime_t time, const geph_t *geph, double *rs, double *dts,
     t=timediff(time,geph->toe);
     
     *dts=-geph->taun+geph->gamn*t;
-    
+    trace(4,"geph2pos: sat=%d\n",geph->sat);
+
     for (i=0;i<3;i++) {
         x[i  ]=geph->pos[i];
         x[i+3]=geph->vel[i];
@@ -464,6 +467,7 @@ static eph_t *seleph(gtime_t time, int sat, int iode, const nav_t *nav)
               sat,iode);
         return NULL;
     }
+    trace(4,"seleph: sat=%d dt=%.0f\n",sat,tmin);
     return nav->eph+j;
 }
 /* select glonass ephememeris ------------------------------------------------*/
@@ -486,6 +490,7 @@ static geph_t *selgeph(gtime_t time, int sat, int iode, const nav_t *nav)
               sat,iode);
         return NULL;
     }
+    trace(4,"selgeph: sat=%d dt=%.0f\n",sat,tmin);
     return nav->geph+j;
 }
 /* select sbas ephememeris ---------------------------------------------------*/
