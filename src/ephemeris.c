@@ -531,6 +531,7 @@ static int ephclk(gtime_t time, gtime_t teph, int sat, const nav_t *nav,
     }
     else if (sys==SYS_GLO) {
         if (!(geph=selgeph(teph,sat,-1,nav))) return 0;
+        if (fabs(geph->taun) > 1) return 0; /* reject invalid data to prevent fp error */
         *dts=geph2clk(time,geph);
     }
     else if (sys==SYS_SBS) {
