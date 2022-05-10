@@ -863,7 +863,7 @@ static int decode_obsdata(FILE *fp, char *buff, double ver, int mask,
             p[r[0]]=-1; p[r[1]]=-1;
         }
         else if (val[r[0]]!=0.0&&val[r[1]]==0.0) {
-            p[l[0]]=1; p[l[1]]=-1;
+            p[r[0]]=1; p[r[1]]=-1;
         }
         else if (val[r[0]]==0.0&&val[r[1]]!=0.0) {
             p[r[0]]=-1; p[r[1]]=1;

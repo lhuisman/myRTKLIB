@@ -6,7 +6,7 @@
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Release</Config>
         <FrameworkType>VCL</FrameworkType>
-        <ProjectVersion>18.8</ProjectVersion>
+        <ProjectVersion>19.2</ProjectVersion>
         <Platform Condition="'$(Platform)'==''">Win64</Platform>
         <TargetedPlatforms>3</TargetedPlatforms>
         <AppType>Application</AppType>
@@ -83,7 +83,7 @@
         <DCC_ObjPath>..\..\..\rtklib_extlex;..\..\extlex;..\..\extion;..\..\src\qzsext;..\appcmn;..\..\src\rcv;..\src;..\..\src;K:\proj\rtklib_1.1\util\gui;$(DCC_ObjPath)</DCC_ObjPath>
         <PackageImports>vclx.bpi;vcl.bpi;$(PackageImports)</PackageImports>
         <ILINK_AppType>Windows</ILINK_AppType>
-        <BRCC_IncludePath>..\..\..\rtklib_extlex;..\..\extion;..\..\extlex;..\appcmn;..\..\src;$(BDS)\include;$(BDS)\include\vcl;$(BRCC_IncludePath)</BRCC_IncludePath>
+        <BRCC_IncludePath>$(BDS)\include;$(BRCC_IncludePath)</BRCC_IncludePath>
         <BCC_PCHWithExternalTypeFiles>false</BCC_PCHWithExternalTypeFiles>
         <BCC_GenerateWindowsApp>true</BCC_GenerateWindowsApp>
         <DCC_IncludePath>..\..\..\rtklib_extlex;..\..\extlex;..\..\extion;..\..\src\qzsext;..\appcmn;..\..\src\rcv;..\src;..\..\src;K:\proj\rtklib_1.1\util\gui;C:\Documents and Settings\TTAKA\My Documents\Borland Studio Projects;$(BDS)\lib;$(BDS)\lib\obj;$(DCC_IncludePath)</DCC_IncludePath>
@@ -422,8 +422,8 @@
                     <Parameters Name="LoadUnspecifiedSymbols">False</Parameters>
                 </Parameters>
                 <Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\bcboffice2k260.bpl">Embarcadero C++Builder Office 2000 Servers Package</Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\bcbofficexp260.bpl">Embarcadero C++Builder Office XP Servers Package</Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\bcboffice2k270.bpl">Embarcadero C++Builder Office 2000 Servers Package</Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\bcbofficexp270.bpl">Embarcadero C++Builder Office XP Servers Package</Excluded_Packages>
                 </Excluded_Packages>
                 <ProjectProperties>
                     <ProjectProperties Name="AutoShowDeps">False</ProjectProperties>
