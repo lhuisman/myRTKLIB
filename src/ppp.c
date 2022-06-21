@@ -935,7 +935,7 @@ static int ppp_res(int post, const obsd_t *obs, int n, const double *rs,
     double ve[MAXOBS*2*NFREQ]={0},vmax=0;
     char str[32];
     int ne=0,obsi[MAXOBS*2*NFREQ]={0},frqi[MAXOBS*2*NFREQ],maxobs,maxfrq,rej;
-    int i,j,k,sat,sys,nv=0,nx=rtk->nx,nf = NF(opt),stat=1,frq,code;
+    int i,j,k,sat,sys,nv=0,nx=rtk->nx,stat=1,frq,code;
     
     time2str(obs[0].time,str,2);
     

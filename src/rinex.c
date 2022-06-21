@@ -863,16 +863,16 @@ static int decode_obsdata(FILE *fp, char *buff, double ver, int mask,
             p[r[0]]=-1; p[r[1]]=-1;
         }
         else if (val[r[0]]!=0.0&&val[r[1]]==0.0) {
-            p[r[0]]=1; p[r[1]]=-1;
+            p[r[0]]=2; p[r[1]]=-1;
         }
         else if (val[r[0]]==0.0&&val[r[1]]!=0.0) {
-            p[r[0]]=-1; p[r[1]]=1;
+            p[r[0]]=-1; p[r[1]]=2;
         }
         else if (ind->pri[r[1]]>ind->pri[r[0]]) {
-            p[r[1]]=1; p[r[0]]=NEXOBS<3?-1:NFREQ+2;
+            p[r[1]]=2; p[r[0]]=NEXOBS<3?-1:NFREQ+2;
         }
         else {
-            p[r[0]]=1; p[r[1]]=NEXOBS<3?-1:NFREQ+2;
+            p[r[0]]=2; p[r[1]]=NEXOBS<3?-1:NFREQ+2;
         }
     }
     /* save observation data */
@@ -890,6 +890,8 @@ static int decode_obsdata(FILE *fp, char *buff, double ver, int mask,
             case 2: obs->D[p[i]]=(float)val[i];                     break;
             case 3: obs->SNR[p[i]]=(uint16_t)(val[i]/SNR_UNIT+0.5); break;
         }
+        trace(4, "obs: i=%d f=%d P=%10.3f L=%10.3f LLI=%d code=%d\n",i,p[i],obs->P[p[i]],
+        obs->L[p[i]],obs->LLI[p[i]],obs->code[p[i]]);
     }
     trace(4,"decode_obsdata: time=%s sat=%2d\n",time_str(obs->time,0),obs->sat);
     return 1;
@@ -2286,7 +2288,7 @@ extern int outrnxobsb(FILE *fp, const rnxopt_t *opt, const obsd_t *obs, int n,
     const char *mask;
     double epdiff,ep[6],dL;
     char sats[MAXOBS][4]={""};
-    int i,j,k,m,ns,sys,ind[MAXOBS],s[MAXOBS]={0},std;
+    int i,j,k,m,ns,sys,ind[MAXOBS],s[MAXOBS]={0};
     
     trace(3,"outrnxobsb: n=%d\n",n);
     

@@ -721,7 +721,7 @@ static void detslp_dop(rtk_t *rtk, const obsd_t *obs, const int *ix, int ns,
                        int rcv, const nav_t *nav)
 {
     int i,ii,f,sat,ndop=0;
-    double dph,dpt,lam,thres,mean_dop=0;
+    double dph,dpt,mean_dop=0;
     double dopdif[MAXSAT][NFREQ], tt[MAXSAT][NFREQ];
 
     trace(4,"detslp_dop: rcv=%d\n", rcv);
@@ -772,7 +772,7 @@ static void udbias(rtk_t *rtk, double tt, const obsd_t *obs, const int *sat,
                    const int *iu, const int *ir, int ns, const nav_t *nav)
 {
     double cp,pr,cp1,cp2,pr1,pr2,*bias,offset,freqi,freq1,freq2,C1,C2;
-    int i,j,k,slip,rejc,reset,nf=NF(&rtk->opt),sysi,f2;
+    int i,j,k,slip,rejc,reset,nf=NF(&rtk->opt),f2;
     
     trace(3,"udbias  : tt=%.3f ns=%d\n",tt,ns);
 
@@ -1748,7 +1748,7 @@ static int manage_amb_LAMBDA(rtk_t *rtk, double *bias, double *xa, const int *sa
 {
     int i,f,lockc[NFREQ],ar=0,excflag=0,arsats[MAXOBS]={0};
     int gps1=-1,glo1=-1,sbas1=-1,gps2,glo2,sbas2,nb,rerun,dly;
-    float ratio1,var=0,posvar=0;
+    float ratio1,posvar=0;
 
     /* calc position variance, will skip AR if too high to avoid false fix */
     for (i=0;i<3;i++) posvar+=rtk->P[i+i*rtk->nx];
