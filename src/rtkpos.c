@@ -529,7 +529,7 @@ static void udpos(rtk_t *rtk, double tt)
     /* include accel terms if filter is converged */
     if (var<rtk->opt.thresar[1]) {
         for (i=0;i<3;i++) {
-            F[i+(i+6)*nx]=SQR(tt)/2.0;
+            F[i+(i+6)*nx]=(tt>=0?1:-1)*SQR(tt)/2.0;
         }
     }
     else trace(3,"pos var too high for accel term: %.4f\n", var);
