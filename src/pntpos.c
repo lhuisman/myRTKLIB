@@ -44,6 +44,7 @@
 #define ERR_CBIAS   0.3         /* code bias error Std (m) */
 #define REL_HUMI    0.7         /* relative humidity for Saastamoinen model */
 #define MIN_EL      (5.0*D2R)   /* min elevation for measurement error (rad) */
+# define MAX_GDOP   30          /* max gdop for valid solution  */
 
 /* pseudorange measurement error variance ------------------------------------*/
 static double varerr(const prcopt_t *opt, const ssat_t *ssat, const obsd_t *obs, double el, int sys)
@@ -155,7 +156,7 @@ static double prange(const obsd_t *obs, const nav_t *nav, const prcopt_t *opt,
             gamma=SQR(FREQL5/FREQs);
             return (P2-gamma*P1)/(1.0-gamma);
         }
-        }
+    }
     else { /* single-freq (L1/E1/B1) */
         *var=SQR(ERR_CBIAS);
         
@@ -383,7 +384,7 @@ static int valsol(const double *azel, const int *vsat, int n,
         ns++;
     }
     dops(ns,azels,opt->elmin,dop);
-    if (dop[0]<=0.0||dop[0]>opt->maxgdop) {
+    if (dop[0]<=0.0||dop[0]>MAX_GDOP) {
         sprintf(msg,"gdop error nv=%d gdop=%.1f",nv,dop[0]);
         return 0;
     }

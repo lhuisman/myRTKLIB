@@ -514,6 +514,8 @@ object ConvOptDialog: TConvOptDialog
       Width = 40
       Height = 15
       Caption = 'GLO'
+      Checked = True
+      State = cbChecked
       TabOrder = 1
     end
     object Nav3: TCheckBox
@@ -522,6 +524,8 @@ object ConvOptDialog: TConvOptDialog
       Width = 40
       Height = 15
       Caption = 'GAL'
+      Checked = True
+      State = cbChecked
       TabOrder = 2
     end
     object Nav4: TCheckBox
@@ -580,7 +584,7 @@ object ConvOptDialog: TConvOptDialog
     Width = 45
     Height = 21
     TabOrder = 14
-    Text = '1.0'
+    Text = '0.005'
   end
   object BtnFcn: TButton
     Left = 372

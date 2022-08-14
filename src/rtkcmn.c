@@ -216,7 +216,8 @@ const prcopt_t prcopt_default={ /* defaults processing options */
     5E-12,                      /* sclkstab */
     {3.0,0.25,0.0,1E-9,1E-5,3.0,3.0,0.0}, /* thresar */
 	0.0,0.0,0.05,0,             /* elmaskar,elmaskhold,thresslip,thresdop, */
-	0.1,0.01,30.0,5.0,30.0,     /* varholdamb,gainholdamb,maxtdif,maxinno,maxgdop */
+	0.1,0.01,30.0,              /* varholdamb,gainholdamb,maxtdif */
+    {5.0,30.0},                 /* maxinno {phase,code} */
     {0},{0},{0},                /* baseline,ru,rb */
     {"",""},                    /* anttype */
     {{0}},{{0}},{0},            /* antdel,pcv,exsats */
@@ -773,9 +774,9 @@ extern double sat2freq(int sat, uint8_t code, const nav_t *nav)
 }
 /* set code priority -----------------------------------------------------------
 * set code priority for multiple codes in a frequency
-* args   : int    sys     I     system (or of SYS_???)
+* args   : int    sys       I   system (or of SYS_???)
 *          int    idx       I   frequency index (0- )
-*          char   *pri    I     priority of codes (series of code characters)
+*          char   *pri      I   priority of codes (series of code characters)
 *                               (higher priority precedes lower)
 * return : none
 *-----------------------------------------------------------------------------*/
@@ -794,9 +795,9 @@ extern void setcodepri(int sys, int idx, const char *pri)
 }
 /* get code priority -----------------------------------------------------------
 * get code priority for multiple codes in a frequency
-* args   : int    sys     I     system (SYS_???)
+* args   : int    sys       I   system (SYS_???)
 *          uint8_t code     I   obs code (CODE_???)
-*          char   *opt    I     code options (NULL:no option)
+*          char   *opt      I   code options (NULL:no option)
 * return : priority (15:highest-1:lowest,0:error)
 *-----------------------------------------------------------------------------*/
 extern int getcodepri(int sys, uint8_t code, const char *opt)
@@ -829,8 +830,8 @@ extern int getcodepri(int sys, uint8_t code, const char *opt)
 /* extract unsigned/signed bits ------------------------------------------------
 * extract unsigned/signed bits from byte data
 * args   : uint8_t *buff    I   byte data
-*          int    pos    I      bit position from start of data (bits)
-*          int    len    I      bit length (bits) (len<=32)
+*          int    pos       I   bit position from start of data (bits)
+*          int    len       I   bit length (bits) (len<=32)
 * return : extracted unsigned/signed bits
 *-----------------------------------------------------------------------------*/
 extern uint32_t getbitu(const uint8_t *buff, int pos, int len)
@@ -849,8 +850,8 @@ extern int32_t getbits(const uint8_t *buff, int pos, int len)
 /* set unsigned/signed bits ----------------------------------------------------
 * set unsigned/signed bits to byte data
 * args   : uint8_t *buff IO byte data
-*          int    pos    I      bit position from start of data (bits)
-*          int    len    I      bit length (bits) (len<=32)
+*          int    pos       I   bit position from start of data (bits)
+*          int    len       I   bit length (bits) (len<=32)
 *          [u]int32_t data  I   unsigned/signed data
 * return : none
 *-----------------------------------------------------------------------------*/
@@ -871,7 +872,7 @@ extern void setbits(uint8_t *buff, int pos, int len, int32_t data)
 /* crc-32 parity ---------------------------------------------------------------
 * compute crc-32 parity for novatel raw
 * args   : uint8_t *buff    I   data
-*          int    len    I      data length (bytes)
+*          int    len       I   data length (bytes)
 * return : crc-32 parity
 * notes  : see NovAtel OEMV firmware manual 1.7 32-bit CRC
 *-----------------------------------------------------------------------------*/
@@ -893,7 +894,7 @@ extern uint32_t rtk_crc32(const uint8_t *buff, int len)
 /* crc-24q parity --------------------------------------------------------------
 * compute crc-24q parity for sbas, rtcm3
 * args   : uint8_t *buff    I   data
-*          int    len    I      data length (bytes)
+*          int    len       I   data length (bytes)
 * return : crc-24Q parity
 * notes  : see reference [2] A.4.3.3 Parity
 *-----------------------------------------------------------------------------*/
@@ -910,7 +911,7 @@ extern uint32_t rtk_crc24q(const uint8_t *buff, int len)
 /* crc-16 parity ---------------------------------------------------------------
 * compute crc-16 parity for binex, nvs
 * args   : uint8_t *buff    I   data
-*          int    len    I      data length (bytes)
+*          int    len       I   data length (bytes)
 * return : crc-16 parity
 * notes  : see reference [10] A.3.
 *-----------------------------------------------------------------------------*/
@@ -929,9 +930,9 @@ extern uint16_t rtk_crc16(const uint8_t *buff, int len)
 /* decode navigation data word -------------------------------------------------
 * check party and decode navigation data word
 * args   : uint32_t word    I   navigation data word (2+30bit)
-*                              (previous word D29*-30* + current word D1-30)
+*                               (previous word D29*-30* + current word D1-30)
 *          uint8_t *data    O   decoded navigation data without parity
-*                              (8bitx3)
+*                               (8bitx3)
 * return : status (1:ok,0:parity error)
 * notes  : see reference [1] 20.3.5.2 user parity algorithm
 *-----------------------------------------------------------------------------*/

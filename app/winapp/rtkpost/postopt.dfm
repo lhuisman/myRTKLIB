@@ -498,9 +498,9 @@ object OptDialog: TOptDialog
       object Label11: TLabel
         Left = 24
         Top = 170
-        Width = 176
+        Width = 179
         Height = 13
-        Caption = 'Reject Threshold of GDOP/Innov (m)'
+        Caption = 'Outlier Threshold for Code/Phase (m)'
       end
       object Label37: TLabel
         Left = 25
@@ -609,7 +609,7 @@ object OptDialog: TOptDialog
         TabOrder = 9
         Text = '30'
       end
-      object RejectThres: TEdit
+      object RejectPhase: TEdit
         Left = 325
         Top = 167
         Width = 75
@@ -682,7 +682,7 @@ object OptDialog: TOptDialog
         TabOrder = 6
         Text = '0'
       end
-      object RejectGdop: TEdit
+      object RejectCode: TEdit
         Left = 248
         Top = 167
         Width = 75

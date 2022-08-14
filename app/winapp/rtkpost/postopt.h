@@ -59,7 +59,7 @@ __published:
 	TEdit *ElMaskAR;
 	TEdit *SlipThres;
 	TEdit *MaxAgeDiff;
-	TEdit *RejectThres;
+    TEdit *RejectPhase;
 	TEdit *NumIter;
 	TTabSheet *TabSheet3;
 	TLabel *LabelSolFormat;
@@ -175,7 +175,7 @@ __published:
 	TButton *BtnBLQFile;
 	TEdit *MeasErrR2;
 	TEdit *ElMaskHold;
-	TEdit *RejectGdop;
+    TEdit *RejectCode;
 	TLabel *Label39;
 	TLabel *Label40;
 	TComboBox *IntpRefObs;

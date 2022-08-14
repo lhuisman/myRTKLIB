@@ -1038,7 +1038,7 @@ static int ppp_res(int post, const obsd_t *obs, int n, const double *rs,
                   code?"P":"L",frq+1,v[nv],sqrt(var[nv]),azel[1+i*2]*R2D);
             
             /* reject satellite by pre-fit residuals */
-            if (!post&&opt->maxinno>0.0&&fabs(v[nv])>opt->maxinno) {
+            if (!post&&opt->maxinno[code]>0.0&&fabs(v[nv])>opt->maxinno[code]) {
                 trace(2,"outlier (%d) rejected %s sat=%2d %s%d res=%9.4f el=%4.1f\n",
                       post,str,sat,code?"P":"L",frq+1,v[nv],azel[1+i*2]*R2D);
                 exc[i]=1; rtk->ssat[sat-1].rejc[frq]++;

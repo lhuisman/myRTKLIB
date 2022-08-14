@@ -59,7 +59,7 @@ extern "C" {
 
 #define VER_RTKLIB  "demo5"             /* library version */
 
-#define PATCH_LEVEL "b34f.1"               /* patch level */
+#define PATCH_LEVEL "b34g"               /* patch level */
 
 #define COPYRIGHT_RTKLIB \
             "Copyright (C) 2007-2020 T.Takasu\nAll rights reserved."
@@ -542,7 +542,7 @@ typedef struct {        /* time struct */
 
 typedef struct {        /* observation data record */
     gtime_t time;       /* receiver sampling time (GPST) */
-    uint8_t sat,rcv; /* satellite/receiver number */
+    uint8_t sat,rcv;    /* satellite/receiver number */
     uint16_t SNR[NFREQ+NEXOBS]; /* signal strength (0.001 dBHz) */
     uint8_t  LLI[NFREQ+NEXOBS]; /* loss of lock indicator */
     uint8_t code[NFREQ+NEXOBS]; /* code indicator (CODE_???) */
@@ -1022,8 +1022,7 @@ typedef struct {        /* processing options type */
     double varholdamb;  /* variance for fix-and-hold psuedo measurements (cycle^2) */
     double gainholdamb; /* gain used for GLO and SBAS sats to adjust ambiguity */
     double maxtdiff;    /* max difference of time (sec) */
-    double maxinno;     /* reject threshold of innovation (m) */
-    double maxgdop;     /* reject threshold of gdop */
+    double maxinno[2];  /* reject threshold of innovation for code and phase (m) */
     double baseline[2]; /* baseline length constraint {const,sigma} (m) */
     double ru[3];       /* rover position for fixed mode {x,y,z} (ecef) (m) */
     double rb[3];       /* base position for relative mode {x,y,z} (ecef) (m) */
@@ -1038,7 +1037,7 @@ typedef struct {        /* processing options type */
     int  posopt[6];     /* positioning options */
     int  syncsol;       /* solution sync mode (0:off,1:on) */
     double odisp[2][6*11]; /* ocean tide loading parameters {rov,base} */
-    int freqopt;        /* disable L2-AR */
+    int  freqopt;       /* disable L2-AR */
     char pppopt[256];   /* ppp option */
 } prcopt_t;
 
@@ -1139,7 +1138,7 @@ typedef struct {        /* satellite status type */
     uint32_t rejc [NFREQ]; /* reject counter */
     double gf[NFREQ-1]; /* geometry-free phase (m) */
     double mw[NFREQ-1]; /* MW-LC (m) */
-    double  phw;        /* phase windup (cycle) */
+    double phw;         /* phase windup (cycle) */
     gtime_t pt[2][NFREQ]; /* previous carrier-phase time */
     double  ph[2][NFREQ]; /* previous carrier-phase observable (cycle) */
 } ssat_t;
