@@ -242,6 +242,7 @@ static int inputobs(obsd_t *obs, int solq, const prcopt_t *popt)
 {
     gtime_t time={0};
     int i,nu,nr,n=0;
+    double dt,dt_next;
     
     trace(3,"\ninfunc  : revs=%d iobsu=%d iobsr=%d isbs=%d\n",revs,iobsu,iobsr,isbs);
     
@@ -254,12 +255,18 @@ static int inputobs(obsd_t *obs, int solq, const prcopt_t *popt)
     if (!revs) { /* input forward data */
         if ((nu=nextobsf(&obss,&iobsu,1))<=0) return -1;
         if (popt->intpref) {
+            /* interpolate nearest timestamps */
             for (;(nr=nextobsf(&obss,&iobsr,2))>0;iobsr+=nr)
                 if (timediff(obss.data[iobsr].time,obss.data[iobsu].time)>-DTTOL) break;
         }
         else {
-            for (i=iobsr;(nr=nextobsf(&obss,&i,2))>0;iobsr=i,i+=nr)
-                if (timediff(obss.data[i].time,obss.data[iobsu].time)>DTTOL) break;
+            /* find closest timestamp */
+            dt=timediff(obss.data[i].time,obss.data[iobsu].time);
+            for (i=iobsr;(nr=nextobsf(&obss,&i,2))>0;iobsr=i,i+=nr) {
+                dt_next=timediff(obss.data[i].time,obss.data[iobsu].time);
+                if (fabs(dt_next)>fabs(dt)) break;
+                dt=dt_next;
+            }
         }
         nr=nextobsf(&obss,&iobsr,2);
         if (nr<=0) {
@@ -287,12 +294,18 @@ static int inputobs(obsd_t *obs, int solq, const prcopt_t *popt)
     else { /* input backward data */
         if ((nu=nextobsb(&obss,&iobsu,1))<=0) return -1;
         if (popt->intpref) {
+            /* interpolate nearest timestamps */
             for (;(nr=nextobsb(&obss,&iobsr,2))>0;iobsr-=nr)
                 if (timediff(obss.data[iobsr].time,obss.data[iobsu].time)<DTTOL) break;
         }
         else {
-            for (i=iobsr;(nr=nextobsb(&obss,&i,2))>0;iobsr=i,i-=nr)
-                if (timediff(obss.data[i].time,obss.data[iobsu].time)<-DTTOL) break;
+            /* find closest timestamp */
+            dt=timediff(obss.data[i].time,obss.data[iobsu].time);
+            for (i=iobsr;(nr=nextobsb(&obss,&i,2))>0;iobsr=i,i-=nr) {
+                dt_next=timediff(obss.data[i].time,obss.data[iobsu].time);
+                if (fabs(dt_next)>fabs(dt)) break;
+                dt=dt_next;
+            }
         }
         nr=nextobsb(&obss,&iobsr,2);
         for (i=0;i<nu&&n<MAXOBS*2;i++) obs[n++]=obss.data[iobsu-nu+1+i];

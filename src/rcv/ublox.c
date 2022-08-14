@@ -271,7 +271,7 @@ static int sig_idx(int sys, uint8_t code)
     else if (sys == SYS_QZS) {
         if (code==CODE_L2S) return (nex<1)?-1:NFREQ;   /* L2CM */
         if (code==CODE_L1Z) return (nex<2)?-1:NFREQ+1; /* L1S */
-}
+    }
     return (idx<NFREQ)?idx:-1;
 }
 /* decode UBX-RXM-RAW: raw measurement data ----------------------------------*/
@@ -423,11 +423,10 @@ static int decode_rxmrawx(raw_t *raw)
         frqid=U1(p+23);    /* freqId (fcn + 7) */
         lockt=U2(p+24);    /* locktime (ms) */
         cn0  =U1(p+26);    /* cn0 (dBHz) */
-        if (rcvstds) {
-            prstd=U1(p+27)&15; /* pseudorange std-dev */
-            cpstd=U1(p+28)&15; /* cpStdev (m) */
-            prstd=1<<(prstd>=5?prstd-5:0); /* prstd=2^(x-5) */
-        }
+        prstd=U1(p+27)&15; /* pseudorange std-dev */
+        cpstd=U1(p+28)&15; /* cpStdev (m) */
+        prstd=1<<(prstd>=5?prstd-5:0); /* prstd=2^(x-5) */
+
         tstat=U1(p+30);    /* trkStat */
         if (!(tstat&1)) P=0.0;
         if (!(tstat&2)||L==-0.5||cpstd>cpstd_valid) L=0.0; /* invalid phase */
@@ -509,8 +508,8 @@ static int decode_rxmrawx(raw_t *raw)
         cpstd=cpstd<=9?cpstd:9;  /* limit to 9 to fit RINEX format */
         raw->obs.data[j].L[idx]=L;
         raw->obs.data[j].P[idx]=P;
-        raw->obs.data[j].Lstd[idx]=cpstd;
-        raw->obs.data[j].Pstd[idx]=prstd;
+        raw->obs.data[j].Lstd[idx]=rcvstds?cpstd:0;
+        raw->obs.data[j].Pstd[idx]=rcvstds?prstd:0;
         raw->obs.data[j].D[idx]=(float)D;
         raw->obs.data[j].SNR[idx]=(uint16_t)(cn0*1.0/SNR_UNIT+0.5);
         raw->obs.data[j].LLI[idx]=(uint8_t)LLI;
@@ -1062,20 +1061,20 @@ static int decode_gnav(raw_t *raw, int sat, int off, int frq)
     
     if (m==4) {
         /* decode GLONASS ephemeris strings */
-    geph.tof=raw->time;
+        geph.tof=raw->time;
         if (!decode_glostr(raw->subfrm[sat-1],&geph,NULL)||geph.sat!=sat) {
             return 0;
         }
-    geph.frq=frq-7;
-    
-    if (!strstr(raw->opt,"-EPHALL")) {
+        geph.frq=frq-7;
+        
+        if (!strstr(raw->opt,"-EPHALL")) {
             if (geph.iode==raw->nav.geph[prn-1].iode) return 0;
-    }
-    raw->nav.geph[prn-1]=geph;
-    raw->ephsat=sat;
+        }
+        raw->nav.geph[prn-1]=geph;
+        raw->ephsat=sat;
         raw->ephset=0;
-    return 2;
-}
+        return 2;
+    }
     else if (m==5) {
         if (!decode_glostr(raw->subfrm[sat-1],NULL,utc_glo)) return 0;
         matcpy(raw->nav.utc_glo,utc_glo,8,1);

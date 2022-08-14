@@ -122,14 +122,13 @@ static gtime_t time_stat={0};    /* rtk status file time */
 *          velef/velnf/veluf : velocity e/n/u (m/s) fixed
 *          accef/accnf/accuf : acceleration e/n/u (m/s^2) fixed
 *
-*   $CLK,week,tow,stat,clk1,clk2,clk3,clk4,cmn_bias
+*   $CLK,week,tow,stat,clk1,clk2,clk3,clk4
 *          week/tow : gps week no/time of week (s)
 *          stat     : solution status
 *          clk1     : receiver clock bias GPS (ns)
 *          clk2     : receiver clock bias GLO-GPS (ns)
 *          clk3     : receiver clock bias GAL-GPS (ns)
 *          clk4     : receiver clock bias BDS-GPS (ns)
-*          cmn_bias : common phase bias removed from all states
 *
 *   $ION,week,tow,stat,sat,az,el,ion,ion-fixed
 *          week/tow : gps week no/time of week (s)
@@ -399,15 +398,17 @@ static double varerr(int sat, int sys, double el, double snr_rover, double snr_b
 {
     double a,b,c,d,e;
     double snr_max=opt->err[5];
-    double fact=1.0;
+    double fact;
     double sinel=sin(el),var;
     int nf=NF(opt),frq,code;
 
     frq=f%nf;code=f<nf?0:1;
     /* increase variance for pseudoranges */
-    if (code) fact=opt->eratio[frq]; 
-    if (fact<=0.0) fact=opt->eratio[0];
-    /* adjust variances for constellation */
+    if (code) fact=opt->eratio[frq];
+    /* else adjust variance between freqs */
+    else fact=opt->eratio[frq]/opt->eratio[0];
+
+    /* adjust variance for constellation */
     switch (sys) {
         case SYS_GPS: fact*=EFACT_GPS;break;
         case SYS_GLO: fact*=EFACT_GLO;break;
@@ -487,7 +488,7 @@ static void udpos(rtk_t *rtk, double tt)
     }
     /* initialize position for first epoch */
     if (norm(rtk->x,3)<=0.0) {
-        trace(3,"rr=");tracemat(3,rtk->sol.rr,1,6,15,6);
+        trace(3,"rr_init=");tracemat(3,rtk->sol.rr,1,6,15,6);
         for (i=0;i<3;i++) initx(rtk,rtk->sol.rr[i],VAR_POS,i);
         if (rtk->opt.dynamics) {
             for (i=3;i<6;i++) initx(rtk,rtk->sol.rr[i],VAR_VEL,i);
@@ -845,7 +846,7 @@ static void udbias(rtk_t *rtk, double tt, const obsd_t *obs, const int *sat,
                 cp=sdobs(obs,iu[i],ir[i],k); /* cycle */
                 /* pseudorange diff between rover and base in meters */
                 pr=sdobs(obs,iu[i],ir[i],k+NFREQ);
-				freqi=sat2freq(sat[i],obs[iu[i]].code[k],nav);
+                freqi=sat2freq(sat[i],obs[iu[i]].code[k],nav);
                 if (cp==0.0||pr==0.0||freqi==0.0) continue;
                 /* estimate bias in cycles */
                 bias[i]=cp-pr*freqi/CLIGHT;
@@ -868,7 +869,7 @@ static void udbias(rtk_t *rtk, double tt, const obsd_t *obs, const int *sat,
             if (rtk->x[IB(sat[i],k,&rtk->opt)]!=0.0) {
                 offset+=bias[i]-rtk->x[IB(sat[i],k,&rtk->opt)];
                 j++;
-        	}
+            }
         }
         /* correct phase-bias offset to ensure phase-code coherency */
         if (j>0) {
@@ -896,7 +897,7 @@ static void udstate(rtk_t *rtk, const obsd_t *obs, const int *sat,
     
     /* temporal update of position/velocity/acceleration */
     udpos(rtk,tt);
-    
+
     /* temporal update of ionospheric parameters */
     if (rtk->opt.ionoopt>=IONOOPT_EST) {
         bl=baseline(rtk->x,rtk->rb,dr);
@@ -1184,7 +1185,7 @@ static int ddres(rtk_t *rtk, const nav_t *nav, const obsd_t *obs, double dt, con
     int ii,jj,frq,code;
     
     trace(3,"ddres   : dt=%.4f ns=%d\n",dt,ns);
-    
+
     /* bl=distance from base to rover, dr=x,y,z components */
     bl=baseline(x,rtk->rb,dr);
     /* translate ecef pos to geodetic pos */
@@ -1323,11 +1324,11 @@ static int ddres(rtk_t *rtk, const nav_t *nav, const obsd_t *obs, double dt, con
                 if (code) rtk->ssat[sat[j]-1].resp[frq]=v[nv];  /* pseudorange */
                 else      rtk->ssat[sat[j]-1].resc[frq]=v[nv];  /* carrier phase */
 
+                /* open up outlier threshold if one of the phase biases was just initialized*/
+                threshadj=(P[ii+rtk->nx*ii]==SQR(rtk->opt.std[0]))||
+                        (P[jj+rtk->nx*jj]==SQR(rtk->opt.std[0]))?10:1;
                 /* if residual too large, flag as outlier */
-                /* adjust threshold by error stdev ratio unless one of the phase biases was just initialized*/
-                threshadj=code||(P[ii+rtk->nx*ii]==SQR(rtk->opt.std[0]))||
-                        (P[jj+rtk->nx*jj]==SQR(rtk->opt.std[0]))?opt->eratio[frq]:1;
-                if (opt->maxinno>0.0&&fabs(v[nv])>opt->maxinno*threshadj) {
+                if (fabs(v[nv])>opt->maxinno[code]*threshadj) {
                     rtk->ssat[sat[j]-1].vsat[frq]=0;
                     rtk->ssat[sat[j]-1].rejc[frq]++;
                     errmsg(rtk,"outlier rejected (sat=%3d-%3d %s%d v=%.3f)\n",
@@ -1358,9 +1359,10 @@ static int ddres(rtk_t *rtk, const nav_t *nav, const obsd_t *obs, double dt, con
                 else
                     icb=rtk->ssat[sat[i]-1].icbias[frq]*CLIGHT/freqi - 
                         rtk->ssat[sat[j]-1].icbias[frq]*CLIGHT/freqj;
-                trace(3,"sat=%3d-%3d %s%d v=%13.3f R=%9.6f %9.6f icb=%9.3f lock=%5d x=%9.3f\n",sat[i],
-                        sat[j],code?"P":"L",frq+1,v[nv],Ri[nv],Rj[nv],icb,
-                        rtk->ssat[sat[j]-1].lock[frq],rtk->x[IB(sat[j],frq,&rtk->opt)]);
+                jj=IB(sat[j],frq,&rtk->opt);
+                trace(3,"sat=%3d-%3d %s%d v=%13.3f R=%9.6f %9.6f icb=%9.3f lock=%5d x=%9.3f P=%.3f\n",
+                        sat[i],sat[j],code?"P":"L",frq+1,v[nv],Ri[nv],Rj[nv],icb,
+                        rtk->ssat[sat[j]-1].lock[frq],x[jj],P[jj+jj*rtk->nx]);
 
                 vflg[nv++]=(sat[i]<<16)|(sat[j]<<8)|((code?1:0)<<4)|(frq);
                 nb[b]++;
@@ -1696,7 +1698,7 @@ static int resamb_LAMBDA(rtk_t *rtk, double *bias, double *xa,int gps,int glo,in
         if (s[0]<=0.0||s[1]/s[0]>=rtk->sol.thres) {
             
             /* init non phase-bias states and covariances with float solution values */
-            /* transform float to fixed solution (xa=xa-Qab*Qb\(b0-b)) */
+            /* transform float to fixed solution (xa=x-Qab*Qb\(b0-b)) */
             for (i=0;i<na;i++) {
                 rtk->xa[i]=rtk->x[i];
                 for (j=0;j<na;j++) rtk->Pa[i+j*na]=rtk->P[i+j*nx];
@@ -1935,9 +1937,9 @@ static int relpos(rtk_t *rtk, const obsd_t *obs, int nu, int nr,
         return 0;
     }
     /* update kalman filter states (pos,vel,acc,ionosp, troposp, sat phase biases) */
+    trace(4,"before udstate: x="); tracemat(4,rtk->x,1,NR(opt),13,4);
     udstate(rtk,obs,sat,iu,ir,ns,nav);
-    
-    trace(4,"x(0)="); tracemat(4,rtk->x,1,NR(opt),13,4);
+    trace(4,"after udstate x="); tracemat(4,rtk->x,1,NR(opt),13,4);
     
     for (i=0;i<ns;i++) for (j=0;j<nf;j++) {
         
@@ -2016,7 +2018,7 @@ static int relpos(rtk_t *rtk, const obsd_t *obs, int nu, int nr,
         /* validation of float solution, always returns 1, msg to trace file if large residual */
         if (valpos(rtk,v,R,vflg,nv,4.0)) {
             
-            /* update state and covariance matrix from kalman filter update */
+            /* copy states */
             matcpy(rtk->x,xp,rtk->nx,1);
             matcpy(rtk->P,Pp,rtk->nx,rtk->nx);
             
@@ -2123,7 +2125,7 @@ static int relpos(rtk_t *rtk, const obsd_t *obs, int nu, int nr,
     free(xp); free(Pp);  free(xa);  free(v); free(H); free(R); free(bias);
     
     if (stat!=SOLQ_NONE) rtk->sol.stat=stat;
-    
+
     return stat!=SOLQ_NONE;
 }
 /* initialize RTK control ------------------------------------------------------

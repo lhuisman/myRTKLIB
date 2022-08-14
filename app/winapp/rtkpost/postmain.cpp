@@ -118,7 +118,7 @@ __fastcall TMainForm::TMainForm(TComponent* Owner)
     DynamicModel=IonoOpt=TropOpt=RovAntPcv=RefAntPcv=AmbRes=0;
     RovPosType=RefPosType=0;
     OutCntResetAmb=5; LockCntFixAmb=5; FixCntHoldAmb=10;
-    MaxAgeDiff=30.0; RejectThres=30.0; RejectGdop=30.0;
+    MaxAgeDiff=30.0; RejectPhase=30.0; RejectCode=30.0;
     MeasErrR1=MeasErrR2=MeasErrR5=100.0; MeasErr2=0.004; MeasErr3=0.003; MeasErr4=1.0;
     SatClkStab=1E-11; ValidThresAR=3.0; ValidThresARMin=3.0; ValidThresARMax=3.0;
     RovAntE=RovAntN=RovAntU=RefAntE=RefAntN=RefAntU=0.0;
@@ -905,8 +905,8 @@ int __fastcall TMainForm::GetOption(prcopt_t &prcopt, solopt_t &solopt,
     prcopt.thresslip=SlipThres;
     prcopt.thresdop=DopThres;
     prcopt.maxtdiff =MaxAgeDiff;
-    prcopt.maxgdop  =RejectGdop;
-    prcopt.maxinno  =RejectThres;
+    prcopt.maxinno[1]=RejectCode;
+    prcopt.maxinno[0]=RejectPhase;
     prcopt.varholdamb=VarHoldAmb;
     prcopt.gainholdamb=GainHoldAmb;
     prcopt.outsingle=OutputSingle;
@@ -1233,7 +1233,7 @@ void __fastcall TMainForm::LoadOpt(void)
     TideCorr           =ini->ReadInteger("opt","tidecorr",       0);
     SatEphem           =ini->ReadInteger("opt","satephem",       0);
     ExSats             =ini->ReadString ("opt","exsats",        "");
-    NavSys             =ini->ReadInteger("opt","navsys",   SYS_GPS|SYS_GLO);
+    NavSys             =ini->ReadInteger("opt","navsys",   SYS_GPS|SYS_GLO|SYS_GAL);
     PosOpt[0]          =ini->ReadInteger("opt","posopt1",        0);
     PosOpt[1]          =ini->ReadInteger("opt","posopt2",        0);
     PosOpt[2]          =ini->ReadInteger("opt","posopt3",        0);
@@ -1260,10 +1260,10 @@ void __fastcall TMainForm::LoadOpt(void)
     SlipThres          =ini->ReadFloat  ("opt","slipthres",   0.05);
     DopThres           =ini->ReadFloat  ("opt","dopthres",     0.0);
     MaxAgeDiff         =ini->ReadFloat  ("opt","maxagediff",  30.0);
-    RejectThres        =ini->ReadFloat  ("opt","rejectthres", 30.0);
+    RejectPhase        =ini->ReadFloat  ("opt","rejectphase",  5.0);
     VarHoldAmb         =ini->ReadFloat  ("opt","varholdamb",   0.1);
     GainHoldAmb        =ini->ReadFloat  ("opt","gainholdamb", 0.01);
-    RejectGdop         =ini->ReadFloat  ("opt","rejectgdop",  30.0);
+    RejectCode         =ini->ReadFloat  ("opt","rejectcode",  30.0);
     ARIter             =ini->ReadInteger("opt","ariter",         1);
     NumIter            =ini->ReadInteger("opt","numiter",        1);
     MinFixSats         =ini->ReadInteger("opt","minfixsats",     4);
@@ -1484,8 +1484,8 @@ void __fastcall TMainForm::SaveOpt(void)
     ini->WriteFloat  ("opt","slipthres",   SlipThres   );
     ini->WriteFloat  ("opt","dopthres",    DopThres    );
     ini->WriteFloat  ("opt","maxagediff",  MaxAgeDiff  );
-    ini->WriteFloat  ("opt","rejectgdop",  RejectGdop  );
-    ini->WriteFloat  ("opt","rejectthres", RejectThres );
+    ini->WriteFloat  ("opt","rejectcode",  RejectCode  );
+    ini->WriteFloat  ("opt","rejectphase", RejectPhase );
     ini->WriteFloat  ("opt","varholdamb",  VarHoldAmb  );
     ini->WriteFloat  ("opt","gainholdamb", GainHoldAmb );
     ini->WriteInteger("opt","ariter",      ARIter      );

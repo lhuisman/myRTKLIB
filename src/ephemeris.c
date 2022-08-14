@@ -126,7 +126,7 @@ static double var_uraeph(int sys, int ura)
     }
     else { /* gps ura (ref [1] 20.3.3.3.1.1) */
         return ura<0||14<ura?SQR(6144.0):SQR(ura_value[ura]);
-	}
+    }
 }
 /* variance by ura ssr (ref [10] table 3.3-1 DF389) --------------------------*/
 static double var_urassr(int ura)
@@ -610,7 +610,7 @@ static int satpos_sbas(gtime_t time, gtime_t teph, int sat, const nav_t *nav,
     /* satellite postion and clock by broadcast ephemeris */
     if (!ephpos(time,teph,sat,nav,sbs->lcorr.iode,rs,dts,var,svh)) return 0;
 
-        /* sbas satellite correction (long term and fast) */
+    /* sbas satellite correction (long term and fast) */
     if (sbssatcorr(time,sat,nav,rs,dts,var)) return 1;
     *svh=-1;
     return 0;
@@ -848,7 +848,7 @@ extern void setseleph(int sys, int sel)
         case SYS_IRN: eph_sel[5]=sel; break;
         case SYS_SBS: eph_sel[6]=sel; break;
     }
-    }
+}
 /* get selected satellite ephemeris -------------------------------------------
 * Get the selected satellite ephemeris.
 * args   : int    sys       I   satellite system (SYS_???)

@@ -202,7 +202,7 @@ public:
 	int SbasCorr,SbasCorr1,SbasCorr2,SbasCorr3,SbasCorr4,TimeDecimal;
 	int SolStatic,SbasSat,MapFunc;
 	int PosOpt[6];
-	double ElMask,MaxAgeDiff,RejectThres,VarHoldAmb,GainHoldAmb,RejectGdop;
+	double ElMask,MaxAgeDiff,VarHoldAmb,GainHoldAmb,RejectCode,RejectPhase;
 	double MeasErrR1,MeasErrR2,MeasErrR5,MeasErr2,MeasErr3,MeasErr4,MeasErr5;
     double MeasErr6,MeasErr7,MeasErr8;
 	double SatClkStab,RovAntE,RovAntN,RovAntU,RefAntE,RefAntN,RefAntU;

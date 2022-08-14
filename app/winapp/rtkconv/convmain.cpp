@@ -1038,7 +1038,7 @@ void __fastcall TMainWindow::LoadOpt(void)
 	AnsiString opt,mask=
         "11111111111111111111111111111111111111111111111111111111111111111111";
 	
-	RnxVer				=ini->ReadInteger("opt","rnxver",	   6);
+	RnxVer				=ini->ReadInteger("opt","rnxver",	   7);
 	RnxFile				=ini->ReadInteger("opt","rnxfile",	   0);
 	RnxCode				=ini->ReadString ("opt","rnxcode","0000");
 	RunBy				=ini->ReadString ("opt","runby",	  "");
@@ -1062,7 +1062,7 @@ void __fastcall TMainWindow::LoadOpt(void)
 	Comment[0]			=ini->ReadString ("opt","comment0",   "");
 	Comment[1]			=ini->ReadString ("opt","comment1",   "");
 	RcvOption			=ini->ReadString ("opt","rcvoption",  "");
-	NavSys				=ini->ReadInteger("opt","navsys",	 0x5);
+	NavSys				=ini->ReadInteger("opt","navsys",	 0xD);
 	ObsType				=ini->ReadInteger("opt","obstype",	 0xF);
 	FreqType			=ini->ReadInteger("opt","freqtype",  0x3);
 	ExSats				=ini->ReadString ("opt","exsats",	  "");
@@ -1082,7 +1082,7 @@ void __fastcall TMainWindow::LoadOpt(void)
 	OutTime				=ini->ReadInteger("opt","outtime",	   0);
 	OutLeaps			=ini->ReadInteger("opt","outleaps",    0);
 	SepNav				=ini->ReadInteger("opt","sepnav",	   0);
-	TimeTol				=ini->ReadFloat  ("opt","timetol",   1.0);
+	TimeTol				=ini->ReadFloat  ("opt","timetol",   0.005);
 	EnaGloFcn           =ini->ReadInteger("opt","glofcnena",   0);
 	for (int i=0;i<27;i++) {
 	    opt.sprintf("glofcn%02d",i+1);

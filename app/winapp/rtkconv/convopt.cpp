@@ -198,8 +198,6 @@ void __fastcall TConvOptDialog::UpdateEnable(void)
 	AppPos1->Enabled=AutoPos->Checked;
 	AppPos2->Enabled=AutoPos->Checked;
 	ChkSepNav->Enabled=RnxVer->ItemIndex>=3;
-	Label13->Enabled=MainWindow->TimeIntF->Checked;
-	TimeTol->Enabled=MainWindow->TimeIntF->Checked;
 	Nav3->Enabled=RnxVer->ItemIndex>=1;
 	Nav4->Enabled=RnxVer->ItemIndex>=5;
 	Nav6->Enabled=RnxVer->ItemIndex==2||RnxVer->ItemIndex>=4;

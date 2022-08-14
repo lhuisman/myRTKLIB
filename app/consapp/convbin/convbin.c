@@ -94,7 +94,7 @@ static const char *help[]={
 "     -te y/m/d h:m:s  end time [all]",
 "     -tr y/m/d h:m:s  approximated time for RTCM",
 "     -ti tint     observation data interval (s) [all]",
-"     -tt ttol     observation data epoch tolerance (s) [1.0]",
+"     -tt ttol     observation data epoch tolerance (s) [0.005]",
 "     -span span   time span (h) [all]",
 "     -r format    log format type",
 "                  rtcm2= RTCM 2",
