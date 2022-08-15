@@ -55,7 +55,7 @@ __published:
 	TEdit *ElMaskAR;
 	TEdit *SlipThres;
 	TEdit *MaxAgeDiff;
-	TEdit *RejectThres;
+	TEdit *RejectPhase;
 	TEdit *NumIter;
 	TTabSheet *TabSheet3;
 	TLabel *LabelSolFormat;
@@ -194,7 +194,7 @@ __published:
 	TEdit *MeasErrR2;
 	TEdit *ElMaskHold;
 	TEdit *FileSwapMarginE;
-	TEdit *RejectGdop;
+	TEdit *RejectCode;
 	TLabel *Label45;
 	TEdit *ProxyAddrE;
 	TLabel *Label23;

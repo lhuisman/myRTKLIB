@@ -416,8 +416,8 @@ void __fastcall TOptDialog::GetOpt(void)
 	ElMaskAR	 ->Text     =s.sprintf("%.0f",PrcOpt.elmaskar*R2D);
 	ElMaskHold	 ->Text     =s.sprintf("%.0f",PrcOpt.elmaskhold*R2D);
 	MaxAgeDiff	 ->Text     =s.sprintf("%.1f",PrcOpt.maxtdiff);
-	RejectGdop   ->Text     =s.sprintf("%.1f",PrcOpt.maxgdop);
-	RejectThres  ->Text     =s.sprintf("%.1f",PrcOpt.maxinno);
+	RejectCode   ->Text     =s.sprintf("%.1f",PrcOpt.maxinno[1]);
+	RejectPhase  ->Text     =s.sprintf("%.1f",PrcOpt.maxinno[0]);
 	VarHoldAmb   ->Text     =s.sprintf("%.4f",PrcOpt.varholdamb);
 	GainHoldAmb  ->Text     =s.sprintf("%.4f",PrcOpt.gainholdamb);
 	SlipThres	 ->Text     =s.sprintf("%.3f",PrcOpt.thresslip);
@@ -558,8 +558,8 @@ void __fastcall TOptDialog::SetOpt(void)
 	PrcOpt.elmaskar  =str2dbl(ElMaskAR   ->Text)*D2R;
 	PrcOpt.elmaskhold=str2dbl(ElMaskHold ->Text)*D2R;
 	PrcOpt.maxtdiff  =str2dbl(MaxAgeDiff ->Text);
-	PrcOpt.maxgdop   =str2dbl(RejectGdop ->Text);
-	PrcOpt.maxinno   =str2dbl(RejectThres->Text);
+	PrcOpt.maxinno[1]=str2dbl(RejectCode ->Text);
+	PrcOpt.maxinno[0]=str2dbl(RejectPhase->Text);
 	PrcOpt.varholdamb=str2dbl(VarHoldAmb->Text);
 	PrcOpt.gainholdamb=str2dbl(GainHoldAmb->Text);
 	PrcOpt.thresslip  =str2dbl(SlipThres  ->Text);
@@ -764,8 +764,8 @@ void __fastcall TOptDialog::LoadOpt(AnsiString file)
 	ElMaskAR	 ->Text			=s.sprintf("%.0f",prcopt.elmaskar*R2D);
 	ElMaskHold	 ->Text			=s.sprintf("%.0f",prcopt.elmaskhold*R2D);
 	MaxAgeDiff	 ->Text			=s.sprintf("%.1f",prcopt.maxtdiff );
-	RejectGdop   ->Text			=s.sprintf("%.1f",prcopt.maxgdop  );
-	RejectThres  ->Text			=s.sprintf("%.1f",prcopt.maxinno  );
+	RejectCode   ->Text			=s.sprintf("%.1f",prcopt.maxinno[1]);
+	RejectPhase  ->Text			=s.sprintf("%.1f",prcopt.maxinno[0]);
 	VarHoldAmb   ->Text			=s.sprintf("%.4f",prcopt.varholdamb);
 	GainHoldAmb  ->Text			=s.sprintf("%.4f",prcopt.gainholdamb);
 	SlipThres	 ->Text			=s.sprintf("%.3f",prcopt.thresslip);
@@ -995,8 +995,8 @@ void __fastcall TOptDialog::SaveOpt(AnsiString file)
 	prcopt.elmaskar	=str2dbl(ElMaskAR	->Text)*D2R;
 	prcopt.elmaskhold=str2dbl(ElMaskHold->Text)*D2R;
 	prcopt.maxtdiff	=str2dbl(MaxAgeDiff	->Text);
-	prcopt.maxgdop	=str2dbl(RejectGdop ->Text);
-	prcopt.maxinno	=str2dbl(RejectThres->Text);
+	prcopt.maxinno[1]	=str2dbl(RejectCode ->Text);
+	prcopt.maxinno[0]	=str2dbl(RejectPhase->Text);
 	prcopt.varholdamb=str2dbl(VarHoldAmb->Text);
 	prcopt.gainholdamb=str2dbl(GainHoldAmb->Text);
 	prcopt.thresslip=str2dbl(SlipThres	->Text);
@@ -1114,7 +1114,8 @@ void __fastcall TOptDialog::UpdateEnable(void)
 	SlipThres      ->Enabled=ar||ppp;
 	DopThres       ->Enabled=ar||ppp;
 	MaxAgeDiff     ->Enabled=rel;
-	RejectThres    ->Enabled=rel||ppp;
+	RejectPhase    ->Enabled=rel||ppp;
+	RejectCode     ->Enabled=rel||ppp;
 	VarHoldAmb     ->Enabled=ar&&AmbRes->ItemIndex==3;
 	GainHoldAmb    ->Enabled=ar&&AmbRes->ItemIndex==3;
 	ARIter         ->Enabled=ppp;

@@ -57,15 +57,11 @@ object OptDialog: TOptDialog
     Top = 0
     Width = 413
     Height = 353
-    ActivePage = TabSheet1
+    ActivePage = TabSheet2
     Align = alTop
     TabOrder = 4
     object TabSheet1: TTabSheet
       Caption = 'Setting&1'
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label3: TLabel
         Left = 24
         Top = 137
@@ -461,9 +457,9 @@ object OptDialog: TOptDialog
       object Label11: TLabel
         Left = 24
         Top = 169
-        Width = 176
+        Width = 179
         Height = 13
-        Caption = 'Reject Threshold of GDOP/Innov (m)'
+        Caption = 'Outlier Threshold for Code/Phase (m)'
       end
       object Label37: TLabel
         Left = 24
@@ -571,7 +567,7 @@ object OptDialog: TOptDialog
         TabOrder = 7
         Text = '30'
       end
-      object RejectThres: TEdit
+      object RejectPhase: TEdit
         Left = 325
         Top = 166
         Width = 75
@@ -644,7 +640,7 @@ object OptDialog: TOptDialog
         TabOrder = 16
         Text = '10'
       end
-      object RejectGdop: TEdit
+      object RejectCode: TEdit
         Left = 248
         Top = 166
         Width = 75
