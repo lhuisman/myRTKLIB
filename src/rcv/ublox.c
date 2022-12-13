@@ -1243,6 +1243,8 @@ static int decode_timtm2(raw_t *raw)
     if (newFallingEdge)
     {
         eventime = gpst2time(wnF,towMsF*1E-3+towSubMsF*1E-9);
+        if (timeBase==2) /* if timeBase is UTC, convert to GPS */
+            eventime = utc2gpst(eventime);
         raw->obs.flag = 5; /* Event flag */
         raw->obs.data[0].eventime = eventime;
         raw->obs.rcvcount = count;
