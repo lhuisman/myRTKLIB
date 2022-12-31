@@ -300,7 +300,7 @@ static int inputobs(obsd_t *obs, int solq, const prcopt_t *popt)
         }
         else {
             /* find closest timestamp */
-            dt=timediff(obss.data[iobsr].time,obss.data[iobsu].time);
+            dt=iobsr>=0?timediff(obss.data[iobsr].time,obss.data[iobsu].time):0;
             for (i=iobsr;(nr=nextobsb(&obss,&i,2))>0;iobsr=i,i-=nr) {
                 dt_next=timediff(obss.data[i].time,obss.data[iobsu].time);
                 if (fabs(dt_next)>fabs(dt)) break;
