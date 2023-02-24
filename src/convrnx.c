@@ -702,14 +702,14 @@ static void resolve_halfc(const strfile_t *str, obsd_t *data, int n)
         sat=data[i].sat;
         
         for (p=str->halfc[sat-1][j];p;p=p->next) {
-            if (p->stat<=1) continue;
+            if (p->stat<=1) continue;  /* unresolved half cycle */
             if (timediff(data[i].time,p->ts)<-DTTOL||
                 timediff(data[i].time,p->te)> DTTOL) continue;
             
-            if (p->stat==3) {
+            if (p->stat==2) {    /* add half cycle */
                 data[i].L[j]+=0.5;
             }
-            else if (p->stat==4) {
+            else if (p->stat==3) {  /* subtract half cycle  */
                 data[i].L[j]-=0.5;
             }
             data[i].LLI[j]&=~LLI_HALFC;
