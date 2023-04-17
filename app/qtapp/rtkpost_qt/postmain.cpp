@@ -945,8 +945,8 @@ int MainForm::GetOption(prcopt_t &prcopt, solopt_t &solopt,
     prcopt.elmaskhold=ElMaskHold*D2R;
     prcopt.thresslip=SlipThres;
     prcopt.maxtdiff =MaxAgeDiff;
-    prcopt.maxgdop  =RejectGdop;
-    prcopt.maxinno  =RejectThres;
+    prcopt.maxinno[1]  =RejectGdop;
+    prcopt.maxinno[0]  =RejectThres;
     prcopt.outsingle=OutputSingle;
     if (BaseLineConst) {
         prcopt.baseline[0]=BaseLine[0];

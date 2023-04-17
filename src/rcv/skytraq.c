@@ -381,7 +381,7 @@ static int decode_stqrawx(raw_t *raw)
 static int decode_stqgene(raw_t *raw)
 {
     eph_t eph={0};
-    int i,j,prn,sat,m,sys;
+    int i,j,prn,sat,sys;
     int part1,page1,part2,page2,type;
     double ion[4]={0},utc[8]={0};
     uint8_t *p=raw->buff+4,buff[32],crc_buff[26]={0};

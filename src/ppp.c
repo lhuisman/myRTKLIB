@@ -395,6 +395,7 @@ static double mwmeas(const obsd_t *obs, const nav_t *nav)
     
     if (freq1==0.0||freq2==0.0||obs->L[0]==0.0||obs->L[1]==0.0||
         obs->P[0]==0.0||obs->P[1]==0.0) return 0.0;
+    trace(3,"mwmeas: %12.1f %12.1f %15.3f %15.3f %15.3f %15.3f %d %d\n",freq1,freq2,obs->L[0],obs->L[1],obs->P[0],obs->P[1],obs->code[0],obs->code[1]);
     return (obs->L[0]-obs->L[1])*CLIGHT/(freq1-freq2)-
            (freq1*obs->P[0]+freq2*obs->P[1])/(freq1+freq2);
 }

@@ -59,7 +59,7 @@ extern "C" {
 
 #define VER_RTKLIB  "demo5"             /* library version */
 
-#define PATCH_LEVEL "b34g"               /* patch level */
+#define PATCH_LEVEL "b34h"               /* patch level */
 
 #define COPYRIGHT_RTKLIB \
             "Copyright (C) 2007-2020 T.Takasu\nAll rights reserved."
@@ -382,6 +382,11 @@ extern "C" {
 #define SOLQ_PPP    6                   /* solution status: PPP */
 #define SOLQ_DR     7                   /* solution status: dead reconing */
 #define MAXSOLQ     7                   /* max number of solution status */
+
+#define SOLTYPE_FORWARD  0              /* solution type: forward */
+#define SOLTYPE_BACKWARD 1              /* solution type: backward */
+#define SOLTYPE_COMBINED 2              /* solution type: combined */
+#define SOLTYPE_COMBINED_NORESET 3      /* solution type: combined no phase reset*/
 
 #define TIMES_GPST  0                   /* time system: gps time */
 #define TIMES_UTC   1                   /* time system: utc */
@@ -1187,7 +1192,7 @@ typedef struct {        /* receiver raw data control type */
     unsigned char lockflag[MAXSAT][NFREQ+NEXOBS]; /* used for carrying forward cycle slip */
     double icpp[MAXSAT],off[MAXSAT],icpc; /* carrier params for ss2 */
     double prCA[MAXSAT],dpCA[MAXSAT]; /* L1/CA pseudrange/doppler for javad */
-    uint8_t halfc[MAXSAT][NFREQ+NEXOBS]; /* half-cycle add flag */
+    uint8_t halfc[MAXSAT][NFREQ+NEXOBS]; /* half-cycle resolved */
     char freqn[MAXOBS]; /* frequency number for javad */
     int nbyte;          /* number of bytes in message buffer */ 
     int len;            /* message length (bytes) */

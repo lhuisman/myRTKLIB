@@ -87,7 +87,7 @@
 #define IB(s,f,opt) (NR(opt)+MAXSAT*(f)+(s)-1) /* phase bias (s:satno,f:freq) */
 
 /* poly coeffs used to adjust AR ratio by # of sats, derived by fitting to  example from:
-   https://www.tudelft.nl/citg/over-faculteit/afdelingen/geoscience-remote-sensing/research/lambda/lambda*/
+   https://www.tudelft.nl/citg/over-faculteit/afdelingen/geoscience-remote-sensing/research/lambda/lambda */
 static double ar_poly_coeffs[3][5] = {
     {-1.94058448e-01, -7.79023476e+00, 1.24231120e+02, -4.03126050e+02,  3.50413202e+02},
     {6.42237302e-01, -8.39813962e+00,  2.92107285e+01, -2.37577308e+01, -1.14307128e+00},
@@ -1101,8 +1101,9 @@ static int constbl(rtk_t *rtk, const double *x, const double *P, double *v,
     }
     /* check nonlinearity */
     if (var>SQR(thres*bb)) {
-        trace(3,"constbl : equation nonlinear (bb=%.3f var=%.3f)\n",bb,var);
+        trace(3,"constbl : pos variance large (bb=%.3f var=%.3f)\n",bb,var);
         /* return 0; */ /* threshold too strict for all use cases, report error but continue on */
+
     }
     /* constraint to baseline length */
     v[index]=rtk->opt.baseline[0]-bb;
@@ -1371,8 +1372,8 @@ static int ddres(rtk_t *rtk, const nav_t *nav, const obsd_t *obs, double dt, con
         }
     }  /* end of system loop */
     
-    /* baseline length constraint for moving baseline */
-    if (opt->mode==PMODE_MOVEB&&constbl(rtk,x,P,v,H,Ri,Rj,nv)) {
+    /* baseline length constraint, for fixed distance between base and rover */
+    if (constbl(rtk,x,P,v,H,Ri,Rj,nv)) {
         vflg[nv++]=3<<4;
         nb[b++]++;
     }
@@ -1883,7 +1884,7 @@ static int relpos(rtk_t *rtk, const obsd_t *obs, int nu, int nr,
     prcopt_t *opt=&rtk->opt;
     gtime_t time=obs[0].time;
     double *rs,*dts,*var,*y,*e,*azel,*freq,*v,*H,*R,*xp,*Pp,*xa,*bias,dt;
-    int i,j,f,n=nu+nr,ns,ny,nv,sat[MAXSAT],iu[MAXSAT],ir[MAXSAT],niter;
+    int i,j,f,n=nu+nr,ns,ny,nv,sat[MAXSAT],iu[MAXSAT],ir[MAXSAT];
     int info,vflg[MAXOBS*NFREQ*2+1],svh[MAXOBS*2];
     int stat=rtk->opt.mode<=PMODE_DGPS?SOLQ_DGPS:SOLQ_FLOAT;
     int nf=opt->ionoopt==IONOOPT_IFLC?1:opt->nf;
@@ -1956,11 +1957,8 @@ static int relpos(rtk_t *rtk, const obsd_t *obs, int nu, int nr,
     ny=ns*nf*2+2;
     v=mat(ny,1); H=zeros(rtk->nx,ny); R=mat(ny,ny); bias=mat(rtk->nx,1);
     
-    /* add 2 iterations for baseline-constraint moving-base  (else default niter=1) */
-    niter=opt->niter+(opt->mode==PMODE_MOVEB&&opt->baseline[0]>0.0?2:0);
-
     trace(3,"rover:  dt=%.3f\n",dt);
-    for (i=0;i<niter;i++) {
+    for (i=0;i<opt->niter;i++) {
         /* calculate zero diff residuals [range - measured pseudorange] for rover (phase and code)
             output is in y[0:nu-1], only shared input with base is nav 
                 obs  = sat observations
@@ -2316,10 +2314,18 @@ extern int rtkpos(rtk_t *rtk, const obsd_t *obs, int n, const nav_t *nav)
             errmsg(rtk,"time sync error for moving-base (age=%.1f)\n",rtk->sol.age);
             return 0;
         }
-        for (i=0;i<6;i++) rtk->rb[i]=solb.rr[i];
+        if (fabs(rtk->rb[0])<0.1) /* if base position uninitialized, use full position */
+            for (i=0;i<3;i++) rtk->rb[i]=solb.rr[i];
+        else /* else filter base position to reduce noise from single precision solution */
+            for (i=0;i<3;i++) {
+                rtk->rb[i]=0.95*rtk->rb[i]+0.05*solb.rr[i];
+                rtk->rb[i+3]=0; /* set velocity to zero */
+            }
+        trace(3,"basex= %.3f %.3f\n",rtk->rb[0],solb.rr[0]);
         
         /* time-synchronized position of base station */
-        for (i=0;i<3;i++) rtk->rb[i]+=rtk->rb[i+3]*rtk->sol.age;
+        /* single position velocity solution too noisy to be helpful */
+        /*for (i=0;i<3;i++) rtk->rb[i]+=rtk->rb[i+3]*rtk->sol.age; */
     
     trace(3,"base pos: "); tracemat(3,rtk->rb,1,3,13,4);
     }

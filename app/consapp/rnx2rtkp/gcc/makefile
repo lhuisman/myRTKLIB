@@ -7,9 +7,9 @@ OPTS    = -DTRACE -DENAGLO -DENAQZS -DENAGAL -DENACMP -DENAIRN -DNFREQ=3 -DNEXOB
 #OPTS    = -DENAGLO -DENAQZS -DENAGAL -DENACMP -DNFREQ=2
 
 # for no lapack
-CFLAGS  = -Wall -O3 -ansi -pedantic -Wno-unused-but-set-variable -I$(SRC) $(OPTS) -g
+CFLAGS  = -Wall -O3 -ansi -pedantic -Wno-unused-but-set-variable -I$(SRC) $(OPTS) -pg
 #LDLIBS  = -lm -lrt
-LDLIBS  = ../../../../lib/iers/gcc/iers.a -lgfortran -lm -lrt
+LDLIBS  = -lgfortran -lm -lrt -pg
 
 #CFLAGS  = -Wall -O3 -ansi -pedantic -Wno-unused-but-set-variable -I$(SRC) -DLAPACK $(OPTS)
 #LDLIBS  = -lm -lrt -llapack -lblas

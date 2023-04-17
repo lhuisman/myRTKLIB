@@ -116,6 +116,7 @@ extern void vt_close(vt_t *vt)
     for (i=0;i<MAXHIST;i++) {
         free(vt->hist[i]);
     }
+    vt->state=0;
     free(vt);
 }
 /* clear line buffer ---------------------------------------------------------*/

@@ -715,8 +715,8 @@ void OptDialog::LoadOpt(const QString &file)
     ElMaskAR->setValue(prcopt.elmaskar * R2D);
     ElMaskHold->setValue(prcopt.elmaskhold * R2D);
     MaxAgeDiff->setValue(prcopt.maxtdiff);
-    RejectGdop->setValue(prcopt.maxgdop);
-    RejectThres->setValue(prcopt.maxinno);
+    RejectGdop->setValue(prcopt.maxinno[1]);
+    RejectThres->setValue(prcopt.maxinno[0]);
     SlipThres->setValue(prcopt.thresslip);
     ARIter->setValue(prcopt.armaxiter);
     NumIter->setValue(prcopt.niter);
@@ -865,8 +865,8 @@ void OptDialog::SaveOpt(const QString &file)
     prcopt.elmaskar = ElMaskAR->value() * D2R;
     prcopt.elmaskhold = ElMaskHold->value() * D2R;
     prcopt.maxtdiff = MaxAgeDiff->value();
-    prcopt.maxgdop = RejectGdop->value();
-    prcopt.maxinno = RejectThres->value();
+    prcopt.maxinno[1] = RejectGdop->value();
+    prcopt.maxinno[0] = RejectThres->value();
     prcopt.thresslip = SlipThres->value();
     prcopt.armaxiter = ARIter->value();
     prcopt.niter = NumIter->value();

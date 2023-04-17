@@ -2422,8 +2422,8 @@ void MainWindow::LoadOpt(void)
     PrcOpt.elmaskhold = settings.value("prcopt/elmaskhold", 0.0).toDouble();
     PrcOpt.thresslip = settings.value("prcopt/thresslip", 0.05).toDouble();
     PrcOpt.maxtdiff = settings.value("prcopt/maxtdiff", 30.0).toDouble();
-    PrcOpt.maxgdop = settings.value("prcopt/maxgdop", 30.0).toDouble();
-    PrcOpt.maxinno = settings.value("prcopt/maxinno", 30.0).toDouble();
+    PrcOpt.maxinno[1] = settings.value("prcopt/maxcode", 30.0).toDouble();
+    PrcOpt.maxinno[0] = settings.value("prcopt/maxinno", 30.0).toDouble();
     PrcOpt.syncsol = settings.value("prcopt/syncsol", 0).toInt();
     ExSats = settings.value("prcopt/exsats", "").toString();
     PrcOpt.navsys = settings.value("prcopt/navsys", SYS_GPS).toInt();
@@ -2636,8 +2636,8 @@ void MainWindow::SaveOpt(void)
     settings.setValue("prcopt/elmaskhold", PrcOpt.elmaskhold);
     settings.setValue("prcopt/thresslip", PrcOpt.thresslip);
     settings.setValue("prcopt/maxtdiff", PrcOpt.maxtdiff);
-    settings.setValue("prcopt/maxgdop", PrcOpt.maxgdop);
-    settings.setValue("prcopt/maxinno", PrcOpt.maxinno);
+    settings.setValue("prcopt/maxcode", PrcOpt.maxinno[1]);
+    settings.setValue("prcopt/maxinno", PrcOpt.maxinno[0]);
     settings.setValue("prcopt/syncsol", PrcOpt.syncsol);
     settings.setValue("prcopt/exsats", ExSats);
     settings.setValue("prcopt/navsys", PrcOpt.navsys);
