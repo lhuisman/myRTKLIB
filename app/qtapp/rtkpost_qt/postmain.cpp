@@ -50,6 +50,7 @@
 #include <QMimeData>
 #include <QFileSystemModel>
 #include <QCompleter>
+#include <QRegularExpression>
 
 #include "rtklib.h"
 #include "postmain.h"
@@ -185,7 +186,7 @@ MainForm::MainForm(QWidget *parent)
     DynamicModel=IonoOpt=TropOpt=RovAntPcv=RefAntPcv=AmbRes=0;
     RovPosType=RefPosType=0;
     OutCntResetAmb=5; LockCntFixAmb=5; FixCntHoldAmb=10;
-    MaxAgeDiff=30.0; RejectThres=30.0; RejectGdop=30.0;
+    MaxAgeDiff=30.0; RejectPhase=30.0; RejectCode=30.0;
     MeasErrR1=MeasErrR2=100.0; MeasErr2=0.004; MeasErr3=0.003; MeasErr4=1.0;
     SatClkStab=1E-11; ValidThresAR=3.0;
     RovAntE=RovAntN=RovAntU=RefAntE=RefAntN=RefAntU=0.0;
@@ -399,7 +400,7 @@ void  MainForm::dragEnterEvent(QDragEnterEvent *event)
 }
 void  MainForm::dropEvent(QDropEvent *event)
 {
-    QPoint point=event->pos();
+    QPoint point=event->position().toPoint();
     int top;
     
     if (!event->mimeData()->hasFormat("text/uri-list")) return;
@@ -489,10 +490,10 @@ void MainForm::BtnExecClick()
         OutputFile_Text.contains(".gnav",Qt::CaseInsensitive)||
         OutputFile_Text.contains(".gz",Qt::CaseInsensitive)||
         OutputFile_Text.contains(".Z",Qt::CaseInsensitive)||
-        OutputFile_Text.contains(QRegExp(".??o",Qt::CaseInsensitive))||
-        OutputFile_Text.contains(QRegExp(".??d",Qt::CaseInsensitive))||
-        OutputFile_Text.contains(QRegExp(".??n",Qt::CaseInsensitive))||
-        OutputFile_Text.contains(QRegExp(".??g",Qt::CaseInsensitive))){
+        OutputFile_Text.contains(QRegularExpression(".??o",QRegularExpression::CaseInsensitiveOption))||
+        OutputFile_Text.contains(QRegularExpression(".??d",QRegularExpression::CaseInsensitiveOption))||
+        OutputFile_Text.contains(QRegularExpression(".??n",QRegularExpression::CaseInsensitiveOption))||
+        OutputFile_Text.contains(QRegularExpression(".??g",QRegularExpression::CaseInsensitiveOption))){
         showmsg("error : invalid extension of output file (%s)",qPrintable(OutputFile_Text));
         return;
     }
@@ -945,8 +946,8 @@ int MainForm::GetOption(prcopt_t &prcopt, solopt_t &solopt,
     prcopt.elmaskhold=ElMaskHold*D2R;
     prcopt.thresslip=SlipThres;
     prcopt.maxtdiff =MaxAgeDiff;
-    prcopt.maxinno[1]  =RejectGdop;
-    prcopt.maxinno[0]  =RejectThres;
+    prcopt.maxinno[1]  =RejectCode;
+    prcopt.maxinno[0]  =RejectPhase;
     prcopt.outsingle=OutputSingle;
     if (BaseLineConst) {
         prcopt.baseline[0]=BaseLine[0];
@@ -1138,7 +1139,7 @@ gtime_t MainForm::GetTime1(void)
     QDateTime time(dateTime1->dateTime());
 
     gtime_t t;
-    t.time=time.toTime_t();t.sec=time.time().msec()/1000;
+    t.time=time.toSecsSinceEpoch();t.sec=time.time().msec()/1000;
 
     return t;
 }
@@ -1148,20 +1149,20 @@ gtime_t MainForm::GetTime2(void)
     QDateTime time(dateTime2->dateTime());
 
     gtime_t t;
-    t.time=time.toTime_t();t.sec=time.time().msec()/1000;
+    t.time=time.toSecsSinceEpoch();t.sec=time.time().msec()/1000;
 
     return t;
 }
 // set time to time-1 -------------------------------------------------------
 void MainForm::SetTime1(gtime_t time)
 {
-    QDateTime t=QDateTime::fromTime_t(time.time); t=t.addMSecs(time.sec*1000);
+    QDateTime t=QDateTime::fromSecsSinceEpoch(time.time); t=t.addMSecs(time.sec*1000);
     dateTime1->setDateTime(t);
 }
 // set time to time-2 -------------------------------------------------------
 void MainForm::SetTime2(gtime_t time)
 {
-    QDateTime t=QDateTime::fromTime_t(time.time); t=t.addMSecs(time.sec*1000);
+    QDateTime t=QDateTime::fromSecsSinceEpoch(time.time); t=t.addMSecs(time.sec*1000);
     dateTime2->setDateTime(t);
 }
 // update enable/disable of widgets -----------------------------------------
@@ -1262,8 +1263,8 @@ void MainForm::LoadOpt(void)
     OutCntResetAmb     =ini.value("opt/outcntresetbias",5).toInt();
     SlipThres          =ini.value  ("opt/slipthres",   0.05).toDouble();
     MaxAgeDiff         =ini.value  ("opt/maxagediff",  30.0).toDouble();
-    RejectThres        =ini.value  ("opt/rejectthres", 30.0).toDouble();
-    RejectGdop         =ini.value  ("opt/rejectgdop",  30.0).toDouble();
+    RejectPhase        =ini.value  ("opt/rejectthres", 30.0).toDouble();
+    RejectCode         =ini.value  ("opt/rejectcode",  30.0).toDouble();
     ARIter             =ini.value("opt/ariter",         1).toInt();
     NumIter            =ini.value("opt/numiter",        1).toInt();
     CodeSmooth         =ini.value("opt/codesmooth",     0).toInt();
@@ -1451,8 +1452,8 @@ void MainForm::SaveOpt(void)
     ini.setValue("opt/outcntresetbias",OutCntResetAmb);
     ini.setValue("opt/slipthres",   SlipThres   );
     ini.setValue("opt/maxagediff",  MaxAgeDiff  );
-    ini.setValue("opt/rejectgdop",  RejectGdop  );
-    ini.setValue("opt/rejectthres", RejectThres );
+    ini.setValue("opt/rejectcode",  RejectCode  );
+    ini.setValue("opt/rejectthres", RejectPhase );
     ini.setValue("opt/ariter",      ARIter      );
     ini.setValue("opt/numiter",     NumIter     );
     ini.setValue("opt/codesmooth",  CodeSmooth  );
