@@ -406,13 +406,13 @@ static void procpos(FILE *fp, FILE *fptm, const prcopt_t *popt, const solopt_t *
     double rb[3]={0};
     int i,nobs,n,solstatic,num=0,pri[]={6,1,2,3,4,5,1,6};
     
-    trace(3,"procpos : mode=%d\n",mode); /* 0=forward, 1=backward */
+    trace(3,"procpos : mode=%d\n",mode); /* 0=single dir, 1=combined */
     
     solstatic=sopt->solstatic&&
               (popt->mode==PMODE_STATIC||popt->mode==PMODE_STATIC_START||popt->mode==PMODE_PPP_STATIC);
     
     /* initialize unless running backwards on a combined run with phase reset disabled */
-    if (mode==0 || !reverse || popt->soltype==SOLTYPE_COMBINED)
+    if (mode==SOLMODE_SINGLE_DIR || !reverse || popt->soltype==SOLTYPE_COMBINED)
         rtkinit(rtk,popt);
     
     rtcm_path[0]='\0';
@@ -432,7 +432,7 @@ static void procpos(FILE *fp, FILE *fptm, const prcopt_t *popt, const solopt_t *
         }
         if (!rtkpos(rtk, obs_ptr,n,&navs)) {
             if (rtk->sol.eventime.time != 0) {
-                if (mode == 0) {
+                if (mode == SOLMODE_SINGLE_DIR) {
                     outinvalidtm(fptm, sopt, rtk->sol.eventime);
                 } else if (!reverse&&nitm<MAXINVALIDTM) {
                     invalidtm[nitm++] = rtk->sol.eventime;
@@ -440,8 +440,8 @@ static void procpos(FILE *fp, FILE *fptm, const prcopt_t *popt, const solopt_t *
             }
             continue;
         }
-        
-        if (mode==SOLTYPE_FORWARD) {    /* forward or combined */
+
+        if (mode==SOLMODE_SINGLE_DIR) {    /* forward or combined */
             if (!solstatic) {
                 outsol(fp,&rtk->sol,rtk->rb,sopt);
             }
@@ -457,7 +457,7 @@ static void procpos(FILE *fp, FILE *fptm, const prcopt_t *popt, const solopt_t *
             {
                 newsol = fillsoltm(oldsol,rtk->sol,rtk->sol.eventime);
                 num++;
-                if (!solstatic && mode == 0) {
+                if (!solstatic&&mode==SOLMODE_SINGLE_DIR) {
                     outsol(fptm,&newsol,rb,sopt);
                 }
             }
@@ -482,7 +482,7 @@ static void procpos(FILE *fp, FILE *fptm, const prcopt_t *popt, const solopt_t *
             isolb++;
         }
     }
-    if (mode==0&&solstatic&&time.time!=0.0) {
+    if (mode==SOLMODE_SINGLE_DIR && solstatic&&time.time!=0.0) {
         sol.time=time;
         outsol(fp,&sol,rb,sopt);
     }
@@ -1142,7 +1142,7 @@ static int execses(gtime_t ts, gtime_t te, double ti, const prcopt_t *popt,
     
     if (popt_.mode==PMODE_SINGLE||popt_.soltype==SOLTYPE_FORWARD) {
         if ((fp=openfile(outfile)) && (fptm=openfile(outfiletm))) {
-            procpos(fp,fptm,&popt_,sopt,rtk_ptr,0);
+            procpos(fp,fptm,&popt_,sopt,rtk_ptr,SOLMODE_SINGLE_DIR);
             fclose(fp);
             fclose(fptm);
         }
@@ -1150,7 +1150,7 @@ static int execses(gtime_t ts, gtime_t te, double ti, const prcopt_t *popt,
     else if (popt_.soltype==SOLTYPE_BACKWARD) {
         if ((fp=openfile(outfile)) && (fptm=openfile(outfiletm))) {
             reverse=1; iobsu=iobsr=obss.n-1; isbs=sbss.n-1;
-            procpos(fp,fptm,&popt_,sopt,rtk_ptr,1);
+            procpos(fp,fptm,&popt_,sopt,rtk_ptr,SOLMODE_SINGLE_DIR);
             fclose(fp);
             fclose(fptm);
         }
@@ -1163,9 +1163,9 @@ static int execses(gtime_t ts, gtime_t te, double ti, const prcopt_t *popt,
         
         if (solf&&solb) {
             isolf=isolb=0;
-            procpos(NULL,NULL,&popt_,sopt,rtk_ptr,0); /* forward */
+            procpos(NULL,NULL,&popt_,sopt,rtk_ptr,SOLMODE_COMBINED); /* forward */
             reverse=1; iobsu=iobsr=obss.n-1; isbs=sbss.n-1;
-            procpos(NULL,NULL,&popt_,sopt,rtk_ptr,1); /* backward */
+            procpos(NULL,NULL,&popt_,sopt,rtk_ptr,SOLMODE_COMBINED); /* backward */
             
             /* combine forward/backward solutions */
             if (!aborts&&(fp=openfile(outfile))  && (fptm=openfile(outfiletm))) {

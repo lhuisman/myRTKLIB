@@ -387,6 +387,8 @@ extern "C" {
 #define SOLTYPE_BACKWARD 1              /* solution type: backward */
 #define SOLTYPE_COMBINED 2              /* solution type: combined */
 #define SOLTYPE_COMBINED_NORESET 3      /* solution type: combined no phase reset*/
+#define SOLMODE_SINGLE_DIR 0            /* single direction solution */
+#define SOLMODE_COMBINED 1              /* combined solution */
 
 #define TIMES_GPST  0                   /* time system: gps time */
 #define TIMES_UTC   1                   /* time system: utc */
