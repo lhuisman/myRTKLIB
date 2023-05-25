@@ -129,6 +129,7 @@ static const char *usage[]={
     "usage: rtkrcv [-s][-p port][-d dev][-o file][-w pwd][-r level][-t level][-sta sta]",
     "options",
     "  -s         start RTK server on program startup",
+    "  -nc        start RTK server on program startup with no console",
     "  -p port    port number for telnet console",
     "  -m port    port number for monitor stream",
     "  -d dev     terminal device for console",
@@ -420,8 +421,10 @@ static int startsvr(vt_t *vt)
         else cmds_periodic[i]=s2[i];
     }
     /* confirm overwrite */
-    for (i=3;i<8;i++) {
-        if (strtype[i]==STR_FILE&&!confwrite(vt,strpath[i])) return 0;
+    if (vt!=NULL) {
+        for (i=3;i<8;i++) {
+            if (strtype[i]==STR_FILE&&!confwrite(vt,strpath[i])) return 0;
+        }
     }
     if (prcopt.refpos==4) { /* rtcm */
         for (i=0;i<3;i++) prcopt.rb[i]=0.0;
@@ -1362,7 +1365,7 @@ static void *con_thread(void *arg)
     }
  
     /* auto start if option set */
-    if (start) {
+    if (start&1) { /* start with console */
         cmd_start(args,narg,con->vt);
         start=0;
     }
@@ -1633,7 +1636,8 @@ int main(int argc, char **argv)
     char *dev="",file[MAXSTR]="";
     
     for (i=1;i<argc;i++) {
-        if      (!strcmp(argv[i],"-s")) start=1;
+        if      (!strcmp(argv[i],"-s")) start|=1; /* console */
+        else if (!strcmp(argv[i],"-nc")) start|=2; /* no console */
         else if (!strcmp(argv[i],"-p")&&i+1<argc) port=atoi(argv[++i]);
         else if (!strcmp(argv[i],"-m")&&i+1<argc) moniport=atoi(argv[++i]);
         else if (!strcmp(argv[i],"-d")&&i+1<argc) dev=argv[++i];
@@ -1681,8 +1685,9 @@ int main(int argc, char **argv)
             traceclose();
             return -1;
         }
-    }
-    else {
+    } else if (start&2) { /* start without console */
+        startsvr(NULL); 
+    } else  {  
         /* open device for local console */
         if (!(con[0]=con_open(0,dev))) {
             fprintf(stderr,"console open error dev=%s\n",dev);

@@ -68,7 +68,7 @@
         <ILINK_LinkwithRegEx>false</ILINK_LinkwithRegEx>
         <ILINK_LinkwithIntebaseTogo>false</ILINK_LinkwithIntebaseTogo>
         <SanitizedProjectName>rtkpost</SanitizedProjectName>
-        <IncludePath>..\..\..\src\;..\appcmn\;..\..\src\;$(IncludePath)</IncludePath>
+        <IncludePath>..\..\..\src\;..\appcmn\;$(IncludePath)</IncludePath>
         <ILINK_LibraryPath>..\..\..\src\;..\appcmn\;..\..\..\lib\openblas;$(ILINK_LibraryPath)</ILINK_LibraryPath>
         <BCC_waus>false</BCC_waus>
         <BCC_weff>false</BCC_weff>
@@ -147,7 +147,7 @@
         <BT_BuildType>Debug</BT_BuildType>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win64)'!=''">
-        <BCC_Defines>_Debug;$(BCC_Defines);$(BCC_Defines)</BCC_Defines>
+        <BCC_Defines>NDEBUG;$(BCC_Defines);$(BCC_Defines)</BCC_Defines>
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
         <LinkPackageStatics>rtl.lib;vcl.lib;vclx.lib</LinkPackageStatics>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>

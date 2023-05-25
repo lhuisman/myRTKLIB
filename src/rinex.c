@@ -655,7 +655,7 @@ static int readrnxh(FILE *fp, double *ver, char *type, int *sys, int *tsys,
     
     trace(3,"readrnxh:\n");
     
-    *ver=2.10; *type=' '; *sys=SYS_GPS;
+    *ver=2.10; *type=' '; *sys=SYS_GPS; *tsys=TSYS_GPS;
     
     while (fgets(buff,MAXRNXLEN,fp)) {
         
@@ -1521,7 +1521,7 @@ static int readrnxclk(FILE *fp, const char *opt, int index, nav_t *nav)
             trace(2,"rinex clk invalid epoch: %34.34s\n",buff);
             continue;
         }
-        strncpy(satid,buff+3,4);
+        memcpy(satid,buff+3,4);
         
         /* only read AS (satellite clock) record */
         if (strncmp(buff,"AS",2)||!(sat=satid2no(satid))) continue;

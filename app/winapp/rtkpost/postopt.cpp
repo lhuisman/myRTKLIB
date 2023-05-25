@@ -532,12 +532,11 @@ void __fastcall TOptDialog::SetOpt(void)
 	MainForm->GainHoldAmb 	=str2dbl(GainHoldAmb->Text);
 	MainForm->SlipThres   	=str2dbl(SlipThres  ->Text);
 	MainForm->DopThres   	=str2dbl(DopThres  ->Text);
-	//MainForm->ARIter	  	=ARIter		  ->Text.ToInt();
 	MainForm->NumIter	  	=NumIter	  ->Text.ToInt();
 	MainForm->MinFixSats	=MinFixSats	  ->Text.ToInt();
 	MainForm->MinHoldSats	=MinHoldSats  ->Text.ToInt();
 	MainForm->MinDropSats	=MinDropSats  ->Text.ToInt();
-    MainForm->ARFilter      =ARFilter   ->ItemIndex;
+	MainForm->ARFilter      =ARFilter     ->ItemIndex;
 	MainForm->MaxPosVarAR	=str2dbl(MaxPosVarAR->Text);
 	MainForm->BaseLine[0]  	=str2dbl(BaselineLen->Text);
 	MainForm->BaseLine[1]  	=str2dbl(BaselineSig->Text);
@@ -849,7 +848,7 @@ int ppp=PosMode->ItemIndex>=PMODE_PPP_KINEMA;
 	prcopt.mindropsats=str2dbl(MinDropSats->Text);
 	prcopt.arfilter	=ARFilter->ItemIndex;
 	prcopt.niter	=str2dbl(NumIter	->Text);
-	if (prcopt.mode==PMODE_MOVEB&&BaselineConst->Checked) {
+	if (BaselineConst->Checked) {
 		prcopt.baseline[0]=str2dbl(BaselineLen->Text);
 		prcopt.baseline[1]=str2dbl(BaselineSig->Text);
 	}
@@ -970,9 +969,9 @@ void __fastcall TOptDialog::UpdateEnable(void)
 	MinDropSats    ->Enabled=rel;
 	MaxPosVarAR    ->Enabled=ar&&!ppp;
 	ARFilter       ->Enabled=ar;
-	BaselineConst  ->Enabled=PosMode->ItemIndex==PMODE_MOVEB;
-	BaselineLen    ->Enabled=BaselineConst->Checked&&PosMode->ItemIndex==PMODE_MOVEB;
-	BaselineSig    ->Enabled=BaselineConst->Checked&&PosMode->ItemIndex==PMODE_MOVEB;
+	BaselineConst  ->Enabled=rel;
+	BaselineLen    ->Enabled=BaselineConst->Checked;
+	BaselineSig    ->Enabled=BaselineConst->Checked;
 	
 	OutputHead     ->Enabled=SolFormat->ItemIndex<3;
 	OutputOpt      ->Enabled=SolFormat->ItemIndex<3;

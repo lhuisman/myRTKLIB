@@ -58,6 +58,7 @@ static const char *help[]={
 " -c        forward/backward combined solutions [off]",
 " -i        instantaneous integer ambiguity resolution [off]",
 " -h        fix and hold for integer ambiguity resolution [off]",
+"-bl bl,blstd baseline dist and stdev",
 " -e        output x/y/z-ecef position [latitude/longitude/height]",
 " -a        output e/n/u-baseline [latitude/longitude/height]",
 " -n        output NMEA-0183 GGA sentence [off]",
@@ -161,6 +162,9 @@ int main(int argc, char **argv)
         else if (!strcmp(argv[i],"-a")) solopt.posf=SOLF_ENU;
         else if (!strcmp(argv[i],"-n")) solopt.posf=SOLF_NMEA;
         else if (!strcmp(argv[i],"-g")) solopt.degf=1;
+        else if (!strcmp(argv[i],"-bl")&&i+2<argc) {
+            for (j=0;j<2;j++) prcopt.baseline[j]=atof(argv[++i]);
+        }
         else if (!strcmp(argv[i],"-r")&&i+3<argc) {
             prcopt.refpos=prcopt.rovpos=0;
             for (j=0;j<3;j++) prcopt.rb[j]=atof(argv[++i]);

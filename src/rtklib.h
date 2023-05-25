@@ -408,7 +408,6 @@ extern "C" {
 #define TROPOPT_SBAS 2                  /* troposphere option: SBAS model */
 #define TROPOPT_EST 3                   /* troposphere option: ZTD estimation */
 #define TROPOPT_ESTG 4                  /* troposphere option: ZTD+grad estimation */
-#define TROPOPT_ZTD 5                   /* troposphere option: ZTD correction */
 
 #define EPHOPT_BRDC 0                   /* ephemeris option: broadcast ephemeris */
 #define EPHOPT_PREC 1                   /* ephemeris option: precise ephemeris */
@@ -420,8 +419,6 @@ extern "C" {
 #define ARMODE_CONT 1                   /* AR mode: continuous */
 #define ARMODE_INST 2                   /* AR mode: instantaneous */
 #define ARMODE_FIXHOLD 3                /* AR mode: fix and hold */
-#define ARMODE_WLNL 4                   /* AR mode: wide lane/narrow lane */
-#define ARMODE_TCAR 5                   /* AR mode: triple carrier ar */
 
 #define GLO_ARMODE_OFF  0               /* GLO AR mode: off */
 #define GLO_ARMODE_ON 1                 /* GLO AR mode: on */
@@ -1140,7 +1137,7 @@ typedef struct {        /* satellite status type */
     uint8_t vsat[NFREQ]; /* valid satellite flag */
     uint16_t snr_rover [NFREQ]; /* rover signal strength (0.25 dBHz) */
     uint16_t snr_base  [NFREQ]; /* base signal strength (0.25 dBHz) */
-    uint8_t fix [NFREQ]; /* ambiguity fix flag (1:fix,2:float,3:hold) */
+    uint8_t fix [NFREQ]; /* ambiguity fix flag (1:float,2:fix,3:hold) */
     uint8_t slip[NFREQ]; /* cycle-slip flag */
     uint8_t half[NFREQ]; /* half-cycle valid flag */
     int lock [NFREQ];   /* lock counter of phase */

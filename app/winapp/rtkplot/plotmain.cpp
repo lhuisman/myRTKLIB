@@ -97,6 +97,11 @@ __fastcall TPlot::TPlot(TComponent* Owner) : TForm(Owner)
         SolStat[i]=solstat0;
         SolIndex[i]=0;
     }
+
+    obs0.data=NULL; obs0.n =obs0.nmax =0;
+    nav0.eph =NULL; nav0.n =nav0.nmax =0;
+    nav0.geph=NULL; nav0.ng=nav0.ngmax=0;
+    nav0.seph=NULL; nav0.ns=nav0.nsmax=0;
     ObsIndex=0;
     Obs=obs0;
     Nav=nav0;

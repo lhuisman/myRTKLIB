@@ -490,17 +490,19 @@ static void procpos(FILE *fp, FILE *fptm, const prcopt_t *popt, const solopt_t *
     free(obs_ptr); /* moved from stack to heap to kill a stack overflow warning */
 }
 /* validation of combined solutions ------------------------------------------*/
-static int valcomb(const sol_t *solf, const sol_t *solb)
+static int valcomb(const sol_t *solf, const sol_t *solb, double *rbf,
+        double *rbb, const prcopt_t *popt)
 {
     double dr[3],var[3];
     int i;
     char tstr[32];
     
-    trace(3,"valcomb :\n");
+    trace(4,"valcomb :\n");
     
     /* compare forward and backward solution */
     for (i=0;i<3;i++) {
         dr[i]=solf->rr[i]-solb->rr[i];
+        if (popt->mode==PMODE_MOVEB) dr[i]-=(rbf[i]-rbb[i]);
         var[i]=(double)solf->qr[i] + (double)solb->qr[i];
     }
     for (i=0;i<3;i++) {
@@ -553,7 +555,7 @@ static void combres(FILE *fp, FILE *fptm, const prcopt_t *popt, const solopt_t *
                 sols.stat==SOLQ_FIX) {
                 
                 /* degrade fix to float if validation failed */
-                if (!valcomb(solf+i,solb+j)) sols.stat=SOLQ_FLOAT;
+                if (!valcomb(solf+i,solb+j,rbf+i*3,rbb+j*3,popt)) sols.stat=SOLQ_FLOAT;
             }
             for (k=0;k<3;k++) {
                 Qf[k+k*3]=solf[i].qr[k];
