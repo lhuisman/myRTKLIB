@@ -1305,12 +1305,6 @@ static int convrnx_s(int sess, int format, rnxopt_t *opt, const char *file,
         free_strfile(str);
         return 0;
     }
-    /* reset obs structure before reusing */
-    if (!(str=gen_strfile(format,opt->rcvopt))) {
-        for (i=0;i<MAXEXFILE;i++) free(epath[i]);
-        free_strfile(str);
-        return 0;
-    }
     str->time=str->tstart;
     
     for (i=0;i<nf&&!abort;i++) {
