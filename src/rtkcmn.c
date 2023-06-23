@@ -266,7 +266,7 @@ static char *obscodes[]={       /* observation code strings */
     "6E","7D","7P","7Z","8D", "8P","4A","4B","4X",""    /* 60-69 */
 };
 static char codepris[7][MAXFREQ][16]={  /* code priority for each freq-index */
-    /* L1/E1/B1 L2/E5b/B2b   L5/E5a/B2a E6/LEX/B3 E5(a+b)         */
+    /* L1/E1/B1I L2/E5b/B2I L5/E5a/B3I E6/LEX/B2A E5(a+b)         */
     {"CPYWMNSL","CPYWMNDLSX","IQX"     ,""       ,""       ,""}, /* GPS */
     {"CPABX"   ,"CPABX"     ,"IQX"     ,""       ,""       ,""}, /* GLO */
     {"CABXZ"   ,"XIQ"       ,"XIQ"     ,"ABCXZ"  ,"IQX"    ,""}, /* GAL */
@@ -676,8 +676,8 @@ static int code2freq_BDS(uint8_t code, double *freq)
         case '1': *freq=FREQL1;     return 0; /* B1C */
         case '2': *freq=FREQ1_CMP; return 0; /* B1I */
         case '7': *freq=FREQ2_CMP; return 1; /* B2I/B2b */
-        case '5': *freq=FREQL5;     return 2; /* B2a */
-        case '6': *freq=FREQ3_CMP; return 3; /* B3 */
+        case '6': *freq=FREQ3_CMP; return 2; /* B3 */
+        case '5': *freq=FREQL5;     return 3; /* B2a */
         case '8': *freq=FREQE5ab;     return 4; /* B2ab */
     }
     return -1;
@@ -705,7 +705,7 @@ static int code2freq_IRN(uint8_t code, double *freq)
 *            Galileo   E1    E5b   E5a   E6   E5ab
 *            QZSS      L1    L2    L5    L6     - 
 *            SBAS      L1     -    L5     -     -
-*            BDS       B1    B2    B2a   B3   B2ab (B1=B1I,B1C,B2=B2I,B2b)
+*            BDS       B1    B2    B3   B2a   B2ab (B1=B1I,B1C,B2=B2I,B2b)
 *            NavIC     L5     S     -     -     - 
 *-----------------------------------------------------------------------------*/
 extern int code2idx(int sys, uint8_t code)

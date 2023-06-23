@@ -113,8 +113,8 @@ const char *msm_sig_sbs[32]={
 const char *msm_sig_cmp[32]={
     /* BeiDou: ref [17] table 3.5-108 */
     ""  ,"2I","2Q","2X","","",""  ,"6I","6Q","6X",""  ,""  ,
-    ""  ,"7I","7Q","7X",""  ,""  ,""  ,""  ,""  ,""  ,""  ,""  ,
-    ""  ,""  ,""  ,""  ,""  ,""  ,""  ,""
+    ""  ,"7I","7Q","7X",""  ,""  ,""  ,""  ,""  ,"5D"  ,"5P"  ,"5X"  ,
+    "7D"  ,""  ,""  ,""  ,""  ,"1D"  ,"1P"  ,"1X"
 };
 const char *msm_sig_irn[32]={
     /* NavIC/IRNSS: ref [17] table 3.5-108.3 */
@@ -2199,7 +2199,8 @@ static int decode_msm4(rtcm_t *rtcm, int sys)
     if (i+h.nsat*18+ncell*48>rtcm->len*8) {
         trace(2,"rtcm3 %d length error: nsat=%d ncell=%d len=%d\n",type,h.nsat,
               ncell,rtcm->len);
-        return -1;
+        rtcm->obsflag=!sync;  /* header ok, so return sync bit */
+        return sync?0:1;
     }
     for (j=0;j<h.nsat;j++) r[j]=0.0;
     for (j=0;j<ncell;j++) pr[j]=cp[j]=-1E16;
@@ -2253,7 +2254,8 @@ static int decode_msm5(rtcm_t *rtcm, int sys)
     if (i+h.nsat*36+ncell*63>rtcm->len*8) {
         trace(2,"rtcm3 %d length error: nsat=%d ncell=%d len=%d\n",type,h.nsat,
               ncell,rtcm->len);
-        return -1;
+        rtcm->obsflag=!sync;  /* header ok, so return sync bit */
+        return sync?0:1;
     }
     for (j=0;j<h.nsat;j++) {
         r[j]=rr[j]=0.0; ex[j]=15;
@@ -2319,7 +2321,8 @@ static int decode_msm6(rtcm_t *rtcm, int sys)
     if (i+h.nsat*18+ncell*65>rtcm->len*8) {
         trace(2,"rtcm3 %d length error: nsat=%d ncell=%d len=%d\n",type,h.nsat,
               ncell,rtcm->len);
-        return -1;
+        rtcm->obsflag=!sync;  /* header ok, so return sync bit */
+        return sync?0:1;
     }
     for (j=0;j<h.nsat;j++) r[j]=0.0;
     for (j=0;j<ncell;j++) pr[j]=cp[j]=-1E16;
@@ -2373,7 +2376,8 @@ static int decode_msm7(rtcm_t *rtcm, int sys)
     if (i+h.nsat*36+ncell*80>rtcm->len*8) {
         trace(2,"rtcm3 %d length error: nsat=%d ncell=%d len=%d\n",type,h.nsat,
               ncell,rtcm->len);
-        return -1;
+        rtcm->obsflag=!sync;  /* header ok, so return sync bit */
+        return sync?0:1;
     }
     for (j=0;j<h.nsat;j++) {
         r[j]=rr[j]=0.0; ex[j]=15;

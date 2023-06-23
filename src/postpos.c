@@ -441,7 +441,7 @@ static void procpos(FILE *fp, FILE *fptm, const prcopt_t *popt, const solopt_t *
             continue;
         }
 
-        if (mode==SOLMODE_SINGLE_DIR) {    /* forward or combined */
+        if (mode==SOLMODE_SINGLE_DIR) {    /* forward or backward */
             if (!solstatic) {
                 outsol(fp,&rtk->sol,rtk->rb,sopt);
             }
