@@ -1223,22 +1223,13 @@ static int ddres(rtk_t *rtk, const nav_t *nav, const obsd_t *obs, double dt, con
             frq=f%nf;code=f<nf?0:1;
 
             /* find reference satellite with highest elevation, set to i */
-            for (i=-1,hiqual=0,j=0;j<ns;j++) {
+            for (i=-1,j=0;j<ns;j++) {
                 sysi=rtk->ssat[sat[j]-1].sys;
                 if (!test_sys(sysi,m) || sysi==SYS_SBS) continue;
                 if (!validobs(iu[j],ir[j],f,nf,y)) continue;
-                /* skip this sat if el is lower than current ref sat */
-                if (i>-1&&azel[1+iu[j]*2]<azel[1+iu[i]*2]) continue;
-                /* skip low qual sat unless no other valid sat */
-                if ((rtk->ssat[sat[j]-1].slip[frq]&LLI_SLIP)||
-                        (rtk->ssat[sat[j]-1].lock[frq]<=0)) {
-                    if (hiqual>0) continue; /* don't use low qual ref sat if have high qual sat */
-                    i=j; /* set ref sat (low quality) */
-                }
-                else {
-                    hiqual=1; /* indicate high quality ref sat found */
-                    i=j; /* set ref sat (hi quality) */
-                }
+                /* skip sat with slip unless no other valid sat */
+                if (i>=0&&rtk->ssat[sat[j]-1].slip[frq]&LLI_SLIP) continue;
+                if (i<0||azel[1+iu[j]*2]>=azel[1+iu[i]*2]) i=j;
             }
             if (i<0) continue;
         
@@ -1359,6 +1350,9 @@ static int ddres(rtk_t *rtk, const nav_t *nav, const obsd_t *obs, double dt, con
                                 SNR_UNIT*rtk->ssat[sat[j]-1].snr_rover[frq],
                                 SNR_UNIT*rtk->ssat[sat[j]-1].snr_base[frq],
                                 bl,dt,f,opt,&obs[iu[j]]);
+                /* increase variance if half cycle flags set */
+                if (!code&&(obs[iu[i]].LLI[frq]&LLI_HALFC)) Ri[nv]+=0.01;
+                if (!code&&(obs[iu[j]].LLI[frq]&LLI_HALFC)) Rj[nv]+=0.01;
             
                 /* set valid data flags */
                 if (opt->mode>PMODE_DGPS) {
@@ -1416,10 +1410,10 @@ static double intpres(gtime_t time, const obsd_t *obs, int n, const nav_t *nav,
     int i,j,k,nf=NF(opt);
     
     tt=timediff(time,obs[0].time); /* time delta between rover obs and current base obs */
-    trace(3,"intpres : n=%d tt=%.1f\n",n,tt);
+    trace(3,"intpres : n=%d tt=%.1f, epoch=%d\n",n,tt,rtk->epoch);
     /* use current base obs if first epoch or delta time between rover obs and
        current base obs very small */
-    if (nb==0||fabs(tt)<DTTOL) {
+    if (nb==0||rtk->epoch==0||fabs(tt)<DTTOL) {
         nb=n; for (i=0;i<n;i++) obsb[i]=obs[i];  /* current base obs -> previous base obs */
         return tt;
     }
@@ -1463,7 +1457,7 @@ static int ddidx(rtk_t *rtk, int *ix, int gps, int glo, int sbs)
     int i,j,k,m,f,n,nb=0,na=rtk->na,nf=NF(&rtk->opt),nofix;
     double fix[MAXSAT],ref[MAXSAT];
     
-    trace(3,"ddmat: gps=%d/%d glo=%d/%d sbs=%d\n",gps,rtk->opt.gpsmodear,glo,rtk->opt.glomodear,sbs);
+    trace(3,"ddidx: gps=%d/%d glo=%d/%d sbs=%d\n",gps,rtk->opt.gpsmodear,glo,rtk->opt.glomodear,sbs);
     
     /* clear fix flag for all sats (1=float, 2=fix) */
     for (i=0;i<MAXSAT;i++) for (j=0;j<NFREQ;j++) {
@@ -2086,7 +2080,7 @@ static int relpos(rtk_t *rtk, const obsd_t *obs, int nu, int nr,
                         if (rtk->opt.mode==PMODE_STATIC_START) {
                             rtk->opt.mode=PMODE_KINEMA;
                             trace(3,"Fix and hold complete: switch to kinematic mode\n");
-                            }
+                        }
                     }
                     stat=SOLQ_FIX;
                 }
@@ -2133,8 +2127,8 @@ static int relpos(rtk_t *rtk, const obsd_t *obs, int nu, int nr,
             rtk->sol.qv[5]=(float)rtk->P[5+3*rtk->nx];
         }
         rtk->nfix=0;
-        trace(3,"sol_rr= ");tracemat(3,rtk->sol.rr,1,6,15,3);
     }
+    trace(3,"sol_rr= ");tracemat(3,rtk->sol.rr,1,6,15,3);
     /* save phase measurements */
     for (i=0;i<n;i++) for (j=0;j<nf;j++) {
         if (obs[i].L[j]==0.0) continue;
@@ -2177,6 +2171,7 @@ extern void rtkinit(rtk_t *rtk, const prcopt_t *opt)
     rtk->nx=opt->mode<=PMODE_FIXED?NX(opt):pppnx(opt);
     rtk->na=opt->mode<=PMODE_FIXED?NR(opt):pppnx(opt);
     rtk->tt=0.0;
+    rtk->epoch=0;
     rtk->x=zeros(rtk->nx,1);
     rtk->P=zeros(rtk->nx,rtk->nx);
     rtk->xa=zeros(rtk->na,1);
@@ -2379,6 +2374,7 @@ extern int rtkpos(rtk_t *rtk, const obsd_t *obs, int n, const nav_t *nav)
     }
     /* relative potitioning */
     relpos(rtk,obs,nu,nr,nav);
+    rtk->epoch++;
     outsolstat(rtk,nav);
     
     return 1;

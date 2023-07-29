@@ -1177,6 +1177,7 @@ typedef struct {        /* RTK control/result type */
     char errbuf[MAXERRMSG]; /* error message buffer */
     prcopt_t opt;       /* processing options */
     int initial_mode;   /* initial positioning mode */
+    int epoch;          /* epoch number */
 } rtk_t;
 
 typedef struct {        /* receiver raw data control type */
