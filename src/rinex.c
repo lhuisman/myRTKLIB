@@ -435,14 +435,14 @@ static void decode_obsh(FILE *fp, char *buff, double ver, int *tsys,
         if (i==5&&fabs(ver-3.02)<1e-3) {
             for (j=0;j<nt;j++) if (tobs[i][j][1]=='1') tobs[i][j][1]='2';
         }
-        /* if unknown code in ver.3, set default code */
-        for (j=0;j<nt;j++) {
+        /* uncomment this code to convert unknown codes to defaults */
+        /* for (j=0;j<nt;j++) {
             if (tobs[i][j][2]) continue;
             if (!(p=strchr(frqcodes,tobs[i][j][1]))) continue;
             tobs[i][j][2]=defcodes[i][(int)(p-frqcodes)];
             trace(2,"set default for unknown code: sys=%c code=%s\n",buff[0],
                   tobs[i][j]);
-        }
+        }  */
     }
     else if (strstr(label,"WAVELENGTH FACT L1/2")) ; /* opt ver.2 */
     else if (strstr(label,"# / TYPES OF OBSERV" )) { /* ver.2 */
