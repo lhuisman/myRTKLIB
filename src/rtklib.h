@@ -839,7 +839,7 @@ typedef struct {        /* navigation data type */
     double ion_cmp[8];  /* BeiDou iono model parameters {a0,a1,a2,a3,b0,b1,b2,b3} */
     double ion_irn[8];  /* IRNSS iono model parameters {a0,a1,a2,a3,b0,b1,b2,b3} */
     int glo_fcn[32];    /* GLONASS FCN + 8 */
-    double cbias[MAXSAT][3]; /* satellite DCB (0:P1-P2,1:P1-C1,2:P2-C2) (m) */
+    double cbias[MAXSAT][2][3]; /* satellite DCB [0:P1-C1,1:P2-C2][code] (m) */
     double rbias[MAXRCV][2][3]; /* receiver DCB (0:P1-P2,1:P1-C1,2:P2-C2) (m) */
     pcv_t pcvs[MAXSAT]; /* satellite antenna pcv */
     sbssat_t sbssat;    /* SBAS satellite corrections */
@@ -1567,6 +1567,7 @@ EXPORT int  getseleph(int sys);
 EXPORT void readsp3(const char *file, nav_t *nav, int opt);
 EXPORT int  readsap(const char *file, gtime_t time, nav_t *nav);
 EXPORT int  readdcb(const char *file, nav_t *nav, const sta_t *sta);
+EXPORT int code2bias_ix(const int sys,const int code);
 EXPORT int  readfcb(const char *file, nav_t *nav);
 EXPORT void alm2pos(gtime_t time, const alm_t *alm, double *rs, double *dts);
 

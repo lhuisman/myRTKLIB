@@ -111,7 +111,7 @@ static double prange(const obsd_t *obs, const nav_t *nav, const prcopt_t *opt,
                      double *var)
 {
     double P1,P2,gamma,b1,b2;
-    int sat,sys,f2;
+    int i,sat,sys,f2,sys_ix,bias_ix;
     
     sat=obs->sat;
     sys=satsys(sat,NULL);
@@ -121,11 +121,19 @@ static double prange(const obsd_t *obs, const nav_t *nav, const prcopt_t *opt,
     *var=0.0;
     
     if (P1==0.0||(opt->ionoopt==IONOOPT_IFLC&&P2==0.0)) return 0.0;
-    
-    /* P1-C1,P2-C2 DCB correction */
-    if (sys==SYS_GPS||sys==SYS_GLO) {
-        if (obs->code[0]==CODE_L1C) P1+=nav->cbias[sat-1][1]; /* C1->P1 */
-        if (obs->code[1]==CODE_L2C) P2+=nav->cbias[sat-1][2]; /* C2->P2 */
+    bias_ix=code2bias_ix(sys,obs->code[0]);  /* L1 code bias */
+    if (bias_ix>0) { /* 0=ref code */
+        P1+=nav->cbias[sat-1][0][bias_ix-1];
+    }
+    /* GPS code biases are L1/L2, Galileo are L1/L5 */
+    if (sys==SYS_GAL&&f2==1) {
+        /* skip code bias, no GAL L2 bias available */
+    }
+    else {  /* apply L2 or L5 code bias */
+        bias_ix=code2bias_ix(sys,obs->code[f2]);
+        if (bias_ix>0) { /* 0=ref code */
+            P2+=nav->cbias[sat-1][1][bias_ix-1]; /* L2 or L5 code bias */
+        }
     }
     if (opt->ionoopt==IONOOPT_IFLC) { /* dual-frequency */
         

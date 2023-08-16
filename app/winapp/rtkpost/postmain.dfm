@@ -448,9 +448,9 @@ object MainForm: TMainForm
       object LabelInputFile2: TLabel
         Left = 6
         Top = 78
-        Width = 260
+        Width = 306
         Height = 13
-        Caption = 'RINEX NAV/CLK, SP3, FCB, IONEX, SBS/EMS  or RTCM'
+        Caption = 'RINEX NAV/CLK, SP3, BIA/BSX, FCB, IONEX, SBS/EMS  or RTCM'
       end
       object BtnInputView2: TSpeedButton
         Left = 413
@@ -1025,8 +1025,8 @@ object MainForm: TMainForm
     Filter = 
       'All (*.*)|*.*|RINEX OBS (*.obs,*.*O,*.*D)|*.obs;*.*O;*.*D|RINEX ' +
       'NAV (*.*nav,*.*N,*.*P,*.*G,*.*H,*.*Q,*.*C,*.*L,*.*J)|*.*nav;*.*N' +
-      ';*.*P;*.*G;*.*H;*.*Q;*.*C;*.*L;*.*J|Precise Ephemeris/Clock (*.s' +
-      'p3,*.eph*,*.clk*)|*.sp3;*eph*;*.clk*|FCB (*.fcb),IONEX (*.*i,*.i' +
+      ';*.*P;*.*G;*.*H;*.*Q;*.*C;*.*L;*.*J|Precise Ephem/Clock/Bias (*.s' +
+      'p3,*.eph*,*.clk*,*.bia*,*.bsx*)|*.sp3;*eph*;*.clk*;*.bia*;*.bsx*|FCB (*.fcb),IONEX (*.*i,*.i' +
       'onex),SBAS (*.sbs,*.ems)|*.fcb;*.*i;*.ionex;*.sbs;*.ems'
     Options = [ofHideReadOnly, ofNoChangeDir, ofAllowMultiSelect, ofEnableSizing]
     Left = 334

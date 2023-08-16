@@ -324,10 +324,10 @@ extern void readtec(const char *file, nav_t *nav, int opt)
     /* combine tec grid data */
     if (nav->nt>0) combtec(nav);
     
-    /* P1-P2 dcb */
-    for (i=0;i<MAXSAT;i++) {
-        nav->cbias[i][0]=CLIGHT*dcb[i]*1E-9; /* ns->m */
-    }
+    /* P1-P2 dcb (not used)*/
+    /* for (i=0;i<MAXSAT;i++) { */
+    /*    nav->cbias[i][0]=CLIGHT*dcb[i]*1E-9; */ /* ns->m */
+    /* } */
 }
 /* interpolate tec grid data -------------------------------------------------*/
 static int interptec(const tec_t *tec, int k, const double *posp, double *value,

@@ -1042,7 +1042,7 @@ static int execses(gtime_t ts, gtime_t te, double ti, const prcopt_t *popt,
     prcopt_t popt_=*popt;
     solopt_t tmsopt = *sopt;
     char tracefile[1024],statfile[1024],path[1024],*ext,outfiletm[1024]={0};
-    int i,j,k;
+    int i,j,k,dcb_ok;
     
     trace(3,"execses : n=%d outfile=%s\n",n,outfile);
     
@@ -1083,15 +1083,21 @@ static int execses(gtime_t ts, gtime_t te, double ti, const prcopt_t *popt,
         return 0;
     }
     
-    /* read dcb parameters */
-    if (*fopt->dcb) {
-        reppath(fopt->dcb,path,ts,"","");
-        readdcb(path,&navs,stas);
-    } else {
-        for (i=0;i<3;i++) {
-            for (j=0;j<MAXSAT;j++) navs.cbias[j][i]=0;
-            for (j=0;j<MAXRCV;j++) for (k=0;k<2;k++) navs.rbias[j][k][i]=0;
+    /* read dcb parameters from DCB, BIA, BSX files */
+    dcb_ok = 0;
+    for (i=0;i<3;i++) for (k=0;k<2;k++) {
+        for (j=0;j<MAXSAT;j++) navs.cbias[j][k][i]=-1;
+        for (j=0;j<MAXRCV;j++) navs.rbias[j][k][i]=0;
         }
+    for (i=0,j=0;i<n;i++) {  /* first check infiles for .BIA or .BSX files */
+        if ((dcb_ok=readdcb(infile[i],&navs,stas))) break;
+    }
+    if (!dcb_ok&&*fopt->dcb) {  /* then check if DCB file specified */
+        reppath(fopt->dcb,path,ts,"","");
+        dcb_ok=readdcb(path,&navs,stas);
+    }
+    if (!dcb_ok) {
+
     }
     /* set antenna parameters */
     if (popt_.mode!=PMODE_SINGLE) {

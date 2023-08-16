@@ -406,9 +406,9 @@ static void corr_meas(const obsd_t *obs, const nav_t *nav, const double *azel,
                       double *Lc, double *Pc)
 {
     double freq[NFREQ]={0},C1,C2;
-    int i,ix=0,frq2, sys=satsys(obs->sat,NULL);
+    int i,ix=0,frq,frq2,bias_ix,sys=satsys(obs->sat,NULL);
     
-    for (i=0;i<NFREQ;i++) {
+    for (i=0;i<opt->nf;i++) {
         L[i]=P[i]=0.0;
         /* skip if low SNR or missing observations */
         freq[i]=sat2freq(obs->sat,obs->code[i],nav);
@@ -430,14 +430,15 @@ static void corr_meas(const obsd_t *obs, const nav_t *nav, const double *azel,
             /* apply SSR correction */
             P[i]+=(nav->ssr[obs->sat-1].cbias[obs->code[i]-1]-nav->ssr[obs->sat-1].cbias[ix]);
         }
-        else {   /* use P1-C1,P2-C2 code corrections from DCB file */
-            /* P1-C1,P2-C2 dcb correction (C1->P1,C2->P2) */
-            if (sys==SYS_GPS||sys==SYS_GLO) {
-                if (obs->code[i]==CODE_L1C) 
-                    P[i]+=nav->cbias[obs->sat-1][1];  /* C1->P1 */
-                if (obs->code[i]==CODE_L2C||obs->code[i]==CODE_L2X||
-                     obs->code[i]==CODE_L2L||obs->code[i]==CODE_L2S) 
-                        P[i]+=nav->cbias[obs->sat-1][2]; /* C2->P2 */
+        else {   /* apply code bias corrections from file */
+            if (sys==SYS_GAL&&(i==1||i==2)) frq=3-i;  /* GAL biases are L1/L5 */
+            else frq=i;  /* other biases are L1/L2 */
+            if (frq>1) continue;  /* only 2 freqs per system supported in code bias table */
+            bias_ix=code2bias_ix(sys,obs->code[i]); /* look up bias index in table */
+            if (bias_ix>0) {  /*  0=ref code */
+                P[i]+=nav->cbias[obs->sat-1][frq][bias_ix-1]; /* code bias */
+                trace(3,"sat=%d frq=%d code=%d ix=%d cbias=%.4f\n",
+                    obs->sat,i,obs->code[i],bias_ix,nav->cbias[obs->sat-1][i][bias_ix-1]);
             }
         }
     }
