@@ -1525,7 +1525,7 @@ extern int gen_ubx(const char *msg, uint8_t *buff)
     q+=2;
 
 
-    if (i == 34) isvalset = true;
+    if (i == 36) isvalset = true;
 
     /* VALSET sanity check */
     if (isvalset) {
