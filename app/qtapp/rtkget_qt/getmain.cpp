@@ -504,7 +504,11 @@ void MainForm::dragEnterEvent(QDragEnterEvent *event)
 //---------------------------------------------------------------------------
 void MainForm::dropEvent(QDropEvent *event)
 {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     if (StaList == childAt(event->position().toPoint()))
+#else
+    if (StaList == childAt(event->pos()))
+#endif
         LoadSta(event->mimeData()->text());
     event->acceptProposedAction();
 }
