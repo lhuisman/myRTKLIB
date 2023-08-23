@@ -439,7 +439,7 @@ extern int code2bias_ix(int sys, int code) {
         return 0;
 }
 /* read DCB parameters from BIA or BSX file ------------------------------------
-*    - supports satellite biases only
+*    - supports satellite code biases only
 *-----------------------------------------------------------------------------*/
 static int readbiaf(const char *file, nav_t *nav)
 {
@@ -459,13 +459,13 @@ static int readbiaf(const char *file, nav_t *nav)
     while (fgets(buff,sizeof(buff),fp)) {
         if (sscanf(buff,"%4s %5s %4s %4s %4s",bias,svn,prn,obs1,obs2)<5) continue;
         if (obs1[0]!='C') continue;  /* skip phase biases for now */
-        if ((cbias=str2num(buff,84,8))==0.0) continue;
+        if ((cbias=str2num(buff,82,10))==0.0) continue;
         sat=satid2no(prn);
         sys=satsys(sat,NULL);
         /* other code biases are L1/L2, Galileo is L1/L5 */
         if (obs1[1]=='1')
             freq=0;
-        else if ((sys==SYS_GPS&&obs1[1]=='2')||(sys==SYS_GAL&&obs1[1]=='5'))
+        else if ((sys!=SYS_GAL&&obs1[1]=='2')||(sys==SYS_GAL&&obs1[1]=='5'))
             freq=1;
         else continue;
         
@@ -478,12 +478,9 @@ static int readbiaf(const char *file, nav_t *nav)
                 for (i=0;i<MAX_CODE_BIASES;i++)
                     /* adjust all other codes by ref code bias */
                     nav->cbias[sat-1][freq][i]+=cbias*1E-9*CLIGHT; /* ns -> m */
-            }
-            else {
+            } else {
                 nav->cbias[sat-1][freq][bias_ix1-1]-=cbias*1E-9*CLIGHT; /* ns -> m */
             }
-            trace(3,"sat=%d freq=%d code=%d ix=%d cbias=%.4f\n",
-                  sat,freq,code1,bias_ix1,cbias);
         }
         else if (strcmp(bias,"DSB")==0) {
             /* differential signal bias */
@@ -518,7 +515,7 @@ extern int readdcb(const char *file, nav_t *nav, const sta_t *sta)
     
     trace(3,"readdcb : file=%s\n",file);
     
-    for (i=0;i<MAXSAT;i++) for (j=0;j<2;j++) for (k=0;j<3;j++){
+    for (i=0;i<MAXSAT;i++) for (j=0;j<2;j++) for (k=0;k<MAX_CODE_BIASES;k++) {
         nav->cbias[i][j][k]=0.0;
     }
     for (i=0;i<MAXEXFILE;i++) {

@@ -437,8 +437,6 @@ static void corr_meas(const obsd_t *obs, const nav_t *nav, const double *azel,
             bias_ix=code2bias_ix(sys,obs->code[i]); /* look up bias index in table */
             if (bias_ix>0) {  /*  0=ref code */
                 P[i]+=nav->cbias[obs->sat-1][frq][bias_ix-1]; /* code bias */
-                trace(3,"sat=%d frq=%d code=%d ix=%d cbias=%.4f\n",
-                    obs->sat,i,obs->code[i],bias_ix,nav->cbias[obs->sat-1][i][bias_ix-1]);
             }
         }
     }
