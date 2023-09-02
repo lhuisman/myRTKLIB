@@ -331,7 +331,7 @@ static double varerr(int sat, int sys, double el, double snr_rover,
     double sinel=sin(el),var;
     int nf=NF(opt),frq,code;
 
-    frq=f%nf;code=f<nf?0:1;
+    frq=f/2;code=f%2; /* 0=phase, 1=code */
     /* increase variance for pseudoranges */
     if (code) fact=opt->eratio[frq];
     if (fact<=0.0) fact=opt->eratio[0];
@@ -659,7 +659,7 @@ static void udiono_ppp(rtk_t *rtk, const obsd_t *obs, int n, const nav_t *nav)
 {
     double freq1,freq2,ion,sinel,pos[3],*azel;
     char *p;
-    int i,j,gap_resion=GAP_RESION;
+    int i,j,f2,gap_resion=GAP_RESION,sat;
     
     trace(3,"udiono_ppp:\n");
     
@@ -674,24 +674,27 @@ static void udiono_ppp(rtk_t *rtk, const obsd_t *obs, int n, const nav_t *nav)
         }
     }
     for (i=0;i<n;i++) {
-        j=II(obs[i].sat,&rtk->opt);
+        sat=obs[i].sat;
+        j=II(sat,&rtk->opt);
         if (rtk->x[j]==0.0) {
             /* initialize ionosphere delay estimates if zero */
-            freq1=sat2freq(obs[i].sat,obs[i].code[0],nav);
-            freq2=sat2freq(obs[i].sat,obs[i].code[1],nav);
-            if (obs[i].P[0]==0.0||obs[i].P[1]==0.0||freq1==0.0||freq2==0.0) {
+            f2=seliflc(rtk->opt.nf,satsys(sat,NULL));
+            freq1=sat2freq(sat,obs[i].code[0],nav);
+            freq2=sat2freq(sat,obs[i].code[f2],nav);
+            if (obs[i].P[0]==0.0||obs[i].P[f2]==0.0||freq1==0.0||freq2==0.0) {
                 continue;
             }
             /* use pseudorange difference adjusted by freq for initial estimate */
-            ion=(obs[i].P[0]-obs[i].P[1])/(SQR(FREQL1/freq1)-SQR(FREQL1/freq2));
+            ion=(obs[i].P[0]-obs[i].P[f2])/(SQR(FREQL1/freq1)-SQR(FREQL1/freq2));
             ecef2pos(rtk->sol.rr,pos);
-            azel=rtk->ssat[obs[i].sat-1].azel;
+            azel=rtk->ssat[sat-1].azel;
             /* adjust delay estimate by path length */
             ion/=ionmapf(pos,azel);
             initx(rtk,ion,VAR_IONO,j);
+            trace(4,"ion init: sat=%d ion=%.4f\n",sat,ion);
         }
         else {
-            sinel=sin(MAX(rtk->ssat[obs[i].sat-1].azel[1],5.0*D2R));
+            sinel=sin(MAX(rtk->ssat[sat-1].azel[1],5.0*D2R));
             /* update variance of delay state */
             rtk->P[j+j*rtk->nx]+=SQR(rtk->opt.prn[1]/sinel)*fabs(rtk->tt);
         }
@@ -953,7 +956,7 @@ static int ppp_res(int post, const obsd_t *obs, int n, const double *rs,
             continue;
         }
         if (!(sys=satsys(sat,NULL))||!rtk->ssat[sat-1].vs||
-            satexclude(obs[i].sat,var_rs[i],svh[i],opt)||exc[i]) {
+            satexclude(sat,var_rs[i],svh[i],opt)||exc[i]) {
             exc[i]=1;
             continue;
         }
@@ -1028,7 +1031,7 @@ static int ppp_res(int post, const obsd_t *obs, int n, const double *rs,
             else        rtk->ssat[sat-1].resp[frq]=v[nv];   /* pseudorange */
             
             /* variance */
-            var[nv]=varerr(obs[i].sat,sys,azel[1+i*2],
+            var[nv]=varerr(sat,sys,azel[1+i*2],
                     SNR_UNIT*rtk->ssat[sat-1].snr_rover[frq],
                     j,opt,obs+i);
             var[nv] +=vart+SQR(C)*vari+var_rs[i];

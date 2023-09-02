@@ -431,10 +431,8 @@ extern int code2bias_ix(int sys, int code) {
     int sys_ix;
 
     sys_ix=sys2ix(sys);
-    if (sys_ix<MAX_CODE_BIASES) {
-        trace(3,"code2bias: sys=%d code=%d bias_ix=%d\n",sys_ix,code,code_bias_ix[sys_ix][code]);
+    if (sys_ix<MAX_CODE_BIASES)
         return code_bias_ix[sys_ix][code];
-    }
     else
         return 0;
 }
