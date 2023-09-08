@@ -57,12 +57,12 @@
 #define MAXDTE      900.0           /* max time difference to ephem time (s) */
 #define EXTERR_CLK  1E-3            /* extrapolation error for clock (m/s) */
 #define EXTERR_EPH  5E-7            /* extrapolation error for ephem (m/s^2) */
-#define MAX_CODE_BIASES 3           /* size of code bias table */
+#define MAX_CODE_BIASES 3           /* max # of different code biases per freq */
+#define MAX_BIAS_SYS 4              /* # of constellations supported */
 
-/* table to translate code to code bias table index */
-static int8_t code_bias_ix[3][MAXCODE];
+/* table to translate code to code bias table index  */
+static int8_t code_bias_ix[MAX_BIAS_SYS][MAXCODE];
 /* initialize code bias lookup table -------------------------------------------
-* translate satellite system and code to code bias table index
 *       -1 = code not supported
 *        0 = reference code (0 bias)
 *        1-3 = table index for code
@@ -70,7 +70,7 @@ static int8_t code_bias_ix[3][MAXCODE];
 static void init_bias_ix() {
     int i,j;
 
-    for (i=0;i<MAX_CODE_BIASES;i++) for (j=0;j<MAXCODE;j++)
+    for (i=0;i<MAX_BIAS_SYS;i++) for (j=0;j<MAXCODE;j++)
         code_bias_ix[i][j]=-1;
 
     /* GPS */
@@ -427,11 +427,16 @@ static int sys2ix(int sys)
     }
     return 0;
 }
+/* translate satellite system and code to code bias table index ----------------
+*       -1 = code not supported
+*        0 = reference code (0 bias)
+*        1-3 = table index for code
+* ----------------------------------------------------------------------------*/
 extern int code2bias_ix(int sys, int code) {
     int sys_ix;
 
     sys_ix=sys2ix(sys);
-    if (sys_ix<MAX_CODE_BIASES)
+    if (sys_ix<MAX_BIAS_SYS)
         return code_bias_ix[sys_ix][code];
     else
         return 0;
