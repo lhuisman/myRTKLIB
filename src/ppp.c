@@ -329,7 +329,7 @@ static double varerr(int sat, int sys, double el, double snr_rover,
     double snr_max=opt->err[5];
     double fact=1.0;
     double sinel=sin(el),var;
-    int nf=NF(opt),frq,code;
+    int frq,code;
 
     frq=f/2;code=f%2; /* 0=phase, 1=code */
     /* increase variance for pseudoranges */
