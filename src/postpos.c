@@ -6,7 +6,7 @@
 * version : $Revision: 1.1 $ $Date: 2008/07/17 21:48:06 $
 * history : 2007/05/08  1.0  new
 *           2008/06/16  1.1  support binary inputs
-*           2009/01/02  1.2  support new rtk positioing api
+*           2009/01/02  1.2  support new rtk positioning api
 *           2009/09/03  1.3  fix bug on combined mode of moving-baseline
 *           2009/12/04  1.4  fix bug on obs data buffer overflow
 *           2010/07/26  1.5  support ppp-kinematic and ppp-static
@@ -60,7 +60,7 @@ static pcvs_t pcvsr={0};        /* satellite antenna parameters */
 static obs_t obss={0};          /* observation data */
 static nav_t navs={0};          /* navigation data */
 static sbs_t sbss={0};          /* sbas messages */
-static sta_t stas[MAXRCV];      /* station infomation */
+static sta_t stas[MAXRCV];      /* station information */
 static int nepoch=0;            /* number of observation epochs */
 static int nitm  =0;            /* number of invalid time marks */
 static int iobsu =0;            /* current rover observation data index */
@@ -886,7 +886,7 @@ static int antpos(prcopt_t *opt, int rcvno, const obs_t *obs, const nav_t *nav,
     }
     return 1;
 }
-/* open procssing session ----------------------------------------------------*/
+/* open processing session ----------------------------------------------------*/
 static int openses(const prcopt_t *popt, const solopt_t *sopt,
                    const filopt_t *fopt, nav_t *nav, pcvs_t *pcvs, pcvs_t *pcvr)
 {
@@ -913,7 +913,7 @@ static int openses(const prcopt_t *popt, const solopt_t *sopt,
     }
     return 1;
 }
-/* close procssing session ---------------------------------------------------*/
+/* close processing session ---------------------------------------------------*/
 static void closeses(nav_t *nav, pcvs_t *pcvs, pcvs_t *pcvr)
 {
     trace(3,"closeses:\n");
