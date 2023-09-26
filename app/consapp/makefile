@@ -5,6 +5,7 @@
 export CC = gcc
 
 BINDIR = /usr/local/bin
+BINDIR = ${HOME}/Software/RTKLIB/bin
 DIRS   = pos2kml str2str rnx2rtkp convbin rtkrcv
 
 all:
