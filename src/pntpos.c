@@ -111,8 +111,8 @@ static double prange(const obsd_t *obs, const nav_t *nav, const prcopt_t *opt,
                      double *var)
 {
     double P1,P2,gamma,b1,b2;
-    int i,sat,sys,f2,sys_ix,bias_ix;
-    
+    int sat,sys,f2,bias_ix;
+
     sat=obs->sat;
     sys=satsys(sat,NULL);
     P1=obs->P[0];
