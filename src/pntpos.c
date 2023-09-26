@@ -355,7 +355,11 @@ static int rescode(int iter, const obsd_t *obs, int n, const double *rs,
         vsat[i]=1; resp[i]=v[nv]; (*ns)++;
         
         /* variance of pseudorange error */
-        var[nv++]=varerr(opt,&ssat[i],&obs[i],azel[1+i*2],sys)+vare[i]+vmeas+vion+vtrp;
+        var[nv]=vare[i]+vmeas+vion+vtrp;
+        if (ssat)
+            var[nv++]+=varerr(opt,&ssat[i],&obs[i],azel[1+i*2],sys);
+        else
+            var[nv++]+=varerr(opt,NULL,&obs[i],azel[1+i*2],sys);
         trace(4,"sat=%2d azel=%5.1f %4.1f res=%7.3f sig=%5.3f\n",obs[i].sat,
               azel[i*2]*R2D,azel[1+i*2]*R2D,resp[i],sqrt(var[nv-1]));
     }
