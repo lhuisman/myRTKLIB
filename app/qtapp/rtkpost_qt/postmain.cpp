@@ -282,7 +282,8 @@ void MainForm::showEvent(QShowEvent* event)
     parser.setSingleDashWordOptionMode(QCommandLineParser::ParseAsLongOptions);
 
     QCommandLineOption iniFileOption(QStringList() << "i" ,
-            QCoreApplication::translate("main", "use init file <file>"));
+            QCoreApplication::translate("main", "use init file <file>"),
+            QCoreApplication::translate("main", "ini file"));
     parser.addOption(iniFileOption);
 
     QCommandLineOption titleOption(QStringList() << "t",
@@ -511,7 +512,7 @@ void MainForm::BtnExecClick()
 
     ExecProc();
 }
-// callback on prcoessing finished-------------------------------------------
+// callback on processing finished-------------------------------------------
 void MainForm::ProcessingFinished(int stat)
 {
     setCursor(Qt::ArrowCursor);
