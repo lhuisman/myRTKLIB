@@ -11,4 +11,5 @@ __history
 __astcache
 
 # gets created by qmake
+*.qmake.stash
 /app/qtapp/Makefile
