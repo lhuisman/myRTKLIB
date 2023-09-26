@@ -7,6 +7,7 @@
 * history : 2013/02/28 1.0 new
 *-----------------------------------------------------------------------------*/
 #include <stdio.h>
+#include <stdint.h>
 #include <string.h>
 
 static const char rcsid[]="$Id:$";
