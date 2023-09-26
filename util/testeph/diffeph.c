@@ -8,7 +8,7 @@
 #include "rtklib.h"
 
 static const char *usage[]={
-"Synopsys",
+"Synopsis",
 " diffeph [-t0 y/m/d h:m:s][-ts ts][-ti ti][-s s][-1 r][-2 b][-t]",
 "         [-o][-u lat lon][-x level] file ...",
 "",
@@ -25,7 +25,7 @@ static const char *usage[]={
 "-t          output time as yyyy/mm/dd hh:mm:ss",
 "-e          output difference as ecef-x/y/z [radial/along-trk/cross-trk]",
 "-o          output satellite position/clock-bias",
-"-u lat lon  refrence position latitude and longitude for ure",
+"-u lat lon  reference position latitude and longitude for ure",
 "-x level    trace level",
 "file ...    compared ephemeris files and antenna parameters file",
 NULL};
