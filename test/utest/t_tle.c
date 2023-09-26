@@ -72,19 +72,19 @@ static void utest2(void)
     epoch=utc2gpst(timeadd(epoch2time(ep0),274.98708465*86400.0));
 
     stat=tle_read(file2,&tle);
-        assert(stat);
+    assert(stat);
 
     stat=tle_pos(epoch,"TEST_ERR","","",&tle,NULL,rs);
-        assert(!stat);
+    		assert(!stat);
 
-    stat=tle_pos(epoch,"","88888","",&tle,NULL,rs);
-        assert(stat);
+    stat=tle_pos(epoch,"TEST_SAT","","",&tle,NULL,rs);
+    		assert(stat);
 
     for (i=0;i<5;i++) {
         min=360.0*i;
 
-        stat=tle_pos(timeadd(epoch,min*60.0),"","88888","",&tle,NULL,rs);
-            assert(stat);
+        stat=tle_pos(timeadd(epoch,min*60.0),"TEST_SAT","","",&tle,NULL,rs);
+        		assert(stat);
 
         fprintf(OUT,"%4.0f: %14.8f %14.8f %14.8f  %11.8f %11.8f %11.8f\n",min,
                 rs[0]/1e3,rs[1]/1e3,rs[2]/1e3,rs[3]/1e3,rs[4]/1e3,rs[5]/1e3);
