@@ -436,7 +436,7 @@ void MainForm::BtnPlotClick()
 {
     QString OutputFile_Text=OutputFile->currentText();
     QString file=FilePath(OutputFile_Text);
-    QString cmd1="rtkplot_qt",cmd2="../../../bin/rtkplot_qt";
+    QString cmd1="./rtkplot_qt",cmd2="../../../bin/rtkplot_qt";
     QStringList opts;
     
     opts+=" \""+file+"\"";
@@ -690,7 +690,7 @@ void MainForm::BtnInputPlot1Click()
     QString InputFile5_Text=InputFile5->currentText();
     QString InputFile6_Text=InputFile6->currentText();
     QString files[6];
-    QString cmd1="rtkplot_qt",cmd2="../../../bin/rtkplot_qt";
+    QString cmd1="./rtkplot_qt",cmd2="../../../bin/rtkplot_qt";
     QStringList opts;
     QString navfile;
     
@@ -722,7 +722,7 @@ void MainForm::BtnInputPlot2Click()
     QString InputFile5_Text=InputFile5->currentText();
     QString InputFile6_Text=InputFile6->currentText();
     QString files[6];
-    QString cmd1="rtkplot_qt",cmd2="../../../bin/rtkplot_qt";
+    QString cmd1="./rtkplot_qt",cmd2="../../../bin/rtkplot_qt";
     QStringList opts;
     QString navfile;
     

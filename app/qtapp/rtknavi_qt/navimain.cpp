@@ -404,7 +404,7 @@ void MainWindow::BtnStopClick()
 // callback on button-plot --------------------------------------------------
 void MainWindow::BtnPlotClick()
 {
-    QString cmd1 = "rtkplot_qt", cmd2 = "..\\..\\..\\bin\\rtkplot_qt", cmd3 = "..\\rtkplot_qt\\rtkplot_qt";
+    QString cmd1 = "./rtkplot_qt", cmd2 = "..\\..\\..\\bin\\rtkplot_qt", cmd3 = "..\\rtkplot_qt\\rtkplot_qt";
     QStringList opts;
 
     trace(3, "BtnPlotClick\n");
