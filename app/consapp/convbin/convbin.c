@@ -9,7 +9,7 @@
 * history : 2008/06/22 1.0 new
 *           2009/06/17 1.1 support glonass
 *           2009/12/19 1.2 fix bug on disable of glonass
-*                          fix bug on inproper header for rtcm2 and rtcm3
+*                          fix bug on improper header for rtcm2 and rtcm3
 *           2010/07/18 1.3 add option -v, -t, -h, -x
 *           2011/01/15 1.4 add option -ro, -hc, -hm, -hn, -ht, -ho, -hr, -ha,
 *                            -hp, -hd, -y, -c, -q 
@@ -42,7 +42,7 @@
 *           2020/11/30 1.20 include NavIC in default systems
 *                           force option -scan
 *                           delete option -noscan
-*                           surppress warnings
+*                           suppress warnings
 *-----------------------------------------------------------------------------*/
 #include <stdio.h>
 #include <stdlib.h>
@@ -58,7 +58,7 @@
 /* help text -----------------------------------------------------------------*/
 static const char *help[]={
 "",
-" Synopsys",
+" Synopsis",
 "",
 " convbin [option ...] file", 
 "",
@@ -116,7 +116,7 @@ static const char *help[]={
 "     -hm marker   rinex header: marker name",
 "     -hn markno   rinex header: marker number",
 "     -ht marktype rinex header: marker type",
-"     -ho observ   rinex header: oberver name and agency separated by /",
+"     -ho observ   rinex header: observer name and agency separated by /",
 "     -hr rec      rinex header: receiver number, type and version separated by /",
 "     -ha ant      rinex header: antenna number and type separated by /",
 "     -hp pos      rinex header: approx position x/y/z separated by /",
@@ -484,7 +484,7 @@ static int cmdopts(int argc, char **argv, rnxopt_t *opt, char **ifile,
             opt->outleaps=1;
         }
         else if (!strcmp(argv[i],"-scan")) {
-            /* obsolute */ ;
+            /* obsolete */ ;
         }
         else if (!strcmp(argv[i],"-halfc")) {
             opt->halfcyc=1;
