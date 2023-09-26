@@ -22,7 +22,7 @@
 *         15 September, 2010
 *     [4] A.Gelb ed., Applied Optimal Estimation, The M.I.T Press, 1974
 *     [5] A.E.Niell, Global mapping functions for the atmosphere delay at radio
-*         wavelengths, Jounal of geophysical research, 1996
+*         wavelengths, Journal of geophysical research, 1996
 *     [6] W.Gurtner and L.Estey, RINEX The Receiver Independent Exchange Format
 *         Version 3.00, November 28, 2007
 *     [7] J.Kouba, A Guide to using International GNSS Service (IGS) products,
@@ -47,7 +47,7 @@
 *           2007/05/25 1.3 add function execcmd(),expandpath()
 *           2008/06/21 1.4 add funciton sortobs(),uniqeph(),screent()
 *                          replace geodist() by sagnac correction way
-*           2008/10/29 1.5 fix bug of ionosphereic mapping function
+*           2008/10/29 1.5 fix bug of ionospheric mapping function
 *                          fix bug of seasonal variation term of tropmapf
 *           2008/12/27 1.6 add function tickget(), sleepms(), tracenav(),
 *                          xyz2enu(), satposv(), pntvel(), covecef()
@@ -106,7 +106,7 @@
 *           2015/03/19 1.30 fix bug on interpolation of erp values in geterp()
 *                           add leap second insertion before 2015/07/01 00:00
 *                           add api read_leaps()
-*           2015/05/31 1.31 delte api windupcorr()
+*           2015/05/31 1.31 delete api windupcorr()
 *           2015/08/08 1.32 add compile option CPUTIME_IN_GPST
 *                           add api add_fatal()
 *                           support usno leapsec.dat for api read_leaps()
@@ -141,7 +141,7 @@
 *                           update stream format strings table
 *                           update obs code strings and priority table
 *                           use integer types in stdint.h
-*                           surppress warnings
+*                           suppress warnings
 *-----------------------------------------------------------------------------*/
 #define _POSIX_C_SOURCE 199506
 #include <stdarg.h>
@@ -1058,7 +1058,7 @@ extern void cross3(const double *a, const double *b, double *c)
 /* normalize 3d vector ---------------------------------------------------------
 * normalize 3d vector
 * args   : double *a        I   vector a (3 x 1)
-*          double *b        O   normlized vector (3 x 1) || b || = 1
+*          double *b        O   normalized vector (3 x 1) || b || = 1
 * return : status (1:ok,0:error)
 *-----------------------------------------------------------------------------*/
 extern int normv3(const double *a, double *b)
@@ -1128,7 +1128,7 @@ extern int matinv(double *A, int n)
 *          int    n,m       I   size of matrix A,Y
 *          double *X        O   X=A\Y or X=A'\Y (n x m)
 * return : status (0:ok,0>:error)
-* notes  : matirix stored by column-major order (fortran convention)
+* notes  : matrix stored by column-major order (fortran convention)
 *          X can be same as Y
 *-----------------------------------------------------------------------------*/
 extern int solve(const char *tr, const double *A, const double *Y, int n,
@@ -1251,11 +1251,11 @@ extern int solve(const char *tr, const double *A, const double *Y, int n,
 * args   : double *A        I   transpose of (weighted) design matrix (n x m)
 *          double *y        I   (weighted) measurements (m x 1)
 *          int    n,m       I   number of parameters and measurements (n<=m)
-*          double *x        O   estmated parameters (n x 1)
-*          double *Q        O   esimated parameters covariance matrix (n x n)
+*          double *x        O   estimated parameters (n x 1)
+*          double *Q        O   estimated parameters covariance matrix (n x n)
 * return : status (0:ok,0>:error)
 * notes  : for weighted least square, replace A and y by A*w and w*y (w=W^(1/2))
-*          matirix stored by column-major order (fortran convention)
+*          matrix stored by column-major order (fortran convention)
 *-----------------------------------------------------------------------------*/
 extern int lsq(const double *A, const double *y, int n, int m, double *x,
                double *Q)
@@ -1285,7 +1285,7 @@ extern int lsq(const double *A, const double *y, int n, int m, double *x,
 *          double *xp       O   states vector after update (n x 1)
 *          double *Pp       O   covariance matrix of states after update (n x n)
 * return : status (0:ok,<0:error)
-* notes  : matirix stored by column-major order (fortran convention)
+* notes  : matrix stored by column-major order (fortran convention)
 *          if state x[i]==0.0, not updates state x[i]/P[i+i*n]
 *-----------------------------------------------------------------------------*/
 static int filter_(const double *x, const double *P, const double *H,
@@ -1347,7 +1347,7 @@ extern int filter(double *x, double *P, const double *H, const double *v,
 *          double *Qs       O   smoothed solutions covariance matrix (n x n)
 * return : status (0:ok,0>:error)
 * notes  : see reference [4] 5.2
-*          matirix stored by column-major order (fortran convention)
+*          matrix stored by column-major order (fortran convention)
 *-----------------------------------------------------------------------------*/
 extern int smoother(const double *xf, const double *Qf, const double *xb,
                     const double *Qb, int n, double *xs, double *Qs)
@@ -1375,7 +1375,7 @@ extern int smoother(const double *xf, const double *Qf, const double *xb,
 *          int    p,q       I   total columns, columns under decimal point
 *         (FILE  *fp        I   output file pointer)
 * return : none
-* notes  : matirix stored by column-major order (fortran convention)
+* notes  : matrix stored by column-major order (fortran convention)
 *-----------------------------------------------------------------------------*/
 extern void matfprint(const double A[], int n, int m, int p, int q, FILE *fp)
 {
@@ -1696,7 +1696,7 @@ static int read_leaps_usno(FILE *fp)
 * return : status (1:ok,0:error)
 * notes  : The leap second table should be as follows or leapsec.dat provided
 *          by USNO.
-*          (1) The records in the table file cosist of the following fields:
+*          (1) The records in the table file consist of the following fields:
 *              year month day hour min sec UTC-GPST(s)
 *          (2) The date and time indicate the start UTC time for the UTC-GPST
 *          (3) The date and time should be descending order.
@@ -1887,7 +1887,7 @@ extern uint32_t tickget(void)
 }
 /* sleep ms --------------------------------------------------------------------
 * sleep ms
-* args   : int   ms         I   miliseconds to sleep (<0:no sleep)
+* args   : int   ms         I   milliseconds to sleep (<0:no sleep)
 * return : none
 *-----------------------------------------------------------------------------*/
 extern void sleepms(int ms)
@@ -1973,12 +1973,12 @@ extern void pos2ecef(const double *pos, double *r)
     r[1]=(v+pos[2])*cosp*sinl;
     r[2]=(v*(1.0-e2)+pos[2])*sinp;
 }
-/* ecef to local coordinate transfromation matrix ------------------------------
-* compute ecef to local coordinate transfromation matrix
+/* ecef to local coordinate transformation matrix ------------------------------
+* compute ecef to local coordinate transformation matrix
 * args   : double *pos      I   geodetic position {lat,lon} (rad)
 *          double *E        O   ecef to local coord transformation matrix (3x3)
 * return : none
-* notes  : matirix stored by column-major order (fortran convention)
+* notes  : matrix stored by column-major order (fortran convention)
 *-----------------------------------------------------------------------------*/
 extern void xyz2enu(const double *pos, double *E)
 {
@@ -1988,11 +1988,11 @@ extern void xyz2enu(const double *pos, double *E)
     E[1]=-sinp*cosl; E[4]=-sinp*sinl; E[7]=cosp;
     E[2]=cosp*cosl;  E[5]=cosp*sinl;  E[8]=sinp;
 }
-/* transform ecef vector to local tangental coordinate -------------------------
-* transform ecef vector to local tangental coordinate
+/* transform ecef vector to local tangential coordinate -------------------------
+* transform ecef vector to local tangential coordinate
 * args   : double *pos      I   geodetic position {lat,lon} (rad)
 *          double *r        I   vector in ecef coordinate {x,y,z}
-*          double *e        O   vector in local tangental coordinate {e,n,u}
+*          double *e        O   vector in local tangential coordinate {e,n,u}
 * return : none
 *-----------------------------------------------------------------------------*/
 extern void ecef2enu(const double *pos, const double *r, double *e)
@@ -2003,9 +2003,9 @@ extern void ecef2enu(const double *pos, const double *r, double *e)
     matmul("NN",3,1,3,1.0,E,r,0.0,e);
 }
 /* transform local vector to ecef coordinate -----------------------------------
-* transform local tangental coordinate vector to ecef
+* transform local tangential coordinate vector to ecef
 * args   : double *pos      I   geodetic position {lat,lon} (rad)
-*          double *e        I   vector in local tangental coordinate {e,n,u}
+*          double *e        I   vector in local tangential coordinate {e,n,u}
 *          double *r        O   vector in ecef coordinate {x,y,z}
 * return : none
 *-----------------------------------------------------------------------------*/
@@ -2016,11 +2016,11 @@ extern void enu2ecef(const double *pos, const double *e, double *r)
     xyz2enu(pos,E);
     matmul("TN",3,1,3,1.0,E,e,0.0,r);
 }
-/* transform covariance to local tangental coordinate --------------------------
-* transform ecef covariance to local tangental coordinate
+/* transform covariance to local tangential coordinate --------------------------
+* transform ecef covariance to local tangential coordinate
 * args   : double *pos      I   geodetic position {lat,lon} (rad)
 *          double *P        I   covariance in ecef coordinate
-*          double *Q        O   covariance in local tangental coordinate
+*          double *Q        O   covariance in local tangential coordinate
 * return : none
 *-----------------------------------------------------------------------------*/
 extern void covenu(const double *pos, const double *P, double *Q)
@@ -3015,9 +3015,9 @@ extern void freeobs(obs_t *obs)
 * free memory for navigation data
 * args   : nav_t *nav    IO     navigation data
 *          int   opt     I      option (or of followings)
-*                               (0x01: gps/qzs ephmeris, 0x02: glonass ephemeris,
-*                                0x04: sbas ephemeris,   0x08: precise ephemeris,
-*                                0x10: precise clock     0x20: almanac,
+*                               (0x01: gps/qzs ephemeris, 0x02: glonass ephemeris,
+*                                0x04: sbas ephemeris,    0x08: precise ephemeris,
+*                                0x10: precise clock      0x20: almanac,
 *                                0x40: tec data)
 * return : none
 *-----------------------------------------------------------------------------*/
@@ -3535,7 +3535,7 @@ extern int reppaths(const char *path, char *rpath[], int nmax, gtime_t ts,
 }
 /* geometric distance ----------------------------------------------------------
 * compute geometric distance and receiver-to-satellite unit vector
-* args   : double *rs       I   satellilte position (ecef at transmission) (m)
+* args   : double *rs       I   satellite position (ecef at transmission) (m)
 *          double *rr       I   receiver position (ecef at reception) (m)
 *          double *e        O   line-of-sight vector (ecef)
 * return : geometric distance (m) (0>:error/no satellite position)
@@ -3718,7 +3718,7 @@ extern int seliflc(int optnf,int sys)
 extern double tropmodel(gtime_t time, const double *pos, const double *azel,
                         double humi)
 {
-    const double temp0=15.0; /* temparature at sea level */
+    const double temp0=15.0; /* temperature at sea level */
     double hgt,pres,temp,e,z,trph,trpw;
     
     if (pos[2]<-100.0||1E4<pos[2]||azel[1]<=0) return 0.0;
@@ -3730,7 +3730,7 @@ extern double tropmodel(gtime_t time, const double *pos, const double *azel,
     temp=temp0-6.5E-3*hgt+273.16;
     e=6.108*humi*exp((17.15*temp-4684.0)/(temp-38.45));
     
-    /* saastamoninen model */
+    /* saastamoinen model */
     z=PI/2.0-azel[1];
     trph=0.0022768*pres/(1.0-0.00266*cos(2.0*pos[0])-0.00028*hgt/1E3)/cos(z);
     trpw=0.002277*(1255.0/temp+0.05)*e/cos(z);
@@ -3963,7 +3963,7 @@ extern void sunmoonpos(gtime_t tutc, const double *erpv, double *rsun,
     /* eci to ecef transformation matrix */
     eci2ecef(tutc,erpv,U,&gmst_);
     
-    /* sun and moon postion in ecef */
+    /* sun and moon position in ecef */
     if (rsun ) matmul("NN",3,1,3,1.0,U,rs,0.0,rsun );
     if (rmoon) matmul("NN",3,1,3,1.0,U,rm,0.0,rmoon);
     if (gmst ) *gmst=gmst_;
@@ -3973,7 +3973,7 @@ extern void sunmoonpos(gtime_t tutc, const double *erpv, double *rsun,
 * args   : char   *file     I   input file
 *          char   *uncfile  O   uncompressed file
 * return : status (-1:error,0:not compressed file,1:uncompress completed)
-* note   : creates uncompressed file in tempolary directory
+* note   : creates uncompressed file in temporary directory
 *          gzip, tar and crx2rnx commands have to be installed in commands path
 *-----------------------------------------------------------------------------*/
 extern int rtk_uncompress(const char *file, char *uncfile)

@@ -63,7 +63,7 @@ const QChar up2Char(0262);              // character code of ^2     (UTF-8)
 #define ORG_PNTPOS  9                   // plot-origin: way-point position
 
 #define TRACEFILE   "rtkplot.trace"     // trace file
-#define QCTMPFILE   "rtkplot_qc.temp"   // tempolary file for qc
+#define QCTMPFILE   "rtkplot_qc.temp"   // temporary file for qc
 #define QCERRFILE   "rtkplot_qc.err"    // error file for qc
 
 #define SQR(x)      ((x)*(x))
@@ -254,7 +254,7 @@ private:
     int NStrBuff;
     QTimer Timer;
     QElapsedTimer updateTime;
-    
+
     gtime_t OEpoch;
     int FormWidth, FormHeight;
     int ConnectState, OpenRaw;
@@ -264,11 +264,11 @@ private:
     int NSolF1, NSolF2, NObsF, NNavF;
     int SatMask[MAXSAT], SatSel[MAXSAT];
     int SimObs;
-    
+
     int Drag, Xn, Yn;
     double X0, Y0, Xc, Yc, Xs, Ys, Xcent, Xcent0;
     uint32_t MouseDownTick;
-    
+
     int GEState, GEDataState[2];
     double GEHeading;
 
@@ -293,7 +293,7 @@ private:
     void Reload(void);
     void ReadWaitStart(void);
     void ReadWaitEnd(void);
-    
+
     void UpdateDisp(void);
     void UpdateType(int type);
     void UpdatePlotType(void);
@@ -315,7 +315,7 @@ private:
     void FitTime(void);
     void SetRange(int all, double range);
     void FitRange(int all);
-    
+
     void SetCentX(double c);
     void SetScaleX(double s);
     void MouseDownTrk(int X, int Y);
@@ -345,7 +345,7 @@ private:
     void DrawResE(QPainter &g,int level);
     void DrawPolyS(Graph *,QPainter &c, double *x, double *y, int n,
                            const QColor &color, int style);
-    
+
     void DrawObs(QPainter &g,int level);
     void DrawObsSlip(QPainter &g,double *yp);
     void DrawObsEphem(QPainter &g,double *yp);
@@ -356,17 +356,17 @@ private:
     void DrawSnr(QPainter &g,int level);
     void DrawSnrE(QPainter &g,int level);
     void DrawMpS(QPainter &g,int level);
-    
+
     TIMEPOS *SolToPos(solbuf_t *sol, int index, int qflag, int type);
     TIMEPOS *SolToNsat(solbuf_t *sol, int index, int qflag);
-    
+
     void PosToXyz(gtime_t time, const double *rr, int type, double *xyz);
     void CovToXyz(const double *rr, const float *qr, int type,
                                     double *xyzs);
     void CalcStats(const double *x, int n, double ref, double &ave,
                                     double &std, double &rms);
     int FitPos(gtime_t *time, double *opos, double *ovel);
-    
+
     QString LatLonStr(const double *pos, int ndec);
     QColor ObsColor(const obsd_t *obs, double az, double el);
     QColor SysColor(int sat);
@@ -382,7 +382,7 @@ private:
     void ShowLegend (QString *msgs);
     void LoadOpt();
     void SaveOpt();
-    
+
     FreqDialog * freqDialog;
     MapOptDialog *mapOptDialog;
     MapView *mapView;
@@ -420,25 +420,25 @@ public:
     int RtTimeOutTime;
     int RtReConnTime;
     double ElMaskData[361];
-    
-    // time options 
+
+    // time options
     int TimeEna[3];
     gtime_t TimeStart;
     gtime_t TimeEnd;
     double TimeInt;
-    
-    // map options 
+
+    // map options
     int MapSize[2], MapScaleEq;
     double MapScaleX, MapScaleY;
     double MapLat, MapLon;
     int PointType;
-    
-    // sky image options 
+
+    // sky image options
     int SkySize[2], SkyDestCorr, SkyElMask, SkyRes, SkyFlip, SkyBinarize;
     double SkyCent[2], SkyScale, SkyScaleR, SkyFov[3], SkyDest[10];
     double SkyBinThres1, SkyBinThres2;
-    
-    // plot options 
+
+    // plot options
     int TimeLabel;
     int LatLonFmt;
     int ShowStats;
@@ -482,16 +482,16 @@ public:
     // map view options
     int MapApi;
     QString MapStrs[6][3],ApiKey;
-    
+
     QString Title;
     QString PntName[MAXWAYPNT];
     double PntPos[MAXWAYPNT][3];
     int NWayPnt, SelWayPnt;
     int OPosType;
     double OPos[3], OVel[3];
-    
+
     QString StrHistory [10];
-    
+
     void ReadSol(const QStringList &files, int sel);
     void ReadObs(const QStringList &files);
     void ReadNav(const QStringList &files);
