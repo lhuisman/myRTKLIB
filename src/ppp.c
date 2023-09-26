@@ -433,7 +433,7 @@ static void corr_meas(const obsd_t *obs, const nav_t *nav, const double *azel,
         else {   /* apply code bias corrections from file */
             if (sys==SYS_GAL&&(i==1||i==2)) frq=3-i;  /* GAL biases are L1/L5 */
             else frq=i;  /* other biases are L1/L2 */
-            if (frq>1) continue;  /* only 2 freqs per system supported in code bias table */
+            if (frq>=MAX_CODE_BIAS_FREQS) continue;  /* only 2 freqs per system supported in code bias table */
             bias_ix=code2bias_ix(sys,obs->code[i]); /* look up bias index in table */
             if (bias_ix>0) {  /*  0=ref code */
                 P[i]+=nav->cbias[obs->sat-1][frq][bias_ix-1]; /* code bias */

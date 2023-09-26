@@ -57,7 +57,6 @@
 #define MAXDTE      900.0           /* max time difference to ephem time (s) */
 #define EXTERR_CLK  1E-3            /* extrapolation error for clock (m/s) */
 #define EXTERR_EPH  5E-7            /* extrapolation error for ephem (m/s^2) */
-#define MAX_CODE_BIASES 3           /* max # of different code biases per freq */
 #define MAX_BIAS_SYS 4              /* # of constellations supported */
 
 /* table to translate code to code bias table index  */
@@ -518,7 +517,7 @@ extern int readdcb(const char *file, nav_t *nav, const sta_t *sta)
     
     trace(3,"readdcb : file=%s\n",file);
     
-    for (i=0;i<MAXSAT;i++) for (j=0;j<2;j++) for (k=0;k<MAX_CODE_BIASES;k++) {
+    for (i=0;i<MAXSAT;i++) for (j=0;j<MAX_CODE_BIAS_FREQS;j++) for (k=0;k<MAX_CODE_BIASES;k++) {
         nav->cbias[i][j][k]=0.0;
     }
     for (i=0;i<MAXEXFILE;i++) {
