@@ -381,8 +381,6 @@ void MainForm::showEvent(QShowEvent* event)
         TimeUnit->setText(parser.value(timeUnitOption));
     }
 
-    LoadOpt();
-
     if (inputflag) SetOutFile();
     
     UpdateEnable();
