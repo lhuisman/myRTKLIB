@@ -709,16 +709,19 @@ void MonitorDialog::ShowSat()
 	ssat_t *ssat;
     int i, j, k, n, fix, pmode, nfreq, sys=sys_tbl[SelSys->currentIndex()];
     int vsat[MAXSAT]={0};
-	char id[32];
-    double az, el, cbias[MAXSAT][3];
+	  char id[32];
+    double az, el, cbias[MAXSAT][2][3];
 
     SetSat();
 
 	rtksvrlock(&rtksvr);
     rtk = rtksvr.rtk;
 
-    for (i = 0; i < MAXSAT; i++) for (j = 0; j < 3; j++)
-            cbias[i][j] = rtksvr.nav.cbias[i][j];
+    for (i = 0; i < MAXSAT; i++)
+      for (j = 0; j < 2; j++)
+        for (k = 0; k < 3; k++)
+            cbias[i][j][k] = rtksvr.nav.cbias[i][j][k];
+
     pmode=rtksvr.rtk.opt.mode;
     nfreq=rtksvr.rtk.opt.nf;
 	rtksvrunlock(&rtksvr);
@@ -775,9 +778,11 @@ void MonitorDialog::ShowSat()
             Console->setItem(n, j++, new QTableWidgetItem(QString::number(ssat->rejc[k])));
         Console->setItem(n, j++, new QTableWidgetItem(QString::number(ssat->gf[0], 'f', 3)));
         Console->setItem(n, j++, new QTableWidgetItem(QString::number(ssat->phw, 'f', 2)));
+        /*
         Console->setItem(n, j++, new QTableWidgetItem(QString::number(cbias[i][0], 'f', 2)));
         Console->setItem(n, j++, new QTableWidgetItem(QString::number(cbias[i][1], 'f', 2)));
         Console->setItem(n, j++, new QTableWidgetItem(QString::number(cbias[i][2], 'f', 2)));
+        */
 		n++;
 	}
 }
