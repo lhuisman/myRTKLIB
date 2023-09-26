@@ -10,5 +10,11 @@ Debug_Build
 __history
 __astcache
 
+util/gencrc/gencrc
+util/gencrc/genmsk
+util/gencrc/genxor
+util/rnx2rtcm/rnx2rtcm
+util/simobs/gcc/simobs
+
 # gets created by qmake
 /app/qtapp/Makefile
