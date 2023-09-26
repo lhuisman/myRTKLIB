@@ -10,6 +10,21 @@ Debug_Build
 __history
 __astcache
 
+test/utest/*.out
+test/utest/t_atmos
+test/utest/t_coord
+test/utest/t_geoid
+test/utest/t_gloeph
+test/utest/t_ionex
+test/utest/t_lambda
+test/utest/t_matrix
+test/utest/t_misc
+test/utest/t_ppp
+test/utest/t_preceph
+test/utest/t_rinex
+test/utest/t_time
+test/utest/t_tle
+
 # gets created by qmake
 *.qmake.stash
 /app/qtapp/Makefile
