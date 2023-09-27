@@ -102,7 +102,7 @@
 *                           support high-resolution (16bit) C/N0 in obsd_t
 *                           support dual sets of ephemerides in RINEX control
 *                             (for Galileo I/NAV and F/NAV)
-*                           no support RINEX 2 NAV extentions (QZS and BDS)
+*                           no support RINEX 2 NAV extensions (QZS and BDS)
 *                           no support CNES/GRG clock extension in comments
 *                           fix bug on segfault to read NavIC/IRNSS OBS data
 *                           fix bug on segfault with # obs data >= MAXOBS
@@ -114,7 +114,7 @@
 *                           zero-padded month/date/hour/min/sec
 *                           use exponent letter D instead of E for RINEX NAV
 *                           use API code2idx() to get frequency index
-*                           use intger types in stdint.h
+*                           use integer types in stdint.h
 *                           suppress warnings
 *-----------------------------------------------------------------------------*/
 #include "rtklib.h"
@@ -1826,7 +1826,7 @@ extern int init_rnxctr(rnxctr_t *rnx)
     return 1;
 }
 /* free RINEX control ----------------------------------------------------------
-* free observation and ephemris buffer in RINEX control struct
+* free observation and ephemeris buffer in RINEX control struct
 * args   : rnxctr_t *rnx IO  RINEX control struct
 * return : none
 *-----------------------------------------------------------------------------*/
@@ -1875,7 +1875,7 @@ extern int open_rnxctr(rnxctr_t *rnx, FILE *fp)
     return 1;
 }
 /* input RINEX control ---------------------------------------------------------
-* fetch next RINEX message and input a messsage from file
+* fetch next RINEX message and input a message from file
 * args   : rnxctr_t *rnx    IO  RINEX control struct
 *          FILE  *fp        I   file pointer
 * return : status (-2: end of file, 0: no message, 1: input observation data,
@@ -2105,7 +2105,7 @@ extern int outrnxobsh(FILE *fp, const rnxopt_t *opt, const nav_t *nav)
     
     if      (opt->navsys==SYS_GPS) sys="G: GPS";
     else if (opt->navsys==SYS_GLO) sys="R: GLONASS";
-    else if (opt->navsys==SYS_GAL) sys="E: Galielo";
+    else if (opt->navsys==SYS_GAL) sys="E: Galileo";
     else if (opt->navsys==SYS_QZS) sys="J: QZSS";   /* ver.3.02 */
     else if (opt->navsys==SYS_CMP) sys="C: BeiDou"; /* ver.3.02 */
     else if (opt->navsys==SYS_IRN) sys="I: IRNSS";  /* ver.3.03 */

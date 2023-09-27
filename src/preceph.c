@@ -57,7 +57,6 @@
 #define MAXDTE      900.0           /* max time difference to ephem time (s) */
 #define EXTERR_CLK  1E-3            /* extrapolation error for clock (m/s) */
 #define EXTERR_EPH  5E-7            /* extrapolation error for ephem (m/s^2) */
-#define MAX_CODE_BIASES 3           /* max # of different code biases per freq */
 #define MAX_BIAS_SYS 4              /* # of constellations supported */
 
 /* table to translate code to code bias table index  */
@@ -504,7 +503,7 @@ static int readbiaf(const char *file, nav_t *nav)
 * read differential code bias (DCB) parameters
 * args   : char   *file       I   DCB parameters file (wild-card * expanded)
 *          nav_t  *nav        IO  navigation data
-*          sta_t  *sta        I   station info data to inport receiver DCB
+*          sta_t  *sta        I   station info data to import receiver DCB
 *                                 (NULL: no use)
 * return : status (1:ok,0:error)
 * notes  : supports DCB, BIA, and BSX file formats
@@ -518,7 +517,7 @@ extern int readdcb(const char *file, nav_t *nav, const sta_t *sta)
     
     trace(3,"readdcb : file=%s\n",file);
     
-    for (i=0;i<MAXSAT;i++) for (j=0;j<2;j++) for (k=0;k<MAX_CODE_BIASES;k++) {
+    for (i=0;i<MAXSAT;i++) for (j=0;j<MAX_CODE_BIAS_FREQS;j++) for (k=0;k<MAX_CODE_BIASES;k++) {
         nav->cbias[i][j][k]=0.0;
     }
     for (i=0;i<MAXEXFILE;i++) {
@@ -589,7 +588,7 @@ static int pephpos(gtime_t time, int sat, const nav_t *nav, double *rs,
     }
     for (j=0;j<=NMAX;j++) {
         pos=nav->peph[i+j].pos[sat-1];
-        /* correciton for earh rotation ver.2.4.0 */
+        /* correction for earth rotation ver.2.4.0 */
         sinl=sin(OMGE*t[j]);
         cosl=cos(OMGE*t[j]);
         p[0][j]=cosl*pos[0]-sinl*pos[1];
@@ -763,7 +762,7 @@ extern void satantoff(gtime_t time, const double *rs, int sat, const nav_t *nav,
 * args   : gtime_t time       I   time (gpst)
 *          int    sat         I   satellite number
 *          nav_t  *nav        I   navigation data
-*          int    opt         I   sat postion option
+*          int    opt         I   sat position option
 *                                 (0: center of mass, 1: antenna phase center)
 *          double *rs         O   sat position and velocity (ecef)
 *                                 {x,y,z,vx,vy,vz} (m|m/s)
