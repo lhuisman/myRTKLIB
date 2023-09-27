@@ -707,14 +707,14 @@ void __fastcall TMonitorDialog::ShowSat(void)
 	int i,j,k,n,fix,prn,pmode,nfreq,sys=sys_tbl[SelSys->ItemIndex];
 	int vsat[MAXSAT]={0};
 	char id[32];
-	double az,el,cbias[MAXSAT][3];
+	double az,el,cbias[MAXSAT][2];
 	
 	SetSat();
 
 	rtksvrlock(&rtksvr);
 	rtk=rtksvr.rtk;
-	for (i=0;i<MAXSAT;i++) for (j=0;j<3;j++) {
-		cbias[i][j]=rtksvr.nav.cbias[i][j];
+	for (i=0;i<MAXSAT;i++) for (j=0;j<2;j++) {
+		cbias[i][j]=rtksvr.nav.cbias[i][j][0];
 	}
 	pmode=rtksvr.rtk.opt.mode;
 	nfreq=rtksvr.rtk.opt.nf;
@@ -780,7 +780,7 @@ void __fastcall TMonitorDialog::ShowSat(void)
 		Tbl->Cells[j++][n]=s.sprintf("%.2f",ssat->phw);
 		Tbl->Cells[j++][n]=s.sprintf("%.2f",cbias[i][0]);
 		Tbl->Cells[j++][n]=s.sprintf("%.2f",cbias[i][1]);
-		Tbl->Cells[j++][n]=s.sprintf("%.2f",cbias[i][2]);
+		Tbl->Cells[j++][n]=s.sprintf("%.2f",0);
 		n++;
 	}
 }
