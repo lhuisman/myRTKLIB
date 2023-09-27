@@ -473,7 +473,9 @@ void MainForm::BtnOptionClick()
 // callback on button-execute -----------------------------------------------
 void MainForm::BtnExecClick()
 {
-    QString OutputFile_Text=OutputFile->currentText();
+
+    QString OutputFile_Text = OutputFile->currentText();
+
     AbortFlag=false;
 
     if (InputFile1->currentText()=="") {
@@ -489,14 +491,12 @@ void MainForm::BtnExecClick()
         return;
     }
     if (OutputFile_Text.contains(".obs",Qt::CaseInsensitive)||
+        OutputFile_Text.contains(".rnx",Qt::CaseInsensitive)||
         OutputFile_Text.contains(".nav",Qt::CaseInsensitive)||
         OutputFile_Text.contains(".gnav",Qt::CaseInsensitive)||
         OutputFile_Text.contains(".gz",Qt::CaseInsensitive)||
         OutputFile_Text.contains(".Z",Qt::CaseInsensitive)||
-        OutputFile_Text.contains(QRegularExpression(".??o",QRegularExpression::CaseInsensitiveOption))||
-        OutputFile_Text.contains(QRegularExpression(".??d",QRegularExpression::CaseInsensitiveOption))||
-        OutputFile_Text.contains(QRegularExpression(".??n",QRegularExpression::CaseInsensitiveOption))||
-        OutputFile_Text.contains(QRegularExpression(".??g",QRegularExpression::CaseInsensitiveOption))){
+        OutputFile_Text.contains(QRegularExpression(R"(\.\d\d[ondg])",QRegularExpression::CaseInsensitiveOption))) {
         showmsg("error : invalid extension of output file (%s)",qPrintable(OutputFile_Text));
         return;
     }
@@ -792,7 +792,7 @@ void MainForm::InputFile1Change()
 // callback on output-directory checked -------------------------------------
 void MainForm::OutDirEnaClick()
 {
-	UpdateEnable();
+  UpdateEnable();
     SetOutFile();
 }
 // callback on output-directory change --------------------------------------
