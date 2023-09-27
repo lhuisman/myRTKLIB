@@ -281,14 +281,9 @@ void MainForm::showEvent(QShowEvent* event)
     parser.addVersionOption();
     parser.setSingleDashWordOptionMode(QCommandLineParser::ParseAsLongOptions);
 
-<<<<<<< HEAD
     QCommandLineOption iniFileOption(QStringList() << "i" ,
             QCoreApplication::translate("main", "use init file <file>"),
             QCoreApplication::translate("main", "ini file"));
-=======
-    QCommandLineOption iniFileOption(QStringList() << "i",
-            QCoreApplication::translate("main", "use init file <file>"));
->>>>>>> refs/remotes/rtklibexplorer/demo5
     parser.addOption(iniFileOption);
 
     QCommandLineOption titleOption(QStringList() << "t",
@@ -797,7 +792,7 @@ void MainForm::InputFile1Change()
 // callback on output-directory checked -------------------------------------
 void MainForm::OutDirEnaClick()
 {
-	UpdateEnable();
+  UpdateEnable();
     SetOutFile();
 }
 // callback on output-directory change --------------------------------------
