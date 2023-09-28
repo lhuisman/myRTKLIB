@@ -718,8 +718,8 @@ static int satpos_ssr(gtime_t time, gtime_t teph, int sat, const nav_t *nav,
 * args   : gtime_t time     I   time (gpst)
 *          gtime_t teph     I   time to select ephemeris (gpst)
 *          int    sat       I   satellite number
-*          nav_t  *nav      I   navigation data
 *          int    ephopt    I   ephemeris option (EPHOPT_???)
+*          nav_t  *nav      I   navigation data
 *          double *rs       O   sat position and velocity (ecef)
 *                               {x,y,z,vx,vy,vz} (m|m/s)
 *          double *dts      O   sat clock {bias,drift} (s|s/s)
