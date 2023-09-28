@@ -72,7 +72,7 @@ iers_:
 	cd $(IERS); $(PMAKE)
 
 consapp_:
-	cd $(CONSAPP); $(PMAKE)
+	cd $(CONSAPP); make
 
 qtapp_:
 	cd $(QTAPP); $(QMAKE) qtapp.pro; $(PMAKE);

@@ -8,8 +8,20 @@ BINDIR = /usr/local/bin
 BINDIR = ${HOME}/Software/RTKLIB/bin
 DIRS   = pos2kml str2str rnx2rtkp convbin rtkrcv
 
+# Get number of parallel build jobs
+
+ifneq ($(shell which nproc 2> /dev/null),)
+  NJOBS = $(shell nproc)
+else
+  NJOBS = 1
+endif
+
+# Enable parallel make
+
+PMAKE = make -j $(NJOBS)
+
 all:
-	@for i in $(DIRS); do make -C $$i/gcc; done
+	@for i in $(DIRS); do $(PMAKE) -C $$i/gcc; done
 
 install:
 	@echo installing...
@@ -17,5 +29,4 @@ install:
 
 clean:
 	@echo cleaning up...
-	@for i in $(DIRS); do make -C $$i/gcc clean; done
-
+	@for i in $(DIRS); do $(PMAKE) -C $$i/gcc clean; done
