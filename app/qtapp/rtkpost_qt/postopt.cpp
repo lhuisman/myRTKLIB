@@ -20,7 +20,6 @@ OptDialog::OptDialog(QWidget *parent)
     : QDialog(parent)
 {
     setupUi(this);
-    widget->setVisible(false);
 
     int nglo = MAXPRNGLO, ngal = MAXPRNGAL, nqzs = MAXPRNQZS, ncmp = MAXPRNCMP;
     int nirn = MAXPRNIRN;

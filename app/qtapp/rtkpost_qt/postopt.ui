@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>643</width>
-    <height>612</height>
+    <height>480</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,7 +17,23 @@
    <string/>
   </property>
   <layout class="QGridLayout" name="gridLayout_10">
-   <item row="2" column="6" colspan="2">
+   <item row="2" column="3" colspan="2">
+    <widget class="QPushButton" name="BtnSave">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="text">
+      <string>&amp;Save...</string>
+     </property>
+     <property name="flat">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="5" colspan="2">
     <widget class="QPushButton" name="BtnOk">
      <property name="enabled">
       <bool>true</bool>
@@ -49,110 +65,7 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="3" colspan="2">
-    <widget class="QPushButton" name="BtnSave">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="toolTip">
-      <string/>
-     </property>
-     <property name="text">
-      <string>&amp;Save...</string>
-     </property>
-     <property name="flat">
-      <bool>false</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="5" colspan="4">
-    <widget class="QWidget" name="widget" native="true">
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
-       <widget class="QLabel" name="Label87">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="toolTip">
-         <string/>
-        </property>
-        <property name="text">
-         <string>a</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="Label5">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="toolTip">
-         <string/>
-        </property>
-        <property name="text">
-         <string>Correction File</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="Label82">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="toolTip">
-         <string/>
-        </property>
-        <property name="text">
-         <string>a</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="Label83">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="toolTip">
-         <string/>
-        </property>
-        <property name="text">
-         <string>b</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="Label86">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="toolTip">
-         <string/>
-        </property>
-        <property name="text">
-         <string>b</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="2" column="8">
-    <widget class="QPushButton" name="BtnCancel">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="toolTip">
-      <string/>
-     </property>
-     <property name="text">
-      <string>&amp;Cancel</string>
-     </property>
-     <property name="flat">
-      <bool>false</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0" rowspan="2" colspan="9">
+   <item row="0" column="0" rowspan="2" colspan="8">
     <widget class="QTabWidget" name="Misc">
      <property name="toolTip">
       <string/>
@@ -161,7 +74,7 @@
       <enum>QTabWidget::North</enum>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>6</number>
      </property>
      <widget class="QWidget" name="TabSheet1">
       <property name="toolTip">
@@ -3464,6 +3377,22 @@
        </item>
       </layout>
      </widget>
+    </widget>
+   </item>
+   <item row="2" column="7">
+    <widget class="QPushButton" name="BtnCancel">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="text">
+      <string>&amp;Cancel</string>
+     </property>
+     <property name="flat">
+      <bool>false</bool>
+     </property>
     </widget>
    </item>
   </layout>
