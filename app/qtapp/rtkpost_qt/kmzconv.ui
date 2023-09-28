@@ -651,6 +651,17 @@
        <number>0</number>
       </property>
       <item>
+       <widget class="QPushButton" name="BtnGoogleEarth">
+        <property name="text">
+         <string>&amp;Google Earth</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>../../winapp/icon/ge.bmp</normaloff>../../winapp/icon/ge.bmp</iconset>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="BtnView">
         <property name="text">
          <string>&amp;View....</string>
