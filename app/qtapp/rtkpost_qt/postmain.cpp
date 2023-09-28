@@ -602,12 +602,12 @@ void MainForm::BtnInputFile3Click()
 // callback on button-inputfile-4 -------------------------------------------
 void MainForm::BtnInputFile4Click()
 {
-    InputFile4->setCurrentText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this,tr("RINEX NAV/CLK,SP3,FCB,IONEX or SBAS/EMS File"),InputFile4->currentText(),tr("All (*.*);;Precise Ephemeris/Clock (*.SP3 *.sp3 *.eph* *.clk*)"))));
+    InputFile4->setCurrentText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this,tr("RINEX NAV/CLK,SP3,FCB,IONEX or SBAS/EMS File"),InputFile4->currentText(),tr("All (*.*);;Precise Ephemeris/Clock (*.SP3 *.sp3 *.eph* *.CLK *.clk*)"))));
 }
 // callback on button-inputfile-5 -------------------------------------------
 void MainForm::BtnInputFile5Click()
 {
-    InputFile5->setCurrentText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this,tr("RINEX NAV/CLK,SP3,FCB,IONEX or SBAS/EMS File"),InputFile5->currentText(),tr("All (*.*);;Precise Ephemeris/Clock (*.CLK *.sp3 *.eph* *.clk*)"))));
+    InputFile5->setCurrentText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this,tr("RINEX NAV/CLK,SP3,FCB,IONEX or SBAS/EMS File"),InputFile5->currentText(),tr("All (*.*);;Precise Ephemeris/Clock (*.SP3 *.sp3 *.eph* *.CLK *.clk*)"))));
 }
 // callback on button-inputfile-6 -------------------------------------------
 void MainForm::BtnInputFile6Click()
