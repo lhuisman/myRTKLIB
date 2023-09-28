@@ -436,10 +436,10 @@ void MainForm::BtnPlotClick()
 {
     QString OutputFile_Text=OutputFile->currentText();
     QString file=FilePath(OutputFile_Text);
-    QString cmd1="./rtkplot_qt",cmd2="../../../bin/rtkplot_qt";
+    QString cmd1="rtkplot_qt",cmd2="../../../bin/rtkplot_qt";
     QStringList opts;
 
-    opts+=" \""+file+"\"";
+    opts += file;
 
     if (!ExecCmd(cmd1, opts, 1)&&!ExecCmd(cmd2, opts, 1)) {
         ShowMsg("error : rtkplot_qt execution");
@@ -690,7 +690,7 @@ void MainForm::BtnInputPlot1Click()
     QString InputFile5_Text=InputFile5->currentText();
     QString InputFile6_Text=InputFile6->currentText();
     QString files[6];
-    QString cmd1="./rtkplot_qt",cmd2="../../../bin/rtkplot_qt";
+    QString cmd1="rtkplot_qt",cmd2="../../../bin/rtkplot_qt";
     QStringList opts;
     QString navfile;
 
@@ -704,9 +704,7 @@ void MainForm::BtnInputPlot1Click()
     if (files[2]=="") {
         if (ObsToNav(files[0],navfile)) files[2]=navfile;
     }
-    opts << "-r";
-    for (int i=0;i<5;i++)
-            opts <<"\""+files[i]+"\"";
+    opts << "-r" << files[0] << files[2] << files[3] << files[4] << files[5];
 
     if (!ExecCmd(cmd1, opts,1)&&!ExecCmd(cmd2, opts,1)) {
         ShowMsg("error : rtkplot_qt execution");
@@ -722,7 +720,7 @@ void MainForm::BtnInputPlot2Click()
     QString InputFile5_Text=InputFile5->currentText();
     QString InputFile6_Text=InputFile6->currentText();
     QString files[6];
-    QString cmd1="./rtkplot_qt",cmd2="../../../bin/rtkplot_qt";
+    QString cmd1="rtkplot_qt",cmd2="../../../bin/rtkplot_qt";
     QStringList opts;
     QString navfile;
 
@@ -736,9 +734,7 @@ void MainForm::BtnInputPlot2Click()
     if (files[2]=="") {
         if (ObsToNav(files[0],navfile)) files[2]=navfile;
     }
-    opts << "-r";
-    for (int i=0;i<5;i++)
-            opts <<"\""+files[i]+"\"";
+    opts << "-r" << files[1] << files[2] << files[3] << files[4] << files[5];
 
     if (!ExecCmd(cmd1, opts,1)&&!ExecCmd(cmd2, opts,1)) {
         ShowMsg("error : rtkplot_qt execution");
