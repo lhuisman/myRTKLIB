@@ -418,7 +418,7 @@ static void corr_meas(const obsd_t *obs, const nav_t *nav, const double *azel,
 
         /* antenna phase center and phase windup correction */
         L[i]=obs->L[i]*CLIGHT/freq[i]-dants[i]-dantr[i]-phw*CLIGHT/freq[i];
-        P[i]=obs->P[i]       -dants[i]-dantr[i];
+        P[i]=obs->P[i]               -dants[i]-dantr[i];
 
         if (opt->sateph==EPHOPT_SSRAPC||opt->sateph==EPHOPT_SSRCOM) {
             /* select SSR code correction based on code */
@@ -1029,7 +1029,7 @@ static int ppp_res(int post, const obsd_t *obs, int n, const double *rs,
             v[nv]=y-(r+cdtr-CLIGHT*dts[i*2]+dtrp+C*dion+dcb+bias);
 
             if (code==0) rtk->ssat[sat-1].resc[frq]=v[nv];  /* carrier phase */
-            else        rtk->ssat[sat-1].resp[frq]=v[nv];   /* pseudorange */
+            else         rtk->ssat[sat-1].resp[frq]=v[nv];  /* pseudorange */
 
             /* variance */
             var[nv]=varerr(sat,sys,azel[1+i*2],
