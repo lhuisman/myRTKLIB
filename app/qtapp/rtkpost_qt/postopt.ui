@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>643</width>
-    <height>480</height>
+    <height>481</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -74,7 +74,7 @@
       <enum>QTabWidget::North</enum>
      </property>
      <property name="currentIndex">
-      <number>6</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="TabSheet1">
       <property name="toolTip">
@@ -517,6 +517,11 @@
            <string>Combined</string>
           </property>
          </item>
+         <item>
+          <property name="text">
+           <string>Combined - no phase reset</string>
+          </property>
+         </item>
         </widget>
        </item>
        <item row="6" column="0">
@@ -727,7 +732,17 @@
          </item>
          <item>
           <property name="text">
-           <string>QZSS Broardcast</string>
+           <string>QZSS Broadcast</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>QZSS LEX</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Input TEC</string>
           </property>
          </item>
         </widget>
@@ -789,6 +804,11 @@
          <item>
           <property name="text">
            <string>Broadcast+SSR CoM</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>QZSS LEX</string>
           </property>
          </item>
         </widget>
