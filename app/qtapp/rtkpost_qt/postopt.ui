@@ -907,6 +907,9 @@
        </item>
        <item row="14" column="3" colspan="2">
         <widget class="QDoubleSpinBox" name="RejectPhase">
+         <property name="suffix">
+          <string>m</string>
+         </property>
          <property name="decimals">
           <number>1</number>
          </property>
@@ -1221,7 +1224,7 @@
           <string/>
          </property>
          <property name="text">
-          <string>Reject Threshold of GDOP / Innov</string>
+          <string>Outlier Threshold for Code/Phase</string>
          </property>
         </widget>
        </item>
