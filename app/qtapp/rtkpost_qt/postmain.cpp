@@ -281,8 +281,9 @@ void MainForm::showEvent(QShowEvent* event)
     parser.addVersionOption();
     parser.setSingleDashWordOptionMode(QCommandLineParser::ParseAsLongOptions);
 
-    QCommandLineOption iniFileOption(QStringList() << "i",
-            QCoreApplication::translate("main", "use init file <file>"));
+    QCommandLineOption iniFileOption(QStringList() << "i" ,
+            QCoreApplication::translate("main", "use init file <file>"),
+            QCoreApplication::translate("main", "ini file"));
     parser.addOption(iniFileOption);
 
     QCommandLineOption titleOption(QStringList() << "t",
@@ -380,8 +381,6 @@ void MainForm::showEvent(QShowEvent* event)
         TimeUnitF->setChecked(true);
         TimeUnit->setText(parser.value(timeUnitOption));
     }
-
-    LoadOpt();
 
     if (inputflag) SetOutFile();
 
@@ -490,14 +489,12 @@ void MainForm::BtnExecClick()
         return;
     }
     if (OutputFile_Text.contains(".obs",Qt::CaseInsensitive)||
+        OutputFile_Text.contains(".rnx",Qt::CaseInsensitive)||
         OutputFile_Text.contains(".nav",Qt::CaseInsensitive)||
         OutputFile_Text.contains(".gnav",Qt::CaseInsensitive)||
         OutputFile_Text.contains(".gz",Qt::CaseInsensitive)||
         OutputFile_Text.contains(".Z",Qt::CaseInsensitive)||
-        OutputFile_Text.contains(QRegularExpression(".??o",QRegularExpression::CaseInsensitiveOption))||
-        OutputFile_Text.contains(QRegularExpression(".??d",QRegularExpression::CaseInsensitiveOption))||
-        OutputFile_Text.contains(QRegularExpression(".??n",QRegularExpression::CaseInsensitiveOption))||
-        OutputFile_Text.contains(QRegularExpression(".??g",QRegularExpression::CaseInsensitiveOption))){
+        OutputFile_Text.contains(QRegularExpression(R"(\.\d\d[ondg])",QRegularExpression::CaseInsensitiveOption))) {
         showmsg("error : invalid extension of output file (%s)",qPrintable(OutputFile_Text));
         return;
     }
@@ -587,28 +584,28 @@ void MainForm::BtnTime2Click()
 // callback on button-inputfile-1 -------------------------------------------
 void MainForm::BtnInputFile1Click()
 {
-    InputFile1->setCurrentText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this,tr("RINEX OBS (Rover) File"),InputFile1->currentText(),tr("All (*.*);;RINEX OBS (*.obs *.*O *.*D)"))));
+    InputFile1->setCurrentText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this,tr("RINEX OBS (Rover) File"),InputFile1->currentText(),tr("All (*.*);;RINEX OBS (*.rnx *.obs *.*O *.*D)"))));
     SetOutFile();
 }
 // callback on button-inputfile-2 -------------------------------------------
 void MainForm::BtnInputFile2Click()
 {
-    InputFile2->setCurrentText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this,tr("RINEX OBS (Base Station) File"),InputFile2->currentText(),tr("All (*.*);;RINEX OBS (*.obs *.*O *.*D)"))));
+    InputFile2->setCurrentText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this,tr("RINEX OBS (Base Station) File"),InputFile2->currentText(),tr("All (*.*);;RINEX OBS (*.rnx *.obs *.*O *.*D)"))));
 }
 // callback on button-inputfile-3 -------------------------------------------
 void MainForm::BtnInputFile3Click()
 {
-    InputFile3->setCurrentText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this,tr("RINEX NAV/CLK,SP3,FCB,IONEX or SBAS/EMS File"),InputFile3->currentText(),tr("All (*.*);;RINEX NAV (*.*nav *.*N *.*P *.*G *.*H *.*Q)"))));
+    InputFile3->setCurrentText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this,tr("RINEX NAV/CLK,SP3,FCB,IONEX or SBAS/EMS File"),InputFile3->currentText(),tr("All (*.*);;RINEX NAV (*.rnx *.*nav *.*N *.*P *.*G *.*H *.*Q)"))));
 }
 // callback on button-inputfile-4 -------------------------------------------
 void MainForm::BtnInputFile4Click()
 {
-    InputFile4->setCurrentText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this,tr("RINEX NAV/CLK,SP3,FCB,IONEX or SBAS/EMS File"),InputFile4->currentText(),tr("All (*.*);;Precise Ephemeris/Clock (*.sp3 *.eph* *.clk*)"))));
+    InputFile4->setCurrentText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this,tr("RINEX NAV/CLK,SP3,FCB,IONEX or SBAS/EMS File"),InputFile4->currentText(),tr("All (*.*);;Precise Ephemeris/Clock (*.SP3 *.sp3 *.eph* *.clk*)"))));
 }
 // callback on button-inputfile-5 -------------------------------------------
 void MainForm::BtnInputFile5Click()
 {
-    InputFile5->setCurrentText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this,tr("RINEX NAV/CLK,SP3,FCB,IONEX or SBAS/EMS File"),InputFile5->currentText(),tr("All (*.*);;Precise Ephemeris/Clock (*.sp3 *.eph* *.clk*)"))));
+    InputFile5->setCurrentText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this,tr("RINEX NAV/CLK,SP3,FCB,IONEX or SBAS/EMS File"),InputFile5->currentText(),tr("All (*.*);;Precise Ephemeris/Clock (*.CLK *.sp3 *.eph* *.clk*)"))));
 }
 // callback on button-inputfile-6 -------------------------------------------
 void MainForm::BtnInputFile6Click()
@@ -793,7 +790,7 @@ void MainForm::InputFile1Change()
 // callback on output-directory checked -------------------------------------
 void MainForm::OutDirEnaClick()
 {
-	UpdateEnable();
+  UpdateEnable();
     SetOutFile();
 }
 // callback on output-directory change --------------------------------------
