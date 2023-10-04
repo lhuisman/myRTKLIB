@@ -239,7 +239,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="../rtkvideo_qt/rtkvideo_qt.qrc">
+          <iconset resource="rtkconv_qt.qrc">
            <normaloff>:/buttons/doc.bmp</normaloff>:/buttons/doc.bmp</iconset>
          </property>
          <property name="flat">
@@ -253,7 +253,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="../rtkvideo_qt/rtkvideo_qt.qrc">
+          <iconset resource="rtkconv_qt.qrc">
            <normaloff>:/buttons/doc.bmp</normaloff>:/buttons/doc.bmp</iconset>
          </property>
          <property name="flat">
@@ -375,7 +375,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="../rtkvideo_qt/rtkvideo_qt.qrc">
+          <iconset resource="rtkconv_qt.qrc">
            <normaloff>:/buttons/doc.bmp</normaloff>:/buttons/doc.bmp</iconset>
          </property>
          <property name="flat">
@@ -402,7 +402,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="../rtkvideo_qt/rtkvideo_qt.qrc">
+          <iconset resource="rtkconv_qt.qrc">
            <normaloff>:/buttons/doc.bmp</normaloff>:/buttons/doc.bmp</iconset>
          </property>
          <property name="flat">
@@ -429,7 +429,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="../rtkvideo_qt/rtkvideo_qt.qrc">
+          <iconset resource="rtkconv_qt.qrc">
            <normaloff>:/buttons/doc.bmp</normaloff>:/buttons/doc.bmp</iconset>
          </property>
          <property name="flat">
@@ -460,7 +460,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="../rtkvideo_qt/rtkvideo_qt.qrc">
+          <iconset resource="rtkconv_qt.qrc">
            <normaloff>:/buttons/doc.bmp</normaloff>:/buttons/doc.bmp</iconset>
          </property>
          <property name="flat">
@@ -518,7 +518,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="../rtkvideo_qt/rtkvideo_qt.qrc">
+          <iconset resource="rtkconv_qt.qrc">
            <normaloff>:/buttons/doc.bmp</normaloff>:/buttons/doc.bmp</iconset>
          </property>
          <property name="flat">
@@ -541,7 +541,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="../rtkvideo_qt/rtkvideo_qt.qrc">
+          <iconset resource="rtkconv_qt.qrc">
            <normaloff>:/buttons/doc.bmp</normaloff>:/buttons/doc.bmp</iconset>
          </property>
          <property name="flat">
@@ -581,7 +581,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="../rtkvideo_qt/rtkvideo_qt.qrc">
+          <iconset resource="rtkconv_qt.qrc">
            <normaloff>:/buttons/doc.bmp</normaloff>:/buttons/doc.bmp</iconset>
          </property>
          <property name="flat">
@@ -595,7 +595,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="../rtkvideo_qt/rtkvideo_qt.qrc">
+          <iconset resource="rtkconv_qt.qrc">
            <normaloff>:/buttons/doc.bmp</normaloff>:/buttons/doc.bmp</iconset>
          </property>
          <property name="flat">
@@ -712,7 +712,7 @@
           <string>&amp;Plot...</string>
          </property>
          <property name="icon">
-          <iconset resource="../rtkvideo_qt/rtkvideo_qt.qrc">
+          <iconset resource="rtkconv_qt.qrc">
            <normaloff>:/buttons/chart.bmp</normaloff>:/buttons/chart.bmp</iconset>
          </property>
         </widget>
@@ -730,7 +730,7 @@
           <string>&amp;Options...</string>
          </property>
          <property name="icon">
-          <iconset resource="../rtkvideo_qt/rtkvideo_qt.qrc">
+          <iconset resource="rtkconv_qt.qrc">
            <normaloff>:/buttons/toolbmp</normaloff>:/buttons/toolbmp</iconset>
          </property>
         </widget>
@@ -741,7 +741,7 @@
           <string>&amp;Convert</string>
          </property>
          <property name="icon">
-          <iconset resource="../rtkvideo_qt/rtkvideo_qt.qrc">
+          <iconset resource="rtkconv_qt.qrc">
            <normaloff>:/buttons/start.bmp</normaloff>:/buttons/start.bmp</iconset>
          </property>
         </widget>
@@ -752,7 +752,7 @@
           <string>Abort</string>
          </property>
          <property name="icon">
-          <iconset resource="../rtkvideo_qt/rtkvideo_qt.qrc">
+          <iconset resource="rtkconv_qt.qrc">
            <normaloff>:/buttons/stop2.bmp</normaloff>:/buttons/stop2.bmp</iconset>
          </property>
         </widget>
@@ -826,7 +826,7 @@
   <tabstop>BtnOptions</tabstop>
  </tabstops>
  <resources>
-  <include location="../rtkvideo_qt/rtkvideo_qt.qrc"/>
+  <include location="rtkconv_qt.qrc"/>
  </resources>
  <connections/>
 </ui>
