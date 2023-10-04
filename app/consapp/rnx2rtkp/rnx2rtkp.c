@@ -28,7 +28,7 @@ static const char *help[]={
 "",
 " usage: rnx2rtkp [option]... file file [...]",
 "",
-" Read RINEX OBS/NAV/GNAV/HNAV/CLK, SP3, SBAS message log files and ccompute ",
+" Read RINEX OBS/NAV/GNAV/HNAV/CLK, SP3, SBAS message log files and compute ",
 " receiver (rover) positions and output position solutions.",
 " The first RINEX OBS file shall contain receiver (rover) observations. For the",
 " relative mode, the second RINEX OBS file shall contain reference",
@@ -71,7 +71,7 @@ static const char *help[]={
 "           rover receiver ecef pos (m) for fixed or ppp-fixed mode",
 " -l lat lon hgt reference (base) receiver latitude/longitude/height (deg/m)",
 "           rover latitude/longitude/height for fixed or ppp-fixed mode",
-" -y level  output soltion status (0:off,1:states,2:residuals) [0]",
+" -y level  output solution status (0:off,1:states,2:residuals) [0]",
 " -x level  debug trace level (0:off) [0]"
 };
 /* show message --------------------------------------------------------------*/
