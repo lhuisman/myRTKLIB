@@ -177,12 +177,18 @@
          <property name="calendarPopup">
           <bool>true</bool>
          </property>
+         <property name="timeSpec">
+          <enum>Qt::UTC</enum>
+         </property>
         </widget>
        </item>
        <item row="1" column="3" colspan="3">
         <widget class="QDateTimeEdit" name="dateTime2">
          <property name="calendarPopup">
           <bool>true</bool>
+         </property>
+         <property name="timeSpec">
+          <enum>Qt::UTC</enum>
          </property>
         </widget>
        </item>
