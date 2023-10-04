@@ -1,4 +1,4 @@
-# RTKLIB Problems
+# RTKLIB ToDo List
 
 ## Binary files in repository
 
@@ -25,3 +25,19 @@ QObject::connect:  (receiver name: 'Plot')
 ## Pre-fit measurement residuals
 
 The pre-fit measurement residuals in `ppp_res()` are not corrected for by common offset due to receiver clock errors. This requires a unreasonably large editing threshold to keep the observations in.
+
+## Definition of compilation options
+
+The following options (c.f. `rtklib.h`) must be defined at compilation time:
+
+```
+ENAGLO 
+ENAQZS 
+ENAGAL 
+ENACMP 
+ENAIRN 
+NFREQ
+NEXOBS
+IERS_MODEL
+```
+The file `RTKLIB.pri` in the root directory controls this universally for all QT applications. For the CUI applications, this must be individually activated in each makefile!
