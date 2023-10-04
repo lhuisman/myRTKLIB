@@ -281,7 +281,7 @@ void MainForm::showEvent(QShowEvent* event)
     parser.addVersionOption();
     parser.setSingleDashWordOptionMode(QCommandLineParser::ParseAsLongOptions);
 
-    QCommandLineOption iniFileOption(QStringList() << "i",
+    QCommandLineOption iniFileOption(QStringList() << "i" ,
             QCoreApplication::translate("main", "use init file <file>"),
             QCoreApplication::translate("main", "ini file"));
     parser.addOption(iniFileOption);
@@ -473,9 +473,7 @@ void MainForm::BtnOptionClick()
 // callback on button-execute -----------------------------------------------
 void MainForm::BtnExecClick()
 {
-
-    QString OutputFile_Text = OutputFile->currentText();
-
+    QString OutputFile_Text=OutputFile->currentText();
     AbortFlag=false;
 
     if (InputFile1->currentText()=="") {
