@@ -4,9 +4,23 @@
 
 The folders 'dll' and 'lib' contain binary files. 
 
-## SP3 satellite position refers to APC
+## Satellite position and APC handling
 
-The precise position returned by satpos() is computed in iono-free APC instead of COM for SP3.
+The precise position returned by `satpos()` refers to the iono-free APC instead of COM for SP3. This comes with the advantage that the satellite antenna PCO is already applied at this stage. Only the correction for the PCV must then be applied for each frequency, which only depends on the Nadir angle. However, this will cause problems for consistent modeling of PCOs for un-combined multi-frequency PPP.
+
+The satellite position for PPP is computed in `ppp.c:pppos()`. From there, the following functions are called:
+
+1. `ephemeris.c:satposs()`
+
+Computes position, clock offset, etc. for each satellite in the observation vector. Calls `ephemeris.c:satpos()` for each satellite.
+
+2. `ephemeris.c:satpos()`
+
+Computes position, clock offset, etc. for single satellite. Uses a switch `opt` to set teh computed positio to either CoM (`opt=0`) or APC (`opt=1`) depending on ephemeris type. Calls `preceph.c:peph2pos()` with `opt=1` when the ephemeris type `EPHOPT_PREC` is selected.
+
+3. `preceph.c:peph2pos()`
+
+Computes the satellite position based on SP3. Here, the reference can be set either to CoM or APC using the `opt` switch. Calls the function `preceph.c:satantoff()` to compute the iono-free PCO.
 
 ## Partial support of Bias-SINEX
 
