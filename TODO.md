@@ -22,9 +22,13 @@ Computes position, clock offset, etc. for single satellite. Uses a switch `opt` 
 
 Computes the satellite position based on SP3. Here, the reference can be set either to CoM or APC using the `opt` switch. Calls the function `preceph.c:satantoff()` to compute the iono-free PCO.
 
-## Partial support of Bias-SINEX
+## Carrier-phase biases in Bias-SINEX
 
-Not all OSBs in Bias-SINEX files seem to be supported.
+Carrier-phase biases are currently not supported. A data-structure for such biases is missing.
+
+## Code bias handling for DSB and OSB
+
+Not all OSBs in Bias-SINEX files seem to be supported. The OSBs are internally converted into DCBs by subtracting the reference bias (with index 0). Check if the result is in the end still consistent with the sign converntion for code biases.
 
 ## Missing slot in rtkplot_qt
 
