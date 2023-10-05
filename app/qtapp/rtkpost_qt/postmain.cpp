@@ -281,7 +281,7 @@ void MainForm::showEvent(QShowEvent* event)
     parser.addVersionOption();
     parser.setSingleDashWordOptionMode(QCommandLineParser::ParseAsLongOptions);
 
-    QCommandLineOption iniFileOption(QStringList() << "i" ,
+    QCommandLineOption iniFileOption(QStringList() << "i",
             QCoreApplication::translate("main", "use init file <file>"),
             QCoreApplication::translate("main", "ini file"));
     parser.addOption(iniFileOption);
@@ -439,7 +439,7 @@ void MainForm::BtnPlotClick()
     QString cmd1="rtkplot_qt",cmd2="../../../bin/rtkplot_qt";
     QStringList opts;
 
-    opts+=" \""+file+"\"";
+    opts += file;
 
     if (!ExecCmd(cmd1, opts, 1)&&!ExecCmd(cmd2, opts, 1)) {
         ShowMsg("error : rtkplot_qt execution");
@@ -600,12 +600,12 @@ void MainForm::BtnInputFile3Click()
 // callback on button-inputfile-4 -------------------------------------------
 void MainForm::BtnInputFile4Click()
 {
-    InputFile4->setCurrentText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this,tr("RINEX NAV/CLK,SP3,FCB,IONEX or SBAS/EMS File"),InputFile4->currentText(),tr("All (*.*);;Precise Ephemeris/Clock (*.SP3 *.sp3 *.eph* *.clk*)"))));
+    InputFile4->setCurrentText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this,tr("RINEX NAV/CLK,SP3,FCB,IONEX or SBAS/EMS File"),InputFile4->currentText(),tr("All (*.*);;Precise Ephemeris/Clock (*.SP3 *.sp3 *.eph* *.CLK *.clk*)"))));
 }
 // callback on button-inputfile-5 -------------------------------------------
 void MainForm::BtnInputFile5Click()
 {
-    InputFile5->setCurrentText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this,tr("RINEX NAV/CLK,SP3,FCB,IONEX or SBAS/EMS File"),InputFile5->currentText(),tr("All (*.*);;Precise Ephemeris/Clock (*.CLK *.sp3 *.eph* *.clk*)"))));
+    InputFile5->setCurrentText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this,tr("RINEX NAV/CLK,SP3,FCB,IONEX or SBAS/EMS File"),InputFile5->currentText(),tr("All (*.*);;Precise Ephemeris/Clock (*.SP3 *.sp3 *.eph* *.CLK *.clk*)"))));
 }
 // callback on button-inputfile-6 -------------------------------------------
 void MainForm::BtnInputFile6Click()
@@ -702,9 +702,7 @@ void MainForm::BtnInputPlot1Click()
     if (files[2]=="") {
         if (ObsToNav(files[0],navfile)) files[2]=navfile;
     }
-    opts << "-r";
-    for (int i=0;i<5;i++)
-            opts <<"\""+files[i]+"\"";
+    opts << "-r" << files[0] << files[2] << files[3] << files[4] << files[5];
 
     if (!ExecCmd(cmd1, opts,1)&&!ExecCmd(cmd2, opts,1)) {
         ShowMsg("error : rtkplot_qt execution");
@@ -734,9 +732,7 @@ void MainForm::BtnInputPlot2Click()
     if (files[2]=="") {
         if (ObsToNav(files[0],navfile)) files[2]=navfile;
     }
-    opts << "-r";
-    for (int i=0;i<5;i++)
-            opts <<"\""+files[i]+"\"";
+    opts << "-r" << files[1] << files[2] << files[3] << files[4] << files[5];
 
     if (!ExecCmd(cmd1, opts,1)&&!ExecCmd(cmd2, opts,1)) {
         ShowMsg("error : rtkplot_qt execution");
