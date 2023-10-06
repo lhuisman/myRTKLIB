@@ -26,6 +26,10 @@ Computes the satellite position based on SP3. Here, the reference can be set eit
 
 Not all OSBs in Bias-SINEX files seem to be supported.
 
+## Bias file input in rtkpost_qt
+
+After starting the processing `postpos.c:execses()` first checks if any of the files defined in the main GUI is a bias file. If no biases are found, a DCB file defined under `Options->Files` is read.
+
 ## Missing slot in rtkplot_qt
 
 The program `rtkplot_qt` misses the slot `MenuShapeFileClick()`
