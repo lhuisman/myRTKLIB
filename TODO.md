@@ -22,9 +22,25 @@ Computes position, clock offset, etc. for single satellite. Uses a switch `opt` 
 
 Computes the satellite position based on SP3. Here, the reference can be set either to CoM or APC using the `opt` switch. Calls the function `preceph.c:satantoff()` to compute the iono-free PCO.
 
-## Partial support of Bias-SINEX
+## Carrier-phase biases in Bias-SINEX
 
-Not all OSBs in Bias-SINEX files seem to be supported.
+Carrier-phase biases are currently not supported. A data-structure for such biases is missing.
+
+## Code bias handling for DSB and OSB
+
+Not all OSBs in Bias-SINEX files seem to be supported. The OSBs are internally converted into DCBs by subtracting the values from a reference bias (with index 0) in `preceph.c::readbiaf()`. In the case of CODE MGEX files, the biases for the code reference signals `C1W` and `C2W` are set to zero. As a result, the stored biases are the negative values of the other biases. 
+
+TODO: check which values are actually stored in the data structures.
+
+The code biases are applied in `ppp.c:corr_meas()`, where they are ADDED to the observations. Due to the above sign inversion, this seems to result in the correct sign. 
+
+TODO: check what happens in case of a third frequency.
+
+Ideally, the OSBs should simply be used directly without any further modification. A flag could be used for indicating if absolute or relative biases have been read. 
+
+## Bias file input in rtkpost_qt
+
+After starting the processing `postpos.c:execses()` first checks if any of the files defined in the main GUI is a bias file. If no biases are found, a DCB file defined under `Options->Files` is read.
 
 ## Missing slot in rtkplot_qt
 
