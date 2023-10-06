@@ -594,7 +594,7 @@
             <string/>
            </property>
            <property name="text">
-            <string>RINEX NAV/CLK, SP3, FCB, IONEX, SBS/EMS  or RTCM</string>
+            <string>RINEX NAV/CLK, SP3, Bias-SINEX, IONEX, SBS/EMS  or RTCM</string>
            </property>
           </widget>
          </item>
