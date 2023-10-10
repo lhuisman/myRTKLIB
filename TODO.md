@@ -1,5 +1,20 @@
 # RTKLIB ToDo List
 
+## Command line options for start and end time
+
+The command line options for the start and end time and date behave differently for `rtkpost_qt` and `rnx2rtkp`. For `rtkpost_qt`, two hyphens and quotation marks are required.
+
+```
+rtkpost_qt --ts "2023/01/01 01:00:00" --te "2023/01/01 02:00:00"
+```
+
+For `rnx2rtkp`, the command line option uses a single hyphen and no quotation marks
+
+```
+rnx2rtkp -ts 2023/01/01 01:00:00 -te 2023/01/01 02:00:00
+```
+
+
 ## Binary files in repository
 
 The folders 'dll' and 'lib' contain binary files. 
