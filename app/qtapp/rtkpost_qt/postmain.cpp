@@ -803,20 +803,24 @@ void MainForm::SetOutFile(void)
 
     if (InputFile1->currentText()=="") return;
 
-    ifile=InputFile1_Text;
-
-    if (OutDirEna->isChecked()) {
-        QFileInfo f(ifile);
-        ofile=OutDir_Text+"/"+f.baseName();
+    if (OutputFile->currentText()=="") {
+      ifile=InputFile1_Text;
+      if (OutDirEna->isChecked()) {
+          QFileInfo f(ifile);
+          ofile=OutDir_Text+"/"+f.baseName();
+      }
+      else {
+          QFileInfo f(ifile);
+          ofile=f.absolutePath()+"/"+f.baseName();
+      }
+      ofile+=SolFormat==SOLF_NMEA?".nmea":".pos";
+      ofile.replace('*','0');
     }
     else {
-        QFileInfo f(ifile);
-        ofile=f.absolutePath()+"/"+f.baseName();
-    }
-    ofile+=SolFormat==SOLF_NMEA?".nmea":".pos";
-    ofile.replace('*','0');
-
+      ofile=OutputFile->currentText();
+    };
     OutputFile->setCurrentText(QDir::toNativeSeparators(ofile));
+
 }
 // execute post-processing --------------------------------------------------
 void MainForm::ExecProc(void)
