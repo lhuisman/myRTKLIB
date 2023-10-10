@@ -488,13 +488,14 @@ void MainForm::BtnExecClick()
         showmsg("error : no output file");
         return;
     }
-    if (OutputFile_Text.contains(".obs",Qt::CaseInsensitive)||
-        OutputFile_Text.contains(".rnx",Qt::CaseInsensitive)||
-        OutputFile_Text.contains(".nav",Qt::CaseInsensitive)||
-        OutputFile_Text.contains(".gnav",Qt::CaseInsensitive)||
-        OutputFile_Text.contains(".gz",Qt::CaseInsensitive)||
-        OutputFile_Text.contains(".Z",Qt::CaseInsensitive)||
-        OutputFile_Text.contains(QRegularExpression(R"(\.\d\d[ondg])",QRegularExpression::CaseInsensitiveOption))) {
+    QFileInfo f = QFileInfo(OutputFile_Text);
+    if (f.suffix().contains(".obs",Qt::CaseInsensitive)||
+        f.suffix().contains(".rnx",Qt::CaseInsensitive)||
+        f.suffix().contains(".nav",Qt::CaseInsensitive)||
+        f.suffix().contains(".gnav",Qt::CaseInsensitive)||
+        f.suffix().contains(".gz",Qt::CaseInsensitive)||
+        f.suffix().contains(".Z",Qt::CaseInsensitive)||
+        f.suffix().contains(QRegularExpression(R"(\.\d\d[ondg])",QRegularExpression::CaseInsensitiveOption))) {
         showmsg("error : invalid extension of output file (%s)",qPrintable(OutputFile_Text));
         return;
     }
