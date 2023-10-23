@@ -362,7 +362,7 @@ static void decode_obsh(FILE *fp, char *buff, double ver, int *tsys,
     const char *defcodes[]={
         "CWX    ",  /* GPS: L125____ */
         "CCXX X ",  /* GLO: L1234_6_ */
-        "CXXXXX ",  /* GAL: L125678_ */
+        "CXXXXX ",  /* GAL: L125678_ */ /* FIXME: Galileo should not have L2! */
         "CXXX   ",  /* QZS: L1256___ */
         "C X    ",  /* SBS: L1_5____ */
         "XIXIIX ",  /* BDS: L125678_ */
