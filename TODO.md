@@ -14,6 +14,12 @@ For `rnx2rtkp`, the command line option uses a single hyphen and no quotation ma
 rnx2rtkp -ts 2023/01/01 01:00:00 -te 2023/01/01 02:00:00
 ```
 
+## Inconsistencies of solution *.stat file content
+
+There are inconsistencies between the pdf documentation and the sourcecode comments and the implementaiton of the output ot the `*.stat file.
+
+The output of the solution happens in `rtkpos.c:rtkoutstat()`. In case the positioning mode `PMODE_PPP_KINEMA` or higher is selected, the function `ppp.c:pppoutstat()` is used for the output instead.
+
 ## Meaning of PPP modes and associated process noise setting for position states
 
 1. `PMODE_PPP_FIXED`: the position is reset at each epoch to the pre-defined user position in the configuration file `ant2-pos1` (#TBC!#) with a small variance of 1.0e8 m^2^.
