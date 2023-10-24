@@ -12,7 +12,7 @@
 //           -i file    ini file path
 //           -r file    rinex obs rover file
 //           -b file    rinex obs base station file
-//           -n file    rinex nav/clk, sp3, ionex or sp3 file
+//           -n file    rinex nav/clk, sp3, Bias-SINEX or ionex file
 //           -d dir     output directory
 //           -o file    output file
 //           -ts y/m/d h:m:s time start
@@ -281,7 +281,7 @@ void MainForm::showEvent(QShowEvent* event)
     parser.addVersionOption();
     parser.setSingleDashWordOptionMode(QCommandLineParser::ParseAsLongOptions);
 
-    QCommandLineOption iniFileOption(QStringList() << "i" ,
+    QCommandLineOption iniFileOption(QStringList() << "i",
             QCoreApplication::translate("main", "use init file <file>"),
             QCoreApplication::translate("main", "ini file"));
     parser.addOption(iniFileOption);
@@ -439,7 +439,7 @@ void MainForm::BtnPlotClick()
     QString cmd1="rtkplot_qt",cmd2="../../../bin/rtkplot_qt";
     QStringList opts;
 
-    opts+=" \""+file+"\"";
+    opts += file;
 
     if (!ExecCmd(cmd1, opts, 1)&&!ExecCmd(cmd2, opts, 1)) {
         ShowMsg("error : rtkplot_qt execution");
@@ -488,13 +488,14 @@ void MainForm::BtnExecClick()
         showmsg("error : no output file");
         return;
     }
-    if (OutputFile_Text.contains(".obs",Qt::CaseInsensitive)||
-        OutputFile_Text.contains(".rnx",Qt::CaseInsensitive)||
-        OutputFile_Text.contains(".nav",Qt::CaseInsensitive)||
-        OutputFile_Text.contains(".gnav",Qt::CaseInsensitive)||
-        OutputFile_Text.contains(".gz",Qt::CaseInsensitive)||
-        OutputFile_Text.contains(".Z",Qt::CaseInsensitive)||
-        OutputFile_Text.contains(QRegularExpression(R"(\.\d\d[ondg])",QRegularExpression::CaseInsensitiveOption))) {
+    QFileInfo f = QFileInfo(OutputFile_Text);
+    if (f.suffix().contains(".obs",Qt::CaseInsensitive)||
+        f.suffix().contains(".rnx",Qt::CaseInsensitive)||
+        f.suffix().contains(".nav",Qt::CaseInsensitive)||
+        f.suffix().contains(".gnav",Qt::CaseInsensitive)||
+        f.suffix().contains(".gz",Qt::CaseInsensitive)||
+        f.suffix().contains(".Z",Qt::CaseInsensitive)||
+        f.suffix().contains(QRegularExpression(R"(\.\d\d[ondg])",QRegularExpression::CaseInsensitiveOption))) {
         showmsg("error : invalid extension of output file (%s)",qPrintable(OutputFile_Text));
         return;
     }
@@ -595,22 +596,22 @@ void MainForm::BtnInputFile2Click()
 // callback on button-inputfile-3 -------------------------------------------
 void MainForm::BtnInputFile3Click()
 {
-    InputFile3->setCurrentText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this,tr("RINEX NAV/CLK,SP3,FCB,IONEX or SBAS/EMS File"),InputFile3->currentText(),tr("All (*.*);;RINEX NAV (*.rnx *.*nav *.*N *.*P *.*G *.*H *.*Q)"))));
+    InputFile3->setCurrentText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this,tr("RINEX NAV/CLK,SP3,Bias-SINEX,IONEX or SBAS/EMS File"),InputFile3->currentText(),tr("All (*.*);;RINEX NAV (*.rnx *.*nav *.*N *.*P *.*G *.*H *.*Q)"))));
 }
 // callback on button-inputfile-4 -------------------------------------------
 void MainForm::BtnInputFile4Click()
 {
-    InputFile4->setCurrentText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this,tr("RINEX NAV/CLK,SP3,FCB,IONEX or SBAS/EMS File"),InputFile4->currentText(),tr("All (*.*);;Precise Ephemeris/Clock (*.SP3 *.sp3 *.eph* *.clk*)"))));
+    InputFile4->setCurrentText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this,tr("RINEX NAV/CLK,SP3,Bias-SINEX,IONEX or SBAS/EMS File"),InputFile4->currentText(),tr("All (*.*);;Precise Ephemeris/Clock/Biases (*.SP3 *.sp3 *.eph* *.CLK *.clk* *.BIA)"))));
 }
 // callback on button-inputfile-5 -------------------------------------------
 void MainForm::BtnInputFile5Click()
 {
-    InputFile5->setCurrentText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this,tr("RINEX NAV/CLK,SP3,FCB,IONEX or SBAS/EMS File"),InputFile5->currentText(),tr("All (*.*);;Precise Ephemeris/Clock (*.CLK *.sp3 *.eph* *.clk*)"))));
+    InputFile5->setCurrentText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this,tr("RINEX NAV/CLK,SP3,Bias-SINEX,IONEX or SBAS/EMS File"),InputFile5->currentText(),tr("All (*.*);;Precise Ephemeris/Clock/Biases (*.SP3 *.sp3 *.eph* *.CLK *.clk* *.BIA)"))));
 }
 // callback on button-inputfile-6 -------------------------------------------
 void MainForm::BtnInputFile6Click()
 {
-    InputFile6->setCurrentText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this,tr("RINEX NAV/CLK,SP3,FCB,IONEX or SBAS/EMS File"),InputFile6->currentText(),tr("All (*.*);;FCB (*.fcb),IONEX (*.*i *.ionex),SBAS (*.sbs *.ems)"))));
+    InputFile6->setCurrentText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this,tr("RINEX NAV/CLK,SP3,Bias-SINEX,IONEX or SBAS/EMS File"),InputFile6->currentText(),tr("All (*.*);;Bias-SINEX (*.BIA *.BSX),IONEX (*.*i *.ionex),SBAS (*.sbs *.ems)"))));
 }
 // callback on button-outputfile --------------------------------------------
 void MainForm::BtnOutputFileClick()
@@ -702,9 +703,7 @@ void MainForm::BtnInputPlot1Click()
     if (files[2]=="") {
         if (ObsToNav(files[0],navfile)) files[2]=navfile;
     }
-    opts << "-r";
-    for (int i=0;i<5;i++)
-            opts <<"\""+files[i]+"\"";
+    opts << "-r" << files[0] << files[2] << files[3] << files[4] << files[5];
 
     if (!ExecCmd(cmd1, opts,1)&&!ExecCmd(cmd2, opts,1)) {
         ShowMsg("error : rtkplot_qt execution");
@@ -734,9 +733,7 @@ void MainForm::BtnInputPlot2Click()
     if (files[2]=="") {
         if (ObsToNav(files[0],navfile)) files[2]=navfile;
     }
-    opts << "-r";
-    for (int i=0;i<5;i++)
-            opts <<"\""+files[i]+"\"";
+    opts << "-r" << files[1] << files[2] << files[3] << files[4] << files[5];
 
     if (!ExecCmd(cmd1, opts,1)&&!ExecCmd(cmd2, opts,1)) {
         ShowMsg("error : rtkplot_qt execution");
@@ -807,20 +804,24 @@ void MainForm::SetOutFile(void)
 
     if (InputFile1->currentText()=="") return;
 
-    ifile=InputFile1_Text;
-
-    if (OutDirEna->isChecked()) {
-        QFileInfo f(ifile);
-        ofile=OutDir_Text+"/"+f.baseName();
+    if (OutputFile->currentText()=="") {
+      ifile=InputFile1_Text;
+      if (OutDirEna->isChecked()) {
+          QFileInfo f(ifile);
+          ofile=OutDir_Text+"/"+f.baseName();
+      }
+      else {
+          QFileInfo f(ifile);
+          ofile=f.absolutePath()+"/"+f.baseName();
+      }
+      ofile+=SolFormat==SOLF_NMEA?".nmea":".pos";
+      ofile.replace('*','0');
     }
     else {
-        QFileInfo f(ifile);
-        ofile=f.absolutePath()+"/"+f.baseName();
-    }
-    ofile+=SolFormat==SOLF_NMEA?".nmea":".pos";
-    ofile.replace('*','0');
-
+      ofile=OutputFile->currentText();
+    };
     OutputFile->setCurrentText(QDir::toNativeSeparators(ofile));
+
 }
 // execute post-processing --------------------------------------------------
 void MainForm::ExecProc(void)
@@ -921,8 +922,7 @@ int MainForm::GetOption(prcopt_t &prcopt, solopt_t &solopt,
     prcopt.posopt[3]=PosOpt[3];
     prcopt.posopt[4]=PosOpt[4];
     prcopt.posopt[5]=PosOpt[5];
-    prcopt.dynamics =PosMode==PMODE_KINEMA||
-                     PosMode==PMODE_PPP_KINEMA;
+    prcopt.dynamics =DynamicModel;
     prcopt.tidecorr =TideCorr;
     prcopt.armaxiter=ARIter;
     prcopt.niter    =NumIter;

@@ -191,7 +191,7 @@ void MainWindow::showEvent(QShowEvent *event)
     if (event->spontaneous()) return;
 
     QCommandLineParser parser;
-    parser.setApplicationDescription("RTK Navi");
+    parser.setApplicationDescription("RTK conv");
     parser.addHelpOption();
     parser.addVersionOption();
 

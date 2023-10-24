@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>697</width>
-    <height>551</height>
+    <height>468</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -160,6 +160,9 @@
            <property name="calendarPopup">
             <bool>true</bool>
            </property>
+           <property name="timeSpec">
+            <enum>Qt::UTC</enum>
+           </property>
           </widget>
          </item>
          <item row="1" column="6">
@@ -283,6 +286,9 @@
           <widget class="QDateTimeEdit" name="dateTime2">
            <property name="calendarPopup">
             <bool>true</bool>
+           </property>
+           <property name="timeSpec">
+            <enum>Qt::UTC</enum>
            </property>
           </widget>
          </item>
@@ -588,7 +594,7 @@
             <string/>
            </property>
            <property name="text">
-            <string>RINEX NAV/CLK, SP3, FCB, IONEX, SBS/EMS  or RTCM</string>
+            <string>RINEX NAV/CLK, SP3, Bias-SINEX, IONEX, SBS/EMS  or RTCM</string>
            </property>
           </widget>
          </item>

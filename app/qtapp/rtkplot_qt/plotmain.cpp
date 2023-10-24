@@ -80,7 +80,7 @@
 #include "fileseldlg.h"
 
 #define YLIM_AGE    10.0        // ylimit of age of differential
-#define YLIM_RATIO  20.0        // ylimit of raito factor
+#define YLIM_RATIO  20.0        // ylimit of ratio factor
 #define MAXSHAPEFILE 16             // max number of shape files
 
 static int RefreshTime = 100;    // update only every 100ms

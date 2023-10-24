@@ -320,7 +320,7 @@ void Plot::DrawTrkImage(QPainter &c, int level)
     QRect r(p1, p2);
     c.drawImage(r, MapImage);
 }
-// check in boundrary --------------------------------------------------------
+// check in boundary --------------------------------------------------------
 #define P_IN_B(pos, bound) \
     (pos[0] >= bound[0] && pos[0] <= bound[1] && pos[1] >= bound[2] && pos[1] <= bound[3])
 

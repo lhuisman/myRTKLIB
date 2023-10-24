@@ -37,6 +37,7 @@ ConvDialog::ConvDialog(QWidget *parent)
     connect(BtnConvert, SIGNAL(clicked(bool)), this, SLOT(BtnConvertClick()));
     connect(BtnGoogleEarthFile, SIGNAL(clicked(bool)), this, SLOT(BtnGoogleEarthFileClick()));
     connect(BtnView, SIGNAL(clicked(bool)), this, SLOT(BtnViewClick()));
+    connect(BtnGoogleEarth, SIGNAL(clicked(bool)), this, SLOT(BtnGoogleEarthClick()));
     connect(AddOffset, SIGNAL(clicked(bool)), this, SLOT(AddOffsetClick()));
     connect(TimeSpan, SIGNAL(clicked(bool)), this, SLOT(TimeSpanClick()));
     connect(TimeIntF, SIGNAL(clicked(bool)), this, SLOT(TimeIntFClick()));
@@ -47,7 +48,7 @@ ConvDialog::ConvDialog(QWidget *parent)
     connect(FormatKML, SIGNAL(clicked(bool)), this, SLOT(FormatKMLClick()));
     connect(FormatGPX, SIGNAL(clicked(bool)), this, SLOT(FormatGPXClick()));
 
-	UpdateEnable();
+  UpdateEnable();
 }
 //---------------------------------------------------------------------------
 void ConvDialog::showEvent(QShowEvent *event)
@@ -61,7 +62,7 @@ void ConvDialog::showEvent(QShowEvent *event)
 void ConvDialog::SetInput(const QString &File)
 {
     InputFile->setText(File);
-	UpdateOutFile();
+  UpdateOutFile();
 }
 //---------------------------------------------------------------------------
 void ConvDialog::TimeSpanClick()
@@ -87,14 +88,14 @@ void ConvDialog::BtnInputFileClick()
 void ConvDialog::BtnConvertClick()
 {
     QString InputFile_Text = InputFile->text(), OutputFile_Text = OutputFile->text();
-	int stat;
+  int stat;
     QString cmd;
     QStringList opt;
     char file[1024], kmlfile[1024], *p;
     double offset[3] = { 0 }, tint = 0.0;
     gtime_t ts = { 0, 0 }, te = { 0, 0 };
 
-	ShowMsg("");
+  ShowMsg("");
 
     if (InputFile->text() == "" || OutputFile->text() == "") return;
 
@@ -105,13 +106,13 @@ void ConvDialog::BtnConvertClick()
         QDateTime end(dateTime2->dateTime());
         ts.time = start.toSecsSinceEpoch(); ts.sec = start.time().msec() / 1000;
         te.time = end.toSecsSinceEpoch(); te.sec = end.time().msec() / 1000;
-	}
+  }
 
     if (AddOffset->isChecked()) {
         offset[0] = Offset1->value();
         offset[1] = Offset2->value();
         offset[2] = Offset3->value();
-	}
+  }
 
     if (TimeIntF->isChecked()) tint = TimeInt->value();
 
@@ -139,8 +140,8 @@ void ConvDialog::BtnConvertClick()
         else if (stat == -2) ShowMsg(tr("error : input file format"));
         else if (stat == -3) ShowMsg(tr("error : no data in input file"));
         else ShowMsg(tr("error : write kml file"));
-		return;
-	}
+    return;
+  }
     if (FormatKML->isChecked() && Compress->isChecked()) {
 #ifdef Q_OS_WIN
         cmd = "zip.exe";
@@ -154,10 +155,10 @@ void ConvDialog::BtnConvertClick()
         opt << kmlfile;
         if (!ExecCmd(cmd, opt)) {
             ShowMsg(tr("error : zip execution"));
-			return;
-		}
-	}
-	ShowMsg("done");
+      return;
+    }
+  }
+  ShowMsg("done");
 }
 //---------------------------------------------------------------------------
 void ConvDialog::BtnCloseClick()
@@ -167,7 +168,7 @@ void ConvDialog::BtnCloseClick()
 //---------------------------------------------------------------------------
 void ConvDialog::CompressClick()
 {
-	UpdateOutFile();
+  UpdateOutFile();
 }
 //---------------------------------------------------------------------------
 void ConvDialog::UpdateEnable(void)
@@ -182,6 +183,7 @@ void ConvDialog::UpdateEnable(void)
     Compress->setVisible(FormatKML->isChecked());
     GoogleEarthFile->setEnabled(FormatKML->isChecked());
     BtnGoogleEarthFile->setEnabled(FormatKML->isChecked());
+    BtnGoogleEarth->setEnabled(FormatKML->isChecked());
 
     Compress->setEnabled(false);
 #ifdef Q_OS_WIN
@@ -206,7 +208,7 @@ void ConvDialog::ShowMsg(const QString &msg)
 //---------------------------------------------------------------------------
 void ConvDialog::InputFileChange()
 {
-	UpdateOutFile();
+  UpdateOutFile();
 }
 //---------------------------------------------------------------------------
 void ConvDialog::UpdateOutFile(void)
@@ -229,6 +231,22 @@ void ConvDialog::GoogleEarthFileChange()
 void ConvDialog::BtnGoogleEarthFileClick()
 {
     GoogleEarthFile->setText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("Google Earth Exe File"))));
+}
+//---------------------------------------------------------------------------
+void ConvDialog::BtnGoogleEarthClick()
+{
+
+  QString     cmd;
+  QStringList opt;
+
+  cmd = GoogleEarthFile->text();
+  opt << OutputFile->text();
+
+  if (!ExecCmd(cmd, opt))
+      ShowMsg(tr("error : Google Earth execution"));
+
+  return;
+
 }
 //---------------------------------------------------------------------------
 void ConvDialog::FormatKMLClick()

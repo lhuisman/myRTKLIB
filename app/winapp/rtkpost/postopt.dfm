@@ -193,7 +193,7 @@ object OptDialog: TOptDialog
           'Iono-Free LC'
           'Estimate TEC'
           'IONEX TEC'
-          'QZSS Broardcast'
+          'QZSS Broadcast'
           'QZSS LEX'
           'Input TEC')
       end
@@ -2177,7 +2177,7 @@ object OptDialog: TOptDialog
     end
   end
   object OpenDialog: TOpenDialog
-    Filter = 
+    Filter =
       'All (*.*)|*.*|PCV File (*.pcv,*.atx)|*.pcv;*.atx|Position File (' +
       '*.pos)|*.pos;*.pos|Options File (*.conf)|*.conf|DCB Data File (*' +
       '.dcb)|*.dcb|EOP Data File (*.eop,*erp)|*.eop;*.erp|OTL BLQ File ' +
