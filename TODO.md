@@ -42,8 +42,7 @@ Review the processing of PCOs and PCVs in `rtkcmn.c:readantex()` and make sure, 
 
 The data structure defines frequency numbers 1,2 and 5 for the three GPS frequencies L1,L2 and L5. For Galileo 1 and 5 are used for E1 and E5a, 2 is used for E5b, E6 is ignored. For the other GNSSs, frequencies which match the numbers 1,2 and 5 are stored, others are ignored. This may cause issue in particular for BeiDou.
 
-  | Number | 1 | 2 | 3 |  
-  | GNSS   |  |  |  |  
+  | Number | 1 | 2 | 3 |   
   |:-|:-|:-|:-|  
   | GPS          | L1 | L2 | L5 |  
   | Galileo      | E1 | E5b | E5a |  
