@@ -22,11 +22,11 @@ The output of the solution happens in `rtkpos.c:rtkoutstat()`. In case the posit
 
 ## Meaning of PPP modes and associated process noise setting for position states
 
-1. `PMODE_PPP_FIXED`: the position is reset at each epoch to the pre-defined user position in the configuration file `ant2-pos1` (#TBC!#) with a small variance of 1.0e8 m^2^.
+1. `PMODE_PPP_FIXED`: the position is reset at each epoch to the pre-defined user position in the configuration file `ant2-pos1` (*TBC!*) with a small variance of 1.0e-8 m*m.
 
-1. `PMODE_PPP_STATIC`: a process noise with a variance defined in `stats-prnpos` in the configuration file is applied to the position state. The default value is 0.0  m^2^/s, it cannot be changed in the GUI!
+1. `PMODE_PPP_STATIC`: a process noise with a variance defined in `stats-prnpos` in the configuration file is applied to the position state. The default value is 0.0 m*m/s, it cannot be changed in the GUI!
 
-1. `PMODE_PPP_KINEMA`: if receiver dynamics are not activated, a hard-coded process noise with a variance of 60 m^2^/s is applied to the variance of the position states. This value is also used for the intial variance of the position state. If receiver dynamics are used, process noise with a variances defined in `stats-prnaccelh` and `stats-prnaccelv` in the configuraiton file is applied to the acceleration state.
+1. `PMODE_PPP_KINEMA`: if receiver dynamics are not activated, a hard-coded process noise with a variance of 60 m*m/s is applied to the variance of the position states. This value is also used for the intial variance of the position state. If receiver dynamics are used, process noise with a variances defined in `stats-prnaccelh` and `stats-prnaccelv` in the configuraiton file is applied to the acceleration state.
 
 ## Selection of observation types
 
