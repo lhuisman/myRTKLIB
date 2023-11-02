@@ -142,7 +142,7 @@ MainWindow::MainWindow(QWidget *parent)
     TimeSys = SolType = 0;
     for (int i = 0; i < 4; i++) { PlotType[i] = FreqType[i] = BLMode[i] = TrkType[i] = 0; TrkScale[i] = 5;};
     PSol = PSolS = PSolE = Nsat[0] = Nsat[1] = 0;
-    NMapPnt = 0;
+    nMapPoint = 0;
     OpenPort = 0;
     Time = NULL;
     SolStat = Nvsat = NULL;
@@ -210,44 +210,44 @@ void MainWindow::showEvent(QShowEvent *event)
 
     systemTray->setContextMenu(trayMenu);
 
-    BtnStop->setVisible(false);
+    btnStop->setVisible(false);
 
     connect(systemTray, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(TrayIconClick(QSystemTrayIcon::ActivationReason)));
 
-    connect(BtnExit, SIGNAL(clicked()), this, SLOT(BtnExitClick()));
-    connect(BtnStart, SIGNAL(clicked()), this, SLOT(BtnStartClick()));
-    connect(BtnStop, SIGNAL(clicked()), this, SLOT(BtnStopClick()));
-    connect(BtnAbout, SIGNAL(clicked(bool)), this, SLOT(BtnAboutClick()));
-    connect(BtnFreqType1, SIGNAL(clicked(bool)), this, SLOT(BtnFreqType1Click()));
-    connect(BtnFreqType2, SIGNAL(clicked(bool)), this, SLOT(BtnFreqType2Click()));
-    connect(BtnFreqType3, SIGNAL(clicked(bool)), this, SLOT(BtnFreqType3Click()));
-    connect(BtnFreqType4, SIGNAL(clicked(bool)), this, SLOT(BtnFreqType4Click()));
-    connect(BtnExpand1, SIGNAL(clicked(bool)), this, SLOT(BtnExpand1Click()));
-    connect(BtnShrink1, SIGNAL(clicked(bool)), this, SLOT(BtnShrink1Click()));
-    connect(BtnExpand2, SIGNAL(clicked(bool)), this, SLOT(BtnExpand2Click()));
-    connect(BtnShrink2, SIGNAL(clicked(bool)), this, SLOT(BtnShrink2Click()));
-    connect(BtnExpand3, SIGNAL(clicked(bool)), this, SLOT(BtnExpand3Click()));
-    connect(BtnShrink3, SIGNAL(clicked(bool)), this, SLOT(BtnShrink3Click()));
-    connect(BtnExpand4, SIGNAL(clicked(bool)), this, SLOT(BtnExpand4Click()));
-    connect(BtnShrink4, SIGNAL(clicked(bool)), this, SLOT(BtnShrink4Click()));
-    connect(BtnInputStr, SIGNAL(clicked(bool)), this, SLOT(BtnInputStrClick()));
-    connect(BtnLogStr, SIGNAL(clicked(bool)), this, SLOT(BtnLogStrClick()));
-    connect(BtnMonitor, SIGNAL(clicked(bool)), this, SLOT(BtnMonitorClick()));
-    connect(BtnOpt, SIGNAL(clicked(bool)), this, SLOT(BtnOptClick()));
-    connect(BtnOutputStr, SIGNAL(clicked(bool)), this, SLOT(BtnOutputStrClick()));
-    connect(BtnPanel, SIGNAL(clicked(bool)), this, SLOT(BtnPanelClick()));
-    connect(BtnPlot, SIGNAL(clicked(bool)), this, SLOT(BtnPlotClick()));
-    connect(BtnPlotType1, SIGNAL(clicked(bool)), this, SLOT(BtnPlotType1Click()));
-    connect(BtnPlotType2, SIGNAL(clicked(bool)), this, SLOT(BtnPlotType2Click()));
-    connect(BtnPlotType3, SIGNAL(clicked(bool)), this, SLOT(BtnPlotType3Click()));
-    connect(BtnPlotType4, SIGNAL(clicked(bool)), this, SLOT(BtnPlotType4Click()));
-    connect(BtnSave, SIGNAL(clicked(bool)), this, SLOT(BtnSaveClick()));
-    connect(BtnSolType, SIGNAL(clicked(bool)), this, SLOT(BtnSolTypeClick()));
-    connect(BtnSolType2, SIGNAL(clicked(bool)), this, SLOT(BtnSolTypeClick()));
-    connect(BtnTaskTray, SIGNAL(clicked(bool)), this, SLOT(BtnTaskTrayClick()));
-    connect(BtnTimeSys, SIGNAL(clicked(bool)), this, SLOT(BtnTimeSysClick()));
-    connect(BtnMark, SIGNAL(clicked(bool)), this, SLOT(BtnMarkClick()));
-    connect(ScbSol, SIGNAL(valueChanged(int)), this, SLOT(ScbSolChange()));
+    connect(btnExit, SIGNAL(clicked()), this, SLOT(BtnExitClick()));
+    connect(btnStart, SIGNAL(clicked()), this, SLOT(BtnStartClick()));
+    connect(btnStop, SIGNAL(clicked()), this, SLOT(BtnStopClick()));
+    connect(btnAbout, SIGNAL(clicked(bool)), this, SLOT(BtnAboutClick()));
+    connect(btnFrequencyType1, SIGNAL(clicked(bool)), this, SLOT(BtnFreqType1Click()));
+    connect(btnFrequencyType2, SIGNAL(clicked(bool)), this, SLOT(BtnFreqType2Click()));
+    connect(btnFrequencyType3, SIGNAL(clicked(bool)), this, SLOT(BtnFreqType3Click()));
+    connect(btnFrequencyType4, SIGNAL(clicked(bool)), this, SLOT(BtnFreqType4Click()));
+    connect(btnExpand1, SIGNAL(clicked(bool)), this, SLOT(BtnExpand1Click()));
+    connect(btnShrink1, SIGNAL(clicked(bool)), this, SLOT(BtnShrink1Click()));
+    connect(btnExpand2, SIGNAL(clicked(bool)), this, SLOT(BtnExpand2Click()));
+    connect(btnShrink2, SIGNAL(clicked(bool)), this, SLOT(BtnShrink2Click()));
+    connect(btnExpand3, SIGNAL(clicked(bool)), this, SLOT(BtnExpand3Click()));
+    connect(btnShrink3, SIGNAL(clicked(bool)), this, SLOT(BtnShrink3Click()));
+    connect(btnExpand4, SIGNAL(clicked(bool)), this, SLOT(BtnExpand4Click()));
+    connect(btnShrink4, SIGNAL(clicked(bool)), this, SLOT(BtnShrink4Click()));
+    connect(btnInputStream, SIGNAL(clicked(bool)), this, SLOT(BtnInputStrClick()));
+    connect(btnLogStream, SIGNAL(clicked(bool)), this, SLOT(BtnLogStrClick()));
+    connect(btnMonitor, SIGNAL(clicked(bool)), this, SLOT(BtnMonitorClick()));
+    connect(btnOptions, SIGNAL(clicked(bool)), this, SLOT(BtnOptClick()));
+    connect(btnOutputStream, SIGNAL(clicked(bool)), this, SLOT(BtnOutputStrClick()));
+    connect(btnPanel, SIGNAL(clicked(bool)), this, SLOT(BtnPanelClick()));
+    connect(btnPlot, SIGNAL(clicked(bool)), this, SLOT(BtnPlotClick()));
+    connect(btnPlotType1, SIGNAL(clicked(bool)), this, SLOT(BtnPlotType1Click()));
+    connect(btnPlotType2, SIGNAL(clicked(bool)), this, SLOT(BtnPlotType2Click()));
+    connect(btnPlotType3, SIGNAL(clicked(bool)), this, SLOT(BtnPlotType3Click()));
+    connect(btnPlotType4, SIGNAL(clicked(bool)), this, SLOT(BtnPlotType4Click()));
+    connect(btnSave, SIGNAL(clicked(bool)), this, SLOT(BtnSaveClick()));
+    connect(btnSolutionType, SIGNAL(clicked(bool)), this, SLOT(BtnSolTypeClick()));
+    connect(btnSolutionType2, SIGNAL(clicked(bool)), this, SLOT(BtnSolTypeClick()));
+    connect(btnTaskTray, SIGNAL(clicked(bool)), this, SLOT(BtnTaskTrayClick()));
+    connect(btnTimeSys, SIGNAL(clicked(bool)), this, SLOT(BtnTimeSysClick()));
+    connect(btnMark, SIGNAL(clicked(bool)), this, SLOT(BtnMarkClick()));
+    connect(sBSolution, SIGNAL(valueChanged(int)), this, SLOT(ScbSolChange()));
     connect(&Timer, SIGNAL(timeout()), this, SLOT(TimerTimer()));
 
     Timer.setInterval(100);
@@ -371,14 +371,14 @@ void MainWindow::UpdatePanel(void)
 // update enabled -----------------------------------------------------------
 void MainWindow::UpdateEnable(void)
 {
-    BtnExpand1->setVisible(PlotType[0] == 6);
-    BtnShrink1->setVisible(PlotType[0] == 6);
-    BtnExpand2->setVisible(PlotType[1] == 6);
-    BtnShrink2->setVisible(PlotType[1] == 6);
-    BtnExpand3->setVisible(PlotType[2] == 6);
-    BtnShrink3->setVisible(PlotType[2] == 6);
-    BtnExpand4->setVisible(PlotType[3] == 6);
-    BtnShrink4->setVisible(PlotType[3] == 6);
+    btnExpand1->setVisible(PlotType[0] == 6);
+    btnShrink1->setVisible(PlotType[0] == 6);
+    btnExpand2->setVisible(PlotType[1] == 6);
+    btnShrink2->setVisible(PlotType[1] == 6);
+    btnExpand3->setVisible(PlotType[2] == 6);
+    btnShrink3->setVisible(PlotType[2] == 6);
+    btnExpand4->setVisible(PlotType[3] == 6);
+    btnShrink4->setVisible(PlotType[3] == 6);
 }
 // callback on button-exit --------------------------------------------------
 void MainWindow::BtnExitClick()
@@ -426,113 +426,113 @@ void MainWindow::BtnOptClick()
 
     trace(3, "BtnOptClick\n");
 
-    optDialog->PrcOpt = PrcOpt;
-    optDialog->SolOpt = SolOpt;
-    optDialog->DebugStatusF = DebugStatusF;
-    optDialog->DebugTraceF = DebugTraceF;
-    optDialog->BaselineC = BaselineC;
-    optDialog->Baseline[0] = Baseline[0];
-    optDialog->Baseline[1] = Baseline[1];
+    optDialog->processOptions = PrcOpt;
+    optDialog->solutionOption = SolOpt;
+    optDialog->debugStatusF = debugStatusF;
+    optDialog->debugTraceF = bebugTraceF;
+    optDialog->baselineC = baselineC;
+    optDialog->baseline[0] = baseline[0];
+    optDialog->baseline[1] = baseline[1];
 
-    optDialog->RovPosTypeF = RovPosTypeF;
-    optDialog->RefPosTypeF = RefPosTypeF;
-    optDialog->RovAntPcvF = RovAntPcvF;
-    optDialog->RefAntPcvF = RefAntPcvF;
-    optDialog->RovAntF = RovAntF;
-    optDialog->RefAntF = RefAntF;
+    optDialog->roverPositionTypeF = roverPositionTypeF;
+    optDialog->referencePositionTypeF = referencePositionTypeF;
+    optDialog->roverAntennaPcvF = roverAntennaPcvF;
+    optDialog->referenceAntennaPcvF = referenceAntennaPcvF;
+    optDialog->roverAntennaF = roverAntennaF;
+    optDialog->referenceAntennaF = referenceAntennaF;
 
-    optDialog->SatPcvFileF = SatPcvFileF;
-    optDialog->AntPcvFileF = AntPcvFileF;
-    optDialog->StaPosFileF = StaPosFileF;
-    optDialog->GeoidDataFileF = GeoidDataFileF;
-    optDialog->DCBFileF = DCBFileF;
-    optDialog->EOPFileF = EOPFileF;
-    optDialog->LocalDirectory = LocalDirectory;
+    optDialog->satellitePcvFileF = satellitePcvFileF;
+    optDialog->antennaPcvFileF = antennaPcvFileF;
+    optDialog->stationPositionFileF = stationPositionFileF;
+    optDialog->geoidDataFileF = geoidDataFileF;
+    optDialog->dcbFileF = dcbFileF;
+    optDialog->eopFileF = eopFileF;
+    optDialog->localDirectory = localDirectory;
 
-    optDialog->SvrCycle = SvrCycle;
-    optDialog->TimeoutTime = TimeoutTime;
-    optDialog->ReconTime = ReconTime;
-    optDialog->NmeaCycle = NmeaCycle;
-    optDialog->FileSwapMargin = FileSwapMargin;
-    optDialog->SvrBuffSize = SvrBuffSize;
-    optDialog->SolBuffSize = SolBuffSize;
-    optDialog->SavedSol = SavedSol;
-    optDialog->NavSelect = NavSelect;
-    optDialog->DgpsCorr = DgpsCorr;
-    optDialog->SbasCorr = SbasCorr;
-    optDialog->ExSats = ExSats;
-    optDialog->ProxyAddr = ProxyAddr;
-    optDialog->MoniPort = MoniPort;
-    optDialog->PanelStack = PanelStack;
-    PanelFont = optDialog->PanelFont;
-    PosFont = optDialog->PosFont;
+    optDialog->serverCycle = SvrCycle;
+    optDialog->timeoutTime = TimeoutTime;
+    optDialog->reconnectTime = ReconTime;
+    optDialog->nmeaCycle = NmeaCycle;
+    optDialog->fileSwapMargin = FileSwapMargin;
+    optDialog->serverBufferSize = SvrBuffSize;
+    optDialog->solutionBufferSize = SolBuffSize;
+    optDialog->savedSolution = SavedSol;
+    optDialog->navSelect = NavSelect;
+    optDialog->dgpsCorrection = DgpsCorr;
+    optDialog->sbasCorrection = SbasCorr;
+    optDialog->excludedSatellites = ExSats;
+    optDialog->proxyAddr = ProxyAddr;
+    optDialog->monitorPort = MoniPort;
+    optDialog->panelStack = PanelStack;
+    PanelFont = optDialog->panelFont;
+    PosFont = optDialog->positionFont;
     UpdateFont();
     UpdatePanel();
 
     for (i = 0; i < 3; i++) {
-        optDialog->RovAntDel[i] = RovAntDel[i];
-        optDialog->RefAntDel[i] = RefAntDel[i];
-        optDialog->RovPos   [i] = RovPos   [i];
-        optDialog->RefPos   [i] = RefPos   [i];
+        optDialog->roverAntennaDelta[i] = roverAntennaDelta[i];
+        optDialog->referenceAntennaDelta[i] = referenceAntennaDelta[i];
+        optDialog->roverPosition   [i] = roverPosition   [i];
+        optDialog->referencePosition   [i] = referencePosition   [i];
     }
     optDialog->exec();
 
     if (optDialog->result() != QDialog::Accepted) return;
 
-    PrcOpt = optDialog->PrcOpt;
-    SolOpt = optDialog->SolOpt;
-    DebugStatusF = optDialog->DebugStatusF;
-    DebugTraceF = optDialog->DebugTraceF;
-    BaselineC = optDialog->BaselineC;
-    Baseline[0] = optDialog->Baseline[0];
-    Baseline[1] = optDialog->Baseline[1];
+    PrcOpt = optDialog->processOptions;
+    SolOpt = optDialog->solutionOption;
+    debugStatusF = optDialog->debugStatusF;
+    bebugTraceF = optDialog->debugTraceF;
+    baselineC = optDialog->baselineC;
+    baseline[0] = optDialog->baseline[0];
+    baseline[1] = optDialog->baseline[1];
 
-    RovPosTypeF = optDialog->RovPosTypeF;
-    RefPosTypeF = optDialog->RefPosTypeF;
-    RovAntPcvF = optDialog->RovAntPcvF;
-    RefAntPcvF = optDialog->RefAntPcvF;
-    RovAntF = optDialog->RovAntF;
-    RefAntF = optDialog->RefAntF;
+    roverPositionTypeF = optDialog->roverPositionTypeF;
+    referencePositionTypeF = optDialog->referencePositionTypeF;
+    roverAntennaPcvF = optDialog->roverAntennaPcvF;
+    referenceAntennaPcvF = optDialog->referenceAntennaPcvF;
+    roverAntennaF = optDialog->roverAntennaF;
+    referenceAntennaF = optDialog->referenceAntennaF;
 
-    SatPcvFileF = optDialog->SatPcvFileF;
-    AntPcvFileF = optDialog->AntPcvFileF;
-    StaPosFileF = optDialog->StaPosFileF;
-    GeoidDataFileF = optDialog->GeoidDataFileF;
-    DCBFileF = optDialog->DCBFileF;
-    EOPFileF = optDialog->EOPFileF;
-    LocalDirectory = optDialog->LocalDirectory;
+    satellitePcvFileF = optDialog->satellitePcvFileF;
+    antennaPcvFileF = optDialog->antennaPcvFileF;
+    stationPositionFileF = optDialog->stationPositionFileF;
+    geoidDataFileF = optDialog->geoidDataFileF;
+    dcbFileF = optDialog->dcbFileF;
+    eopFileF = optDialog->eopFileF;
+    localDirectory = optDialog->localDirectory;
 
-    SvrCycle = optDialog->SvrCycle;
-    TimeoutTime = optDialog->TimeoutTime;
-    ReconTime = optDialog->ReconTime;
-    NmeaCycle = optDialog->NmeaCycle;
-    FileSwapMargin = optDialog->FileSwapMargin;
-    SvrBuffSize = optDialog->SvrBuffSize;
-    SavedSol = optDialog->SavedSol;
-    NavSelect = optDialog->NavSelect;
-    DgpsCorr = optDialog->DgpsCorr;
-    SbasCorr = optDialog->SbasCorr;
-    ExSats = optDialog->ExSats;
-    ProxyAddr = optDialog->ProxyAddr;
-    if (MoniPort != optDialog->MoniPort) chgmoni = 1;
-    MoniPort = optDialog->MoniPort;
-    PanelStack = optDialog->PanelStack;
+    SvrCycle = optDialog->serverCycle;
+    TimeoutTime = optDialog->timeoutTime;
+    ReconTime = optDialog->reconnectTime;
+    NmeaCycle = optDialog->nmeaCycle;
+    FileSwapMargin = optDialog->fileSwapMargin;
+    SvrBuffSize = optDialog->serverBufferSize;
+    SavedSol = optDialog->savedSolution;
+    NavSelect = optDialog->navSelect;
+    DgpsCorr = optDialog->dgpsCorrection;
+    SbasCorr = optDialog->sbasCorrection;
+    ExSats = optDialog->excludedSatellites;
+    ProxyAddr = optDialog->proxyAddr;
+    if (MoniPort != optDialog->monitorPort) chgmoni = 1;
+    MoniPort = optDialog->monitorPort;
+    PanelStack = optDialog->panelStack;
 
-    if (SolBuffSize != optDialog->SolBuffSize) {
-        SolBuffSize = optDialog->SolBuffSize;
+    if (SolBuffSize != optDialog->solutionBufferSize) {
+        SolBuffSize = optDialog->solutionBufferSize;
         InitSolBuff();
         UpdateTime();
         UpdatePos();
         UpdatePlot();
     }
     for (i = 0; i < 3; i++) {
-        RovAntDel[i] = optDialog->RovAntDel[i];
-        RefAntDel[i] = optDialog->RefAntDel[i];
-        RovPos   [i] = optDialog->RovPos   [i];
-        RefPos   [i] = optDialog->RefPos   [i];
+        roverAntennaDelta[i] = optDialog->roverAntennaDelta[i];
+        referenceAntennaDelta[i] = optDialog->referenceAntennaDelta[i];
+        roverPosition   [i] = optDialog->roverPosition   [i];
+        referencePosition   [i] = optDialog->referencePosition   [i];
     }
-    PosFont = optDialog->PosFont;
-    PanelFont = optDialog->PanelFont;
+    PosFont = optDialog->positionFont;
+    PanelFont = optDialog->panelFont;
 
     UpdateFont();
     UpdatePanel();
@@ -556,64 +556,64 @@ void MainWindow::BtnInputStrClick()
     trace(3, "BtnInputStrClick\n");
 
     for (i = 0; i < 3; i++) {
-        inputStrDialog->StreamC[i] = StreamC[i];
-        inputStrDialog->Stream [i] = Stream [i];
-        inputStrDialog->Format [i] = Format [i];
-        inputStrDialog->RcvOpt [i] = RcvOpt [i];
+        inputStrDialog->streamC[i] = StreamC[i];
+        inputStrDialog->stream [i] = Stream [i];
+        inputStrDialog->format [i] = Format [i];
+        inputStrDialog->receiverOptions [i] = RcvOpt [i];
 
         /* Paths[0]:serial,[1]:tcp,[2]:file,[3]:ftp */
-        for (j = 0; j < 4; j++) inputStrDialog->Paths[i][j] = Paths[i][j];
+        for (j = 0; j < 4; j++) inputStrDialog->paths[i][j] = Paths[i][j];
     }
     for (i = 0; i < 3; i++) for (j = 0; j < 3; j++) {
-            inputStrDialog->CmdEna   [i][j] = CmdEna   [i][j];
-            inputStrDialog->Cmds     [i][j] = Cmds     [i][j];
-            inputStrDialog->CmdEnaTcp[i][j] = CmdEnaTcp[i][j];
-            inputStrDialog->CmdsTcp  [i][j] = CmdsTcp  [i][j];
+            inputStrDialog->commandEnable   [i][j] = CmdEna   [i][j];
+            inputStrDialog->commands     [i][j] = Cmds     [i][j];
+            inputStrDialog->commandEnableTcp[i][j] = CmdEnaTcp[i][j];
+            inputStrDialog->commandsTcp  [i][j] = CmdsTcp  [i][j];
         }
     for (i = 0; i < 10; i++) {
-        inputStrDialog->History [i] = History [i];
+        inputStrDialog->history [i] = history [i];
     }
-    inputStrDialog->NmeaReq = NmeaReq;
-    inputStrDialog->TimeTag = InTimeTag;
-    inputStrDialog->TimeSpeed = InTimeSpeed;
-    inputStrDialog->TimeStart = InTimeStart;
-    inputStrDialog->Time64Bit = InTime64Bit;
-    inputStrDialog->NmeaPos[0] = NmeaPos[0];
-    inputStrDialog->NmeaPos[1] = NmeaPos[1];
-    inputStrDialog->NmeaPos[2] = NmeaPos[2];
-    inputStrDialog->ResetCmd = ResetCmd;
-    inputStrDialog->MaxBL = MaxBL;
+    inputStrDialog->nmeaReq = NmeaReq;
+    inputStrDialog->timeTag = InTimeTag;
+    inputStrDialog->timeSpeed = InTimeSpeed;
+    inputStrDialog->timeStart = InTimeStart;
+    inputStrDialog->time64Bit = InTime64Bit;
+    inputStrDialog->nmeaPosition[0] = nmeaPosition[0];
+    inputStrDialog->nmeaPosition[1] = nmeaPosition[1];
+    inputStrDialog->nmeaPosition[2] = nmeaPosition[2];
+    inputStrDialog->resetCommand = ResetCmd;
+    inputStrDialog->maxBaseLine = MaxBL;
 
     inputStrDialog->exec();
 
     if (inputStrDialog->result() != QDialog::Accepted) return;
 
     for (i = 0; i < 3; i++) {
-        StreamC[i] = inputStrDialog->StreamC[i];
-        Stream [i] = inputStrDialog->Stream[i];
-        Format [i] = inputStrDialog->Format[i];
-        RcvOpt [i] = inputStrDialog->RcvOpt[i];
-        for (j = 0; j < 4; j++) Paths[i][j] = inputStrDialog->Paths[i][j];
+        StreamC[i] = inputStrDialog->streamC[i];
+        Stream [i] = inputStrDialog->stream[i];
+        Format [i] = inputStrDialog->format[i];
+        RcvOpt [i] = inputStrDialog->receiverOptions[i];
+        for (j = 0; j < 4; j++) Paths[i][j] = inputStrDialog->paths[i][j];
     }
     for (i = 0; i < 3; i++) for (j = 0; j < 3; j++) {
-            CmdEna   [i][j] = inputStrDialog->CmdEna   [i][j];
-            Cmds     [i][j] = inputStrDialog->Cmds     [i][j];
-            CmdEnaTcp[i][j] = inputStrDialog->CmdEnaTcp[i][j];
-            CmdsTcp  [i][j] = inputStrDialog->CmdsTcp  [i][j];
+            CmdEna   [i][j] = inputStrDialog->commandEnable   [i][j];
+            Cmds     [i][j] = inputStrDialog->commands     [i][j];
+            CmdEnaTcp[i][j] = inputStrDialog->commandEnableTcp[i][j];
+            CmdsTcp  [i][j] = inputStrDialog->commandsTcp  [i][j];
         }
     for (i = 0; i < 10; i++) {
-        History [i] = inputStrDialog->History [i];
+        history [i] = inputStrDialog->history [i];
     }
-    NmeaReq = inputStrDialog->NmeaReq;
-    InTimeTag = inputStrDialog->TimeTag;
-    InTimeSpeed = inputStrDialog->TimeSpeed;
-    InTimeStart = inputStrDialog->TimeStart;
-    InTime64Bit = inputStrDialog->Time64Bit;
-    NmeaPos[0] = inputStrDialog->NmeaPos[0];
-    NmeaPos[1] = inputStrDialog->NmeaPos[1];
-    NmeaPos[2] = inputStrDialog->NmeaPos[2];
-    ResetCmd = inputStrDialog->ResetCmd;
-    MaxBL = inputStrDialog->MaxBL;
+    NmeaReq = inputStrDialog->nmeaReq;
+    InTimeTag = inputStrDialog->timeTag;
+    InTimeSpeed = inputStrDialog->timeSpeed;
+    InTimeStart = inputStrDialog->timeStart;
+    InTime64Bit = inputStrDialog->time64Bit;
+    nmeaPosition[0] = inputStrDialog->nmeaPosition[0];
+    nmeaPosition[1] = inputStrDialog->nmeaPosition[1];
+    nmeaPosition[2] = inputStrDialog->nmeaPosition[2];
+    ResetCmd = inputStrDialog->resetCommand;
+    MaxBL = inputStrDialog->maxBaseLine;
 }
 // confirm overwrite --------------------------------------------------------
 int MainWindow::ConfOverwrite(const QString &path)
@@ -636,7 +636,7 @@ int MainWindow::ConfOverwrite(const QString &path)
         buff2 = buff2.mid(buff2.indexOf("::"));
 
         if (buff1 == buff2) {
-            Message->setText(QString(tr("invalid output %1")).arg(buff1));
+            lblMessage->setText(QString(tr("invalid output %1")).arg(buff1));
             return 0;
         }
     }
@@ -653,42 +653,42 @@ void MainWindow::BtnOutputStrClick()
     trace(3, "BtnOutputStrClick\n");
 
     for (i = 3; i < 5; i++) {
-        outputStrDialog->StreamC[i - 3] = StreamC[i];
-        outputStrDialog->Stream [i - 3] = Stream[i];
-        outputStrDialog->Format [i - 3] = Format[i];
-        for (j = 0; j < 4; j++) outputStrDialog->Paths[i - 3][j] = Paths[i][j];
+        outputStrDialog->streamC[i - 3] = StreamC[i];
+        outputStrDialog->stream [i - 3] = Stream[i];
+        outputStrDialog->format [i - 3] = Format[i];
+        for (j = 0; j < 4; j++) outputStrDialog->paths[i - 3][j] = Paths[i][j];
     }
     for (i = 0; i < 10; i++) {
-        outputStrDialog->History [i] = History [i];
+        outputStrDialog->history [i] = history [i];
     }
-    outputStrDialog->OutTimeTag = OutTimeTag;
-    outputStrDialog->OutAppend = OutAppend;
-    outputStrDialog->SwapInterval = OutSwapInterval;
+    outputStrDialog->outputTimeTag = OutTimeTag;
+    outputStrDialog->outputAppend = OutAppend;
+    outputStrDialog->swapInterval = OutSwapInterval;
     outputStrDialog->exec();
 
     if (outputStrDialog->result() != QDialog::Accepted) return;
 
     for (i = 3; i < 5; i++) {
-        if (StreamC[i] != outputStrDialog->StreamC[i - 3] ||
-            Stream [i] != outputStrDialog->Stream[i - 3] ||
-            Format [i] != outputStrDialog->Format[i - 3] ||
-            Paths[i][0] != outputStrDialog->Paths[i - 3][0] ||
-            Paths[i][1] != outputStrDialog->Paths[i - 3][1] ||
-            Paths[i][2] != outputStrDialog->Paths[i - 3][2] ||
-            Paths[i][3] != outputStrDialog->Paths[i - 3][3]) update[i - 3] = 1;
-        StreamC[i] = outputStrDialog->StreamC[i - 3];
-        Stream [i] = outputStrDialog->Stream[i - 3];
-        Format [i] = outputStrDialog->Format[i - 3];
-        for (j = 0; j < 4; j++) Paths[i][j] = outputStrDialog->Paths[i - 3][j];
+        if (StreamC[i] != outputStrDialog->streamC[i - 3] ||
+            Stream [i] != outputStrDialog->stream[i - 3] ||
+            Format [i] != outputStrDialog->format[i - 3] ||
+            Paths[i][0] != outputStrDialog->paths[i - 3][0] ||
+            Paths[i][1] != outputStrDialog->paths[i - 3][1] ||
+            Paths[i][2] != outputStrDialog->paths[i - 3][2] ||
+            Paths[i][3] != outputStrDialog->paths[i - 3][3]) update[i - 3] = 1;
+        StreamC[i] = outputStrDialog->streamC[i - 3];
+        Stream [i] = outputStrDialog->stream[i - 3];
+        Format [i] = outputStrDialog->format[i - 3];
+        for (j = 0; j < 4; j++) Paths[i][j] = outputStrDialog->paths[i - 3][j];
     }
     for (i = 0; i < 10; i++) {
-        History [i] = outputStrDialog->History [i];
+        history [i] = outputStrDialog->history [i];
     }
-    OutTimeTag = outputStrDialog->OutTimeTag;
-    OutAppend = outputStrDialog->OutAppend;
-    OutSwapInterval = outputStrDialog->SwapInterval;
+    OutTimeTag = outputStrDialog->outputTimeTag;
+    OutAppend = outputStrDialog->outputAppend;
+    OutSwapInterval = outputStrDialog->swapInterval;
 
-    if (BtnStart->isEnabled()) return;
+    if (btnStart->isEnabled()) return;
 
     for (i = 3; i < 5; i++) {
         if (!update[i - 3]) continue;
@@ -720,43 +720,43 @@ void MainWindow::BtnLogStrClick()
     trace(3, "BtnLogStrClick\n");
 
     for (i = 5; i < 8; i++) {
-        logStrDialog->StreamC[i - 5] = StreamC[i];
-        logStrDialog->Stream [i - 5] = Stream [i];
-        for (j = 0; j < 4; j++) logStrDialog->Paths[i - 5][j] = Paths[i][j];
+        logStrDialog->streamC[i - 5] = StreamC[i];
+        logStrDialog->stream [i - 5] = Stream [i];
+        for (j = 0; j < 4; j++) logStrDialog->paths[i - 5][j] = Paths[i][j];
     }
     for (i = 0; i < 10; i++) {
-        logStrDialog->History [i] = History [i];
+        logStrDialog->history [i] = history [i];
     }
-    logStrDialog->LogTimeTag = LogTimeTag;
-    logStrDialog->LogAppend = LogAppend;
-    logStrDialog->SwapInterval = LogSwapInterval;
+    logStrDialog->logTimeTag = LogTimeTag;
+    logStrDialog->logAppend = LogAppend;
+    logStrDialog->swapInterval = LogSwapInterval;
 
     logStrDialog->exec();
 
     if (logStrDialog->result() != QDialog::Accepted) return;
 
     for (i = 5; i < 8; i++) {
-        if (StreamC[i] != outputStrDialog->StreamC[(i - 5) % 2] ||
-            Stream [i] != outputStrDialog->Stream[(i - 5) % 2] ||
-            Paths[i][0] != outputStrDialog->Paths[(i - 3) % 2][0] ||
-            Paths[i][1] != outputStrDialog->Paths[(i - 3) % 2][1] ||
-            Paths[i][2] != outputStrDialog->Paths[(i - 3) % 2][2] ||
-            Paths[i][3] != outputStrDialog->Paths[(i - 3) % 2][3]) update[i - 5] = 1;
+        if (StreamC[i] != outputStrDialog->streamC[(i - 5) % 2] ||
+            Stream [i] != outputStrDialog->stream[(i - 5) % 2] ||
+            Paths[i][0] != outputStrDialog->paths[(i - 3) % 2][0] ||
+            Paths[i][1] != outputStrDialog->paths[(i - 3) % 2][1] ||
+            Paths[i][2] != outputStrDialog->paths[(i - 3) % 2][2] ||
+            Paths[i][3] != outputStrDialog->paths[(i - 3) % 2][3]) update[i - 5] = 1;
 
-        StreamC[i] = logStrDialog->StreamC[i - 5];
-        Stream [i] = logStrDialog->Stream [i - 5];
+        StreamC[i] = logStrDialog->streamC[i - 5];
+        Stream [i] = logStrDialog->stream [i - 5];
 
-        for (j = 0; j < 4; j++) Paths[i][j] = logStrDialog->Paths[i - 5][j];
+        for (j = 0; j < 4; j++) Paths[i][j] = logStrDialog->paths[i - 5][j];
     }
     for (i = 0; i < 10; i++) {
-        History [i] = logStrDialog->History [i];
+        history [i] = logStrDialog->history [i];
     }
 
-    LogTimeTag = logStrDialog->LogTimeTag;
-    LogAppend = logStrDialog->LogAppend;
-    LogSwapInterval = logStrDialog->SwapInterval;
+    LogTimeTag = logStrDialog->logTimeTag;
+    LogAppend = logStrDialog->logAppend;
+    LogSwapInterval = logStrDialog->swapInterval;
 
-    if (BtnStart->isEnabled()) return;
+    if (btnStart->isEnabled()) return;
 
     for (i = 5; i < 8; i++) {
         if (!update[i - 5]) continue;
@@ -953,7 +953,7 @@ void MainWindow::ScbSolChange()
 {
     trace(3, "ScbSolChange\n");
 
-    PSol = PSolS + ScbSol->value();
+    PSol = PSolS + sBSolution->value();
     if (PSol >= SolBuffSize) PSol -= SolBuffSize;
 
     UpdateTime();
@@ -975,8 +975,8 @@ void MainWindow::BtnAboutClick()
     trace(3, "BtnAboutClick\n");
 
     aboutDialog = new AboutDialog(this);
-    aboutDialog->About = prog;
-    aboutDialog->IconIndex = 5;
+    aboutDialog->aboutString = prog;
+    aboutDialog->iconIndex = 5;
     aboutDialog->exec();
 
     delete aboutDialog;
@@ -1066,28 +1066,28 @@ void MainWindow::SvrStart(void)
     memset(&pcvr, 0, sizeof(pcvs_t));
     memset(&pcvs, 0, sizeof(pcvs_t));
 
-    Message->setText("");
+    lblMessage->setText("");
 
-    if (DebugTraceF>0) {
+    if (bebugTraceF>0) {
         traceopen(TRACEFILE);
-        tracelevel(DebugTraceF);
+        tracelevel(bebugTraceF);
     }
 
-    if (RovPosTypeF <= 2) { // LLH,XYZ
+    if (roverPositionTypeF <= 2) { // LLH,XYZ
         PrcOpt.rovpos = POSOPT_POS;
-        PrcOpt.ru[0] = RovPos[0];
-        PrcOpt.ru[1] = RovPos[1];
-        PrcOpt.ru[2] = RovPos[2];
+        PrcOpt.ru[0] = roverPosition[0];
+        PrcOpt.ru[1] = roverPosition[1];
+        PrcOpt.ru[2] = roverPosition[2];
     } else { // RTCM position
         PrcOpt.rovpos = POSOPT_RTCM;
         for (i = 0; i < 3; i++) PrcOpt.ru[i] = 0.0;
     }
-    if (RefPosTypeF <= 2) { // LLH,XYZ
+    if (referencePositionTypeF <= 2) { // LLH,XYZ
         PrcOpt.refpos = POSOPT_POS;
-        PrcOpt.rb[0] = RefPos[0];
-        PrcOpt.rb[1] = RefPos[1];
-        PrcOpt.rb[2] = RefPos[2];
-    } else if (RefPosTypeF == 3) { // RTCM/Raw position
+        PrcOpt.rb[0] = referencePosition[0];
+        PrcOpt.rb[1] = referencePosition[1];
+        PrcOpt.rb[2] = referencePosition[2];
+    } else if (referencePositionTypeF == 3) { // RTCM/Raw position
         PrcOpt.refpos = POSOPT_RTCM;
         for (i=0;i<3;i++) PrcOpt.rb[i] = 0.0;
     } else { // average of single position
@@ -1110,29 +1110,29 @@ void MainWindow::SvrStart(void)
         }
     }
     PrcOpt.pcvr[0]=PrcOpt.pcvr[1]=pcv0; // initialize antenna PCV
-    if ((RovAntPcvF || RefAntPcvF) && !readpcv(qPrintable(AntPcvFileF), &pcvr)) {
-        Message->setText(QString(tr("rcv ant file read error %1")).arg(AntPcvFileF));
+    if ((roverAntennaPcvF || referenceAntennaPcvF) && !readpcv(qPrintable(antennaPcvFileF), &pcvr)) {
+        lblMessage->setText(QString(tr("rcv ant file read error %1")).arg(antennaPcvFileF));
         return;
     }
-    if (RovAntPcvF) {
-        if ((pcv = searchpcv(0, qPrintable(RovAntF), time, &pcvr)))
+    if (roverAntennaPcvF) {
+        if ((pcv = searchpcv(0, qPrintable(roverAntennaF), time, &pcvr)))
             PrcOpt.pcvr[0] = *pcv;
         else
-            Message->setText(QString(tr("no antenna pcv %1")).arg(qPrintable(RovAntF)));
-        for (i = 0; i < 3; i++) PrcOpt.antdel[0][i] = RovAntDel[i];
+            lblMessage->setText(QString(tr("no antenna pcv %1")).arg(qPrintable(roverAntennaF)));
+        for (i = 0; i < 3; i++) PrcOpt.antdel[0][i] = roverAntennaDelta[i];
     }
-    if (RefAntPcvF) {
-        if ((pcv = searchpcv(0, qPrintable(RefAntF), time, &pcvr)))
+    if (referenceAntennaPcvF) {
+        if ((pcv = searchpcv(0, qPrintable(referenceAntennaF), time, &pcvr)))
             PrcOpt.pcvr[1] = *pcv;
         else
-            Message->setText(QString(tr("no antenna pcv %1")).arg(qPrintable(RefAntF)));
-        for (i = 0; i < 3; i++) PrcOpt.antdel[1][i] = RefAntDel[i];
+            lblMessage->setText(QString(tr("no antenna pcv %1")).arg(qPrintable(referenceAntennaF)));
+        for (i = 0; i < 3; i++) PrcOpt.antdel[1][i] = referenceAntennaDelta[i];
     }
-    if (RovAntPcvF || RefAntPcvF)
+    if (roverAntennaPcvF || referenceAntennaPcvF)
         free(pcvr.pcv);
     if (PrcOpt.sateph == EPHOPT_PREC || PrcOpt.sateph == EPHOPT_SSRCOM) {
-        if (!readpcv(qPrintable(SatPcvFileF), &pcvs)) {
-            Message->setText(QString(tr("sat ant file read error %1")).arg(SatPcvFileF));
+        if (!readpcv(qPrintable(satellitePcvFileF), &pcvs)) {
+            lblMessage->setText(QString(tr("sat ant file read error %1")).arg(satellitePcvFileF));
             return;
         }
         for (i = 0; i < MAXSAT; i++) {
@@ -1141,9 +1141,9 @@ void MainWindow::SvrStart(void)
         }
         free(pcvs.pcv);
     }
-    if (BaselineC) {
-        PrcOpt.baseline[0] = Baseline[0];
-        PrcOpt.baseline[1] = Baseline[1];
+    if (baselineC) {
+        PrcOpt.baseline[0] = baseline[0];
+        PrcOpt.baseline[1] = baseline[1];
     } else {
         PrcOpt.baseline[0] = 0.0;
         PrcOpt.baseline[1] = 0.0;
@@ -1181,23 +1181,23 @@ void MainWindow::SvrStart(void)
         strcpy(rcvopts[i], qPrintable(RcvOpt[i]));
     }
     NmeaCycle = NmeaCycle < 1000 ? 1000 : NmeaCycle;
-    pos[0] = NmeaPos[0] * D2R;
-    pos[1] = NmeaPos[1] * D2R;
-    pos[2] = NmeaPos[2];
+    pos[0] = nmeaPosition[0] * D2R;
+    pos[1] = nmeaPosition[1] * D2R;
+    pos[2] = nmeaPosition[2];
     pos2ecef(pos, nmeapos);
 
-    strsetdir(qPrintable(LocalDirectory));
+    strsetdir(qPrintable(localDirectory));
     strsetproxy(qPrintable(ProxyAddr));
 
     for (i = 3; i < 8; i++)
         if (strs[i] == STR_FILE && !ConfOverwrite(paths[i])) return;
 
-    if (DebugStatusF > 0)
-        rtkopenstat(STATFILE, DebugStatusF);
-    if (SolOpt.geoid > 0 && GeoidDataFileF != "")
-        opengeoid(SolOpt.geoid, qPrintable(GeoidDataFileF));
-    if (DCBFileF != "")
-        readdcb(qPrintable(DCBFileF), &rtksvr.nav, NULL);
+    if (debugStatusF > 0)
+        rtkopenstat(STATFILE, debugStatusF);
+    if (SolOpt.geoid > 0 && geoidDataFileF != "")
+        opengeoid(SolOpt.geoid, qPrintable(geoidDataFileF));
+    if (dcbFileF != "")
+        readdcb(qPrintable(dcbFileF), &rtksvr.nav, NULL);
     for (i = 0; i < 2; i++) {
         solopt[i] = SolOpt;
         solopt[i].posf = Format[i + 3];
@@ -1242,16 +1242,16 @@ void MainWindow::SvrStart(void)
     UpdatePos();
     UpdatePlot();
 
-    BtnStart->setVisible(false);
-    BtnOpt->setEnabled(false);
-    BtnExit->setEnabled(false);
-    BtnInputStr->setEnabled(false);
+    btnStart->setVisible(false);
+    btnOptions->setEnabled(false);
+    btnExit->setEnabled(false);
+    btnInputStream->setEnabled(false);
     MenuStartAction->setEnabled(false);
     MenuExitAction->setEnabled(false);
-    ScbSol->setEnabled(false);
-    BtnStop->setVisible(true);
+    sBSolution->setEnabled(false);
+    btnStop->setVisible(true);
     MenuStopAction->setEnabled(true);
-    Svr->setStyleSheet("QLabel {background-color: rgb(255,128,0);}");
+    lblServer->setStyleSheet("QLabel {background-color: rgb(255,128,0);}");
 
     SetTrayIcon(0);
 }
@@ -1279,32 +1279,32 @@ void MainWindow::SvrStop(void)
 
     for (i = 0; i < 3; i++) delete[] cmds[i];
 
-    BtnStart->setVisible(true);
-    BtnOpt->setEnabled(true);
-    BtnExit->setEnabled(true);
-    BtnInputStr->setEnabled(true);
+    btnStart->setVisible(true);
+    btnOptions->setEnabled(true);
+    btnExit->setEnabled(true);
+    btnInputStream->setEnabled(true);
     MenuStartAction->setEnabled(true);
     MenuExitAction->setEnabled(true);
-    ScbSol->setEnabled(true);
-    BtnStop->setVisible(false);
+    sBSolution->setEnabled(true);
+    btnStop->setVisible(false);
     MenuStopAction->setEnabled(false);
-    Svr->setStyleSheet("QLabel {background-color: gray;}");
+    lblServer->setStyleSheet("QLabel {background-color: gray;}");
 
     SetTrayIcon(1);
 
-    LabelTime->setStyleSheet("QLabel {color: gray;}");
-    IndSol->setStyleSheet("QLabel {color: white; background-color: white;}");
+    lblTime->setStyleSheet("QLabel {color: gray;}");
+    lblIndicatorSolution->setStyleSheet("QLabel {color: white; background-color: white;}");
 
     n = PSolE - PSolS; if (n < 0) n += SolBuffSize;
     m = PSol - PSolS;  if (m < 0) m += SolBuffSize;
     if (n > 0) {
-        ScbSol->setMaximum(n - 1); ScbSol->setValue(m);
+        sBSolution->setMaximum(n - 1); sBSolution->setValue(m);
     }
-    Message->setText("");
+    lblMessage->setText("");
 
-    if (DebugTraceF > 0) traceclose();
-    if (DebugStatusF > 0) rtkclosestat();
-    if (SolOpt.geoid > 0 && GeoidDataFileF != "") closegeoid();
+    if (bebugTraceF > 0) traceclose();
+    if (debugStatusF > 0) rtkclosestat();
+    if (SolOpt.geoid > 0 && geoidDataFileF != "") closegeoid();
 }
 // callback on interval timer -----------------------------------------------
 void MainWindow::TimerTimer()
@@ -1338,12 +1338,12 @@ void MainWindow::TimerTimer()
     }
 
     if (SolCurrentStat) {
-        Svr->setStyleSheet("QLabel {background-color: rgb(0,255,0);}");
-        LabelTime->setStyleSheet("QLabel { color: black;}");
+        lblServer->setStyleSheet("QLabel {background-color: rgb(0,255,0);}");
+        lblTime->setStyleSheet("QLabel { color: black;}");
     } else {
-        IndSol->setStyleSheet("QLabel {color: white; background-color: white;}");
-        Solution->setStyleSheet("QLabel {color: gray;}");
-        Svr->setStyleSheet(rtksvr.state ? "QLabel {background-color: green; }" : "QLabel {background-color: gray; }");
+        lblIndicatorSolution->setStyleSheet("QLabel {color: white; background-color: white;}");
+        lblSolution->setStyleSheet("QLabel {color: gray;}");
+        lblServer->setStyleSheet(rtksvr.state ? "QLabel {background-color: green; }" : "QLabel {background-color: gray; }");
     }
 
     if (!(++TimerCycle % 5)) UpdatePlot();
@@ -1365,7 +1365,7 @@ void MainWindow::UpdateTimeSys(void)
 
     trace(3, "UpdateTimeSys\n");
 
-    BtnTimeSys->setText(label[TimeSys]);
+    btnTimeSys->setText(label[TimeSys]);
     UpdateTime();
 }
 // update solution type -----------------------------------------------------
@@ -1378,7 +1378,7 @@ void MainWindow::UpdateSolType(void)
 
     trace(3, "UpdateSolType\n");
 
-    Plabel0->setText(label[SolType]);
+    lblSolutionText->setText(label[SolType]);
 
     UpdatePos();
 }
@@ -1414,7 +1414,7 @@ void MainWindow::UpdateLog(int stat, gtime_t time, double *rr,
 void MainWindow::UpdateFont(void)
 {
     QLabel *label[] = {
-        PlabelA, Plabel1, Plabel2, Plabel3, Pos1, Pos2, Pos3, Solution, LabelStd, LabelNSat
+        lblSolutionText, lblPositionText1, lblPositionText2, lblPositionText3, lblPosition1, lblPosition2, lblPosition3, lblSolution, lblStd, lblNSatellites
     };
     QString color = label[7]->styleSheet();
     int i;
@@ -1455,12 +1455,12 @@ void MainWindow::UpdateTime(void)
         tow = time2gpst(time, &week);
         str = QString("week %1 %2 s").arg(week, 4, 10, QChar('0')).arg(tow, 8, 'f', 1);
     }
-    LabelTime->setText(str);
+    lblTime->setText(str);
 }
 // update solution display --------------------------------------------------
 void MainWindow::UpdatePos(void)
 {
-    QLabel *label[] = { Plabel1, Plabel2, Plabel3, Pos1, Pos2, Pos3, LabelStd, LabelNSat };
+    QLabel *label[] = { lblPositionText1, lblPositionText2, lblPositionText3, lblPosition1, lblPosition2, lblPosition3, lblStd, lblNSatellites };
     QString sol[] = { tr("----"), tr("FIX"), tr("FLOAT"), tr("SBAS"), tr("DGPS"), tr("SINGLE"), tr("PPP") };
     QString s[9], ext = "";
     QString color[] = { "silver", "green", "rgb(0,170,255)", "rgb(255,0,255)", "blue", "red", "rgb(128,0,128)" };
@@ -1474,11 +1474,11 @@ void MainWindow::UpdatePos(void)
         ext = " (S)";
     else if (rtksvr.rtk.opt.mode == PMODE_FIXED || rtksvr.rtk.opt.mode == PMODE_PPP_FIXED)
         ext = " (F)";
-    PlabelA->setText(tr("Solution %1:").arg(ext));
+    lblSolutionText->setText(tr("Solution %1:").arg(ext));
 
-    Solution->setText(sol[stat]);
-    Solution->setStyleSheet(QString("QLabel {color: %1;}").arg(rtksvr.state ? color[stat] : "gray"));
-    IndSol->setStyleSheet(QString("QLabel {color: %1; background-color: %1}").arg(rtksvr.state && stat ? color[stat] : "white"));
+    lblSolution->setText(sol[stat]);
+    lblSolution->setStyleSheet(QString("QLabel {color: %1;}").arg(rtksvr.state ? color[stat] : "gray"));
+    lblIndicatorSolution->setStyleSheet(QString("QLabel {color: %1; background-color: %1}").arg(rtksvr.state && stat ? color[stat] : "white"));
     if (norm(rr, 3) > 0.0 && norm(rb, 3) > 0.0)
         for (i = 0; i < 3; i++) bl[i] = rr[i] - rb[i];
     len = norm(bl, 3);
@@ -1539,10 +1539,10 @@ void MainWindow::UpdatePos(void)
     for (i = 0; i < 8; i++) label[i]->setText(s[i]);
     for (i = 3; i < 6; i++)
         label[i]->setStyleSheet(QString("QLabel {color: %1;}").arg(PrcOpt.mode == PMODE_MOVEB && SolType <= 2 ? "grey" : "black"));
-    IndQ->setStyleSheet(IndSol->styleSheet());
-    SolS->setText(Solution->text());
-    SolS->setStyleSheet(Solution->styleSheet());
-    SolQ->setText(ext + " " + label[0]->text() + " " + label[3]->text() + " " +
+    lblIndicatorQ->setStyleSheet(lblIndicatorSolution->styleSheet());
+    lblSolutionS->setText(lblSolution->text());
+    lblSolutionS->setStyleSheet(lblSolution->styleSheet());
+    lblSolutionQ->setText(ext + " " + label[0]->text() + " " + label[3]->text() + " " +
               label[1]->text() + " " + label[4]->text() + " " +
               label[2]->text() + " " + label[5]->text() + s[8]);
 }
@@ -1550,7 +1550,7 @@ void MainWindow::UpdatePos(void)
 void MainWindow::UpdateStr(void)
 {
     QString color[] = { "red", "gray", "orange", "rgb(0,128,0)", "rgb(0,255,0)" };
-    QLabel *ind[MAXSTRRTK] = { Str1, Str2, Str3, Str4, Str5, Str6, Str7, Str8 };
+    QLabel *ind[MAXSTRRTK] = { lblStream1, lblStream2, lblStream3, lblStream4, lblStream5, lblStream6, lblStream7, lblStream8 };
     int i, sstat[MAXSTRRTK] = { 0 };
     char msg[MAXSTRMSG] = "";
 
@@ -1560,7 +1560,7 @@ void MainWindow::UpdateStr(void)
     for (i = 0; i < MAXSTRRTK; i++) {
         ind[i]->setStyleSheet(QString("QLabel {background-color: %1}").arg(color[sstat[i] + 1]));
         if (sstat[i])
-            Message->setText(msg);
+            lblMessage->setText(msg);
     }
 }
 // draw solution plot -------------------------------------------------------
@@ -1583,9 +1583,9 @@ void MainWindow::DrawPlot(QLabel *plot, int type, int freq)
     font.setPixelSize(8);
     c->setFont(font);
 
-    if (plot==Disp1) id=0;
-    else if (plot==Disp2) id=1;
-    else if (plot==Disp3) id=2;
+    if (plot==lblDisplay1) id=0;
+    else if (plot==lblDisplay2) id=1;
+    else if (plot==lblDisplay3) id=2;
     else id=3;
 
     int w = buffer.size().width() - 2, h = buffer.height() - 2;
@@ -1697,16 +1697,16 @@ void MainWindow::DrawPlot(QLabel *plot, int type, int freq)
 void MainWindow::UpdatePlot(void)
 {
     if (Panel22->isVisible()) {
-        DrawPlot(Disp1, PlotType[0], FreqType[0]);
+        DrawPlot(lblDisplay1, PlotType[0], FreqType[0]);
     }
     if (Panel23->isVisible()) {
-        DrawPlot(Disp2, PlotType[1], FreqType[1]);
+        DrawPlot(lblDisplay2, PlotType[1], FreqType[1]);
     }
     if (Panel24->isVisible()) {
-        DrawPlot(Disp3, PlotType[2], FreqType[2]);
+        DrawPlot(lblDisplay3, PlotType[2], FreqType[2]);
     }
     if (Panel25->isVisible()) {
-        DrawPlot(Disp4, PlotType[3], FreqType[3]);
+        DrawPlot(lblDisplay4, PlotType[3], FreqType[3]);
     }
 }
 // snr color ----------------------------------------------------------------
@@ -1993,51 +1993,51 @@ void MainWindow::DrawTrk(QPainter *c, int id, QPixmap &buff)
         n++;
         if (++i >= SolBuffSize) i = 0;
     }
-    graph->SetSize(buff.width(), buff.height());
-    graph->SetScale(scale[scl], scale[scl]);
-    graph->Color[1] = QColor(0xc0, 0xc0, 0xc0);
+    graph->setSize(buff.width(), buff.height());
+    graph->setScale(scale[scl], scale[scl]);
+    graph->color[1] = QColor(0xc0, 0xc0, 0xc0);
 
     if (n > 0)
-        graph->SetCent(x[k], y[k]);
+        graph->setCenter(x[k], y[k]);
     if (type == 1) {
-        graph->XLPos = 7;
-        graph->YLPos = 7;
-        graph->DrawCircles(*c, 0);
+        graph->xLPosition = 7;
+        graph->yLPosition = 7;
+        graph->drawCircles(*c, 0);
     } else {
-        graph->XLPos = 2;
-        graph->YLPos = 4;
-        graph->DrawAxis(*c, 0, 0);
+        graph->xLPosition = 2;
+        graph->yLPosition = 4;
+        graph->drawAxis(*c, 0, 0);
     }
-    graph->DrawPoly(*c, x, y, n, QColor(0xc0, 0xc0, 0xc0), 0);
-    graph->DrawMarks(*c, x, y, color, n, 0, 3, 0);
+    graph->drawPoly(*c, x, y, n, QColor(0xc0, 0xc0, 0xc0), 0);
+    graph->drawMarks(*c, x, y, color, n, 0, 3, 0);
     if (n > 0) {
-        graph->ToPoint(x[k], y[k], p1);
-        graph->DrawMark(*c, p1, 0, Qt::white, 18, 0);
-        graph->DrawMark(*c, p1, 1, rtksvr.state ? Qt::black : Qt::gray, 16, 0);
-        graph->DrawMark(*c, p1, 5, rtksvr.state ? Qt::black : Qt::gray, 20, 0);
-        graph->DrawMark(*c, p1, 0, rtksvr.state ? Qt::black : Qt::gray, 12, 0);
-        graph->DrawMark(*c, p1, 0, rtksvr.state ? color.at(k) : Qt::white, 10, 0);
+        graph->toPoint(x[k], y[k], p1);
+        graph->drawMark(*c, p1, 0, Qt::white, 18, 0);
+        graph->drawMark(*c, p1, 1, rtksvr.state ? Qt::black : Qt::gray, 16, 0);
+        graph->drawMark(*c, p1, 5, rtksvr.state ? Qt::black : Qt::gray, 20, 0);
+        graph->drawMark(*c, p1, 0, rtksvr.state ? Qt::black : Qt::gray, 12, 0);
+        graph->drawMark(*c, p1, 0, rtksvr.state ? color.at(k) : Qt::white, 10, 0);
     }
     // scale
-    graph->GetPos(p1, p2);
-    graph->GetTick(xt, yt);
-    graph->GetScale(sx, sy);
+    graph->getPosition(p1, p2);
+    graph->getTick(xt, yt);
+    graph->getScale(sx, sy);
     p2.rx() = p2.x() - 35;
     p2.ry() = p2.y() - 12;
-    graph->DrawMark(*c, p2, 11, Qt::gray, static_cast<int>(xt / sx + 0.5), 0);
+    graph->drawMark(*c, p2, 11, Qt::gray, static_cast<int>(xt / sx + 0.5), 0);
     p2.ry() = p2.y() - 2;
     if (xt < 0.01) label=QString("%1 mm").arg(xt * 1000.0,0,'f',0);
     else if (xt < 1.0) label=QString("%1 cm").arg(xt * 100.0,0,'f',0);
     else if (xt < 1000.0) label=QString("%1 m").arg(xt,0,'f',0);
     else label=QString("%1 km").arg(xt / 1000.0,0,'f',0);
-    graph->DrawText(*c, p2, label, Qt::gray, Qt::white, 0, 1, 0);
+    graph->drawText(*c, p2, label, Qt::gray, Qt::white, 0, 1, 0);
 
     // ref position
     if (norm(ref, 3) > 1E-6) {
         p1.rx() += 2;
         p1.ry() = p2.y() + 11;
         label = QString("%1° %2°").arg(pos[0] * R2D, 0, 'f').arg(pos[1] * R2D, 0, 'f', 9);
-        graph->DrawText(*c, p1, label, Qt::gray, Qt::white, 1, 1, 0);
+        graph->drawText(*c, p1, label, Qt::gray, Qt::white, 1, 1, 0);
     }
     delete graph;
     delete [] x;
@@ -2164,7 +2164,7 @@ void MainWindow::InitSolBuff(void)
         for (j = 0; j < 9; j++) Qr[j + i * 9] = 0.0;
         Age[i] = Ratio[i] = 0.0;
     }
-    ScbSol->setMaximum(0); ScbSol->setValue(0);
+    sBSolution->setMaximum(0); sBSolution->setValue(0);
 }
 // save log file ------------------------------------------------------------
 void MainWindow::SaveLog(void)
@@ -2351,7 +2351,7 @@ void MainWindow::SaveNav(nav_t *nav)
 // set tray icon ------------------------------------------------------------
 void MainWindow::SetTrayIcon(int index)
 {
-    QPixmap pix(":/buttons/navi.bmp");
+    QPixmap pix(":/buttons/navi");
 
     systemTray->setIcon(QIcon(pix.copy(index * 16, 0, 16, 16)));
 }
@@ -2436,17 +2436,15 @@ void MainWindow::LoadOpt(void)
     PrcOpt.maxaveep = settings.value("prcopt/maxaveep", 3600).toInt();
     PrcOpt.initrst = settings.value("prcopt/initrst", 1).toInt();
 
-    BaselineC = settings.value("prcopt/baselinec", 0).toInt();
-    Baseline[0] = settings.value("prcopt/baseline1", 0.0).toDouble();
-    Baseline[1] = settings.value("prcopt/baseline2", 0.0).toDouble();
+    baselineC = settings.value("prcopt/baselinec", 0).toInt();
+    baseline[0] = settings.value("prcopt/baseline1", 0.0).toDouble();
+    baseline[1] = settings.value("prcopt/baseline2", 0.0).toDouble();
 
     SolOpt.posf = settings.value("solopt/posf", 0).toInt();
     SolOpt.times = settings.value("solopt/times", 0).toInt();
     SolOpt.timef = settings.value("solopt/timef", 1).toInt();
     SolOpt.timeu = settings.value("solopt/timeu", 3).toInt();
     SolOpt.degf = settings.value("solopt/degf", 0).toInt();
-//    s = settings.value("solopt/sep", " ").toString();
-//    strcpy(SolOpt.sep, qPrintable(s));
     SolOpt.sep[0] = settings.value("solopt/sep", " ").toString()[0].toLatin1();
     SolOpt.outhead = settings.value("solop/outhead", 0).toInt();
     SolOpt.outopt = settings.value("solopt/outopt", 0).toInt();
@@ -2458,22 +2456,22 @@ void MainWindow::LoadOpt(void)
     SolOpt.geoid = settings.value("solopt/geoid", 0).toInt();
     SolOpt.nmeaintv[0] = settings.value("solopt/nmeaintv1", 0.0).toDouble();
     SolOpt.nmeaintv[1] = settings.value("solopt/nmeaintv2", 0.0).toDouble();
-    DebugStatusF = settings.value("setting/debugstatus", 0).toInt();
-    DebugTraceF = settings.value("setting/debugtrace", 0).toInt();
+    debugStatusF = settings.value("setting/debugstatus", 0).toInt();
+    bebugTraceF = settings.value("setting/debugtrace", 0).toInt();
 
-    RovPosTypeF = settings.value("setting/rovpostype", 0).toInt();
-    RefPosTypeF = settings.value("setting/refpostype", 0).toInt();
-    RovAntPcvF = settings.value("setting/rovantpcv", 0).toInt();
-    RefAntPcvF = settings.value("setting/refantpcv", 0).toInt();
-    RovAntF = settings.value("setting/rovant", "").toString();
-    RefAntF = settings.value("setting/refant", "").toString();
-    SatPcvFileF = settings.value("setting/satpcvfile", "").toString();
-    AntPcvFileF = settings.value("setting/antpcvfile", "").toString();
-    StaPosFileF = settings.value("setting/staposfile", "").toString();
-    GeoidDataFileF = settings.value("setting/geoiddatafile", "").toString();
-    DCBFileF = settings.value("setting/dcbfile", "").toString();
-    EOPFileF = settings.value("setting/eopfile", "").toString();
-    LocalDirectory = settings.value("setting/localdirectory", "C:\\Temp").toString();
+    roverPositionTypeF = settings.value("setting/rovpostype", 0).toInt();
+    referencePositionTypeF = settings.value("setting/refpostype", 0).toInt();
+    roverAntennaPcvF = settings.value("setting/rovantpcv", 0).toInt();
+    referenceAntennaPcvF = settings.value("setting/refantpcv", 0).toInt();
+    roverAntennaF = settings.value("setting/rovant", "").toString();
+    referenceAntennaF = settings.value("setting/refant", "").toString();
+    satellitePcvFileF = settings.value("setting/satpcvfile", "").toString();
+    antennaPcvFileF = settings.value("setting/antpcvfile", "").toString();
+    stationPositionFileF = settings.value("setting/staposfile", "").toString();
+    geoidDataFileF = settings.value("setting/geoiddatafile", "").toString();
+    dcbFileF = settings.value("setting/dcbfile", "").toString();
+    eopFileF = settings.value("setting/eopfile", "").toString();
+    localDirectory = settings.value("setting/localdirectory", "C:\\Temp").toString();
 
     SvrCycle = settings.value("setting/svrcycle", 10).toInt();
     TimeoutTime = settings.value("setting/timeouttime", 10000).toInt();
@@ -2498,9 +2496,9 @@ void MainWindow::LoadOpt(void)
     LogTimeTag = settings.value("setting/logtimetag", 0).toInt();
     LogAppend = settings.value("setting/logappend", 0).toInt();
     LogSwapInterval = settings.value("setting/logswapinterval", "").toString();
-    NmeaPos[0] = settings.value("setting/nmeapos1", 0.0).toDouble();
-    NmeaPos[1] = settings.value("setting/nmeapos2", 0.0).toDouble();
-    NmeaPos[2] = settings.value("setting/nmeapos3", 0.0).toDouble();
+    nmeaPosition[0] = settings.value("setting/nmeapos1", 0.0).toDouble();
+    nmeaPosition[1] = settings.value("setting/nmeapos2", 0.0).toDouble();
+    nmeaPosition[2] = settings.value("setting/nmeapos3", 0.0).toDouble();
     ResetCmd = settings.value("setting/resetcmd", "").toString();
     MaxBL = settings.value("setting/maxbl", 10.0).toDouble();
     FileSwapMargin = settings.value("setting/fswapmargin", 30).toInt();
@@ -2531,23 +2529,23 @@ void MainWindow::LoadOpt(void)
     BLMode[1] = settings.value("setting/blmode2", 0).toInt();
     BLMode[2] = settings.value("setting/blmode3", 0).toInt();
     BLMode[3] = settings.value("setting/blmode4", 0).toInt();
-    MarkerName = settings.value("setting/markername", "").toString();
-    MarkerComment = settings.value("setting/markercomment", "").toString();
+    markerName = settings.value("setting/markername", "").toString();
+    markerComment = settings.value("setting/markercomment", "").toString();
 
     for (i = 0; i < 3; i++) {
-        RovAntDel[i] = settings.value(QString("setting/rovantdel_%1").arg(i), 0.0).toDouble();
-        RefAntDel[i] = settings.value(QString("setting/refantdel_%1").arg(i), 0.0).toDouble();
-        RovPos   [i] = settings.value(QString("setting/rovpos_%1").arg(i), 0.0).toDouble();
-        RefPos   [i] = settings.value(QString("setting/refpos_%1").arg(i), 0.0).toDouble();
+        roverAntennaDelta[i] = settings.value(QString("setting/rovantdel_%1").arg(i), 0.0).toDouble();
+        referenceAntennaDelta[i] = settings.value(QString("setting/refantdel_%1").arg(i), 0.0).toDouble();
+        roverPosition   [i] = settings.value(QString("setting/rovpos_%1").arg(i), 0.0).toDouble();
+        referencePosition   [i] = settings.value(QString("setting/refpos_%1").arg(i), 0.0).toDouble();
     }
     for (i = 0; i < 10; i++)
-        History[i] = settings.value(QString("tcpopt/history%1").arg(i), "").toString();
-    NMapPnt = settings.value("mapopt/nmappnt", 0).toInt();
-    for (i = 0; i < NMapPnt; i++) {
-        PntName[i] = settings.value(QString("mapopt/pntname%1").arg(i + 1), "").toString();
+        history[i] = settings.value(QString("tcpopt/history%1").arg(i), "").toString();
+    nMapPoint = settings.value("mapopt/nmappnt", 0).toInt();
+    for (i = 0; i < nMapPoint; i++) {
+        pointName[i] = settings.value(QString("mapopt/pntname%1").arg(i + 1), "").toString();
         QString pos = settings.value(QString("mapopt/pntpos%1").arg(i + 1), "0,0,0").toString();
-        PntPos[i][0] = PntPos[i][1] = PntPos[i][2] = 0.0;
-        sscanf(qPrintable(pos), "%lf,%lf,%lf", PntPos[i], PntPos[i] + 1, PntPos[i] + 2);
+        pointPosition[i][0] = pointPosition[i][1] = pointPosition[i][2] = 0.0;
+        sscanf(qPrintable(pos), "%lf,%lf,%lf", pointPosition[i], pointPosition[i] + 1, pointPosition[i] + 2);
     }
     PanelFont.setFamily(settings.value("setting/panelfontname", POSFONTNAME).toString());
     PanelFont.setPointSize(settings.value("setting/panelfontsize", POSFONTSIZE).toInt());
@@ -2559,10 +2557,10 @@ void MainWindow::LoadOpt(void)
     if (settings.value("setting/posfontbold", 0).toInt()) PosFont.setBold(true);
     if (settings.value("setting/posfontitalic", 0).toInt()) PosFont.setItalic(true); ;
 
-    TextViewer::Color1 = QColor(static_cast<QRgb>(settings.value("viewer/color1", static_cast<int>(Qt::black)).toInt()));
-    TextViewer::Color2 = QColor(static_cast<QRgb>(settings.value("viewer/color2", static_cast<int>(Qt::white)).toInt()));
-    TextViewer::FontD.setFamily(settings.value("viewer/fontname", "Courier New").toString());
-    TextViewer::FontD.setPointSize(settings.value("viewer/fontsize", 9).toInt());
+    TextViewer::colorText = QColor(static_cast<QRgb>(settings.value("viewer/color1", static_cast<int>(Qt::black)).toInt()));
+    TextViewer::colorBackground = QColor(static_cast<QRgb>(settings.value("viewer/color2", static_cast<int>(Qt::white)).toInt()));
+    TextViewer::font.setFamily(settings.value("viewer/fontname", "Courier New").toString());
+    TextViewer::font.setPointSize(settings.value("viewer/fontsize", 9).toInt());
 
     UpdatePanel();
 
@@ -2651,16 +2649,16 @@ void MainWindow::SaveOpt(void)
     settings.setValue("prcopt/maxaveep", PrcOpt.maxaveep);
     settings.setValue("prcopt/initrst", PrcOpt.initrst);
 
-    settings.setValue("prcopt/baselinec", BaselineC);
-    settings.setValue("prcopt/baseline1", Baseline[0]);
-    settings.setValue("prcopt/baseline2", Baseline[1]);
+    settings.setValue("prcopt/baselinec", baselineC);
+    settings.setValue("prcopt/baseline1", baseline[0]);
+    settings.setValue("prcopt/baseline2", baseline[1]);
 
     settings.setValue("solopt/posf", SolOpt.posf);
     settings.setValue("solopt/times", SolOpt.times);
     settings.setValue("solopt/timef", SolOpt.timef);
     settings.setValue("solopt/timeu", SolOpt.timeu);
     settings.setValue("solopt/degf", SolOpt.degf);
-    settings.setValue("solopt/sep", SolOpt.sep[0]);
+    settings.setValue("solopt/sep", QString(SolOpt.sep[0]));
     settings.setValue("solopt/outhead", SolOpt.outhead);
     settings.setValue("solopt/outopt", SolOpt.outopt);
     settings.setValue("solopt/outvel", SolOpt.outvel);
@@ -2671,22 +2669,22 @@ void MainWindow::SaveOpt(void)
     settings.setValue("solopt/geoid", SolOpt.geoid);
     settings.setValue("solopt/nmeaintv1", SolOpt.nmeaintv[0]);
     settings.setValue("solopt/nmeaintv2", SolOpt.nmeaintv[1]);
-    settings.setValue("setting/debugstatus", DebugStatusF);
-    settings.setValue("setting/debugtrace", DebugTraceF);
+    settings.setValue("setting/debugstatus", debugStatusF);
+    settings.setValue("setting/debugtrace", bebugTraceF);
 
-    settings.setValue("setting/rovpostype", RovPosTypeF);
-    settings.setValue("setting/refpostype", RefPosTypeF);
-    settings.setValue("setting/rovantpcv", RovAntPcvF);
-    settings.setValue("setting/refantpcv", RefAntPcvF);
-    settings.setValue("setting/rovant", RovAntF);
-    settings.setValue("setting/refant", RefAntF);
-    settings.setValue("setting/satpcvfile", SatPcvFileF);
-    settings.setValue("setting/antpcvfile", AntPcvFileF);
-    settings.setValue("setting/staposfile", StaPosFileF);
-    settings.setValue("setting/geoiddatafile", GeoidDataFileF);
-    settings.setValue("setting/dcbfile", DCBFileF);
-    settings.setValue("setting/eopfile", EOPFileF);
-    settings.setValue("setting/localdirectory", LocalDirectory);
+    settings.setValue("setting/rovpostype", roverPositionTypeF);
+    settings.setValue("setting/refpostype", referencePositionTypeF);
+    settings.setValue("setting/rovantpcv", roverAntennaPcvF);
+    settings.setValue("setting/refantpcv", referenceAntennaPcvF);
+    settings.setValue("setting/rovant", roverAntennaF);
+    settings.setValue("setting/refant", referenceAntennaF);
+    settings.setValue("setting/satpcvfile", satellitePcvFileF);
+    settings.setValue("setting/antpcvfile", antennaPcvFileF);
+    settings.setValue("setting/staposfile", stationPositionFileF);
+    settings.setValue("setting/geoiddatafile", geoidDataFileF);
+    settings.setValue("setting/dcbfile", dcbFileF);
+    settings.setValue("setting/eopfile", eopFileF);
+    settings.setValue("setting/localdirectory", localDirectory);
 
     settings.setValue("setting/svrcycle", SvrCycle);
     settings.setValue("setting/timeouttime", TimeoutTime);
@@ -2711,9 +2709,9 @@ void MainWindow::SaveOpt(void)
     settings.setValue("setting/logtimetag", LogTimeTag);
     settings.setValue("setting/logappend", LogAppend);
     settings.setValue("setting/logswapinterval", LogSwapInterval);
-    settings.setValue("setting/nmeapos1", NmeaPos[0]);
-    settings.setValue("setting/nmeapos2", NmeaPos[1]);
-    settings.setValue("setting/nmeapos3", NmeaPos[2]);
+    settings.setValue("setting/nmeapos1", nmeaPosition[0]);
+    settings.setValue("setting/nmeapos2", nmeaPosition[1]);
+    settings.setValue("setting/nmeapos3", nmeaPosition[2]);
     settings.setValue("setting/resetcmd", ResetCmd);
     settings.setValue("setting/maxbl", MaxBL);
     settings.setValue("setting/fswapmargin", FileSwapMargin);
@@ -2744,22 +2742,22 @@ void MainWindow::SaveOpt(void)
     settings.setValue("setting/blmode2", BLMode[1]);
     settings.setValue("setting/blmode3", BLMode[2]);
     settings.setValue("setting/blmode4", BLMode[3]);
-    settings.setValue("setting/markername", MarkerName);
-    settings.setValue("setting/markercomment", MarkerComment);
+    settings.setValue("setting/markername", markerName);
+    settings.setValue("setting/markercomment", markerComment);
 
     for (i = 0; i < 3; i++) {
-        settings.setValue(QString("setting/rovantdel_%1").arg(i), RovAntDel[i]);
-        settings.setValue(QString("setting/refantdel_%1").arg(i), RefAntDel[i]);
-        settings.setValue(QString("setting/rovpos_%1").arg(i), RovPos[i]);
-        settings.setValue(QString("setting/refpos_%1").arg(i), RefPos[i]);
+        settings.setValue(QString("setting/rovantdel_%1").arg(i), roverAntennaDelta[i]);
+        settings.setValue(QString("setting/refantdel_%1").arg(i), referenceAntennaDelta[i]);
+        settings.setValue(QString("setting/rovpos_%1").arg(i), roverPosition[i]);
+        settings.setValue(QString("setting/refpos_%1").arg(i), referencePosition[i]);
     }
     for (i = 0; i < 10; i++)
-        settings.setValue(QString("tcpopt/history%1").arg(i), History [i]);
-    settings.setValue("mapopt/nmappnt", NMapPnt);
-    for (i = 0; i < NMapPnt; i++) {
-        settings.setValue(QString("mapopt/pntname%1").arg(i + 1), PntName[i]);
+        settings.setValue(QString("tcpopt/history%1").arg(i), history [i]);
+    settings.setValue("mapopt/nmappnt", nMapPoint);
+    for (i = 0; i < nMapPoint; i++) {
+        settings.setValue(QString("mapopt/pntname%1").arg(i + 1), pointName[i]);
         settings.setValue(QString("mapopt/pntpos%1").arg(i + 1),
-                  QString("%1,%2,%3").arg(PntPos[i][0], 0, 'f', 4).arg(PntPos[i][1], 0, 'f', 4).arg(PntPos[i][2], 0, 'f', 4));
+                  QString("%1,%2,%3").arg(pointPosition[i][0], 0, 'f', 4).arg(pointPosition[i][1], 0, 'f', 4).arg(pointPosition[i][2], 0, 'f', 4));
     }
     settings.setValue("setting/panelfontname", PanelFont.family());
     settings.setValue("setting/panelfontsize", PanelFont.pointSize());
@@ -2773,10 +2771,10 @@ void MainWindow::SaveOpt(void)
     settings.setValue("setting/posfontbold", PosFont.bold());
     settings.setValue("setting/posfontitalic", PosFont.italic());
 
-    settings.setValue("viewer/color1", static_cast<int>(TextViewer::Color1.rgb()));
-    settings.setValue("viewer/color2", static_cast<int>(TextViewer::Color2.rgb()));
-    settings.setValue("viewer/fontname", TextViewer::FontD.family());
-    settings.setValue("viewer/fontsize", TextViewer::FontD.pointSize());
+    settings.setValue("viewer/color1", static_cast<int>(TextViewer::colorText.rgb()));
+    settings.setValue("viewer/color2", static_cast<int>(TextViewer::colorBackground.rgb()));
+    settings.setValue("viewer/fontname", TextViewer::font.family());
+    settings.setValue("viewer/fontsize", TextViewer::font.pointSize());
 
     settings.setValue("window/width", size().width());
     settings.setValue("window/height", size().height());
@@ -2788,14 +2786,14 @@ void MainWindow::BtnMarkClick()
 {
     QMarkDialog *markDialog = new QMarkDialog(this);
 
-    markDialog->PosMode = rtksvr.rtk.opt.mode;
-    markDialog->Marker = MarkerName;
-    markDialog->Comment = MarkerComment;
+    markDialog->positionMode = rtksvr.rtk.opt.mode;
+    markDialog->marker = markerName;
+    markDialog->comment = markerComment;
 
     if (markDialog->exec() != QDialog::Accepted) return;
-    rtksvr.rtk.opt.mode = markDialog->PosMode;
-    MarkerName = markDialog->Marker;
-    MarkerComment = markDialog->Comment;
+    rtksvr.rtk.opt.mode = markDialog->positionMode;
+    markerName = markDialog->marker;
+    markerComment = markDialog->comment;
 
     delete markDialog;
 

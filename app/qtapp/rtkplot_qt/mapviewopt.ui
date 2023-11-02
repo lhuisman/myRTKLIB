@@ -15,10 +15,10 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="9" column="0" colspan="2">
-    <widget class="QLineEdit" name="EditApiKey"/>
+    <widget class="QLineEdit" name="lEApiKey"/>
    </item>
    <item row="5" column="0">
-    <widget class="QLineEdit" name="MapTitle4"/>
+    <widget class="QLineEdit" name="lEMapTitle4"/>
    </item>
    <item row="1" column="0">
     <widget class="QLabel" name="label_2">
@@ -28,13 +28,13 @@
     </widget>
    </item>
    <item row="2" column="0">
-    <widget class="QLineEdit" name="MapTitle1"/>
+    <widget class="QLineEdit" name="lEMapTitle1"/>
    </item>
    <item row="3" column="0">
-    <widget class="QLineEdit" name="MapTitle2"/>
+    <widget class="QLineEdit" name="lEMapTitle2"/>
    </item>
    <item row="6" column="0">
-    <widget class="QLineEdit" name="MapTitle5"/>
+    <widget class="QLineEdit" name="lEMapTitle5"/>
    </item>
    <item row="10" column="0" colspan="2">
     <widget class="QWidget" name="widget" native="true">
@@ -53,14 +53,14 @@
        </spacer>
       </item>
       <item>
-       <widget class="QPushButton" name="BtnOk">
+       <widget class="QPushButton" name="btnOk">
         <property name="text">
          <string>Ok</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="BtnCancel">
+       <widget class="QPushButton" name="btnCancel">
         <property name="text">
          <string>Cancel</string>
         </property>
@@ -77,7 +77,7 @@
     </widget>
    </item>
    <item row="4" column="0">
-    <widget class="QLineEdit" name="MapTitle3"/>
+    <widget class="QLineEdit" name="lEMapTitle3"/>
    </item>
    <item row="1" column="1">
     <widget class="QLabel" name="label_3">
@@ -87,7 +87,7 @@
     </widget>
    </item>
    <item row="2" column="1">
-    <widget class="QLineEdit" name="MapTile1"/>
+    <widget class="QLineEdit" name="lEMapTile1"/>
    </item>
    <item row="0" column="0">
     <widget class="QLabel" name="label">
@@ -97,25 +97,25 @@
     </widget>
    </item>
    <item row="7" column="0">
-    <widget class="QLineEdit" name="MapTitle6"/>
+    <widget class="QLineEdit" name="lEMapTitle6"/>
    </item>
    <item row="3" column="1">
-    <widget class="QLineEdit" name="MapTile2"/>
+    <widget class="QLineEdit" name="lEMapTile2"/>
    </item>
    <item row="4" column="1">
-    <widget class="QLineEdit" name="MapTile3"/>
+    <widget class="QLineEdit" name="lEMapTile3"/>
    </item>
    <item row="5" column="1">
-    <widget class="QLineEdit" name="MapTile4"/>
+    <widget class="QLineEdit" name="lEMapTile4"/>
    </item>
    <item row="6" column="1">
-    <widget class="QLineEdit" name="MapTile5"/>
+    <widget class="QLineEdit" name="lEMapTile5"/>
    </item>
    <item row="7" column="1">
-    <widget class="QLineEdit" name="MapTile6"/>
+    <widget class="QLineEdit" name="lEMapTile6"/>
    </item>
    <item row="8" column="1">
-    <widget class="QPushButton" name="BtnNotes">
+    <widget class="QPushButton" name="btnNotes">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
        <horstretch>0</horstretch>

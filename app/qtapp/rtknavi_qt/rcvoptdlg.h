@@ -14,7 +14,7 @@ protected:
     void showEvent(QShowEvent *);
 
 public slots:
-    void BtnOkClick();
+    void btnOkClick();
 
 public:
     QString Option;

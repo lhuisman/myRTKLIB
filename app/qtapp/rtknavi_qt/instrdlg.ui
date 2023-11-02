@@ -19,15 +19,6 @@
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="10">
     <widget class="QLabel" name="Label7">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
      <property name="toolTip">
       <string/>
      </property>
@@ -37,7 +28,7 @@
     </widget>
    </item>
    <item row="6" column="4" colspan="4">
-    <widget class="QDoubleSpinBox" name="NmeaPos1">
+    <widget class="QDoubleSpinBox" name="sBNmeaPosition1">
      <property name="decimals">
       <number>9</number>
      </property>
@@ -50,36 +41,21 @@
     </widget>
    </item>
    <item row="11" column="0" colspan="12">
-    <widget class="QLineEdit" name="FilePath3">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
+    <widget class="QLineEdit" name="lEFilePath3">
      <property name="toolTip">
-      <string/>
-     </property>
-     <property name="text">
       <string/>
      </property>
     </widget>
    </item>
    <item row="9" column="0" colspan="12">
-    <widget class="QLineEdit" name="FilePath1">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
+    <widget class="QLineEdit" name="lEFilePath1">
      <property name="toolTip">
-      <string/>
-     </property>
-     <property name="text">
       <string/>
      </property>
     </widget>
    </item>
    <item row="9" column="13">
-    <widget class="QPushButton" name="BtnFile1">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
+    <widget class="QPushButton" name="btnFile1">
      <property name="toolTip">
       <string/>
      </property>
@@ -89,10 +65,7 @@
     </widget>
    </item>
    <item row="3" column="13">
-    <widget class="QPushButton" name="BtnRcvOpt3">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
+    <widget class="QPushButton" name="btnReceiverOptions3">
      <property name="toolTip">
       <string/>
      </property>
@@ -102,10 +75,7 @@
     </widget>
    </item>
    <item row="6" column="0" colspan="4">
-    <widget class="QComboBox" name="NmeaReqL">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
+    <widget class="QComboBox" name="cBNmeaReqL">
      <property name="toolTip">
       <string/>
      </property>
@@ -127,10 +97,7 @@
     </widget>
    </item>
    <item row="1" column="13">
-    <widget class="QPushButton" name="BtnRcvOpt1">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
+    <widget class="QPushButton" name="btnReceiverOptions1">
      <property name="toolTip">
       <string/>
      </property>
@@ -140,17 +107,14 @@
     </widget>
    </item>
    <item row="3" column="10">
-    <widget class="QComboBox" name="Format3">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
+    <widget class="QComboBox" name="cBFormat3">
      <property name="toolTip">
       <string/>
      </property>
     </widget>
    </item>
    <item row="6" column="8" colspan="2">
-    <widget class="QDoubleSpinBox" name="NmeaPos2">
+    <widget class="QDoubleSpinBox" name="sBNmeaPosition2">
      <property name="decimals">
       <number>9</number>
      </property>
@@ -163,17 +127,17 @@
     </widget>
    </item>
    <item row="2" column="10">
-    <widget class="QComboBox" name="Format2">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
+    <widget class="QComboBox" name="cBFormat2">
      <property name="toolTip">
       <string/>
      </property>
     </widget>
    </item>
    <item row="6" column="10">
-    <widget class="QDoubleSpinBox" name="NmeaPos3">
+    <widget class="QDoubleSpinBox" name="sBNmeaPosition3">
+     <property name="suffix">
+      <string> m</string>
+     </property>
      <property name="decimals">
       <number>3</number>
      </property>
@@ -183,20 +147,14 @@
     </widget>
    </item>
    <item row="1" column="10">
-    <widget class="QComboBox" name="Format1">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
+    <widget class="QComboBox" name="cBFormat1">
      <property name="toolTip">
       <string/>
      </property>
     </widget>
    </item>
    <item row="1" column="4" colspan="3">
-    <widget class="QComboBox" name="Stream1">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
+    <widget class="QComboBox" name="cBStream1">
      <property name="toolTip">
       <string/>
      </property>
@@ -228,10 +186,7 @@
     </widget>
    </item>
    <item row="2" column="4" colspan="3">
-    <widget class="QComboBox" name="Stream2">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
+    <widget class="QComboBox" name="cBStream2">
      <property name="toolTip">
       <string/>
      </property>
@@ -263,10 +218,7 @@
     </widget>
    </item>
    <item row="2" column="7">
-    <widget class="QPushButton" name="BtnStr2">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
+    <widget class="QPushButton" name="btnStream2">
      <property name="toolTip">
       <string/>
      </property>
@@ -276,10 +228,7 @@
     </widget>
    </item>
    <item row="6" column="13">
-    <widget class="QPushButton" name="BtnPos">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
+    <widget class="QPushButton" name="btnPosition">
      <property name="toolTip">
       <string/>
      </property>
@@ -289,7 +238,7 @@
     </widget>
    </item>
    <item row="1" column="0" colspan="4">
-    <widget class="QCheckBox" name="StreamC1">
+    <widget class="QCheckBox" name="cBStreamC1">
      <property name="toolTip">
       <string/>
      </property>
@@ -299,10 +248,7 @@
     </widget>
    </item>
    <item row="13" column="11" colspan="3">
-    <widget class="QPushButton" name="BtnCancel">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
+    <widget class="QPushButton" name="btnCancel">
      <property name="toolTip">
       <string/>
      </property>
@@ -312,17 +258,14 @@
     </widget>
    </item>
    <item row="13" column="4">
-    <widget class="QLabel" name="LabelF2">
+    <widget class="QLabel" name="lblF2">
      <property name="text">
       <string>s</string>
      </property>
     </widget>
    </item>
    <item row="2" column="13">
-    <widget class="QPushButton" name="BtnRcvOpt2">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
+    <widget class="QPushButton" name="btnReceiverOptions2">
      <property name="toolTip">
       <string/>
      </property>
@@ -332,10 +275,7 @@
     </widget>
    </item>
    <item row="2" column="8" colspan="2">
-    <widget class="QPushButton" name="BtnCmd2">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
+    <widget class="QPushButton" name="btnCmd2">
      <property name="toolTip">
       <string/>
      </property>
@@ -345,10 +285,7 @@
     </widget>
    </item>
    <item row="13" column="1">
-    <widget class="QComboBox" name="TimeSpeedL">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
+    <widget class="QComboBox" name="cBTimeSpeedL">
      <property name="toolTip">
       <string/>
      </property>
@@ -395,10 +332,7 @@
     </widget>
    </item>
    <item row="13" column="2">
-    <widget class="QLabel" name="LabelF3">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
+    <widget class="QLabel" name="lblF3">
      <property name="toolTip">
       <string/>
      </property>
@@ -408,16 +342,7 @@
     </widget>
    </item>
    <item row="4" column="0" colspan="6">
-    <widget class="QLabel" name="LabelNmea">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
+    <widget class="QLabel" name="lblNmea">
      <property name="toolTip">
       <string/>
      </property>
@@ -427,10 +352,7 @@
     </widget>
    </item>
    <item row="13" column="6" colspan="5">
-    <widget class="QPushButton" name="BtnOk">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
+    <widget class="QPushButton" name="btnOk">
      <property name="toolTip">
       <string/>
      </property>
@@ -440,16 +362,10 @@
      <property name="autoDefault">
       <bool>true</bool>
      </property>
-     <property name="default">
-      <bool>true</bool>
-     </property>
     </widget>
    </item>
    <item row="10" column="13">
-    <widget class="QPushButton" name="BtnFile2">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
+    <widget class="QPushButton" name="btnFile2">
      <property name="toolTip">
       <string/>
      </property>
@@ -459,29 +375,14 @@
     </widget>
    </item>
    <item row="10" column="0" colspan="12">
-    <widget class="QLineEdit" name="FilePath2">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
+    <widget class="QLineEdit" name="lEFilePath2">
      <property name="toolTip">
-      <string/>
-     </property>
-     <property name="text">
       <string/>
      </property>
     </widget>
    </item>
    <item row="0" column="0" colspan="2">
     <widget class="QLabel" name="Label10">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
      <property name="toolTip">
       <string/>
      </property>
@@ -491,7 +392,7 @@
     </widget>
    </item>
    <item row="3" column="0" colspan="4">
-    <widget class="QCheckBox" name="StreamC3">
+    <widget class="QCheckBox" name="cBStreamC3">
      <property name="toolTip">
       <string/>
      </property>
@@ -501,7 +402,7 @@
     </widget>
    </item>
    <item row="13" column="3">
-    <widget class="QLineEdit" name="TimeStartE">
+    <widget class="QLineEdit" name="lETimeStartE">
      <property name="text">
       <string>0</string>
      </property>
@@ -509,15 +410,6 @@
    </item>
    <item row="0" column="8" colspan="2">
     <widget class="QLabel" name="Label11">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
      <property name="toolTip">
       <string/>
      </property>
@@ -528,15 +420,6 @@
    </item>
    <item row="0" column="13">
     <widget class="QLabel" name="Label1">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
      <property name="toolTip">
       <string/>
      </property>
@@ -546,16 +429,7 @@
     </widget>
    </item>
    <item row="8" column="0" colspan="2">
-    <widget class="QLabel" name="LabelF1">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
+    <widget class="QLabel" name="lblF1">
      <property name="toolTip">
       <string/>
      </property>
@@ -565,10 +439,7 @@
     </widget>
    </item>
    <item row="11" column="13">
-    <widget class="QPushButton" name="BtnFile3">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
+    <widget class="QPushButton" name="btnFile3">
      <property name="toolTip">
       <string/>
      </property>
@@ -578,7 +449,7 @@
     </widget>
    </item>
    <item row="13" column="0">
-    <widget class="QCheckBox" name="TimeTagC">
+    <widget class="QCheckBox" name="cBTimeTagC">
      <property name="toolTip">
       <string/>
      </property>
@@ -589,15 +460,6 @@
    </item>
    <item row="0" column="4">
     <widget class="QLabel" name="Label5">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
      <property name="toolTip">
       <string/>
      </property>
@@ -608,15 +470,6 @@
    </item>
    <item row="0" column="7">
     <widget class="QLabel" name="Label6">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
      <property name="toolTip">
       <string/>
      </property>
@@ -626,10 +479,7 @@
     </widget>
    </item>
    <item row="1" column="7">
-    <widget class="QPushButton" name="BtnStr1">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
+    <widget class="QPushButton" name="btnStream1">
      <property name="toolTip">
       <string/>
      </property>
@@ -639,10 +489,7 @@
     </widget>
    </item>
    <item row="1" column="8" colspan="2">
-    <widget class="QPushButton" name="BtnCmd1">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
+    <widget class="QPushButton" name="btnCmd1">
      <property name="toolTip">
       <string/>
      </property>
@@ -652,10 +499,7 @@
     </widget>
    </item>
    <item row="3" column="7">
-    <widget class="QPushButton" name="BtnStr3">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
+    <widget class="QPushButton" name="btnStream3">
      <property name="toolTip">
       <string/>
      </property>
@@ -665,10 +509,7 @@
     </widget>
    </item>
    <item row="3" column="8" colspan="2">
-    <widget class="QPushButton" name="BtnCmd3">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
+    <widget class="QPushButton" name="btnCmd3">
      <property name="toolTip">
       <string/>
      </property>
@@ -678,7 +519,7 @@
     </widget>
    </item>
    <item row="2" column="0" colspan="4">
-    <widget class="QCheckBox" name="StreamC2">
+    <widget class="QCheckBox" name="cBStreamC2">
      <property name="toolTip">
       <string/>
      </property>
@@ -688,10 +529,7 @@
     </widget>
    </item>
    <item row="3" column="4" colspan="3">
-    <widget class="QComboBox" name="Stream3">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
+    <widget class="QComboBox" name="cBStream3">
      <property name="toolTip">
       <string/>
      </property>
@@ -733,31 +571,31 @@
     </widget>
    </item>
    <item row="7" column="0">
-    <widget class="QLabel" name="LabelResetCmd">
+    <widget class="QLabel" name="lblResetCmd">
      <property name="text">
       <string>Reset Cmd</string>
      </property>
     </widget>
    </item>
    <item row="7" column="10">
-    <widget class="QLabel" name="LabelMaxBL">
+    <widget class="QLabel" name="lblMaxBaseLine">
      <property name="text">
       <string>MaxBaseline</string>
      </property>
     </widget>
    </item>
    <item row="7" column="1" colspan="9">
-    <widget class="QLineEdit" name="EditResetCmd"/>
+    <widget class="QLineEdit" name="lEResetCmd"/>
    </item>
    <item row="13" column="5">
-    <widget class="QCheckBox" name="Chk64Bit">
+    <widget class="QCheckBox" name="cB64Bit">
      <property name="text">
       <string>64bit</string>
      </property>
     </widget>
    </item>
    <item row="7" column="13">
-    <widget class="QDoubleSpinBox" name="EditMaxBL">
+    <widget class="QDoubleSpinBox" name="sBMaxBaseLine">
      <property name="suffix">
       <string> km</string>
      </property>
@@ -772,40 +610,40 @@
   </layout>
  </widget>
  <tabstops>
-  <tabstop>StreamC1</tabstop>
-  <tabstop>Stream1</tabstop>
-  <tabstop>BtnStr1</tabstop>
-  <tabstop>BtnCmd1</tabstop>
-  <tabstop>Format1</tabstop>
-  <tabstop>BtnRcvOpt1</tabstop>
-  <tabstop>StreamC2</tabstop>
-  <tabstop>Stream2</tabstop>
-  <tabstop>BtnStr2</tabstop>
-  <tabstop>BtnCmd2</tabstop>
-  <tabstop>Format2</tabstop>
-  <tabstop>BtnRcvOpt2</tabstop>
-  <tabstop>StreamC3</tabstop>
-  <tabstop>Stream3</tabstop>
-  <tabstop>BtnStr3</tabstop>
-  <tabstop>BtnCmd3</tabstop>
-  <tabstop>Format3</tabstop>
-  <tabstop>BtnRcvOpt3</tabstop>
-  <tabstop>NmeaReqL</tabstop>
-  <tabstop>NmeaPos1</tabstop>
-  <tabstop>NmeaPos2</tabstop>
-  <tabstop>NmeaPos3</tabstop>
-  <tabstop>BtnPos</tabstop>
-  <tabstop>FilePath1</tabstop>
-  <tabstop>BtnFile1</tabstop>
-  <tabstop>FilePath2</tabstop>
-  <tabstop>BtnFile2</tabstop>
-  <tabstop>FilePath3</tabstop>
-  <tabstop>BtnFile3</tabstop>
-  <tabstop>TimeTagC</tabstop>
-  <tabstop>TimeSpeedL</tabstop>
-  <tabstop>TimeStartE</tabstop>
-  <tabstop>BtnOk</tabstop>
-  <tabstop>BtnCancel</tabstop>
+  <tabstop>cBStreamC1</tabstop>
+  <tabstop>cBStream1</tabstop>
+  <tabstop>btnStream1</tabstop>
+  <tabstop>btnCmd1</tabstop>
+  <tabstop>cBFormat1</tabstop>
+  <tabstop>btnReceiverOptions1</tabstop>
+  <tabstop>cBStreamC2</tabstop>
+  <tabstop>cBStream2</tabstop>
+  <tabstop>btnStream2</tabstop>
+  <tabstop>btnCmd2</tabstop>
+  <tabstop>cBFormat2</tabstop>
+  <tabstop>btnReceiverOptions2</tabstop>
+  <tabstop>cBStreamC3</tabstop>
+  <tabstop>cBStream3</tabstop>
+  <tabstop>btnStream3</tabstop>
+  <tabstop>btnCmd3</tabstop>
+  <tabstop>cBFormat3</tabstop>
+  <tabstop>btnReceiverOptions3</tabstop>
+  <tabstop>cBNmeaReqL</tabstop>
+  <tabstop>sBNmeaPosition1</tabstop>
+  <tabstop>sBNmeaPosition2</tabstop>
+  <tabstop>sBNmeaPosition3</tabstop>
+  <tabstop>btnPosition</tabstop>
+  <tabstop>lEFilePath1</tabstop>
+  <tabstop>btnFile1</tabstop>
+  <tabstop>lEFilePath2</tabstop>
+  <tabstop>btnFile2</tabstop>
+  <tabstop>lEFilePath3</tabstop>
+  <tabstop>btnFile3</tabstop>
+  <tabstop>cBTimeTagC</tabstop>
+  <tabstop>cBTimeSpeedL</tabstop>
+  <tabstop>lETimeStartE</tabstop>
+  <tabstop>btnOk</tabstop>
+  <tabstop>btnCancel</tabstop>
  </tabstops>
  <resources/>
  <connections/>

@@ -95,84 +95,84 @@ OptDialog::OptDialog(QWidget *parent)
 
     setupUi(this);
 
-    PrcOpt = prcopt_default;
-    SolOpt = solopt_default;
+    processOptions = prcopt_default;
+    solutionOption = solopt_default;
 
     textViewer = new TextViewer(this);
     freqDialog = new FreqDialog(this);
 
-    UpdateEnable();
+    updateEnable();
 
-    Freq->clear();
+    cBFrequency->clear();
     for (int i = 0; i < NFREQ; i++) {
         label="L1";
                 for (int j=1;j<=i;j++) {
                     label+=QString("+%1").arg(j+1);
                 }
-        Freq->addItem(label);
+        cBFrequency->addItem(label);
 	}
-    if (nglo <= 0) NavSys2->setEnabled(false);
-    if (ngal <= 0) NavSys3->setEnabled(false);
-    if (nqzs <= 0) NavSys4->setEnabled(false);
-    if (ncmp <= 0) NavSys6->setEnabled(false);
-    if (nirn <= 0) NavSys7->setEnabled(false);
+    if (nglo <= 0) cBNavSys2->setEnabled(false);
+    if (ngal <= 0) cBNavSys3->setEnabled(false);
+    if (nqzs <= 0) cBNavSys4->setEnabled(false);
+    if (ncmp <= 0) cBNavSys6->setEnabled(false);
+    if (nirn <= 0) cBNavSys7->setEnabled(false);
 
     QCompleter *fileCompleter = new QCompleter(this);
     QFileSystemModel *fileModel = new QFileSystemModel(fileCompleter);
     fileModel->setRootPath("");
     fileCompleter->setModel(fileModel);
-    StaPosFile->setCompleter(fileCompleter);
-    AntPcvFile->setCompleter(fileCompleter);
-    SatPcvFile->setCompleter(fileCompleter);
-    DCBFile->setCompleter(fileCompleter);
-    GeoidDataFile->setCompleter(fileCompleter);
-    EOPFile->setCompleter(fileCompleter);
-    OLFile->setCompleter(fileCompleter);
+    lEStationPositionFile->setCompleter(fileCompleter);
+    lEAntennaPcvFile->setCompleter(fileCompleter);
+    lESatellitePcvFile->setCompleter(fileCompleter);
+    lEDCBFile->setCompleter(fileCompleter);
+    lEGeoidDataFile->setCompleter(fileCompleter);
+    lEEOPFile->setCompleter(fileCompleter);
+    lEOLFile->setCompleter(fileCompleter);
 
     QCompleter *dirCompleter = new QCompleter(this);
     QFileSystemModel *dirModel = new QFileSystemModel(dirCompleter);
     dirModel->setRootPath("");
     dirModel->setFilter(QDir::AllDirs | QDir::Drives | QDir::NoDotAndDotDot);
     dirCompleter->setModel(dirModel);
-    LocalDir->setCompleter(dirCompleter);
+    lELocalDirectory->setCompleter(dirCompleter);
 
-	UpdateEnable();
+	updateEnable();
 
-    connect(BtnAntPcvFile, SIGNAL(clicked(bool)), this, SLOT(BtnAntPcvFileClick()));
-    connect(BtnAntPcvView, SIGNAL(clicked(bool)), this, SLOT(BtnAntPcvViewClick()));
-    connect(BtnCancel, SIGNAL(clicked(bool)), this, SLOT(reject()));
-    connect(BtnDCBFile, SIGNAL(clicked(bool)), this, SLOT(BtnDCBFileClick()));
-    connect(BtnEOPFile, SIGNAL(clicked(bool)), this, SLOT(BtnEOPFileClick()));
-    connect(BtnEOPView, SIGNAL(clicked(bool)), this, SLOT(BtnEOPViewClick()));
-    connect(BtnFont1, SIGNAL(clicked(bool)), this, SLOT(BtnFont1Click()));
-    connect(BtnFont2, SIGNAL(clicked(bool)), this, SLOT(BtnFont2Click()));
-    connect(BtnGeoidDataFile, SIGNAL(clicked(bool)), this, SLOT(BtnGeoidDataFileClick()));
-    connect(BtnLoad, SIGNAL(clicked(bool)), this, SLOT(BtnLoadClick()));
-    connect(BtnLocalDir, SIGNAL(clicked(bool)), this, SLOT(BtnLocalDirClick()));
-    connect(BtnOk, SIGNAL(clicked(bool)), this, SLOT(BtnOkClick()));
+    connect(btnAntennaPcvFile, SIGNAL(clicked(bool)), this, SLOT(btnAntennaPcvFileClicked()));
+    connect(btnAntennaPcvView, SIGNAL(clicked(bool)), this, SLOT(btnAntennaPcvViewClicked()));
+    connect(btnCancel, SIGNAL(clicked(bool)), this, SLOT(reject()));
+    connect(btnDCBFile, SIGNAL(clicked(bool)), this, SLOT(btnDCBFileClicked()));
+    connect(btnEOPFile, SIGNAL(clicked(bool)), this, SLOT(btnEOPFileClicked()));
+    connect(btnEOPView, SIGNAL(clicked(bool)), this, SLOT(btnEOPViewClicked()));
+    connect(btnFont1, SIGNAL(clicked(bool)), this, SLOT(btnFont1Clicked()));
+    connect(btnFont2, SIGNAL(clicked(bool)), this, SLOT(btnFont2Clicked()));
+    connect(btnGeoidDataFile, SIGNAL(clicked(bool)), this, SLOT(btnGeoidDataFileClicked()));
+    connect(btnLoad, SIGNAL(clicked(bool)), this, SLOT(btnLoadClicked()));
+    connect(btnLocalDirectory, SIGNAL(clicked(bool)), this, SLOT(btnLocalDirectoryClicked()));
+    connect(btnOk, SIGNAL(clicked(bool)), this, SLOT(btnOkClicked()));
 //    connect(BtnOLFile,SIGNAL(clicked(bool)),this,SLOT(Btn));//Ocean Load
-    connect(BtnRefPos, SIGNAL(clicked(bool)), this, SLOT(BtnRefPosClick()));
-    connect(BtnRovPos, SIGNAL(clicked(bool)), this, SLOT(BtnRovPosClick()));
-    connect(BtnSatPcvFile, SIGNAL(clicked(bool)), this, SLOT(BtnSatPcvFileClick()));
-    connect(BtnSatPcvView, SIGNAL(clicked(bool)), this, SLOT(BtnSatPcvViewClick()));
-    connect(BtnSave, SIGNAL(clicked(bool)), this, SLOT(BtnSaveClick()));
-    connect(BtnSnrMask, SIGNAL(clicked(bool)), this, SLOT(BtnSnrMaskClick()));
-    connect(BtnStaPosFile, SIGNAL(clicked(bool)), this, SLOT(BtnStaPosFileClick()));
-    connect(BtnStaPosView, SIGNAL(clicked(bool)), this, SLOT(BtnStaPosViewClick()));
-    connect(PosMode, SIGNAL(currentIndexChanged(int)), this, SLOT(PosModeChange(int)));
-    connect(SolFormat, SIGNAL(currentIndexChanged(int)), this, SLOT(SolFormatChange(int)));
-    connect(RefPosTypeP, SIGNAL(currentIndexChanged(int)), this, SLOT(RefPosTypePChange(int)));
-    connect(RovPosTypeP, SIGNAL(currentIndexChanged(int)), this, SLOT(RovPosTypePChange(int)));
-    connect(AmbRes, SIGNAL(currentIndexChanged(int)), this, SLOT(AmbResChange(int)));
-    connect(RovAntPcv, SIGNAL(clicked(bool)), this, SLOT(RovAntPcvClick()));
-    connect(RefAntPcv, SIGNAL(clicked(bool)), this, SLOT(RovAntPcvClick()));
-    connect(OutputHeight, SIGNAL(currentIndexChanged(int)), this, SLOT(OutputHeightClick()));
-    connect(NavSys2, SIGNAL(clicked(bool)), this, SLOT(NavSys2Click()));
-    connect(NavSys6, SIGNAL(clicked(bool)), this, SLOT(NavSys6Click()));
-    connect(BaselineConst, SIGNAL(clicked(bool)), this, SLOT(BaselineConstClick()));
-    connect(BtnFreq, SIGNAL(clicked(bool)), this, SLOT(BtnFreqClick()));
-    connect(RefAnt, SIGNAL(currentIndexChanged(int)), this, SLOT(RefAntClick()));
-    connect(RovAnt, SIGNAL(currentIndexChanged(int)), this, SLOT(RovAntClick()));
+    connect(btnReferencePosition, SIGNAL(clicked(bool)), this, SLOT(btnReferencePositionClicked()));
+    connect(btnRoverPosition, SIGNAL(clicked(bool)), this, SLOT(btnRoverPositionClicked()));
+    connect(btnSatellitePcvFile, SIGNAL(clicked(bool)), this, SLOT(btnSatellitePcvFileClicked()));
+    connect(btnSatellitePcvView, SIGNAL(clicked(bool)), this, SLOT(btnSatellitePcvViewClicked()));
+    connect(btnSave, SIGNAL(clicked(bool)), this, SLOT(btnSaveClicked()));
+    connect(btnSnrMask, SIGNAL(clicked(bool)), this, SLOT(btnSnrMaskClicked()));
+    connect(btnStationPositionFile, SIGNAL(clicked(bool)), this, SLOT(btnStationPositionFileClicked()));
+    connect(btnStationPositionView, SIGNAL(clicked(bool)), this, SLOT(btnStationPositionViewClicked()));
+    connect(cBPositionMode, SIGNAL(currentIndexChanged(int)), this, SLOT(positionModeChanged(int)));
+    connect(cBSolutionFormat, SIGNAL(currentIndexChanged(int)), this, SLOT(solutionFormatChanged(int)));
+    connect(cBReferencePositionTypeP, SIGNAL(currentIndexChanged(int)), this, SLOT(referencePositionTypePChanged(int)));
+    connect(cBRoverPositionTypeP, SIGNAL(currentIndexChanged(int)), this, SLOT(roverPositionTypePChanged(int)));
+    connect(cBAmbiguityResolutionGPS, SIGNAL(currentIndexChanged(int)), this, SLOT(ambiguityResolutionChanged(int)));
+    connect(cBRoverAntennaPcv, SIGNAL(clicked(bool)), this, SLOT(roverAntennaPcvClicked()));
+    connect(cBReferenceAntennaPcv, SIGNAL(clicked(bool)), this, SLOT(roverAntennaPcvClicked()));
+    connect(cBOutputHeight, SIGNAL(currentIndexChanged(int)), this, SLOT(outputHeightClicked()));
+    connect(cBNavSys2, SIGNAL(clicked(bool)), this, SLOT(navSys2Clicked()));
+    connect(cBNavSys6, SIGNAL(clicked(bool)), this, SLOT(navSys6Clicked()));
+    connect(cBBaselineConstrain, SIGNAL(clicked(bool)), this, SLOT(baselineConstrainClicked()));
+    connect(btnFrequency, SIGNAL(clicked(bool)), this, SLOT(btnFrequencyClicked()));
+    connect(cBReferenceAntenna, SIGNAL(currentIndexChanged(int)), this, SLOT(referenceAntennaClicked()));
+    connect(cBRoverAntenna, SIGNAL(currentIndexChanged(int)), this, SLOT(roverAntennaClicked()));
 
 }
 //---------------------------------------------------------------------------
@@ -180,26 +180,26 @@ void OptDialog::showEvent(QShowEvent *event)
 {
     if (event->spontaneous()) return;
 
-	GetOpt();
+	getOption();
 }
 //---------------------------------------------------------------------------
-void OptDialog::BtnOkClick()
+void OptDialog::btnOkClicked()
 {
-	SetOpt();
+	setOption();
 
     accept();
 }
 //---------------------------------------------------------------------------
-void OptDialog::BtnLoadClick()
+void OptDialog::btnLoadClicked()
 {
     QString fileName;
 
     fileName = QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("Load Options..."), QString(), tr("Options File (*.conf);;All (*.*)")));
 
-    LoadOpt(fileName);
+    loadOption(fileName);
 }
 //---------------------------------------------------------------------------
-void OptDialog::BtnSaveClick()
+void OptDialog::btnSaveClicked()
 {
     QString file;
 
@@ -207,503 +207,503 @@ void OptDialog::BtnSaveClick()
 
     if (!file.contains('.')) file += ".conf";
 
-    SaveOpt(file);
+    saveOption(file);
 }
 //---------------------------------------------------------------------------
-void OptDialog::BtnStaPosViewClick()
+void OptDialog::btnStationPositionViewClicked()
 {
-    if (StaPosFile->text() == "") return;
+    if (lEStationPositionFile->text() == "") return;
 
     TextViewer *viewer = new TextViewer(this);
     viewer->show();
 
-    viewer->Read(StaPosFile->text());
+    viewer->read(lEStationPositionFile->text());
 }
 //---------------------------------------------------------------------------
-void OptDialog::BtnStaPosFileClick()
+void OptDialog::btnStationPositionFileClicked()
 {
     QString fileName;
 
     fileName = QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("Station Position File"), QString(), tr("Position File (*.pos);;All (*.*)")));
 
-    StaPosFile->setText(fileName);
+    lEStationPositionFile->setText(fileName);
 }
 //---------------------------------------------------------------------------
-void OptDialog::BtnSnrMaskClick()
+void OptDialog::btnSnrMaskClicked()
 {
     MaskOptDialog maskOptDialog(this);
 
-    maskOptDialog.Mask = PrcOpt.snrmask;
+    maskOptDialog.Mask = processOptions.snrmask;
 
     maskOptDialog.exec();
     if (maskOptDialog.result() != QDialog::Accepted) return;
-    PrcOpt.snrmask = maskOptDialog.Mask;
+    processOptions.snrmask = maskOptDialog.Mask;
 }
 //---------------------------------------------------------------------------
-void OptDialog::RovPosTypePChange(int)
+void OptDialog::roverPositionTypePChanged(int)
 {
-    QLineEdit *edit[] = { RovPos1, RovPos2, RovPos3 };
+    QLineEdit *edit[] = { lERoverPosition1, lERoverPosition2, lERoverPosition3 };
 	double pos[3];
 
-    GetPos(RovPosTypeF, edit, pos);
-    SetPos(RovPosTypeP->currentIndex(), edit, pos);
-    RovPosTypeF = RovPosTypeP->currentIndex();
-	UpdateEnable();
+    getPosition(roverPositionTypeF, edit, pos);
+    setPosition(cBRoverPositionTypeP->currentIndex(), edit, pos);
+    roverPositionTypeF = cBRoverPositionTypeP->currentIndex();
+	updateEnable();
 }
 //---------------------------------------------------------------------------
-void OptDialog::RefPosTypePChange(int)
+void OptDialog::referencePositionTypePChanged(int)
 {
-    QLineEdit *edit[] = { RefPos1, RefPos2, RefPos3 };
+    QLineEdit *edit[] = { lEReferencePosition1, lEReferencePosition2, lEReferencePosition3 };
 	double pos[3];
 
-    GetPos(RefPosTypeF, edit, pos);
-    SetPos(RefPosTypeP->currentIndex(), edit, pos);
-    RefPosTypeF = RefPosTypeP->currentIndex();
+    getPosition(referencePositionTypeF, edit, pos);
+    setPosition(cBReferencePositionTypeP->currentIndex(), edit, pos);
+    referencePositionTypeF = cBReferencePositionTypeP->currentIndex();
 
-	UpdateEnable();
+	updateEnable();
 }
 //---------------------------------------------------------------------------
-void OptDialog::BtnRovPosClick()
+void OptDialog::btnRoverPositionClicked()
 {
     RefDialog refDialog(this);
-    QLineEdit *edit[] = { RovPos1, RovPos2, RovPos3 };
+    QLineEdit *edit[] = { lERoverPosition1, lERoverPosition2, lERoverPosition3 };
     double p[3], posi[3];
 
-    GetPos(RovPosTypeP->currentIndex(), edit, p);
+    getPosition(cBRoverPositionTypeP->currentIndex(), edit, p);
     ecef2pos(p, posi);
 
-    refDialog.RovPos[0] = posi[0] * R2D;
-    refDialog.RovPos[1] = posi[1] * R2D;
-    refDialog.Pos[2] = posi[2];
-    refDialog.StaPosFile = StaPosFile->text();
+    refDialog.RoverPosition[0] = posi[0] * R2D;
+    refDialog.RoverPosition[1] = posi[1] * R2D;
+    refDialog.position[2] = posi[2];
+    refDialog.stationPositionFile = lEStationPositionFile->text();
     refDialog.move(pos().x() + size().width() / 2 - refDialog.size().width() / 2,
                pos().y() + size().height() / 2 - refDialog.size().height() / 2);
 
     refDialog.exec();
     if (refDialog.result() != QDialog::Accepted) return;
 
-    posi[0] = refDialog.Pos[0] * D2R;
-    posi[1] = refDialog.Pos[1] * D2R;
-    posi[2] = refDialog.Pos[2];
+    posi[0] = refDialog.position[0] * D2R;
+    posi[1] = refDialog.position[1] * D2R;
+    posi[2] = refDialog.position[2];
 
     pos2ecef(posi, p);
-    SetPos(RovPosTypeP->currentIndex(), edit, p);
+    setPosition(cBRoverPositionTypeP->currentIndex(), edit, p);
 }
 //---------------------------------------------------------------------------
-void OptDialog::BtnRefPosClick()
+void OptDialog::btnReferencePositionClicked()
 {
     RefDialog refDialog(this);
-    QLineEdit *edit[] = { RefPos1, RefPos2, RefPos3 };
+    QLineEdit *edit[] = { lEReferencePosition1, lEReferencePosition2, lEReferencePosition3 };
     double p[3], posi[3];
 
-    GetPos(RefPosTypeP->currentIndex(), edit, p);
+    getPosition(cBReferencePositionTypeP->currentIndex(), edit, p);
     ecef2pos(p, posi);
-    refDialog.RovPos[0] = posi[0] * R2D;
-    refDialog.RovPos[1] = posi[1] * R2D;
-    refDialog.RovPos[2] = posi[2];
-    refDialog.StaPosFile = StaPosFile->text();
+    refDialog.RoverPosition[0] = posi[0] * R2D;
+    refDialog.RoverPosition[1] = posi[1] * R2D;
+    refDialog.RoverPosition[2] = posi[2];
+    refDialog.stationPositionFile = lEStationPositionFile->text();
     refDialog.move(pos().x() + size().width() / 2 - refDialog.size().width() / 2,
                pos().y() + size().height() / 2 - refDialog.size().height() / 2);
 
     refDialog.exec();
     if (refDialog.result() != QDialog::Accepted) return;
 
-    posi[0] = refDialog.Pos[0] * D2R;
-    posi[1] = refDialog.Pos[1] * D2R;
-    posi[2] = refDialog.Pos[2];
+    posi[0] = refDialog.position[0] * D2R;
+    posi[1] = refDialog.position[1] * D2R;
+    posi[2] = refDialog.position[2];
 
     pos2ecef(posi, p);
-    SetPos(RefPosTypeP->currentIndex(), edit, p);
+    setPosition(cBReferencePositionTypeP->currentIndex(), edit, p);
 }
 //---------------------------------------------------------------------------
-void OptDialog::BtnSatPcvViewClick()
+void OptDialog::btnSatellitePcvViewClicked()
 {
-    if (SatPcvFile->text() == "") return;
+    if (lESatellitePcvFile->text() == "") return;
 
     textViewer->show();
 
-    textViewer->Read(SatPcvFile->text());
+    textViewer->read(lESatellitePcvFile->text());
 }
 //---------------------------------------------------------------------------
-void OptDialog::BtnSatPcvFileClick()
+void OptDialog::btnSatellitePcvFileClicked()
 {
-    SatPcvFile->setText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("Satellite Antenna PCV File"), QString(), tr("PCV File (*.pcv *.atx);Position File (*.pcv *.snx);All (*.*)"))));
+    lESatellitePcvFile->setText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("Satellite Antenna PCV File"), QString(), tr("PCV File (*.pcv *.atx);Position File (*.pcv *.snx);All (*.*)"))));
 }
 //---------------------------------------------------------------------------
-void OptDialog::BtnAntPcvViewClick()
+void OptDialog::btnAntennaPcvViewClicked()
 {
-    if (AntPcvFile->text() == "") return;
+    if (lEAntennaPcvFile->text() == "") return;
 
     textViewer->show();
 
-    textViewer->Read(AntPcvFile->text());
+    textViewer->read(lEAntennaPcvFile->text());
 }
 //---------------------------------------------------------------------------
-void OptDialog::BtnAntPcvFileClick()
+void OptDialog::btnAntennaPcvFileClicked()
 {
-    AntPcvFile->setText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("Receiver Antenna PCV File"), QString(), tr("PCV File (*.pcv *.atx);Position File (*.pcv *.snx);All (*.*)"))));
-    ReadAntList();
+    lEAntennaPcvFile->setText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("Receiver Antenna PCV File"), QString(), tr("PCV File (*.pcv *.atx);Position File (*.pcv *.snx);All (*.*)"))));
+    readAntennaList();
 }
 //---------------------------------------------------------------------------
-void OptDialog::BtnGeoidDataFileClick()
+void OptDialog::btnGeoidDataFileClicked()
 {
     QString fileName = QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("Geoid Data File"), QString(), tr("All (*.*)")));
 
-    GeoidDataFile->setText(fileName);
+    lEGeoidDataFile->setText(fileName);
 }
 //---------------------------------------------------------------------------
-void OptDialog::BtnDCBFileClick()
+void OptDialog::btnDCBFileClicked()
 {
     QString fileName = QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("DCB Data File"), QString(), tr("DCB (*.dcb)")));
 
-    DCBFile->setText(fileName);
+    lEDCBFile->setText(fileName);
 }
 //---------------------------------------------------------------------------
-void OptDialog::BtnEOPFileClick()
+void OptDialog::btnEOPFileClicked()
 {
     QString fileName = QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("EOP Data File"), QString(), tr("EOP (*.erp)")));
 
-    EOPFile->setText(fileName);
+    lEEOPFile->setText(fileName);
 }
 //---------------------------------------------------------------------------
-void OptDialog::BtnEOPViewClick()
+void OptDialog::btnEOPViewClicked()
 {
-    if (EOPFile->text() == "") return;
+    if (lEEOPFile->text() == "") return;
 
     textViewer->show();
 
-    textViewer->Read(EOPFile->text());
+    textViewer->read(lEEOPFile->text());
 }
 //---------------------------------------------------------------------------
-void OptDialog::BtnLocalDirClick()
+void OptDialog::btnLocalDirectoryClicked()
 {
-    QString dir = LocalDir->text();
+    QString dir = lELocalDirectory->text();
 
     dir = QDir::toNativeSeparators(QFileDialog::getExistingDirectory(this, tr("FTP/HTTP Local Directory"), dir));
-    LocalDir->setText(dir);
+    lELocalDirectory->setText(dir);
 }
 //---------------------------------------------------------------------------
-void OptDialog::BtnFont1Click()
+void OptDialog::btnFont1Clicked()
 {
     QFontDialog dialog(this);
 
-    dialog.setCurrentFont(FontLabel1->font());
+    dialog.setCurrentFont(fontLabel1->font());
     dialog.exec();
 
-    FontLabel1->setFont(dialog.selectedFont());
-    FontLabel1->setText(FontLabel1->font().family() + QString::number(FontLabel1->font().pointSize()) + " pt");
+    fontLabel1->setFont(dialog.selectedFont());
+    fontLabel1->setText(fontLabel1->font().family() + QString::number(fontLabel1->font().pointSize()) + " pt");
 }
 //---------------------------------------------------------------------------
-void OptDialog::BtnFont2Click()
+void OptDialog::btnFont2Clicked()
 {
     QFontDialog dialog(this);
 
-    dialog.setCurrentFont(FontLabel2->font());
+    dialog.setCurrentFont(fontLabel2->font());
     dialog.exec();
 
-    FontLabel2->setFont(dialog.selectedFont());
-    FontLabel2->setText(FontLabel2->font().family() + QString::number(FontLabel2->font().pointSize()) + " pt");
+    fontLabel2->setFont(dialog.selectedFont());
+    fontLabel2->setText(fontLabel2->font().family() + QString::number(fontLabel2->font().pointSize()) + " pt");
 }
 
 //---------------------------------------------------------------------------
-void OptDialog::FreqChange()
+void OptDialog::frequencyChanged()
 {
-	UpdateEnable();
+	updateEnable();
 }
 //---------------------------------------------------------------------------
-void OptDialog::NavSys2Click()
+void OptDialog::navSys2Clicked()
 {
-	UpdateEnable();
+	updateEnable();
 }
 //---------------------------------------------------------------------------
-void OptDialog::BaselineConstClick()
+void OptDialog::baselineConstrainClicked()
 {
-	UpdateEnable();
+	updateEnable();
 }
 //---------------------------------------------------------------------------
-void OptDialog::SolFormatChange(int)
+void OptDialog::solutionFormatChanged(int)
 {
-	UpdateEnable();
+	updateEnable();
 }
 //---------------------------------------------------------------------------
-void OptDialog::PosModeChange(int)
+void OptDialog::positionModeChanged(int)
 {
-	UpdateEnable();
+	updateEnable();
 }
 //---------------------------------------------------------------------------
-void OptDialog::AmbResChange(int)
+void OptDialog::ambiguityResolutionChanged(int)
 {
-	UpdateEnable();
+	updateEnable();
 }
 //---------------------------------------------------------------------------
-void OptDialog::RovAntPcvClick()
+void OptDialog::roverAntennaPcvClicked()
 {
-	UpdateEnable();
+	updateEnable();
 }
 //---------------------------------------------------------------------------
-void OptDialog::OutputHeightClick()
+void OptDialog::outputHeightClicked()
 {
-	UpdateEnable();
+	updateEnable();
 }
 //---------------------------------------------------------------------------
-void OptDialog::GetOpt(void)
+void OptDialog::getOption(void)
 {
-    QLineEdit *editu[] = { RovPos1, RovPos2, RovPos3 };
-    QLineEdit *editr[] = { RefPos1, RefPos2, RefPos3 };
+    QLineEdit *editu[] = { lERoverPosition1, lERoverPosition2, lERoverPosition3 };
+    QLineEdit *editr[] = { lEReferencePosition1, lEReferencePosition2, lEReferencePosition3 };
 
-    PosMode->setCurrentIndex(PrcOpt.mode);
-    Freq->setCurrentIndex(PrcOpt.nf - 1 > NFREQ - 1 ? NFREQ - 1 : PrcOpt.nf - 1);
-    ElMask->setCurrentIndex(ElMask->findText(QString::number(PrcOpt.elmin * R2D)));
-    DynamicModel->setCurrentIndex(PrcOpt.dynamics);
-    TideCorr->setCurrentIndex(PrcOpt.tidecorr);
-    IonoOpt->setCurrentIndex(PrcOpt.ionoopt);
-    TropOpt->setCurrentIndex(PrcOpt.tropopt);
-    SatEphem->setCurrentIndex(PrcOpt.sateph);
-    AmbRes->setCurrentIndex(PrcOpt.modear);
-    GloAmbRes->setCurrentIndex(PrcOpt.glomodear);
-    BdsAmbRes->setCurrentIndex(PrcOpt.bdsmodear);
-    ValidThresAR->setValue(PrcOpt.thresar[0]);
-    OutCntResetAmb->setValue(PrcOpt.maxout);
-    LockCntFixAmb->setValue(PrcOpt.minlock);
-    FixCntHoldAmb->setValue(PrcOpt.minfix);
-    ElMaskAR->setValue(PrcOpt.elmaskar * R2D);
-    ElMaskHold->setValue(PrcOpt.elmaskhold * R2D);
-    MaxAgeDiff->setValue(PrcOpt.maxtdiff);
-    RejectCode->setValue(PrcOpt.maxinno[1]);
-    RejectPhase->setValue(PrcOpt.maxinno[0]);
-    SlipThres->setValue(PrcOpt.thresslip);
-    NumIter->setValue(PrcOpt.niter);
-    SyncSol->setCurrentIndex(PrcOpt.syncsol);
-    ExSatsE->setText(ExSats);
-    NavSys1->setChecked(PrcOpt.navsys & SYS_GPS);
-    NavSys2->setChecked(PrcOpt.navsys & SYS_GLO);
-    NavSys3->setChecked(PrcOpt.navsys & SYS_GAL);
-    NavSys4->setChecked(PrcOpt.navsys & SYS_QZS);
-    NavSys5->setChecked(PrcOpt.navsys & SYS_SBS);
-    NavSys6->setChecked(PrcOpt.navsys & SYS_CMP);
-    NavSys7->setChecked(PrcOpt.navsys & SYS_IRN);
-    PosOpt1->setChecked(PrcOpt.posopt[0]);
-    PosOpt2->setChecked(PrcOpt.posopt[1]);
-    PosOpt3->setChecked(PrcOpt.posopt[2]);
-    PosOpt4->setChecked(PrcOpt.posopt[3]);
-    PosOpt5->setChecked(PrcOpt.posopt[4]);
+    cBPositionMode->setCurrentIndex(processOptions.mode);
+    cBFrequency->setCurrentIndex(processOptions.nf - 1 > NFREQ - 1 ? NFREQ - 1 : processOptions.nf - 1);
+    cBElevationMask->setCurrentIndex(cBElevationMask->findText(QString::number(processOptions.elmin * R2D)));
+    cBDynamicModel->setCurrentIndex(processOptions.dynamics);
+    cBTideCorrection->setCurrentIndex(processOptions.tidecorr);
+    cBIonosphereOption->setCurrentIndex(processOptions.ionoopt);
+    cBTroposphereOption->setCurrentIndex(processOptions.tropopt);
+    cBSatelliteEphemeris->setCurrentIndex(processOptions.sateph);
+    cBAmbiguityResolutionGPS->setCurrentIndex(processOptions.modear);
+    cBAmbiguityResolutionGlo->setCurrentIndex(processOptions.glomodear);
+    cBAmbiguityResolutionBDS->setCurrentIndex(processOptions.bdsmodear);
+    sBValidThresAR->setValue(processOptions.thresar[0]);
+    sBOutageCountResetAmbiguity->setValue(processOptions.maxout);
+    sBLockCountFixAmbiguity->setValue(processOptions.minlock);
+    sBFixCountHoldAmbiguity->setValue(processOptions.minfix);
+    sBElevationMaskAR->setValue(processOptions.elmaskar * R2D);
+    sBElevationMaskHold->setValue(processOptions.elmaskhold * R2D);
+    sBMaxAgeDifference->setValue(processOptions.maxtdiff);
+    sBRejectCode->setValue(processOptions.maxinno[0]);
+    sBRejectPhase->setValue(processOptions.maxinno[1]);
+    sBSlipThres->setValue(processOptions.thresslip);
+    sBNumIteration->setValue(processOptions.niter);
+    cBSyncSolution->setCurrentIndex(processOptions.syncsol);
+    lEExcludedSatellites->setText(excludedSatellites);
+    cBNavSys1->setChecked(processOptions.navsys & SYS_GPS);
+    cBNavSys2->setChecked(processOptions.navsys & SYS_GLO);
+    cBNavSys3->setChecked(processOptions.navsys & SYS_GAL);
+    cBNavSys4->setChecked(processOptions.navsys & SYS_QZS);
+    cBNavSys5->setChecked(processOptions.navsys & SYS_SBS);
+    cBNavSys6->setChecked(processOptions.navsys & SYS_CMP);
+    cBNavSys7->setChecked(processOptions.navsys & SYS_IRN);
+    cBPositionOption1->setChecked(processOptions.posopt[0]);
+    cBPositionOption2->setChecked(processOptions.posopt[1]);
+    cBPositionOption3->setChecked(processOptions.posopt[2]);
+    cBPositionOption4->setChecked(processOptions.posopt[3]);
+    cBPositionOption5->setChecked(processOptions.posopt[4]);
 
-    SolFormat->setCurrentIndex(SolOpt.posf);
-    TimeFormat->setCurrentIndex(SolOpt.timef == 0 ? 0 : SolOpt.times + 1);
-    TimeDecimal->setValue(SolOpt.timeu);
-    LatLonFormat->setCurrentIndex(SolOpt.degf);
-    FieldSep->setText(SolOpt.sep);
-    OutputHead->setCurrentIndex(SolOpt.outhead);
-    OutputOpt->setCurrentIndex(SolOpt.outopt);
-    OutputVel->setCurrentIndex(SolOpt.outvel);
-    OutputSingle->setCurrentIndex(PrcOpt.outsingle);
-    MaxSolStd->setValue(SolOpt.maxsolstd);
-    OutputDatum->setCurrentIndex(SolOpt.datum);
-    OutputHeight->setCurrentIndex(SolOpt.height);
-    OutputGeoid->setCurrentIndex(SolOpt.geoid);
-    NmeaIntv1->setValue(SolOpt.nmeaintv[0]);
-    NmeaIntv2->setValue(SolOpt.nmeaintv[1]);
-    DebugStatus->setCurrentIndex(DebugStatusF);
-    DebugTrace->setCurrentIndex(DebugTraceF);
+    cBSolutionFormat->setCurrentIndex(solutionOption.posf);
+    cBTimeFormat->setCurrentIndex(solutionOption.timef == 0 ? 0 : solutionOption.times + 1);
+    sBTimeDecimal->setValue(solutionOption.timeu);
+    cBLatLonFormat->setCurrentIndex(solutionOption.degf);
+    lEFieldSeperator->setText(solutionOption.sep);
+    cBOutputHeader->setCurrentIndex(solutionOption.outhead);
+    cBOutputOption->setCurrentIndex(solutionOption.outopt);
+    cBOutputVelocity->setCurrentIndex(solutionOption.outvel);
+    cBOutputSingle->setCurrentIndex(processOptions.outsingle);
+    sBMaxSolutionStd->setValue(solutionOption.maxsolstd);
+    cBOutputDatum->setCurrentIndex(solutionOption.datum);
+    cBOutputHeight->setCurrentIndex(solutionOption.height);
+    cBOutputGeoid->setCurrentIndex(solutionOption.geoid);
+    sBNmeaInterval1->setValue(solutionOption.nmeaintv[0]);
+    sBNmeaInterval2->setValue(solutionOption.nmeaintv[1]);
+    cBDebugStatus->setCurrentIndex(debugStatusF);
+    cBDebugTrace->setCurrentIndex(debugTraceF);
 
-    BaselineConst->setChecked(BaselineC);
-    BaselineLen->setValue(Baseline[0]);
-    BaselineSig->setValue(Baseline[1]);
+    cBBaselineConstrain->setChecked(baselineC);
+    sBBaselineLen->setValue(baseline[0]);
+    sBBaselineSig->setValue(baseline[1]);
 
-    MeasErrR1->setValue(PrcOpt.eratio[0]);
-    MeasErrR2->setValue(PrcOpt.eratio[1]);
-    MeasErr2->setValue(PrcOpt.err[1]);
-    MeasErr3->setValue(PrcOpt.err[2]);
-    MeasErr4->setValue(PrcOpt.err[3]);
-    MeasErr5->setValue(PrcOpt.err[4]);
-    PrNoise1->setText(QString::number(PrcOpt.prn[0]));
-    PrNoise2->setText(QString::number(PrcOpt.prn[1]));
-    PrNoise3->setText(QString::number(PrcOpt.prn[2]));
-    PrNoise4->setText(QString::number(PrcOpt.prn[3]));
-    PrNoise5->setText(QString::number(PrcOpt.prn[4]));
-    SatClkStab->setText(QString::number(PrcOpt.sclkstab));
-    MaxAveEp->setValue(PrcOpt.maxaveep);
-    ChkInitRestart->setChecked(PrcOpt.initrst);
+    sBMeasurementErrorR1->setValue(processOptions.eratio[0]);
+    sBMeasurementErrorR2->setValue(processOptions.eratio[1]);
+    sBMeasurementError2->setValue(processOptions.err[1]);
+    sBMeasurementError3->setValue(processOptions.err[2]);
+    sBMeasurementError4->setValue(processOptions.err[3]);
+    sBMeasurementError5->setValue(processOptions.err[4]);
+    lEProcessNoise1->setText(QString::number(processOptions.prn[0]));
+    lEProcessNoise2->setText(QString::number(processOptions.prn[1]));
+    lEProcessNoise3->setText(QString::number(processOptions.prn[2]));
+    lEProcessNoise4->setText(QString::number(processOptions.prn[3]));
+    lEProcessNoise5->setText(QString::number(processOptions.prn[4]));
+    lESatelliteClockStability->setText(QString::number(processOptions.sclkstab));
+    sBMaxAveEp->setValue(processOptions.maxaveep);
+    cBInitRestart->setChecked(processOptions.initrst);
 
-    RovPosTypeP->setCurrentIndex(RovPosTypeF);
-    RefPosTypeP->setCurrentIndex(RefPosTypeF);
-    RovAntPcv->setChecked(RovAntPcvF);
-    RefAntPcv->setChecked(RefAntPcvF);
-    RovAntE->setValue(RovAntDel[0]);
-    RovAntN->setValue(RovAntDel[1]);
-    RovAntU->setValue(RovAntDel[2]);
-    RefAntE->setValue(RefAntDel[0]);
-    RefAntN->setValue(RefAntDel[1]);
-    RefAntU->setValue(RefAntDel[2]);
-    SetPos(RovPosTypeP->currentIndex(), editu, RovPos);
-    SetPos(RefPosTypeP->currentIndex(), editr, RefPos);
+    cBRoverPositionTypeP->setCurrentIndex(roverPositionTypeF);
+    cBReferencePositionTypeP->setCurrentIndex(referencePositionTypeF);
+    cBRoverAntennaPcv->setChecked(roverAntennaPcvF);
+    cBReferenceAntennaPcv->setChecked(referenceAntennaPcvF);
+    sBRoverAntennaE->setValue(roverAntennaDelta[0]);
+    sBRoverAntennaN->setValue(roverAntennaDelta[1]);
+    sBRoverAntennaU->setValue(roverAntennaDelta[2]);
+    sBReferenceAntennaE->setValue(referenceAntennaDelta[0]);
+    sBReferenceAntennaN->setValue(referenceAntennaDelta[1]);
+    sBReferenceAntennaU->setValue(referenceAntennaDelta[2]);
+    setPosition(cBRoverPositionTypeP->currentIndex(), editu, roverPosition);
+    setPosition(cBReferencePositionTypeP->currentIndex(), editr, referencePosition);
 
-    SatPcvFile->setText(SatPcvFileF);
-    AntPcvFile->setText(AntPcvFileF);
-    StaPosFile->setText(StaPosFileF);
-    GeoidDataFile->setText(GeoidDataFileF);
-    DCBFile->setText(DCBFileF);
-    EOPFile->setText(EOPFileF);
-    LocalDir->setText(LocalDirectory);
-	ReadAntList();
+    lESatellitePcvFile->setText(satellitePcvFileF);
+    lEAntennaPcvFile->setText(antennaPcvFileF);
+    lEStationPositionFile->setText(stationPositionFileF);
+    lEGeoidDataFile->setText(geoidDataFileF);
+    lEDCBFile->setText(dcbFileF);
+    lEEOPFile->setText(eopFileF);
+    lELocalDirectory->setText(localDirectory);
+	readAntennaList();
 
-    RovAnt->setCurrentIndex(RovAnt->findText(RovAntF));
-    RefAnt->setCurrentIndex(RefAnt->findText(RefAntF));
+    cBRoverAntenna->setCurrentIndex(cBRoverAntenna->findText(roverAntennaF));
+    cBReferenceAntenna->setCurrentIndex(cBReferenceAntenna->findText(referenceAntennaF));
 
-    SvrCycleE->setValue(SvrCycle);
-    TimeoutTimeE->setValue(TimeoutTime);
-    ReconTimeE->setValue(ReconTime);
-    NmeaCycleE->setValue(NmeaCycle);
-    FileSwapMarginE->setValue(FileSwapMargin);
-    SvrBuffSizeE->setValue(SvrBuffSize);
-    SolBuffSizeE->setValue(SolBuffSize);
-    SavedSolE->setValue(SavedSol);
-    NavSelectS->setCurrentIndex(NavSelect);
-    SbasSatE->setValue(PrcOpt.sbassatsel);
-    ProxyAddrE->setText(ProxyAddr);
-    MoniPortE->setValue(MoniPort);
-    SolBuffSizeE->setValue(SolBuffSize);
-    PanelStackE->setCurrentIndex(PanelStack);
+    sBServerCycle->setValue(serverCycle);
+    sBTimeoutTime->setValue(timeoutTime);
+    sBReconnectTime->setValue(reconnectTime);
+    sBNmeaCycle->setValue(nmeaCycle);
+    sBFileSwapMargin->setValue(fileSwapMargin);
+    sBServerBufferSize->setValue(serverBufferSize);
+    sBSolutionBufferSize->setValue(solutionBufferSize);
+    sBSavedSolution->setValue(savedSolution);
+    cBNavSelect->setCurrentIndex(navSelect);
+    sBSbasSatellite->setValue(processOptions.sbassatsel);
+    lEProxyAddress->setText(proxyAddr);
+    sBMonitorPort->setValue(monitorPort);
+    sBSolutionBufferSize->setValue(solutionBufferSize);
+    cBPanelStack->setCurrentIndex(panelStack);
 
-    FontLabel1->setFont(PanelFont);
-    FontLabel1->setText(FontLabel1->font().family() + QString::number(FontLabel1->font().pointSize()) + "pt");
-    FontLabel2->setFont(PosFont);
-    FontLabel2->setText(FontLabel2->font().family() + QString::number(FontLabel2->font().pointSize()) + "pt");
+    fontLabel1->setFont(panelFont);
+    fontLabel1->setText(fontLabel1->font().family() + QString::number(fontLabel1->font().pointSize()) + "pt");
+    fontLabel2->setFont(positionFont);
+    fontLabel2->setText(fontLabel2->font().family() + QString::number(fontLabel2->font().pointSize()) + "pt");
 
-	UpdateEnable();
+	updateEnable();
 }
 //---------------------------------------------------------------------------
-void OptDialog::SetOpt(void)
+void OptDialog::setOption(void)
 {
-    QString FieldSep_Text = FieldSep->text();
-    QLineEdit *editu[] = { RovPos1, RovPos2, RovPos3 };
-    QLineEdit *editr[] = { RefPos1, RefPos2, RefPos3 };
+    QString FieldSep_Text = lEFieldSeperator->text();
+    QLineEdit *editu[] = { lERoverPosition1, lERoverPosition2, lERoverPosition3 };
+    QLineEdit *editr[] = { lEReferencePosition1, lEReferencePosition2, lEReferencePosition3 };
 
-    PrcOpt.mode = PosMode->currentIndex();
-    PrcOpt.nf = Freq->currentIndex() + 1;
-    PrcOpt.elmin = ElMask->currentText().toDouble() * D2R;
-    PrcOpt.dynamics = DynamicModel->currentIndex();
-    PrcOpt.tidecorr = TideCorr->currentIndex();
-    PrcOpt.ionoopt = IonoOpt->currentIndex();
-    PrcOpt.tropopt = TropOpt->currentIndex();
-    PrcOpt.sateph = SatEphem->currentIndex();
-    PrcOpt.modear = AmbRes->currentIndex();
-    PrcOpt.glomodear = GloAmbRes->currentIndex();
-    PrcOpt.bdsmodear = BdsAmbRes->currentIndex();
-    PrcOpt.thresar[0] = ValidThresAR->value();
-    PrcOpt.maxout = OutCntResetAmb->value();
-    PrcOpt.minlock = LockCntFixAmb->value();
-    PrcOpt.minfix = FixCntHoldAmb->value();
-    PrcOpt.elmaskar = ElMaskAR->value() * D2R;
-    PrcOpt.elmaskhold = ElMaskHold->value() * D2R;
-    PrcOpt.maxtdiff = MaxAgeDiff->value();
-    PrcOpt.maxinno[0] = RejectPhase->value();
-    PrcOpt.maxinno[1] = RejectCode->value();
-    PrcOpt.thresslip = SlipThres->value();
-    PrcOpt.niter = NumIter->value();
-    PrcOpt.syncsol = SyncSol->currentIndex();
-    ExSats = ExSatsE->text();
-    PrcOpt.navsys = 0;
+    processOptions.mode = cBPositionMode->currentIndex();
+    processOptions.nf = cBFrequency->currentIndex() + 1;
+    processOptions.elmin = cBElevationMask->currentText().toDouble() * D2R;
+    processOptions.dynamics = cBDynamicModel->currentIndex();
+    processOptions.tidecorr = cBTideCorrection->currentIndex();
+    processOptions.ionoopt = cBIonosphereOption->currentIndex();
+    processOptions.tropopt = cBTroposphereOption->currentIndex();
+    processOptions.sateph = cBSatelliteEphemeris->currentIndex();
+    processOptions.modear = cBAmbiguityResolutionGPS->currentIndex();
+    processOptions.glomodear = cBAmbiguityResolutionGlo->currentIndex();
+    processOptions.bdsmodear = cBAmbiguityResolutionBDS->currentIndex();
+    processOptions.thresar[0] = sBValidThresAR->value();
+    processOptions.maxout = sBOutageCountResetAmbiguity->value();
+    processOptions.minlock = sBLockCountFixAmbiguity->value();
+    processOptions.minfix = sBFixCountHoldAmbiguity->value();
+    processOptions.elmaskar = sBElevationMaskAR->value() * D2R;
+    processOptions.elmaskhold = sBElevationMaskHold->value() * D2R;
+    processOptions.maxtdiff = sBMaxAgeDifference->value();
+    processOptions.maxinno[0] = sBRejectPhase->value();
+    processOptions.maxinno[1] = sBRejectCode->value();
+    processOptions.thresslip = sBSlipThres->value();
+    processOptions.niter = sBNumIteration->value();
+    processOptions.syncsol = cBSyncSolution->currentIndex();
+    excludedSatellites = lEExcludedSatellites->text();
+    processOptions.navsys = 0;
 
-    if (NavSys1->isChecked()) PrcOpt.navsys |= SYS_GPS;
-    if (NavSys2->isChecked()) PrcOpt.navsys |= SYS_GLO;
-    if (NavSys3->isChecked()) PrcOpt.navsys |= SYS_GAL;
-    if (NavSys4->isChecked()) PrcOpt.navsys |= SYS_QZS;
-    if (NavSys5->isChecked()) PrcOpt.navsys |= SYS_SBS;
-    if (NavSys6->isChecked()) PrcOpt.navsys |= SYS_CMP;
-    if (NavSys7->isChecked()) PrcOpt.navsys |= SYS_IRN;
-    PrcOpt.posopt[0] = PosOpt1->isChecked();
-    PrcOpt.posopt[1] = PosOpt2->isChecked();
-    PrcOpt.posopt[2] = PosOpt3->isChecked();
-    PrcOpt.posopt[3] = PosOpt4->isChecked();
-    PrcOpt.posopt[4] = PosOpt5->isChecked();
+    if (cBNavSys1->isChecked()) processOptions.navsys |= SYS_GPS;
+    if (cBNavSys2->isChecked()) processOptions.navsys |= SYS_GLO;
+    if (cBNavSys3->isChecked()) processOptions.navsys |= SYS_GAL;
+    if (cBNavSys4->isChecked()) processOptions.navsys |= SYS_QZS;
+    if (cBNavSys5->isChecked()) processOptions.navsys |= SYS_SBS;
+    if (cBNavSys6->isChecked()) processOptions.navsys |= SYS_CMP;
+    if (cBNavSys7->isChecked()) processOptions.navsys |= SYS_IRN;
+    processOptions.posopt[0] = cBPositionOption1->isChecked();
+    processOptions.posopt[1] = cBPositionOption2->isChecked();
+    processOptions.posopt[2] = cBPositionOption3->isChecked();
+    processOptions.posopt[3] = cBPositionOption4->isChecked();
+    processOptions.posopt[4] = cBPositionOption5->isChecked();
 
-    SolOpt.posf = SolFormat->currentIndex();
-    SolOpt.timef = TimeFormat->currentIndex() == 0 ? 0 : 1;
-    SolOpt.times = TimeFormat->currentIndex() == 0 ? 0 : TimeFormat->currentIndex() - 1;
-    SolOpt.timeu = static_cast<int>(TimeDecimal->value());
-    SolOpt.degf = LatLonFormat->currentIndex();
-    strcpy(SolOpt.sep, qPrintable(FieldSep_Text));
-    SolOpt.outhead = OutputHead->currentIndex();
-    SolOpt.outopt = OutputOpt->currentIndex();
-    SolOpt.outvel = OutputVel->currentIndex();
-    PrcOpt.outsingle = OutputSingle->currentIndex();
-    SolOpt.maxsolstd = MaxSolStd->value();
-    SolOpt.datum = OutputDatum->currentIndex();
-    SolOpt.height = OutputHeight->currentIndex();
-    SolOpt.geoid = OutputGeoid->currentIndex();
-    SolOpt.nmeaintv[0] = NmeaIntv1->value();
-    SolOpt.nmeaintv[1] = NmeaIntv2->value();
-    DebugStatusF = DebugStatus->currentIndex();
-    DebugTraceF = DebugTrace->currentIndex();
+    solutionOption.posf = cBSolutionFormat->currentIndex();
+    solutionOption.timef = cBTimeFormat->currentIndex() == 0 ? 0 : 1;
+    solutionOption.times = cBTimeFormat->currentIndex() == 0 ? 0 : cBTimeFormat->currentIndex() - 1;
+    solutionOption.timeu = static_cast<int>(sBTimeDecimal->value());
+    solutionOption.degf = cBLatLonFormat->currentIndex();
+    strcpy(solutionOption.sep, qPrintable(FieldSep_Text));
+    solutionOption.outhead = cBOutputHeader->currentIndex();
+    solutionOption.outopt = cBOutputOption->currentIndex();
+    solutionOption.outvel = cBOutputVelocity->currentIndex();
+    processOptions.outsingle = cBOutputSingle->currentIndex();
+    solutionOption.maxsolstd = sBMaxSolutionStd->value();
+    solutionOption.datum = cBOutputDatum->currentIndex();
+    solutionOption.height = cBOutputHeight->currentIndex();
+    solutionOption.geoid = cBOutputGeoid->currentIndex();
+    solutionOption.nmeaintv[0] = sBNmeaInterval1->value();
+    solutionOption.nmeaintv[1] = sBNmeaInterval2->value();
+    debugStatusF = cBDebugStatus->currentIndex();
+    debugTraceF = cBDebugTrace->currentIndex();
 
-    BaselineC = BaselineConst->isChecked();
-    Baseline[0] = BaselineLen->value();
-    Baseline[1] = BaselineSig->value();
+    baselineC = cBBaselineConstrain->isChecked();
+    baseline[0] = sBBaselineLen->value();
+    baseline[1] = sBBaselineSig->value();
 
-    PrcOpt.eratio[0] = MeasErrR1->value();
-    PrcOpt.eratio[1] = MeasErrR2->value();
-    PrcOpt.err[1] = MeasErr2->value();
-    PrcOpt.err[2] = MeasErr3->value();
-    PrcOpt.err[3] = MeasErr4->value();
-    PrcOpt.err[4] = MeasErr5->value();
-    PrcOpt.prn[0] = PrNoise1->text().toDouble();
-    PrcOpt.prn[1] = PrNoise2->text().toDouble();
-    PrcOpt.prn[2] = PrNoise3->text().toDouble();
-    PrcOpt.prn[3] = PrNoise4->text().toDouble();
-    PrcOpt.prn[4] = PrNoise5->text().toDouble();
-    PrcOpt.sclkstab = SatClkStab->text().toDouble();
-    PrcOpt.maxaveep = MaxAveEp->value();
-    PrcOpt.initrst = ChkInitRestart->isChecked();
+    processOptions.eratio[0] = sBMeasurementErrorR1->value();
+    processOptions.eratio[1] = sBMeasurementErrorR2->value();
+    processOptions.err[1] = sBMeasurementError2->value();
+    processOptions.err[2] = sBMeasurementError3->value();
+    processOptions.err[3] = sBMeasurementError4->value();
+    processOptions.err[4] = sBMeasurementError5->value();
+    processOptions.prn[0] = lEProcessNoise1->text().toDouble();
+    processOptions.prn[1] = lEProcessNoise2->text().toDouble();
+    processOptions.prn[2] = lEProcessNoise3->text().toDouble();
+    processOptions.prn[3] = lEProcessNoise4->text().toDouble();
+    processOptions.prn[4] = lEProcessNoise5->text().toDouble();
+    processOptions.sclkstab = lESatelliteClockStability->text().toDouble();
+    processOptions.maxaveep = sBMaxAveEp->value();
+    processOptions.initrst = cBInitRestart->isChecked();
 
-    RovPosTypeF = RovPosTypeP->currentIndex();
-    RefPosTypeF = RefPosTypeP->currentIndex();
-    RovAntPcvF = RovAntPcv->isChecked();
-    RefAntPcvF = RefAntPcv->isChecked();
-    RovAntF = RovAnt->currentText();
-    RefAntF = RefAnt->currentText();
-    RovAntDel[0] = RovAntE->value();
-    RovAntDel[1] = RovAntN->value();
-    RovAntDel[2] = RovAntU->value();
-    RefAntDel[0] = RefAntE->value();
-    RefAntDel[1] = RefAntN->value();
-    RefAntDel[2] = RefAntU->value();
-    GetPos(RovPosTypeP->currentIndex(), editu, RovPos);
-    GetPos(RefPosTypeP->currentIndex(), editr, RefPos);
+    roverPositionTypeF = cBRoverPositionTypeP->currentIndex();
+    referencePositionTypeF = cBReferencePositionTypeP->currentIndex();
+    roverAntennaPcvF = cBRoverAntennaPcv->isChecked();
+    referenceAntennaPcvF = cBReferenceAntennaPcv->isChecked();
+    roverAntennaF = cBRoverAntenna->currentText();
+    referenceAntennaF = cBReferenceAntenna->currentText();
+    roverAntennaDelta[0] = sBRoverAntennaE->value();
+    roverAntennaDelta[1] = sBRoverAntennaN->value();
+    roverAntennaDelta[2] = sBRoverAntennaU->value();
+    referenceAntennaDelta[0] = sBReferenceAntennaE->value();
+    referenceAntennaDelta[1] = sBReferenceAntennaN->value();
+    referenceAntennaDelta[2] = sBReferenceAntennaU->value();
+    getPosition(cBRoverPositionTypeP->currentIndex(), editu, roverPosition);
+    getPosition(cBReferencePositionTypeP->currentIndex(), editr, referencePosition);
 
-    SatPcvFileF = SatPcvFile->text();
-    AntPcvFileF = AntPcvFile->text();
-    StaPosFileF = StaPosFile->text();
-    GeoidDataFileF = GeoidDataFile->text();
-    DCBFileF = DCBFile->text();
-    EOPFileF = EOPFile->text();
-    LocalDirectory = LocalDir->text();
+    satellitePcvFileF = lESatellitePcvFile->text();
+    antennaPcvFileF = lEAntennaPcvFile->text();
+    stationPositionFileF = lEStationPositionFile->text();
+    geoidDataFileF = lEGeoidDataFile->text();
+    dcbFileF = lEDCBFile->text();
+    eopFileF = lEEOPFile->text();
+    localDirectory = lELocalDirectory->text();
 
-    SvrCycle = SvrCycleE->value();
-    TimeoutTime = TimeoutTimeE->value();
-    ReconTime = ReconTimeE->value();
-    NmeaCycle = NmeaCycleE->value();
-    FileSwapMargin = FileSwapMarginE->value();
-    SvrBuffSize = SvrBuffSizeE->value();
-    SolBuffSize = SolBuffSizeE->value();
-    SavedSol = SavedSolE->value();
-    NavSelect = NavSelectS->currentIndex();
-    PrcOpt.sbassatsel = SbasSatE->value();
-    ProxyAddr = ProxyAddrE->text();
-    MoniPort = MoniPortE->value();
-    PanelStack = PanelStackE->currentIndex();
-    PanelFont = FontLabel1->font();
-    PosFont = FontLabel2->font();
+    serverCycle = sBServerCycle->value();
+    timeoutTime = sBTimeoutTime->value();
+    reconnectTime = sBReconnectTime->value();
+    nmeaCycle = sBNmeaCycle->value();
+    fileSwapMargin = sBFileSwapMargin->value();
+    serverBufferSize = sBServerBufferSize->value();
+    solutionBufferSize = sBSolutionBufferSize->value();
+    savedSolution = sBSavedSolution->value();
+    navSelect = cBNavSelect->currentIndex();
+    processOptions.sbassatsel = sBSbasSatellite->value();
+    proxyAddr = lEProxyAddress->text();
+    monitorPort = sBMonitorPort->value();
+    panelStack = cBPanelStack->currentIndex();
+    panelFont = fontLabel1->font();
+    positionFont = fontLabel2->font();
 
-	UpdateEnable();
+	updateEnable();
 }
 //---------------------------------------------------------------------------
-void OptDialog::LoadOpt(const QString &file)
+void OptDialog::loadOption(const QString &file)
 {
     int itype[] = { STR_SERIAL, STR_TCPCLI, STR_TCPSVR, STR_NTRIPCLI, STR_FILE, STR_FTP, STR_HTTP };
     int otype[] = { STR_SERIAL, STR_TCPCLI, STR_TCPSVR, STR_NTRIPSVR, STR_NTRIPCAS, STR_FILE };
-    QLineEdit *editu[] = { RovPos1, RovPos2, RovPos3 };
-    QLineEdit *editr[] = { RefPos1, RefPos2, RefPos3 };
+    QLineEdit *editu[] = { lERoverPosition1, lERoverPosition2, lERoverPosition3 };
+    QLineEdit *editr[] = { lEReferencePosition1, lEReferencePosition2, lEReferencePosition3 };
     QString buff;
     char id[32];
 	int sat;
@@ -738,139 +738,139 @@ void OptDialog::LoadOpt(const QString &file)
             mainForm->Paths[i][3] = strpath[i];
 	}
     mainForm->NmeaReq = nmeareq;
-    mainForm->NmeaPos[0] = nmeapos[0];
-    mainForm->NmeaPos[1] = nmeapos[1];
+    mainForm->nmeaPosition[0] = nmeapos[0];
+    mainForm->nmeaPosition[1] = nmeapos[1];
 
-    SbasSatE->setValue(prcopt.sbassatsel);
+    sBSbasSatellite->setValue(prcopt.sbassatsel);
 
-    PosMode->setCurrentIndex(prcopt.mode);
-    Freq->setCurrentIndex(prcopt.nf > NFREQ - 1 ? NFREQ - 1 : prcopt.nf - 1);
-    Solution->setCurrentIndex(prcopt.soltype);
-    ElMask->setCurrentIndex(ElMask->findText(QString::number(prcopt.elmin * R2D, 'f', 0)));
-    DynamicModel->setCurrentIndex(prcopt.dynamics);
-    TideCorr->setCurrentIndex(prcopt.tidecorr);
-    IonoOpt->setCurrentIndex(prcopt.ionoopt);
-    TropOpt->setCurrentIndex(prcopt.tropopt);
-    SatEphem->setCurrentIndex(prcopt.sateph);
-    ExSatsE->setText("");
+    cBPositionMode->setCurrentIndex(prcopt.mode);
+    cBFrequency->setCurrentIndex(prcopt.nf > NFREQ - 1 ? NFREQ - 1 : prcopt.nf - 1);
+    cBSolution->setCurrentIndex(prcopt.soltype);
+    cBElevationMask->setCurrentIndex(cBElevationMask->findText(QString::number(prcopt.elmin * R2D, 'f', 0)));
+    cBDynamicModel->setCurrentIndex(prcopt.dynamics);
+    cBTideCorrection->setCurrentIndex(prcopt.tidecorr);
+    cBIonosphereOption->setCurrentIndex(prcopt.ionoopt);
+    cBTroposphereOption->setCurrentIndex(prcopt.tropopt);
+    cBSatelliteEphemeris->setCurrentIndex(prcopt.sateph);
+    lEExcludedSatellites->setText("");
     for (sat = 1; sat <= MAXSAT; sat++) {
         if (!prcopt.exsats[sat - 1]) continue;
         satno2id(sat, id);
         buff += QString(buff.isEmpty() ? "" : " ") + (prcopt.exsats[sat - 1] == 2 ? "+" : "") + id;
 	}
-    ExSatsE->setText(buff);
-    NavSys1->setChecked(prcopt.navsys & SYS_GPS);
-    NavSys2->setChecked(prcopt.navsys & SYS_GLO);
-    NavSys3->setChecked(prcopt.navsys & SYS_GAL);
-    NavSys4->setChecked(prcopt.navsys & SYS_QZS);
-    NavSys5->setChecked(prcopt.navsys & SYS_SBS);
-    NavSys6->setChecked(prcopt.navsys & SYS_CMP);
-    NavSys7->setChecked(prcopt.navsys & SYS_IRN);
-    PosOpt1->setChecked(prcopt.posopt[0]);
-    PosOpt2->setChecked(prcopt.posopt[1]);
-    PosOpt3->setChecked(prcopt.posopt[2]);
-    PosOpt4->setChecked(prcopt.posopt[3]);
-    PosOpt5->setChecked(prcopt.posopt[4]);
+    lEExcludedSatellites->setText(buff);
+    cBNavSys1->setChecked(prcopt.navsys & SYS_GPS);
+    cBNavSys2->setChecked(prcopt.navsys & SYS_GLO);
+    cBNavSys3->setChecked(prcopt.navsys & SYS_GAL);
+    cBNavSys4->setChecked(prcopt.navsys & SYS_QZS);
+    cBNavSys5->setChecked(prcopt.navsys & SYS_SBS);
+    cBNavSys6->setChecked(prcopt.navsys & SYS_CMP);
+    cBNavSys7->setChecked(prcopt.navsys & SYS_IRN);
+    cBPositionOption1->setChecked(prcopt.posopt[0]);
+    cBPositionOption2->setChecked(prcopt.posopt[1]);
+    cBPositionOption3->setChecked(prcopt.posopt[2]);
+    cBPositionOption4->setChecked(prcopt.posopt[3]);
+    cBPositionOption5->setChecked(prcopt.posopt[4]);
 
-    AmbRes->setCurrentIndex(prcopt.modear);
-    GloAmbRes->setCurrentIndex(prcopt.glomodear);
-    BdsAmbRes->setCurrentIndex(prcopt.bdsmodear);
-    ValidThresAR->setValue(prcopt.thresar[0]);
-    OutCntResetAmb->setValue(prcopt.maxout);
-    FixCntHoldAmb->setValue(prcopt.minfix);
-    LockCntFixAmb->setValue(prcopt.minlock);
-    ElMaskAR->setValue(prcopt.elmaskar * R2D);
-    ElMaskHold->setValue(prcopt.elmaskhold * R2D);
-    MaxAgeDiff->setValue(prcopt.maxtdiff);
-    RejectCode->setValue(prcopt.maxinno[1]);
-    RejectPhase->setValue(prcopt.maxinno[0]);
-    SlipThres->setValue(prcopt.thresslip);
-    NumIter->setValue(prcopt.niter);
-    SyncSol->setCurrentIndex(prcopt.syncsol);
-    BaselineLen->setValue(prcopt.baseline[0]);
-    BaselineSig->setValue(prcopt.baseline[1]);
-    BaselineConst->setChecked(prcopt.baseline[0] > 0.0);
+    cBAmbiguityResolutionGPS->setCurrentIndex(prcopt.modear);
+    cBAmbiguityResolutionGlo->setCurrentIndex(prcopt.glomodear);
+    cBAmbiguityResolutionBDS->setCurrentIndex(prcopt.bdsmodear);
+    sBValidThresAR->setValue(prcopt.thresar[0]);
+    sBOutageCountResetAmbiguity->setValue(prcopt.maxout);
+    sBFixCountHoldAmbiguity->setValue(prcopt.minfix);
+    sBLockCountFixAmbiguity->setValue(prcopt.minlock);
+    sBElevationMaskAR->setValue(prcopt.elmaskar * R2D);
+    sBElevationMaskHold->setValue(prcopt.elmaskhold * R2D);
+    sBMaxAgeDifference->setValue(prcopt.maxtdiff);
+    sBRejectCode->setValue(prcopt.maxinno[0]);
+    sBRejectPhase->setValue(prcopt.maxinno[1]);
+    sBSlipThres->setValue(prcopt.thresslip);
+    sBNumIteration->setValue(prcopt.niter);
+    cBSyncSolution->setCurrentIndex(prcopt.syncsol);
+    sBBaselineLen->setValue(prcopt.baseline[0]);
+    sBBaselineSig->setValue(prcopt.baseline[1]);
+    cBBaselineConstrain->setChecked(prcopt.baseline[0] > 0.0);
 
-    SolFormat->setCurrentIndex(solopt.posf);
-    TimeFormat->setCurrentIndex(solopt.timef == 0 ? 0 : solopt.times + 1);
-    TimeDecimal->setValue(solopt.timeu);
-    LatLonFormat->setCurrentIndex(solopt.degf);
-    FieldSep->setText(solopt.sep);
-    OutputHead->setCurrentIndex(solopt.outhead);
-    OutputOpt->setCurrentIndex(solopt.outopt);
-    OutputVel->setCurrentIndex(solopt.outvel);
-    OutputSingle->setCurrentIndex(prcopt.outsingle);
-    MaxSolStd->setValue(solopt.maxsolstd);
-    OutputDatum->setCurrentIndex(solopt.datum);
-    OutputHeight->setCurrentIndex(solopt.height);
-    OutputGeoid->setCurrentIndex(solopt.geoid);
-    NmeaIntv1->setValue(solopt.nmeaintv[0]);
-    NmeaIntv2->setValue(solopt.nmeaintv[1]);
-    DebugTrace->setCurrentIndex(solopt.trace);
-    DebugStatus->setCurrentIndex(solopt.sstat);
+    cBSolutionFormat->setCurrentIndex(solopt.posf);
+    cBTimeFormat->setCurrentIndex(solopt.timef == 0 ? 0 : solopt.times + 1);
+    sBTimeDecimal->setValue(solopt.timeu);
+    cBLatLonFormat->setCurrentIndex(solopt.degf);
+    lEFieldSeperator->setText(solopt.sep);
+    cBOutputHeader->setCurrentIndex(solopt.outhead);
+    cBOutputOption->setCurrentIndex(solopt.outopt);
+    cBOutputVelocity->setCurrentIndex(solopt.outvel);
+    cBOutputSingle->setCurrentIndex(prcopt.outsingle);
+    sBMaxSolutionStd->setValue(solopt.maxsolstd);
+    cBOutputDatum->setCurrentIndex(solopt.datum);
+    cBOutputHeight->setCurrentIndex(solopt.height);
+    cBOutputGeoid->setCurrentIndex(solopt.geoid);
+    sBNmeaInterval1->setValue(solopt.nmeaintv[0]);
+    sBNmeaInterval2->setValue(solopt.nmeaintv[1]);
+    cBDebugTrace->setCurrentIndex(solopt.trace);
+    cBDebugStatus->setCurrentIndex(solopt.sstat);
 
-    MeasErrR1->setValue(prcopt.eratio[0]);
-    MeasErrR2->setValue(prcopt.eratio[1]);
-    MeasErr2->setValue(prcopt.err[1]);
-    MeasErr3->setValue(prcopt.err[2]);
-    MeasErr4->setValue(prcopt.err[3]);
-    MeasErr5->setValue(prcopt.err[4]);
-    SatClkStab->setText(QString::number(prcopt.sclkstab));
-    PrNoise1->setText(QString::number(prcopt.prn[0]));
-    PrNoise2->setText(QString::number(prcopt.prn[1]));
-    PrNoise3->setText(QString::number(prcopt.prn[2]));
-    PrNoise4->setText(QString::number(prcopt.prn[3]));
-    PrNoise5->setText(QString::number(prcopt.prn[4]));
+    sBMeasurementErrorR1->setValue(prcopt.eratio[0]);
+    sBMeasurementErrorR2->setValue(prcopt.eratio[1]);
+    sBMeasurementError2->setValue(prcopt.err[1]);
+    sBMeasurementError3->setValue(prcopt.err[2]);
+    sBMeasurementError4->setValue(prcopt.err[3]);
+    sBMeasurementError5->setValue(prcopt.err[4]);
+    lESatelliteClockStability->setText(QString::number(prcopt.sclkstab));
+    lEProcessNoise1->setText(QString::number(prcopt.prn[0]));
+    lEProcessNoise2->setText(QString::number(prcopt.prn[1]));
+    lEProcessNoise3->setText(QString::number(prcopt.prn[2]));
+    lEProcessNoise4->setText(QString::number(prcopt.prn[3]));
+    lEProcessNoise5->setText(QString::number(prcopt.prn[4]));
 
-    RovAntPcv->setChecked(*prcopt.anttype[0]);
-    RefAntPcv->setChecked(*prcopt.anttype[1]);
-    RovAnt->setCurrentIndex(RovAnt->findText(prcopt.anttype[0]));
-    RefAnt->setCurrentIndex(RefAnt->findText(prcopt.anttype[1]));
-    RovAntE->setValue(prcopt.antdel[0][0]);
-    RovAntN->setValue(prcopt.antdel[0][1]);
-    RovAntU->setValue(prcopt.antdel[0][2]);
-    RefAntE->setValue(prcopt.antdel[1][0]);
-    RefAntN->setValue(prcopt.antdel[1][1]);
-    RefAntU->setValue(prcopt.antdel[1][2]);
-    MaxAveEp->setValue(prcopt.maxaveep);
+    cBRoverAntennaPcv->setChecked(*prcopt.anttype[0]);
+    cBReferenceAntennaPcv->setChecked(*prcopt.anttype[1]);
+    cBRoverAntenna->setCurrentIndex(cBRoverAntenna->findText(prcopt.anttype[0]));
+    cBReferenceAntenna->setCurrentIndex(cBReferenceAntenna->findText(prcopt.anttype[1]));
+    sBRoverAntennaE->setValue(prcopt.antdel[0][0]);
+    sBRoverAntennaN->setValue(prcopt.antdel[0][1]);
+    sBRoverAntennaU->setValue(prcopt.antdel[0][2]);
+    sBReferenceAntennaE->setValue(prcopt.antdel[1][0]);
+    sBReferenceAntennaN->setValue(prcopt.antdel[1][1]);
+    sBReferenceAntennaU->setValue(prcopt.antdel[1][2]);
+    sBMaxAveEp->setValue(prcopt.maxaveep);
 
-    RovPosTypeP->setCurrentIndex(0);
-    RefPosTypeP->setCurrentIndex(0);
-    if      (prcopt.refpos==POSOPT_RTCM  ) RefPosTypeP->setCurrentIndex(3);
-    else if (prcopt.refpos==POSOPT_SINGLE) RefPosTypeP->setCurrentIndex(4);
+    cBRoverPositionTypeP->setCurrentIndex(0);
+    cBReferencePositionTypeP->setCurrentIndex(0);
+    if      (prcopt.refpos==POSOPT_RTCM  ) cBReferencePositionTypeP->setCurrentIndex(3);
+    else if (prcopt.refpos==POSOPT_SINGLE) cBReferencePositionTypeP->setCurrentIndex(4);
 
-    RovPosTypeF = RovPosTypeP->currentIndex();
-    RefPosTypeF = RefPosTypeP->currentIndex();
-    SetPos(RovPosTypeP->currentIndex(), editu, prcopt.ru);
-    SetPos(RefPosTypeP->currentIndex(), editr, prcopt.rb);
+    roverPositionTypeF = cBRoverPositionTypeP->currentIndex();
+    referencePositionTypeF = cBReferencePositionTypeP->currentIndex();
+    setPosition(cBRoverPositionTypeP->currentIndex(), editu, prcopt.ru);
+    setPosition(cBReferencePositionTypeP->currentIndex(), editr, prcopt.rb);
 
-    SatPcvFile->setText(filopt.satantp);
-    AntPcvFile->setText(filopt.rcvantp);
-    StaPosFile->setText(filopt.stapos);
-    GeoidDataFile->setText(filopt.geoid);
-    DCBFile->setText(filopt.dcb);
-    LocalDir->setText(filopt.tempdir);
+    lESatellitePcvFile->setText(filopt.satantp);
+    lEAntennaPcvFile->setText(filopt.rcvantp);
+    lEStationPositionFile->setText(filopt.stapos);
+    lEGeoidDataFile->setText(filopt.geoid);
+    lEDCBFile->setText(filopt.dcb);
+    lELocalDirectory->setText(filopt.tempdir);
 
-	ReadAntList();
-	UpdateEnable();
+	readAntennaList();
+	updateEnable();
 }
 //---------------------------------------------------------------------------
-void OptDialog::SaveOpt(const QString &file)
+void OptDialog::saveOption(const QString &file)
 {
-    QString ProxyAddrE_Text = ProxyAddrE->text();
-    QString ExSatsE_Text = ExSatsE->text();
-    QString FieldSep_Text = FieldSep->text();
-    QString RovAnt_Text = RovAnt->currentText(), RefAnt_Text = RefAnt->currentText();
-    QString SatPcvFile_Text = SatPcvFile->text();
-    QString AntPcvFile_Text = AntPcvFile->text();
-    QString StaPosFile_Text = StaPosFile->text();
-    QString GeoidDataFile_Text = GeoidDataFile->text();
-    QString DCBFile_Text = DCBFile->text();
-    QString LocalDir_Text = LocalDir->text();
+    QString ProxyAddrE_Text = lEProxyAddress->text();
+    QString ExSatsE_Text = lEExcludedSatellites->text();
+    QString FieldSep_Text = lEFieldSeperator->text();
+    QString RovAnt_Text = cBRoverAntenna->currentText(), RefAnt_Text = cBReferenceAntenna->currentText();
+    QString SatPcvFile_Text = lESatellitePcvFile->text();
+    QString AntPcvFile_Text = lEAntennaPcvFile->text();
+    QString StaPosFile_Text = lEStationPositionFile->text();
+    QString GeoidDataFile_Text = lEGeoidDataFile->text();
+    QString DCBFile_Text = lEDCBFile->text();
+    QString LocalDir_Text = lELocalDirectory->text();
     int itype[] = { STR_SERIAL, STR_TCPCLI, STR_TCPSVR, STR_NTRIPCLI, STR_FILE, STR_FTP, STR_HTTP };
     int otype[] = { STR_SERIAL, STR_TCPCLI, STR_TCPSVR, STR_NTRIPSVR, STR_NTRIPCAS, STR_FILE };
-    QLineEdit *editu[] = { RovPos1, RovPos2, RovPos3 };
-    QLineEdit *editr[] = { RefPos1, RefPos2, RefPos3 };
+    QLineEdit *editu[] = { lERoverPosition1, lERoverPosition2, lERoverPosition3 };
+    QLineEdit *editr[] = { lEReferencePosition1, lEReferencePosition2, lEReferencePosition3 };
     char buff[1024], *p, *q, comment[256], s[64];
     int sat, ex;
     prcopt_t prcopt = prcopt_default;
@@ -940,29 +940,29 @@ void OptDialog::SaveOpt(const QString &file)
 		}
 	}
     nmeareq = mainForm->NmeaReq;
-    nmeapos[0] = mainForm->NmeaPos[0];
-    nmeapos[1] = mainForm->NmeaPos[1];
+    nmeapos[0] = mainForm->nmeaPosition[0];
+    nmeapos[1] = mainForm->nmeaPosition[1];
 
-    svrcycle = SvrCycleE->value();
-    timeout = TimeoutTimeE->value();
-    reconnect = ReconTimeE->value();
-    nmeacycle = NmeaCycleE->value();
-    buffsize = SvrBuffSizeE->value();
-    navmsgsel = NavSelectS->currentIndex();
+    svrcycle = sBServerCycle->value();
+    timeout = sBTimeoutTime->value();
+    reconnect = sBReconnectTime->value();
+    nmeacycle = sBNmeaCycle->value();
+    buffsize = sBServerBufferSize->value();
+    navmsgsel = cBNavSelect->currentIndex();
     strcpy(proxyaddr, qPrintable(ProxyAddrE_Text));
-    fswapmargin = FileSwapMarginE->value();
-    prcopt.sbassatsel = SbasSatE->value();
+    fswapmargin = sBFileSwapMargin->value();
+    prcopt.sbassatsel = sBSbasSatellite->value();
 
-    prcopt.mode = PosMode->currentIndex();
-    prcopt.nf = Freq->currentIndex() + 1;
-    prcopt.soltype = Solution->currentIndex();
-    prcopt.elmin = ElMask->currentText().toDouble() * D2R;
-    prcopt.dynamics = DynamicModel->currentIndex();
-    prcopt.tidecorr = TideCorr->currentIndex();
-    prcopt.ionoopt = IonoOpt->currentIndex();
-    prcopt.tropopt = TropOpt->currentIndex();
-    prcopt.sateph = SatEphem->currentIndex();
-    if (ExSatsE->text() != "") {
+    prcopt.mode = cBPositionMode->currentIndex();
+    prcopt.nf = cBFrequency->currentIndex() + 1;
+    prcopt.soltype = cBSolution->currentIndex();
+    prcopt.elmin = cBElevationMask->currentText().toDouble() * D2R;
+    prcopt.dynamics = cBDynamicModel->currentIndex();
+    prcopt.tidecorr = cBTideCorrection->currentIndex();
+    prcopt.ionoopt = cBIonosphereOption->currentIndex();
+    prcopt.tropopt = cBTroposphereOption->currentIndex();
+    prcopt.sateph = cBSatelliteEphemeris->currentIndex();
+    if (lEExcludedSatellites->text() != "") {
         strcpy(buff, qPrintable(ExSatsE_Text));
         for (p = strtok(buff, " "); p; p = strtok(NULL, " ")) {
             if (*p == '+') {
@@ -974,88 +974,88 @@ void OptDialog::SaveOpt(const QString &file)
             prcopt.exsats[sat - 1] = (unsigned char)ex;
 		}
 	}
-    prcopt.navsys = (NavSys1->isChecked() ? SYS_GPS : 0) |
-            (NavSys2->isChecked() ? SYS_GLO : 0) |
-            (NavSys3->isChecked() ? SYS_GAL : 0) |
-            (NavSys4->isChecked() ? SYS_QZS : 0) |
-            (NavSys5->isChecked() ? SYS_SBS : 0) |
-            (NavSys6->isChecked() ? SYS_CMP : 0) |
-            (NavSys7->isChecked() ? SYS_IRN : 0);
-    prcopt.posopt[0] = PosOpt1->isChecked();
-    prcopt.posopt[1] = PosOpt2->isChecked();
-    prcopt.posopt[2] = PosOpt3->isChecked();
-    prcopt.posopt[3] = PosOpt4->isChecked();
-    prcopt.posopt[4] = PosOpt5->isChecked();
+    prcopt.navsys = (cBNavSys1->isChecked() ? SYS_GPS : 0) |
+            (cBNavSys2->isChecked() ? SYS_GLO : 0) |
+            (cBNavSys3->isChecked() ? SYS_GAL : 0) |
+            (cBNavSys4->isChecked() ? SYS_QZS : 0) |
+            (cBNavSys5->isChecked() ? SYS_SBS : 0) |
+            (cBNavSys6->isChecked() ? SYS_CMP : 0) |
+            (cBNavSys7->isChecked() ? SYS_IRN : 0);
+    prcopt.posopt[0] = cBPositionOption1->isChecked();
+    prcopt.posopt[1] = cBPositionOption2->isChecked();
+    prcopt.posopt[2] = cBPositionOption3->isChecked();
+    prcopt.posopt[3] = cBPositionOption4->isChecked();
+    prcopt.posopt[4] = cBPositionOption5->isChecked();
 
-    prcopt.modear = AmbRes->currentIndex();
-    prcopt.glomodear = GloAmbRes->currentIndex();
-    prcopt.bdsmodear = BdsAmbRes->currentIndex();
-    prcopt.thresar[0] = ValidThresAR->value();
-    prcopt.maxout = OutCntResetAmb->value();
-    prcopt.minfix = FixCntHoldAmb->value();
-    prcopt.minlock = LockCntFixAmb->value();
-    prcopt.elmaskar = ElMaskAR->value() * D2R;
-    prcopt.elmaskhold = ElMaskHold->value() * D2R;
-    prcopt.maxtdiff = MaxAgeDiff->value();
-    prcopt.maxinno[1] = RejectCode->value();
-    prcopt.maxinno[0] = RejectPhase->value();
-    prcopt.thresslip = SlipThres->value();
-    prcopt.niter = NumIter->value();
-    prcopt.syncsol = SyncSol->currentIndex();
-    if (prcopt.mode == PMODE_MOVEB && BaselineConst->isChecked()) {
-        prcopt.baseline[0] = BaselineLen->value();
-        prcopt.baseline[1] = BaselineSig->value();
+    prcopt.modear = cBAmbiguityResolutionGPS->currentIndex();
+    prcopt.glomodear = cBAmbiguityResolutionGlo->currentIndex();
+    prcopt.bdsmodear = cBAmbiguityResolutionBDS->currentIndex();
+    prcopt.thresar[0] = sBValidThresAR->value();
+    prcopt.maxout = sBOutageCountResetAmbiguity->value();
+    prcopt.minfix = sBFixCountHoldAmbiguity->value();
+    prcopt.minlock = sBLockCountFixAmbiguity->value();
+    prcopt.elmaskar = sBElevationMaskAR->value() * D2R;
+    prcopt.elmaskhold = sBElevationMaskHold->value() * D2R;
+    prcopt.maxtdiff = sBMaxAgeDifference->value();
+    prcopt.maxinno[0] = sBRejectCode->value();
+    prcopt.maxinno[1] = sBRejectPhase->value();
+    prcopt.thresslip = sBSlipThres->value();
+    prcopt.niter = sBNumIteration->value();
+    prcopt.syncsol = cBSyncSolution->currentIndex();
+    if (prcopt.mode == PMODE_MOVEB && cBBaselineConstrain->isChecked()) {
+        prcopt.baseline[0] = sBBaselineLen->value();
+        prcopt.baseline[1] = sBBaselineSig->value();
 	}
-    solopt.posf = SolFormat->currentIndex();
-    solopt.timef = TimeFormat->currentIndex() == 0 ? 0 : 1;
-    solopt.times = TimeFormat->currentIndex() == 0 ? 0 : TimeFormat->currentIndex() - 1;
-    solopt.timeu = TimeDecimal->value();
-    solopt.degf = LatLonFormat->currentIndex();
+    solopt.posf = cBSolutionFormat->currentIndex();
+    solopt.timef = cBTimeFormat->currentIndex() == 0 ? 0 : 1;
+    solopt.times = cBTimeFormat->currentIndex() == 0 ? 0 : cBTimeFormat->currentIndex() - 1;
+    solopt.timeu = sBTimeDecimal->value();
+    solopt.degf = cBLatLonFormat->currentIndex();
     strcpy(solopt.sep, qPrintable(FieldSep_Text));
-    solopt.outhead = OutputHead->currentIndex();
-    solopt.outopt = OutputOpt->currentIndex();
-    solopt.outvel =OutputVel->currentIndex();
-    prcopt.outsingle = OutputSingle->currentIndex();
-    solopt.maxsolstd = MaxSolStd->value();
-    solopt.datum = OutputDatum->currentIndex();
-    solopt.height = OutputHeight->currentIndex();
-    solopt.geoid = OutputGeoid->currentIndex();
-    solopt.nmeaintv[0] = NmeaIntv1->value();
-    solopt.nmeaintv[1] = NmeaIntv2->value();
-    solopt.trace = DebugTrace->currentIndex();
-    solopt.sstat = DebugStatus->currentIndex();
+    solopt.outhead = cBOutputHeader->currentIndex();
+    solopt.outopt = cBOutputOption->currentIndex();
+    solopt.outvel = cBOutputVelocity->currentIndex();
+    prcopt.outsingle = cBOutputSingle->currentIndex();
+    solopt.maxsolstd = sBMaxSolutionStd->value();
+    solopt.datum = cBOutputDatum->currentIndex();
+    solopt.height = cBOutputHeight->currentIndex();
+    solopt.geoid = cBOutputGeoid->currentIndex();
+    solopt.nmeaintv[0] = sBNmeaInterval1->value();
+    solopt.nmeaintv[1] = sBNmeaInterval2->value();
+    solopt.trace = cBDebugTrace->currentIndex();
+    solopt.sstat = cBDebugStatus->currentIndex();
 
-    prcopt.eratio[0] = MeasErrR1->value();
-    prcopt.eratio[1] = MeasErrR2->value();
-    prcopt.err[1] = MeasErr2->value();
-    prcopt.err[2] = MeasErr3->value();
-    prcopt.err[3] = MeasErr4->value();
-    prcopt.err[4] = MeasErr5->value();
-    prcopt.sclkstab = SatClkStab->text().toDouble();
-    prcopt.prn[0] = PrNoise1->text().toDouble();
-    prcopt.prn[1] = PrNoise2->text().toDouble();
-    prcopt.prn[2] = PrNoise3->text().toDouble();
-    prcopt.prn[3] = PrNoise4->text().toDouble();
-    prcopt.prn[4] = PrNoise5->text().toDouble();
+    prcopt.eratio[0] = sBMeasurementErrorR1->value();
+    prcopt.eratio[1] = sBMeasurementErrorR2->value();
+    prcopt.err[1] = sBMeasurementError2->value();
+    prcopt.err[2] = sBMeasurementError3->value();
+    prcopt.err[3] = sBMeasurementError4->value();
+    prcopt.err[4] = sBMeasurementError5->value();
+    prcopt.sclkstab = lESatelliteClockStability->text().toDouble();
+    prcopt.prn[0] = lEProcessNoise1->text().toDouble();
+    prcopt.prn[1] = lEProcessNoise2->text().toDouble();
+    prcopt.prn[2] = lEProcessNoise3->text().toDouble();
+    prcopt.prn[3] = lEProcessNoise4->text().toDouble();
+    prcopt.prn[4] = lEProcessNoise5->text().toDouble();
 
-    if (RovAntPcv->isChecked()) strcpy(prcopt.anttype[0], qPrintable(RovAnt_Text));
-    if (RefAntPcv->isChecked()) strcpy(prcopt.anttype[1], qPrintable(RefAnt_Text));
-    prcopt.antdel[0][0] = RovAntE->value();
-    prcopt.antdel[0][1] = RovAntN->value();
-    prcopt.antdel[0][2] = RovAntU->value();
-    prcopt.antdel[1][0] = RefAntE->value();
-    prcopt.antdel[1][1] = RefAntN->value();
-    prcopt.antdel[1][2] = RefAntU->value();
-    prcopt.maxaveep = MaxAveEp->value();
-    prcopt.initrst = ChkInitRestart->isChecked();
+    if (cBRoverAntennaPcv->isChecked()) strcpy(prcopt.anttype[0], qPrintable(RovAnt_Text));
+    if (cBReferenceAntennaPcv->isChecked()) strcpy(prcopt.anttype[1], qPrintable(RefAnt_Text));
+    prcopt.antdel[0][0] = sBRoverAntennaE->value();
+    prcopt.antdel[0][1] = sBRoverAntennaN->value();
+    prcopt.antdel[0][2] = sBRoverAntennaU->value();
+    prcopt.antdel[1][0] = sBReferenceAntennaE->value();
+    prcopt.antdel[1][1] = sBReferenceAntennaN->value();
+    prcopt.antdel[1][2] = sBReferenceAntennaU->value();
+    prcopt.maxaveep = sBMaxAveEp->value();
+    prcopt.initrst = cBInitRestart->isChecked();
 
     prcopt.rovpos = 4;
     prcopt.refpos = 4;
-    if      (RefPosTypeP->currentIndex()==3) prcopt.refpos=POSOPT_RTCM;
-    else if (RefPosTypeP->currentIndex()==4) prcopt.refpos=POSOPT_SINGLE;
+    if      (cBReferencePositionTypeP->currentIndex()==3) prcopt.refpos=POSOPT_RTCM;
+    else if (cBReferencePositionTypeP->currentIndex()==4) prcopt.refpos=POSOPT_SINGLE;
 
-    if (prcopt.rovpos == POSOPT_POS) GetPos(RovPosTypeP->currentIndex(), editu, prcopt.ru);
-    if (prcopt.refpos == POSOPT_POS) GetPos(RefPosTypeP->currentIndex(), editr, prcopt.rb);
+    if (prcopt.rovpos == POSOPT_POS) getPosition(cBRoverPositionTypeP->currentIndex(), editu, prcopt.ru);
+    if (prcopt.refpos == POSOPT_POS) getPosition(cBReferencePositionTypeP->currentIndex(), editr, prcopt.rb);
 
     strcpy(filopt.satantp, qPrintable(SatPcvFile_Text));
     strcpy(filopt.rcvantp, qPrintable(AntPcvFile_Text));
@@ -1071,86 +1071,86 @@ void OptDialog::SaveOpt(const QString &file)
         !saveopts(qPrintable(file), "a", "", rcvopts)) return;
 }
 //---------------------------------------------------------------------------
-void OptDialog::UpdateEnable(void)
+void OptDialog::updateEnable(void)
 {
-    bool rel = PMODE_DGPS <= PosMode->currentIndex() && PosMode->currentIndex() <= PMODE_FIXED;
-    bool rtk = PMODE_KINEMA <= PosMode->currentIndex() && PosMode->currentIndex() <= PMODE_FIXED;
-    bool ppp = PosMode->currentIndex() >= PMODE_PPP_KINEMA;
+    bool rel = PMODE_DGPS <= cBPositionMode->currentIndex() && cBPositionMode->currentIndex() <= PMODE_FIXED;
+    bool rtk = PMODE_KINEMA <= cBPositionMode->currentIndex() && cBPositionMode->currentIndex() <= PMODE_FIXED;
+    bool ppp = cBPositionMode->currentIndex() >= PMODE_PPP_KINEMA;
     bool ar = rtk || ppp;
 
-    Freq->setEnabled(rel);
-    Solution->setEnabled(false);
-    DynamicModel->setEnabled(rel);
-    TideCorr->setEnabled(rel || ppp);
-    PosOpt1->setEnabled(ppp);
-    PosOpt2->setEnabled(ppp);
-    PosOpt3->setEnabled(ppp);
-    PosOpt4->setEnabled(ppp);
+    cBFrequency->setEnabled(rel);
+    cBSolution->setEnabled(false);
+    cBDynamicModel->setEnabled(rel);
+    cBTideCorrection->setEnabled(rel || ppp);
+    cBPositionOption1->setEnabled(ppp);
+    cBPositionOption2->setEnabled(ppp);
+    cBPositionOption3->setEnabled(ppp);
+    cBPositionOption4->setEnabled(ppp);
 
-    AmbRes->setEnabled(ar);
-    GloAmbRes->setEnabled(ar && AmbRes->currentIndex() > 0 && NavSys2->isChecked());
-    BdsAmbRes->setEnabled(ar && AmbRes->currentIndex() > 0 && NavSys6->isChecked());
-    ValidThresAR->setEnabled(ar && AmbRes->currentIndex() >= 1 && AmbRes->currentIndex() < 4);
-    ThresAR2->setEnabled(ar && AmbRes->currentIndex() >= 4);
-    ThresAR3->setEnabled(ar && AmbRes->currentIndex() >= 4);
-    LockCntFixAmb->setEnabled(ar && AmbRes->currentIndex() >= 1);
-    ElMaskAR->setEnabled(ar && AmbRes->currentIndex() >= 1);
-    OutCntResetAmb->setEnabled(ar || ppp);
-    FixCntHoldAmb->setEnabled(ar && AmbRes->currentIndex() == 3);
-    ElMaskHold->setEnabled(ar && AmbRes->currentIndex() == 3);
-    SlipThres->setEnabled(ar || ppp);
-    MaxAgeDiff->setEnabled(rel);
-    RejectPhase->setEnabled(rel || ppp);
-    NumIter->setEnabled(rel || ppp);
-    SyncSol->setEnabled(rel || ppp);
-    BaselineConst->setEnabled(PosMode->currentIndex() == PMODE_MOVEB);
-    BaselineLen->setEnabled(BaselineConst->isChecked() && PosMode->currentIndex() == PMODE_MOVEB);
-    BaselineSig->setEnabled(BaselineConst->isChecked() && PosMode->currentIndex() == PMODE_MOVEB);
+    cBAmbiguityResolutionGPS->setEnabled(ar);
+    cBAmbiguityResolutionGlo->setEnabled(ar && cBAmbiguityResolutionGPS->currentIndex() > 0 && cBNavSys2->isChecked());
+    cBAmbiguityResolutionBDS->setEnabled(ar && cBAmbiguityResolutionGPS->currentIndex() > 0 && cBNavSys6->isChecked());
+    sBValidThresAR->setEnabled(ar && cBAmbiguityResolutionGPS->currentIndex() >= 1 && cBAmbiguityResolutionGPS->currentIndex() < 4);
+    sBThresAR2->setEnabled(ar && cBAmbiguityResolutionGPS->currentIndex() >= 4);
+    sBThresAR3->setEnabled(ar && cBAmbiguityResolutionGPS->currentIndex() >= 4);
+    sBLockCountFixAmbiguity->setEnabled(ar && cBAmbiguityResolutionGPS->currentIndex() >= 1);
+    sBElevationMaskAR->setEnabled(ar && cBAmbiguityResolutionGPS->currentIndex() >= 1);
+    sBOutageCountResetAmbiguity->setEnabled(ar || ppp);
+    sBFixCountHoldAmbiguity->setEnabled(ar && cBAmbiguityResolutionGPS->currentIndex() == 3);
+    sBElevationMaskHold->setEnabled(ar && cBAmbiguityResolutionGPS->currentIndex() == 3);
+    sBSlipThres->setEnabled(ar || ppp);
+    sBMaxAgeDifference->setEnabled(rel);
+    sBRejectPhase->setEnabled(rel || ppp);
+    sBNumIteration->setEnabled(rel || ppp);
+    cBSyncSolution->setEnabled(rel || ppp);
+    cBBaselineConstrain->setEnabled(cBPositionMode->currentIndex() == PMODE_MOVEB);
+    sBBaselineLen->setEnabled(cBBaselineConstrain->isChecked() && cBPositionMode->currentIndex() == PMODE_MOVEB);
+    sBBaselineSig->setEnabled(cBBaselineConstrain->isChecked() && cBPositionMode->currentIndex() == PMODE_MOVEB);
 
-    OutputHead->setEnabled(SolFormat->currentIndex() != 3);
-    OutputOpt->setEnabled(false);
-    TimeFormat->setEnabled(SolFormat->currentIndex() != 3);
-    TimeDecimal->setEnabled(SolFormat->currentIndex() != 3);
-    LatLonFormat->setEnabled(SolFormat->currentIndex() == 0);
-    FieldSep->setEnabled(SolFormat->currentIndex() != 3);
-    OutputSingle->setEnabled(PosMode->currentIndex() != 0);
-    OutputDatum->setEnabled(SolFormat->currentIndex() == 0);
-    OutputHeight->setEnabled(SolFormat->currentIndex() == 0);
-    OutputGeoid->setEnabled(SolFormat->currentIndex() == 0 && OutputHeight->currentIndex() == 1);
+    cBOutputHeader->setEnabled(cBSolutionFormat->currentIndex() != 3);
+    cBOutputOption->setEnabled(false);
+    cBTimeFormat->setEnabled(cBSolutionFormat->currentIndex() != 3);
+    sBTimeDecimal->setEnabled(cBSolutionFormat->currentIndex() != 3);
+    cBLatLonFormat->setEnabled(cBSolutionFormat->currentIndex() == 0);
+    lEFieldSeperator->setEnabled(cBSolutionFormat->currentIndex() != 3);
+    cBOutputSingle->setEnabled(cBPositionMode->currentIndex() != 0);
+    cBOutputDatum->setEnabled(cBSolutionFormat->currentIndex() == 0);
+    cBOutputHeight->setEnabled(cBSolutionFormat->currentIndex() == 0);
+    cBOutputGeoid->setEnabled(cBSolutionFormat->currentIndex() == 0 && cBOutputHeight->currentIndex() == 1);
 
-    RovAntPcv->setEnabled(rel || ppp);
-    RovAnt->setEnabled((rel || ppp) && RovAntPcv->isChecked());
-    RovAntE->setEnabled((rel || ppp) && RovAntPcv->isChecked()&&RovAnt->currentText()!="*");
-    RovAntN->setEnabled((rel || ppp) && RovAntPcv->isChecked()&&RovAnt->currentText()!="*");
-    RovAntU->setEnabled((rel || ppp) && RovAntPcv->isChecked()&&RovAnt->currentText()!="*");
-    LabelRovAntD->setEnabled((rel || ppp) && RovAntPcv->isChecked()&&RovAnt->currentText()!="*");
-    RefAntPcv->setEnabled(rel);
-    RefAnt->setEnabled(rel && RefAntPcv->isChecked());
-    RefAntE->setEnabled(rel && RefAntPcv->isChecked()&&RefAnt->currentText()!="*");
-    RefAntN->setEnabled(rel && RefAntPcv->isChecked()&&RefAnt->currentText()!="*");
-    RefAntU->setEnabled(rel && RefAntPcv->isChecked()&&RefAnt->currentText()!="*");
-    LabelRefAntD->setEnabled(rel && RefAntPcv->isChecked()&&RefAnt->currentText()!="*");
+    cBRoverAntennaPcv->setEnabled(rel || ppp);
+    cBRoverAntenna->setEnabled((rel || ppp) && cBRoverAntennaPcv->isChecked());
+    sBRoverAntennaE->setEnabled((rel || ppp) && cBRoverAntennaPcv->isChecked()&&cBRoverAntenna->currentText()!="*");
+    sBRoverAntennaN->setEnabled((rel || ppp) && cBRoverAntennaPcv->isChecked()&&cBRoverAntenna->currentText()!="*");
+    sBRoverAntennaU->setEnabled((rel || ppp) && cBRoverAntennaPcv->isChecked()&&cBRoverAntenna->currentText()!="*");
+    lblRoverAntennaD->setEnabled((rel || ppp) && cBRoverAntennaPcv->isChecked()&&cBRoverAntenna->currentText()!="*");
+    cBReferenceAntennaPcv->setEnabled(rel);
+    cBReferenceAntenna->setEnabled(rel && cBReferenceAntennaPcv->isChecked());
+    sBReferenceAntennaE->setEnabled(rel && cBReferenceAntennaPcv->isChecked()&&cBReferenceAntenna->currentText()!="*");
+    sBReferenceAntennaN->setEnabled(rel && cBReferenceAntennaPcv->isChecked()&&cBReferenceAntenna->currentText()!="*");
+    sBReferenceAntennaU->setEnabled(rel && cBReferenceAntennaPcv->isChecked()&&cBReferenceAntenna->currentText()!="*");
+    lblReferenceAntennaD->setEnabled(rel && cBReferenceAntennaPcv->isChecked()&&cBReferenceAntenna->currentText()!="*");
 
-    RovPosTypeP->setEnabled(PosMode->currentIndex() == PMODE_FIXED || PosMode->currentIndex() == PMODE_PPP_FIXED);
-    RovPos1->setEnabled(RovPosTypeP->isEnabled() && RovPosTypeP->currentIndex() <= 2);
-    RovPos2->setEnabled(RovPosTypeP->isEnabled() && RovPosTypeP->currentIndex() <= 2);
-    RovPos3->setEnabled(RovPosTypeP->isEnabled() && RovPosTypeP->currentIndex() <= 2);
-    BtnRovPos->setEnabled(RovPosTypeP->isEnabled() && RovPosTypeP->currentIndex() <= 2);
+    cBRoverPositionTypeP->setEnabled(cBPositionMode->currentIndex() == PMODE_FIXED || cBPositionMode->currentIndex() == PMODE_PPP_FIXED);
+    lERoverPosition1->setEnabled(cBRoverPositionTypeP->isEnabled() && cBRoverPositionTypeP->currentIndex() <= 2);
+    lERoverPosition2->setEnabled(cBRoverPositionTypeP->isEnabled() && cBRoverPositionTypeP->currentIndex() <= 2);
+    lERoverPosition3->setEnabled(cBRoverPositionTypeP->isEnabled() && cBRoverPositionTypeP->currentIndex() <= 2);
+    btnRoverPosition->setEnabled(cBRoverPositionTypeP->isEnabled() && cBRoverPositionTypeP->currentIndex() <= 2);
 
-    RefPosTypeP->setEnabled(rel && PosMode->currentIndex() != PMODE_MOVEB);
-    RefPos1->setEnabled(RefPosTypeP->isEnabled() && RefPosTypeP->currentIndex() <= 2);
-    RefPos2->setEnabled(RefPosTypeP->isEnabled() && RefPosTypeP->currentIndex() <= 2);
-    RefPos3->setEnabled(RefPosTypeP->isEnabled() && RefPosTypeP->currentIndex() <= 2);
-    BtnRefPos->setEnabled(RefPosTypeP->isEnabled() && RefPosTypeP->currentIndex() <= 2);
+    cBReferencePositionTypeP->setEnabled(rel && cBPositionMode->currentIndex() != PMODE_MOVEB);
+    lEReferencePosition1->setEnabled(cBReferencePositionTypeP->isEnabled() && cBReferencePositionTypeP->currentIndex() <= 2);
+    lEReferencePosition2->setEnabled(cBReferencePositionTypeP->isEnabled() && cBReferencePositionTypeP->currentIndex() <= 2);
+    lEReferencePosition3->setEnabled(cBReferencePositionTypeP->isEnabled() && cBReferencePositionTypeP->currentIndex() <= 2);
+    btnReferencePosition->setEnabled(cBReferencePositionTypeP->isEnabled() && cBReferencePositionTypeP->currentIndex() <= 2);
 
-    LabelMaxAveEp->setVisible(RefPosTypeP->currentIndex() == 4);
-    MaxAveEp->setVisible(RefPosTypeP->currentIndex() == 4);
-    ChkInitRestart->setVisible(RefPosTypeP->currentIndex() == 4);
+    lblMaxAveEp->setVisible(cBReferencePositionTypeP->currentIndex() == 4);
+    sBMaxAveEp->setVisible(cBReferencePositionTypeP->currentIndex() == 4);
+    cBInitRestart->setVisible(cBReferencePositionTypeP->currentIndex() == 4);
 
-    SbasSatE->setEnabled(PosMode->currentIndex() == 0);
+    sBSbasSatellite->setEnabled(cBPositionMode->currentIndex() == 0);
 }
 //---------------------------------------------------------------------------
-void OptDialog::GetPos(int type, QLineEdit **edit, double *pos)
+void OptDialog::getPosition(int type, QLineEdit **edit, double *pos)
 {
     double p[3] = { 0 }, dms1[3] = { 0 }, dms2[3] = { 0 };
 
@@ -1179,7 +1179,7 @@ void OptDialog::GetPos(int type, QLineEdit **edit, double *pos)
 	}
 }
 //---------------------------------------------------------------------------
-void OptDialog::SetPos(int type, QLineEdit **edit, double *pos)
+void OptDialog::setPosition(int type, QLineEdit **edit, double *pos)
 {
     double p[3], dms1[3], dms2[3], s1, s2;
 
@@ -1205,9 +1205,9 @@ void OptDialog::SetPos(int type, QLineEdit **edit, double *pos)
 	}
 }
 //---------------------------------------------------------------------------
-void OptDialog::ReadAntList(void)
+void OptDialog::readAntennaList(void)
 {
-    QString AntPcvFile_Text = AntPcvFile->text();
+    QString AntPcvFile_Text = lEAntennaPcvFile->text();
     QStringList list;
     pcvs_t pcvs = { 0, 0, NULL };
 	char *p;
@@ -1223,33 +1223,33 @@ void OptDialog::ReadAntList(void)
         if (i > 0 && !strcmp(pcvs.pcv[i].type, pcvs.pcv[i - 1].type)) continue;
         list.append(pcvs.pcv[i].type);
 	}
-    RovAnt->clear();
-    RefAnt->clear();
-    RovAnt->addItems(list);
-    RefAnt->addItems(list);
+    cBRoverAntenna->clear();
+    cBReferenceAntenna->clear();
+    cBRoverAntenna->addItems(list);
+    cBReferenceAntenna->addItems(list);
 
 	free(pcvs.pcv);
 }
 //---------------------------------------------------------------------------
 
-void OptDialog::NavSys6Click()
+void OptDialog::navSys6Clicked()
 {
-	UpdateEnable();
+	updateEnable();
 }
 //---------------------------------------------------------------------------
-void OptDialog::BtnFreqClick()
+void OptDialog::btnFrequencyClicked()
 {
     freqDialog->exec();
 }
 //---------------------------------------------------------------------------
-void OptDialog::RefAntClick()
+void OptDialog::referenceAntennaClicked()
 {
-    UpdateEnable();
+    updateEnable();
 }
 //---------------------------------------------------------------------------
-void OptDialog::RovAntClick()
+void OptDialog::roverAntennaClicked()
 {
-    UpdateEnable();
+    updateEnable();
 }
 //---------------------------------------------------------------------------
 

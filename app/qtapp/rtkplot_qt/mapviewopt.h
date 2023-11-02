@@ -16,11 +16,11 @@ protected:
      void showEvent(QShowEvent*);
 
 public slots:
-    void BtnOkClick();
-    void BtnNotesClick();
+    void btnOkClicked();
+    void btnNotesClicked();
 public:
-    QString MapStrs[6][3];
-    QString ApiKey;
+    QString mapStrings[6][3];
+    QString apiKey;
     MapViewOptDialog(QWidget* parent);
 };
 

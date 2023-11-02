@@ -33,7 +33,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QWidget" name="Panel1" native="true">
+    <widget class="QWidget" name="HeaderPanel" native="true">
      <property name="enabled">
       <bool>true</bool>
      </property>
@@ -77,8 +77,8 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="../rtkconv_qt/rtkconv_qt.qrc">
-          <normaloff>:/buttons/trackc.bmp</normaloff>:/buttons/trackc.bmp</iconset>
+         <iconset resource="../srctblbrows_qt/srctblbrows_qt.qrc">
+          <normaloff>:/buttons/trackc</normaloff>:/buttons/trackc</iconset>
         </property>
         <property name="checkable">
          <bool>true</bool>
@@ -100,8 +100,8 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="../rtkconv_qt/rtkconv_qt.qrc">
-          <normaloff>:/buttons/shrink.bmp</normaloff>:/buttons/shrink.bmp</iconset>
+         <iconset resource="../srctblbrows_qt/srctblbrows_qt.qrc">
+          <normaloff>:/buttons/shrink</normaloff>:/buttons/shrink</iconset>
         </property>
         <property name="flat">
          <bool>true</bool>
@@ -120,8 +120,8 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="../rtkconv_qt/rtkconv_qt.qrc">
-          <normaloff>:/buttons/expand.bmp</normaloff>:/buttons/expand.bmp</iconset>
+         <iconset resource="../srctblbrows_qt/srctblbrows_qt.qrc">
+          <normaloff>:/buttons/expand</normaloff>:/buttons/expand</iconset>
         </property>
         <property name="flat">
          <bool>true</bool>
@@ -164,25 +164,12 @@
     </widget>
    </item>
    <item>
-    <widget class="QWidget" name="Panel2" native="true">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="toolTip">
-      <string/>
-     </property>
-     <property name="layoutDirection">
-      <enum>Qt::LeftToRight</enum>
-     </property>
-     <property name="text" stdset="0">
-      <string/>
-     </property>
-    </widget>
+    <widget class="QWidget" name="MapPanel" native="true"/>
    </item>
   </layout>
  </widget>
  <resources>
-  <include location="../rtkconv_qt/rtkconv_qt.qrc"/>
+  <include location="../srctblbrows_qt/srctblbrows_qt.qrc"/>
  </resources>
  <connections/>
 </ui>

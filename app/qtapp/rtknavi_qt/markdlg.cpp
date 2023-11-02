@@ -16,124 +16,113 @@ QMarkDialog::QMarkDialog(QWidget *parent)
     : QDialog(parent)
 {
     setupUi(this);
-    NMark = 1;
-    FixPos[0]=FixPos[1]=FixPos[2]=0.0;
-    Label1->setText(QString("%%r=%1").arg(NMark, 3, 10, QLatin1Char('0')));
+    nMark = 1;
+    fixPosition[0]=fixPosition[1]=fixPosition[2]=0.0;
+    Label1->setText(QString("%%r=%1").arg(nMark, 3, 10, QLatin1Char('0')));
 
-    connect(BtnRepDlg, SIGNAL(clicked(bool)), this, SLOT(BtnRepDlgClick()));
-    connect(BtnOk, SIGNAL(clicked(bool)), this, SLOT(BtnOkClick()));
-    connect(BtnCancel, SIGNAL(clicked(bool)), this, SLOT(BtnCancelClick()));
-    connect(ChkMarkerName, SIGNAL(clicked(bool)), this, SLOT(ChkMarkerNameClick()));
-    connect(RadioGo,SIGNAL(toggled(bool)),this,SLOT(RadioClick()));
-    connect(RadioStop,SIGNAL(toggled(bool)),this,SLOT(RadioClick()));
-    connect(RadioFix,SIGNAL(toggled(bool)),this,SLOT(RadioClick()));
-    connect(BtnPos,SIGNAL(clicked(bool)),this,SLOT(BtnPosClick()));
+    connect(btnKeyDlg, SIGNAL(clicked(bool)), this, SLOT(btnKeyDlgClicked()));
+    connect(btnOk, SIGNAL(clicked(bool)), this, SLOT(btnOkClicked()));
+    connect(btnCancel, SIGNAL(clicked(bool)), this, SLOT(btnCancelClicked()));
+    connect(cBMarkerNameC, SIGNAL(clicked(bool)), this, SLOT(updateEnable()));
+    connect(rBGo,SIGNAL(toggled(bool)),this,SLOT(updateEnable()));
+    connect(rBStop,SIGNAL(toggled(bool)),this,SLOT(updateEnable()));
+    connect(rBFix,SIGNAL(toggled(bool)),this,SLOT(updateEnable()));
+    connect(btnPosition,SIGNAL(clicked(bool)),this,SLOT(btnPositionClicked()));
 
     keyDialog = new KeyDialog(this);
 }
 //---------------------------------------------------------------------------
-void QMarkDialog::BtnCancelClick()
+void QMarkDialog::btnCancelClicked()
 {
     close();
 }
 //---------------------------------------------------------------------------
-void QMarkDialog::BtnOkClick()
+void QMarkDialog::btnOkClicked()
 {
-    QString marker = MarkerName->currentText();
-    QString comment = MarkerComment->text();
+    QString marker = cBMarkerName->currentText();
+    QString comment = lEMarkerComment->text();
     char str2[1024];
 
-    if (RadioGo->isChecked()) {
-        if (PosMode == PMODE_STATIC || PosMode == PMODE_FIXED)
-            PosMode = PMODE_KINEMA;
-        else if (PosMode == PMODE_PPP_STATIC || PosMode == PMODE_PPP_FIXED)
-            PosMode = PMODE_PPP_KINEMA;
-    } else if (RadioStop->isChecked()) {
-        if (PosMode == PMODE_KINEMA || PosMode == PMODE_FIXED)
-            PosMode = PMODE_STATIC;
-        else if (PosMode == PMODE_PPP_KINEMA || PosMode == PMODE_PPP_FIXED)
-            PosMode = PMODE_PPP_STATIC;
-    } else if (RadioFix->isChecked()) {
-        if (PosMode == PMODE_KINEMA || PosMode == PMODE_STATIC) {
-            PosMode = PMODE_FIXED;
+    if (rBGo->isChecked()) {
+        if (positionMode == PMODE_STATIC || positionMode == PMODE_FIXED)
+            positionMode = PMODE_KINEMA;
+        else if (positionMode == PMODE_PPP_STATIC || positionMode == PMODE_PPP_FIXED)
+            positionMode = PMODE_PPP_KINEMA;
+    } else if (rBStop->isChecked()) {
+        if (positionMode == PMODE_KINEMA || positionMode == PMODE_FIXED)
+            positionMode = PMODE_STATIC;
+        else if (positionMode == PMODE_PPP_KINEMA || positionMode == PMODE_PPP_FIXED)
+            positionMode = PMODE_PPP_STATIC;
+    } else if (rBFix->isChecked()) {
+        if (positionMode == PMODE_KINEMA || positionMode == PMODE_STATIC) {
+            positionMode = PMODE_FIXED;
         }
-        else if (PosMode == PMODE_PPP_KINEMA || PosMode == PMODE_PPP_STATIC) {
-            PosMode = PMODE_PPP_FIXED;
+        else if (positionMode == PMODE_PPP_KINEMA || positionMode == PMODE_PPP_STATIC) {
+            positionMode = PMODE_PPP_FIXED;
         }
     }
-    if (ChkMarkerName->isChecked()) {
-        reppath(qPrintable(marker), str2, utc2gpst(timeget()), qPrintable(QString("%1").arg(NMark, 3, 10, QChar('0'))), "");
+    if (cBMarkerNameC->isChecked()) {
+        reppath(qPrintable(marker), str2, utc2gpst(timeget()), qPrintable(QString("%1").arg(nMark, 3, 10, QChar('0'))), "");
         rtksvrmark(&rtksvr, str2, qPrintable(comment));
-        NMark++;
-        Label1->setText(QString("%%r=%1").arg(NMark, 3, 10, QLatin1Char('0')));
+        nMark++;
+        Label1->setText(QString("%%r=%1").arg(nMark, 3, 10, QLatin1Char('0')));
 	}
-    Marker = marker;
-    Comment = comment;
-}
-//---------------------------------------------------------------------------
-
-void QMarkDialog::ChkMarkerNameClick()
-{
-	UpdateEnable();
+    marker = marker;
+    comment = comment;
 }
 //---------------------------------------------------------------------------
 void QMarkDialog::showEvent(QShowEvent *event)
 {
     if (event->spontaneous()) return;
 
-    if (PosMode == PMODE_STATIC || PosMode == PMODE_PPP_STATIC) {
-        RadioStop->setChecked(true);
-    } else if (PosMode == PMODE_KINEMA || PosMode == PMODE_PPP_KINEMA) {
-        RadioGo->setChecked(true);
+    if (positionMode == PMODE_STATIC || positionMode == PMODE_PPP_STATIC) {
+        rBStop->setChecked(true);
+    } else if (positionMode == PMODE_KINEMA || positionMode == PMODE_PPP_KINEMA) {
+        rBGo->setChecked(true);
     } else {
-        RadioStop->setChecked(false);
-        RadioGo->setChecked(false);
+        rBStop->setChecked(false);
+        rBGo->setChecked(false);
 	}
-	UpdateEnable();
+	updateEnable();
 }
 //---------------------------------------------------------------------------
-void QMarkDialog::UpdateEnable(void)
+void QMarkDialog::updateEnable(void)
 {
-    bool ena = PosMode == PMODE_STATIC || PosMode == PMODE_PPP_STATIC ||
-           PosMode == PMODE_KINEMA || PosMode == PMODE_PPP_KINEMA ||
-           PosMode == PMODE_FIXED || PosMode == PMODE_PPP_FIXED;
+    bool ena = positionMode == PMODE_STATIC || positionMode == PMODE_PPP_STATIC ||
+           positionMode == PMODE_KINEMA || positionMode == PMODE_PPP_KINEMA ||
+           positionMode == PMODE_FIXED || positionMode == PMODE_PPP_FIXED;
 
-    RadioStop->setEnabled(ena);
-    RadioGo->setEnabled(ena);
-    RadioFix->setEnabled(ena);
-    LabelPosMode->setEnabled(ena);
-    EditLat->setEnabled(RadioFix->isChecked());
-    EditLon->setEnabled(RadioFix->isChecked());
-    EditHgt->setEnabled(RadioFix->isChecked());
-    BtnPos->setEnabled(RadioFix->isChecked());
-    LabelPos->setEnabled(RadioFix->isChecked());
-    MarkerName->setEnabled(ChkMarkerName->isChecked());
+    rBStop->setEnabled(ena);
+    rBGo->setEnabled(ena);
+    rBFix->setEnabled(ena);
+    lblPositionMode->setEnabled(ena);
+    sBLatitude->setEnabled(rBFix->isChecked());
+    sBLongitude->setEnabled(rBFix->isChecked());
+    sBHeight->setEnabled(rBFix->isChecked());
+    btnPosition->setEnabled(rBFix->isChecked());
+    lblPosition->setEnabled(rBFix->isChecked());
+    cBMarkerName->setEnabled(cBMarkerNameC->isChecked());
 }
 //---------------------------------------------------------------------------
-void QMarkDialog::BtnRepDlgClick()
+void QMarkDialog::btnKeyDlgClicked()
 {
     keyDialog->setWindowTitle(tr("Key Replacement in Marker Name"));
     keyDialog->show();
 }
 //---------------------------------------------------------------------------
-void QMarkDialog::RadioClick()
-{
-    UpdateEnable();
-}
-//---------------------------------------------------------------------------
-void QMarkDialog::BtnPosClick()
+void QMarkDialog::btnPositionClicked()
 {
     RefDialog *refDialog =  new RefDialog(this);
 
-    refDialog->Pos[0]=EditLat->value();
-    refDialog->Pos[1]=EditLon->value();
-    refDialog->Pos[2]=EditHgt->value();
-    refDialog->StaPosFile=mainForm->optDialog->StaPosFileF;
+    refDialog->position[0]=sBLatitude->value();
+    refDialog->position[1]=sBLongitude->value();
+    refDialog->position[2]=sBHeight->value();
+    refDialog->stationPositionFile=mainForm->optDialog->stationPositionFileF;
 
     if (refDialog->result() != QDialog::Accepted) return;
 
-    EditLat->setValue(refDialog->Pos[0]);
-    EditLon->setValue(refDialog->Pos[1]);
-    EditHgt->setValue(refDialog->Pos[2]);
+    sBLatitude->setValue(refDialog->position[0]);
+    sBLongitude->setValue(refDialog->position[1]);
+    sBHeight->setValue(refDialog->position[2]);
 }
 //---------------------------------------------------------------------------

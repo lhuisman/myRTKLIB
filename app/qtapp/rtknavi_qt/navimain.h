@@ -168,23 +168,23 @@ public:
 
     QFont PanelFont, PosFont;
 
-    int DebugTraceF, DebugStatusF, OutputGeoidF, BaselineC;
-    int RovPosTypeF, RefPosTypeF, RovAntPcvF, RefAntPcvF;
-    QString RovAntF, RefAntF, SatPcvFileF, AntPcvFileF;
-    double RovAntDel[3], RefAntDel[3], RovPos[3], RefPos[3], NmeaPos[3];
-	double Baseline[2];
+    int bebugTraceF, debugStatusF, outputGeoidF, baselineC;
+    int roverPositionTypeF, referencePositionTypeF, roverAntennaPcvF, referenceAntennaPcvF;
+    QString roverAntennaF, referenceAntennaF, satellitePcvFileF, antennaPcvFileF;
+    double roverAntennaDelta[3], referenceAntennaDelta[3], roverPosition[3], referencePosition[3], nmeaPosition[3];
+    double baseline[2];
 
-    QString History[10];
+    QString history[10];
 
     QTimer Timer;
 	
-    QString GeoidDataFileF, StaPosFileF, DCBFileF, EOPFileF;
-    QString LocalDirectory, PntName[MAXMAPPNT];
+    QString geoidDataFileF, stationPositionFileF, dcbFileF, eopFileF;
+    QString localDirectory, pointName[MAXMAPPNT];
 
-	double PntPos[MAXMAPPNT][3];
-	int NMapPnt;
+    double pointPosition[MAXMAPPNT][3];
+    int nMapPoint;
 
-    QString MarkerName, MarkerComment;
+    QString markerName, markerComment;
 };
 
 extern MainWindow *mainForm;

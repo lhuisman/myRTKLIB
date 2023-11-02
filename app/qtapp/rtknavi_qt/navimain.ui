@@ -20,18 +20,6 @@
    <property name="spacing">
     <number>0</number>
    </property>
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
-    <number>0</number>
-   </property>
    <item>
     <widget class="QWidget" name="Panel1" native="true">
      <property name="enabled">
@@ -63,10 +51,7 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="QPushButton" name="BtnPanel">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
+       <widget class="QPushButton" name="btnPanel">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -77,8 +62,8 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="../rtkconv_qt/rtkconv_qt.qrc">
-          <normaloff>:/buttons/sqr.bmp</normaloff>:/buttons/sqr.bmp</iconset>
+         <iconset resource="rtknavi_qt.qrc">
+          <normaloff>:/buttons/square</normaloff>:/buttons/square</iconset>
         </property>
         <property name="flat">
          <bool>true</bool>
@@ -86,10 +71,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="BtnTimeSys">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
+       <widget class="QPushButton" name="btnTimeSys">
         <property name="toolTip">
          <string/>
         </property>
@@ -102,10 +84,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QLabel" name="LabelTime">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
+       <widget class="QLabel" name="lblTime">
         <property name="toolTip">
          <string/>
         </property>
@@ -161,21 +140,12 @@
           <number>0</number>
          </property>
          <item>
-          <widget class="QPushButton" name="BtnInputStr">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
+          <widget class="QPushButton" name="btnInputStream">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>16777215</width>
-             <height>16777215</height>
-            </size>
            </property>
            <property name="toolTip">
             <string>Input Streams</string>
@@ -204,16 +174,7 @@
              <number>0</number>
             </property>
             <item>
-             <widget class="QLabel" name="Str1">
-              <property name="enabled">
-               <bool>true</bool>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>20</height>
-               </size>
-              </property>
+             <widget class="QLabel" name="lblStream1">
               <property name="toolTip">
                <string/>
               </property>
@@ -223,16 +184,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QLabel" name="Str2">
-              <property name="enabled">
-               <bool>true</bool>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>20</height>
-               </size>
-              </property>
+             <widget class="QLabel" name="lblStream2">
               <property name="toolTip">
                <string/>
               </property>
@@ -242,16 +194,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QLabel" name="Str3">
-              <property name="enabled">
-               <bool>true</bool>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>20</height>
-               </size>
-              </property>
+             <widget class="QLabel" name="lblStream3">
               <property name="toolTip">
                <string/>
               </property>
@@ -261,41 +204,23 @@
              </widget>
             </item>
             <item>
-             <widget class="QLabel" name="Image1">
-              <property name="enabled">
-               <bool>true</bool>
-              </property>
+             <widget class="QLabel" name="lblImage1">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Fixed" vsizetype="Ignored">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>20</height>
-               </size>
-              </property>
               <property name="toolTip">
                <string/>
               </property>
               <property name="pixmap">
-               <pixmap resource="../rtkconv_qt/rtkconv_qt.qrc">:/buttons/rarrow.bmp</pixmap>
+               <pixmap resource="rtknavi_qt.qrc">:/buttons/rarrow</pixmap>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QLabel" name="Svr">
-              <property name="enabled">
-               <bool>true</bool>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>20</height>
-               </size>
-              </property>
+             <widget class="QLabel" name="lblServer">
               <property name="toolTip">
                <string/>
               </property>
@@ -305,41 +230,23 @@
              </widget>
             </item>
             <item>
-             <widget class="QLabel" name="Image2">
-              <property name="enabled">
-               <bool>true</bool>
-              </property>
+             <widget class="QLabel" name="lblImage2">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Fixed" vsizetype="Ignored">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>20</height>
-               </size>
-              </property>
               <property name="toolTip">
                <string/>
               </property>
               <property name="pixmap">
-               <pixmap resource="../rtkconv_qt/rtkconv_qt.qrc">:/buttons/rarrow.bmp</pixmap>
+               <pixmap resource="rtknavi_qt.qrc">:/buttons/rarrow</pixmap>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QLabel" name="Str4">
-              <property name="enabled">
-               <bool>true</bool>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>20</height>
-               </size>
-              </property>
+             <widget class="QLabel" name="lblStream4">
               <property name="toolTip">
                <string/>
               </property>
@@ -349,16 +256,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QLabel" name="Str5">
-              <property name="enabled">
-               <bool>true</bool>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>20</height>
-               </size>
-              </property>
+             <widget class="QLabel" name="lblStream5">
               <property name="toolTip">
                <string/>
               </property>
@@ -368,16 +266,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QLabel" name="Str6">
-              <property name="enabled">
-               <bool>true</bool>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>20</height>
-               </size>
-              </property>
+             <widget class="QLabel" name="lblStream6">
               <property name="toolTip">
                <string/>
               </property>
@@ -387,16 +276,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QLabel" name="Str7">
-              <property name="enabled">
-               <bool>true</bool>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>20</height>
-               </size>
-              </property>
+             <widget class="QLabel" name="lblStream7">
               <property name="toolTip">
                <string/>
               </property>
@@ -406,16 +286,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QLabel" name="Str8">
-              <property name="enabled">
-               <bool>true</bool>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>20</height>
-               </size>
-              </property>
+             <widget class="QLabel" name="lblStream8">
               <property name="toolTip">
                <string/>
               </property>
@@ -428,10 +299,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="BtnOutputStr">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
+          <widget class="QPushButton" name="btnOutputStream">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -447,10 +315,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="BtnLogStr">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
+          <widget class="QPushButton" name="btnLogStream">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -473,9 +338,6 @@
    </item>
    <item>
     <widget class="QWidget" name="Panel5" native="true">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -505,10 +367,7 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="QLabel" name="IndQ">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
+       <widget class="QLabel" name="lblIndicatorQ">
         <property name="toolTip">
          <string/>
         </property>
@@ -518,16 +377,10 @@
         <property name="frameShadow">
          <enum>QFrame::Sunken</enum>
         </property>
-        <property name="text">
-         <string/>
-        </property>
        </widget>
       </item>
       <item>
-       <widget class="QLabel" name="SolS">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
+       <widget class="QLabel" name="lblSolutionS">
         <property name="toolTip">
          <string/>
         </property>
@@ -537,10 +390,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QLabel" name="SolQ">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
+       <widget class="QLabel" name="lblSolutionQ">
         <property name="toolTip">
          <string/>
         </property>
@@ -550,10 +400,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="BtnSolType2">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
+       <widget class="QPushButton" name="btnSolutionType2">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -563,12 +410,9 @@
         <property name="toolTip">
          <string/>
         </property>
-        <property name="text">
-         <string/>
-        </property>
         <property name="icon">
-         <iconset resource="../rtkconv_qt/rtkconv_qt.qrc">
-          <normaloff>:/buttons/down.bmp</normaloff>:/buttons/down.bmp</iconset>
+         <iconset resource="rtknavi_qt.qrc">
+          <normaloff>:/buttons/down</normaloff>:/buttons/down</iconset>
         </property>
         <property name="flat">
          <bool>true</bool>
@@ -580,9 +424,6 @@
    </item>
    <item>
     <widget class="QWidget" name="Panel2" native="true">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
      <property name="toolTip">
       <string/>
      </property>
@@ -596,9 +437,6 @@
          <enum>Qt::Horizontal</enum>
         </property>
         <widget class="QWidget" name="Panel21" native="true">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
          <property name="toolTip">
           <string/>
          </property>
@@ -623,9 +461,6 @@
           </property>
           <item row="0" column="0">
            <widget class="QWidget" name="Panel212" native="true">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -656,46 +491,6 @@
              </property>
              <item>
               <widget class="QLabel" name="Plabel0">
-               <property name="enabled">
-                <bool>true</bool>
-               </property>
-               <property name="palette">
-                <palette>
-                 <active>
-                  <colorrole role="WindowText">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>128</red>
-                     <green>128</green>
-                     <blue>128</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
-                 </active>
-                 <inactive>
-                  <colorrole role="WindowText">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>128</red>
-                     <green>128</green>
-                     <blue>128</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
-                 </inactive>
-                 <disabled>
-                  <colorrole role="WindowText">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>128</red>
-                     <green>128</green>
-                     <blue>128</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
-                 </disabled>
-                </palette>
-               </property>
                <property name="toolTip">
                 <string/>
                </property>
@@ -708,7 +503,7 @@
            </widget>
           </item>
           <item row="0" column="2">
-           <widget class="QLabel" name="IndSol">
+           <widget class="QLabel" name="lblIndicatorSolution">
             <property name="enabled">
              <bool>true</bool>
             </property>
@@ -734,9 +529,6 @@
           </item>
           <item row="1" column="0" colspan="3">
            <widget class="QWidget" name="Panel211" native="true">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
             <property name="toolTip">
              <string/>
             </property>
@@ -748,47 +540,7 @@
             </property>
             <layout class="QGridLayout" name="gridLayout">
              <item row="0" column="0">
-              <widget class="QLabel" name="PlabelA">
-               <property name="enabled">
-                <bool>true</bool>
-               </property>
-               <property name="palette">
-                <palette>
-                 <active>
-                  <colorrole role="WindowText">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>192</red>
-                     <green>192</green>
-                     <blue>192</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
-                 </active>
-                 <inactive>
-                  <colorrole role="WindowText">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>192</red>
-                     <green>192</green>
-                     <blue>192</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
-                 </inactive>
-                 <disabled>
-                  <colorrole role="WindowText">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>192</red>
-                     <green>192</green>
-                     <blue>192</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
-                 </disabled>
-                </palette>
-               </property>
+              <widget class="QLabel" name="lblSolutionText">
                <property name="toolTip">
                 <string/>
                </property>
@@ -798,47 +550,7 @@
               </widget>
              </item>
              <item row="0" column="1">
-              <widget class="QLabel" name="Solution">
-               <property name="enabled">
-                <bool>true</bool>
-               </property>
-               <property name="palette">
-                <palette>
-                 <active>
-                  <colorrole role="WindowText">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>128</red>
-                     <green>128</green>
-                     <blue>128</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
-                 </active>
-                 <inactive>
-                  <colorrole role="WindowText">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>128</red>
-                     <green>128</green>
-                     <blue>128</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
-                 </inactive>
-                 <disabled>
-                  <colorrole role="WindowText">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>128</red>
-                     <green>128</green>
-                     <blue>128</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
-                 </disabled>
-                </palette>
-               </property>
+              <widget class="QLabel" name="lblSolution">
                <property name="toolTip">
                 <string/>
                </property>
@@ -848,47 +560,7 @@
               </widget>
              </item>
              <item row="1" column="0">
-              <widget class="QLabel" name="Plabel1">
-               <property name="enabled">
-                <bool>true</bool>
-               </property>
-               <property name="palette">
-                <palette>
-                 <active>
-                  <colorrole role="WindowText">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>0</red>
-                     <green>0</green>
-                     <blue>0</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
-                 </active>
-                 <inactive>
-                  <colorrole role="WindowText">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>0</red>
-                     <green>0</green>
-                     <blue>0</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
-                 </inactive>
-                 <disabled>
-                  <colorrole role="WindowText">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>0</red>
-                     <green>0</green>
-                     <blue>0</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
-                 </disabled>
-                </palette>
-               </property>
+              <widget class="QLabel" name="lblPositionText1">
                <property name="toolTip">
                 <string/>
                </property>
@@ -898,47 +570,7 @@
               </widget>
              </item>
              <item row="1" column="1" colspan="2">
-              <widget class="QLabel" name="Pos1">
-               <property name="enabled">
-                <bool>true</bool>
-               </property>
-               <property name="palette">
-                <palette>
-                 <active>
-                  <colorrole role="WindowText">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>0</red>
-                     <green>0</green>
-                     <blue>0</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
-                 </active>
-                 <inactive>
-                  <colorrole role="WindowText">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>0</red>
-                     <green>0</green>
-                     <blue>0</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
-                 </inactive>
-                 <disabled>
-                  <colorrole role="WindowText">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>0</red>
-                     <green>0</green>
-                     <blue>0</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
-                 </disabled>
-                </palette>
-               </property>
+              <widget class="QLabel" name="lblPosition1">
                <property name="toolTip">
                 <string/>
                </property>
@@ -948,47 +580,7 @@
               </widget>
              </item>
              <item row="2" column="0">
-              <widget class="QLabel" name="Plabel2">
-               <property name="enabled">
-                <bool>true</bool>
-               </property>
-               <property name="palette">
-                <palette>
-                 <active>
-                  <colorrole role="WindowText">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>0</red>
-                     <green>0</green>
-                     <blue>0</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
-                 </active>
-                 <inactive>
-                  <colorrole role="WindowText">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>0</red>
-                     <green>0</green>
-                     <blue>0</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
-                 </inactive>
-                 <disabled>
-                  <colorrole role="WindowText">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>0</red>
-                     <green>0</green>
-                     <blue>0</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
-                 </disabled>
-                </palette>
-               </property>
+              <widget class="QLabel" name="lblPositionText2">
                <property name="toolTip">
                 <string/>
                </property>
@@ -998,47 +590,7 @@
               </widget>
              </item>
              <item row="2" column="1" colspan="2">
-              <widget class="QLabel" name="Pos2">
-               <property name="enabled">
-                <bool>true</bool>
-               </property>
-               <property name="palette">
-                <palette>
-                 <active>
-                  <colorrole role="WindowText">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>0</red>
-                     <green>0</green>
-                     <blue>0</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
-                 </active>
-                 <inactive>
-                  <colorrole role="WindowText">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>0</red>
-                     <green>0</green>
-                     <blue>0</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
-                 </inactive>
-                 <disabled>
-                  <colorrole role="WindowText">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>0</red>
-                     <green>0</green>
-                     <blue>0</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
-                 </disabled>
-                </palette>
-               </property>
+              <widget class="QLabel" name="lblPosition2">
                <property name="toolTip">
                 <string/>
                </property>
@@ -1048,47 +600,7 @@
               </widget>
              </item>
              <item row="3" column="0">
-              <widget class="QLabel" name="Plabel3">
-               <property name="enabled">
-                <bool>true</bool>
-               </property>
-               <property name="palette">
-                <palette>
-                 <active>
-                  <colorrole role="WindowText">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>0</red>
-                     <green>0</green>
-                     <blue>0</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
-                 </active>
-                 <inactive>
-                  <colorrole role="WindowText">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>0</red>
-                     <green>0</green>
-                     <blue>0</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
-                 </inactive>
-                 <disabled>
-                  <colorrole role="WindowText">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>0</red>
-                     <green>0</green>
-                     <blue>0</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
-                 </disabled>
-                </palette>
-               </property>
+              <widget class="QLabel" name="lblPositionText3">
                <property name="toolTip">
                 <string/>
                </property>
@@ -1098,47 +610,7 @@
               </widget>
              </item>
              <item row="3" column="1" colspan="2">
-              <widget class="QLabel" name="Pos3">
-               <property name="enabled">
-                <bool>true</bool>
-               </property>
-               <property name="palette">
-                <palette>
-                 <active>
-                  <colorrole role="WindowText">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>0</red>
-                     <green>0</green>
-                     <blue>0</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
-                 </active>
-                 <inactive>
-                  <colorrole role="WindowText">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>0</red>
-                     <green>0</green>
-                     <blue>0</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
-                 </inactive>
-                 <disabled>
-                  <colorrole role="WindowText">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>0</red>
-                     <green>0</green>
-                     <blue>0</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
-                 </disabled>
-                </palette>
-               </property>
+              <widget class="QLabel" name="lblPosition3">
                <property name="toolTip">
                 <string/>
                </property>
@@ -1148,47 +620,7 @@
               </widget>
              </item>
              <item row="4" column="0" colspan="3">
-              <widget class="QLabel" name="LabelStd">
-               <property name="enabled">
-                <bool>true</bool>
-               </property>
-               <property name="palette">
-                <palette>
-                 <active>
-                  <colorrole role="WindowText">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>128</red>
-                     <green>128</green>
-                     <blue>128</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
-                 </active>
-                 <inactive>
-                  <colorrole role="WindowText">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>128</red>
-                     <green>128</green>
-                     <blue>128</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
-                 </inactive>
-                 <disabled>
-                  <colorrole role="WindowText">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>128</red>
-                     <green>128</green>
-                     <blue>128</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
-                 </disabled>
-                </palette>
-               </property>
+              <widget class="QLabel" name="lblStd">
                <property name="toolTip">
                 <string/>
                </property>
@@ -1198,47 +630,7 @@
               </widget>
              </item>
              <item row="5" column="0" colspan="3">
-              <widget class="QLabel" name="LabelNSat">
-               <property name="enabled">
-                <bool>true</bool>
-               </property>
-               <property name="palette">
-                <palette>
-                 <active>
-                  <colorrole role="WindowText">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>128</red>
-                     <green>128</green>
-                     <blue>128</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
-                 </active>
-                 <inactive>
-                  <colorrole role="WindowText">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>128</red>
-                     <green>128</green>
-                     <blue>128</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
-                 </inactive>
-                 <disabled>
-                  <colorrole role="WindowText">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>128</red>
-                     <green>128</green>
-                     <blue>128</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
-                 </disabled>
-                </palette>
-               </property>
+              <widget class="QLabel" name="lblNSatellites">
                <property name="toolTip">
                 <string/>
                </property>
@@ -1251,10 +643,7 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QPushButton" name="BtnSolType">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
+           <widget class="QPushButton" name="btnSolutionType">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -1265,8 +654,8 @@
              <string/>
             </property>
             <property name="icon">
-             <iconset resource="../rtkconv_qt/rtkconv_qt.qrc">
-              <normaloff>:/buttons/down.bmp</normaloff>:/buttons/down.bmp</iconset>
+             <iconset resource="rtknavi_qt.qrc">
+              <normaloff>:/buttons/down</normaloff>:/buttons/down</iconset>
             </property>
             <property name="flat">
              <bool>true</bool>
@@ -1275,9 +664,6 @@
           </item>
           <item row="3" column="0" colspan="3">
            <widget class="QWidget" name="Panel213" native="true">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -1304,10 +690,7 @@
               <number>0</number>
              </property>
              <item>
-              <widget class="QScrollBar" name="ScbSol">
-               <property name="enabled">
-                <bool>true</bool>
-               </property>
+              <widget class="QScrollBar" name="sBSolution">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                  <horstretch>0</horstretch>
@@ -1317,17 +700,11 @@
                <property name="toolTip">
                 <string/>
                </property>
-               <property name="minimum">
-                <number>0</number>
-               </property>
                <property name="maximum">
                 <number>0</number>
                </property>
                <property name="singleStep">
                 <number>1</number>
-               </property>
-               <property name="value">
-                <number>0</number>
                </property>
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
@@ -1335,16 +712,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="BtnSave">
-               <property name="enabled">
-                <bool>true</bool>
-               </property>
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
+              <widget class="QPushButton" name="btnSave">
                <property name="toolTip">
                 <string/>
                </property>
@@ -1359,9 +727,6 @@
          </layout>
         </widget>
         <widget class="QWidget" name="Panel22" native="true">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
          <property name="toolTip">
           <string/>
          </property>
@@ -1385,10 +750,7 @@
            <number>0</number>
           </property>
           <item row="1" column="0" colspan="5">
-           <widget class="QLabel" name="Disp1">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
+           <widget class="QLabel" name="lblDisplay1">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
               <horstretch>0</horstretch>
@@ -1401,10 +763,7 @@
            </widget>
           </item>
           <item row="0" column="4">
-           <widget class="QPushButton" name="BtnPlotType1">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
+           <widget class="QPushButton" name="btnPlotType1">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -1415,8 +774,8 @@
              <string/>
             </property>
             <property name="icon">
-             <iconset resource="../rtkconv_qt/rtkconv_qt.qrc">
-              <normaloff>:/buttons/down.bmp</normaloff>:/buttons/down.bmp</iconset>
+             <iconset resource="rtknavi_qt.qrc">
+              <normaloff>:/buttons/down</normaloff>:/buttons/down</iconset>
             </property>
             <property name="flat">
              <bool>true</bool>
@@ -1424,10 +783,7 @@
            </widget>
           </item>
           <item row="0" column="3">
-           <widget class="QPushButton" name="BtnFreqType1">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
+           <widget class="QPushButton" name="btnFrequencyType1">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -1438,8 +794,8 @@
              <string/>
             </property>
             <property name="icon">
-             <iconset resource="../rtkconv_qt/rtkconv_qt.qrc">
-              <normaloff>:/buttons/down.bmp</normaloff>:/buttons/down.bmp</iconset>
+             <iconset resource="rtknavi_qt.qrc">
+              <normaloff>:/buttons/down</normaloff>:/buttons/down</iconset>
             </property>
             <property name="flat">
              <bool>true</bool>
@@ -1447,19 +803,16 @@
            </widget>
           </item>
           <item row="0" column="0">
-           <widget class="QPushButton" name="BtnExpand1">
+           <widget class="QPushButton" name="btnExpand1">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <property name="text">
-             <string/>
-            </property>
             <property name="icon">
-             <iconset resource="../rtkconv_qt/rtkconv_qt.qrc">
-              <normaloff>:/buttons/expand.bmp</normaloff>:/buttons/expand.bmp</iconset>
+             <iconset resource="rtknavi_qt.qrc">
+              <normaloff>:/buttons/expand</normaloff>:/buttons/expand</iconset>
             </property>
             <property name="flat">
              <bool>true</bool>
@@ -1467,19 +820,16 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QPushButton" name="BtnShrink1">
+           <widget class="QPushButton" name="btnShrink1">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <property name="text">
-             <string/>
-            </property>
             <property name="icon">
-             <iconset resource="../rtkconv_qt/rtkconv_qt.qrc">
-              <normaloff>:/buttons/shrink.bmp</normaloff>:/buttons/shrink.bmp</iconset>
+             <iconset resource="rtknavi_qt.qrc">
+              <normaloff>:/buttons/shrink</normaloff>:/buttons/shrink</iconset>
             </property>
             <property name="flat">
              <bool>true</bool>
@@ -1489,9 +839,6 @@
          </layout>
         </widget>
         <widget class="QWidget" name="Panel23" native="true">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
          <property name="toolTip">
           <string/>
          </property>
@@ -1515,10 +862,7 @@
            <number>0</number>
           </property>
           <item row="2" column="0" colspan="5">
-           <widget class="QLabel" name="Disp2">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
+           <widget class="QLabel" name="lblDisplay2">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
               <horstretch>0</horstretch>
@@ -1531,19 +875,16 @@
            </widget>
           </item>
           <item row="0" column="0">
-           <widget class="QPushButton" name="BtnExpand2">
+           <widget class="QPushButton" name="btnExpand2">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <property name="text">
-             <string/>
-            </property>
             <property name="icon">
-             <iconset resource="../rtkconv_qt/rtkconv_qt.qrc">
-              <normaloff>:/buttons/expand.bmp</normaloff>:/buttons/expand.bmp</iconset>
+             <iconset resource="rtknavi_qt.qrc">
+              <normaloff>:/buttons/expand</normaloff>:/buttons/expand</iconset>
             </property>
             <property name="flat">
              <bool>true</bool>
@@ -1551,10 +892,7 @@
            </widget>
           </item>
           <item row="0" column="3">
-           <widget class="QPushButton" name="BtnFreqType2">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
+           <widget class="QPushButton" name="btnFrequencyType2">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -1565,8 +903,8 @@
              <string/>
             </property>
             <property name="icon">
-             <iconset resource="../rtkconv_qt/rtkconv_qt.qrc">
-              <normaloff>:/buttons/down.bmp</normaloff>:/buttons/down.bmp</iconset>
+             <iconset resource="rtknavi_qt.qrc">
+              <normaloff>:/buttons/down</normaloff>:/buttons/down</iconset>
             </property>
             <property name="flat">
              <bool>true</bool>
@@ -1574,10 +912,7 @@
            </widget>
           </item>
           <item row="0" column="4">
-           <widget class="QPushButton" name="BtnPlotType2">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
+           <widget class="QPushButton" name="btnPlotType2">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -1588,8 +923,8 @@
              <string/>
             </property>
             <property name="icon">
-             <iconset resource="../rtkconv_qt/rtkconv_qt.qrc">
-              <normaloff>:/buttons/down.bmp</normaloff>:/buttons/down.bmp</iconset>
+             <iconset resource="rtknavi_qt.qrc">
+              <normaloff>:/buttons/down</normaloff>:/buttons/down</iconset>
             </property>
             <property name="flat">
              <bool>true</bool>
@@ -1597,19 +932,16 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QPushButton" name="BtnShrink2">
+           <widget class="QPushButton" name="btnShrink2">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <property name="text">
-             <string/>
-            </property>
             <property name="icon">
-             <iconset resource="../rtkconv_qt/rtkconv_qt.qrc">
-              <normaloff>:/buttons/shrink.bmp</normaloff>:/buttons/shrink.bmp</iconset>
+             <iconset resource="rtknavi_qt.qrc">
+              <normaloff>:/buttons/shrink</normaloff>:/buttons/shrink</iconset>
             </property>
             <property name="flat">
              <bool>true</bool>
@@ -1619,9 +951,6 @@
          </layout>
         </widget>
         <widget class="QWidget" name="Panel24" native="true">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
          <property name="toolTip">
           <string/>
          </property>
@@ -1645,10 +974,7 @@
            <number>0</number>
           </property>
           <item row="2" column="0" colspan="5">
-           <widget class="QLabel" name="Disp3">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
+           <widget class="QLabel" name="lblDisplay3">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
               <horstretch>0</horstretch>
@@ -1661,19 +987,16 @@
            </widget>
           </item>
           <item row="0" column="0">
-           <widget class="QPushButton" name="BtnExpand3">
+           <widget class="QPushButton" name="btnExpand3">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <property name="text">
-             <string/>
-            </property>
             <property name="icon">
-             <iconset resource="../rtkconv_qt/rtkconv_qt.qrc">
-              <normaloff>:/buttons/expand.bmp</normaloff>:/buttons/expand.bmp</iconset>
+             <iconset resource="rtknavi_qt.qrc">
+              <normaloff>:/buttons/expand</normaloff>:/buttons/expand</iconset>
             </property>
             <property name="flat">
              <bool>true</bool>
@@ -1681,10 +1004,7 @@
            </widget>
           </item>
           <item row="0" column="3">
-           <widget class="QPushButton" name="BtnFreqType3">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
+           <widget class="QPushButton" name="btnFrequencyType3">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -1695,8 +1015,8 @@
              <string/>
             </property>
             <property name="icon">
-             <iconset resource="../rtkconv_qt/rtkconv_qt.qrc">
-              <normaloff>:/buttons/down.bmp</normaloff>:/buttons/down.bmp</iconset>
+             <iconset resource="rtknavi_qt.qrc">
+              <normaloff>:/buttons/down</normaloff>:/buttons/down</iconset>
             </property>
             <property name="flat">
              <bool>true</bool>
@@ -1704,10 +1024,7 @@
            </widget>
           </item>
           <item row="0" column="4">
-           <widget class="QPushButton" name="BtnPlotType3">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
+           <widget class="QPushButton" name="btnPlotType3">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -1718,8 +1035,8 @@
              <string/>
             </property>
             <property name="icon">
-             <iconset resource="../rtkconv_qt/rtkconv_qt.qrc">
-              <normaloff>:/buttons/down.bmp</normaloff>:/buttons/down.bmp</iconset>
+             <iconset resource="rtknavi_qt.qrc">
+              <normaloff>:/buttons/down</normaloff>:/buttons/down</iconset>
             </property>
             <property name="flat">
              <bool>true</bool>
@@ -1727,19 +1044,16 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QPushButton" name="BtnShrink3">
+           <widget class="QPushButton" name="btnShrink3">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <property name="text">
-             <string/>
-            </property>
             <property name="icon">
-             <iconset resource="../rtkconv_qt/rtkconv_qt.qrc">
-              <normaloff>:/buttons/shrink.bmp</normaloff>:/buttons/shrink.bmp</iconset>
+             <iconset resource="rtknavi_qt.qrc">
+              <normaloff>:/buttons/shrink</normaloff>:/buttons/shrink</iconset>
             </property>
             <property name="flat">
              <bool>true</bool>
@@ -1749,9 +1063,6 @@
          </layout>
         </widget>
         <widget class="QWidget" name="Panel25" native="true">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
          <property name="toolTip">
           <string/>
          </property>
@@ -1775,10 +1086,7 @@
            <number>0</number>
           </property>
           <item row="2" column="0" colspan="5">
-           <widget class="QLabel" name="Disp4">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
+           <widget class="QLabel" name="lblDisplay4">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
               <horstretch>0</horstretch>
@@ -1791,19 +1099,16 @@
            </widget>
           </item>
           <item row="0" column="0">
-           <widget class="QPushButton" name="BtnExpand4">
+           <widget class="QPushButton" name="btnExpand4">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <property name="text">
-             <string/>
-            </property>
             <property name="icon">
-             <iconset resource="../rtkconv_qt/rtkconv_qt.qrc">
-              <normaloff>:/buttons/expand.bmp</normaloff>:/buttons/expand.bmp</iconset>
+             <iconset resource="rtknavi_qt.qrc">
+              <normaloff>:/buttons/expand</normaloff>:/buttons/expand</iconset>
             </property>
             <property name="flat">
              <bool>true</bool>
@@ -1811,9 +1116,9 @@
            </widget>
           </item>
           <item row="0" column="3">
-           <widget class="QPushButton" name="BtnFreqType4">
+           <widget class="QPushButton" name="btnFrequencyType4">
             <property name="enabled">
-             <bool>true</bool>
+             <bool>false</bool>
             </property>
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -1825,8 +1130,8 @@
              <string/>
             </property>
             <property name="icon">
-             <iconset resource="../rtkconv_qt/rtkconv_qt.qrc">
-              <normaloff>:/buttons/down.bmp</normaloff>:/buttons/down.bmp</iconset>
+             <iconset resource="rtknavi_qt.qrc">
+              <normaloff>:/buttons/down</normaloff>:/buttons/down</iconset>
             </property>
             <property name="flat">
              <bool>true</bool>
@@ -1834,10 +1139,7 @@
            </widget>
           </item>
           <item row="0" column="4">
-           <widget class="QPushButton" name="BtnPlotType4">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
+           <widget class="QPushButton" name="btnPlotType4">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -1848,8 +1150,8 @@
              <string/>
             </property>
             <property name="icon">
-             <iconset resource="../rtkconv_qt/rtkconv_qt.qrc">
-              <normaloff>:/buttons/down.bmp</normaloff>:/buttons/down.bmp</iconset>
+             <iconset resource="rtknavi_qt.qrc">
+              <normaloff>:/buttons/down</normaloff>:/buttons/down</iconset>
             </property>
             <property name="flat">
              <bool>true</bool>
@@ -1857,19 +1159,16 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QPushButton" name="BtnShrink4">
+           <widget class="QPushButton" name="btnShrink4">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <property name="text">
-             <string/>
-            </property>
             <property name="icon">
-             <iconset resource="../rtkconv_qt/rtkconv_qt.qrc">
-              <normaloff>:/buttons/shrink.bmp</normaloff>:/buttons/shrink.bmp</iconset>
+             <iconset resource="rtknavi_qt.qrc">
+              <normaloff>:/buttons/shrink</normaloff>:/buttons/shrink</iconset>
             </property>
             <property name="flat">
              <bool>true</bool>
@@ -1885,9 +1184,6 @@
    </item>
    <item>
     <widget class="QWidget" name="Panel3" native="true">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -1917,16 +1213,13 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="QPushButton" name="BtnMonitor">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
+       <widget class="QPushButton" name="btnMonitor">
         <property name="toolTip">
          <string>RTK Monitor</string>
         </property>
         <property name="icon">
-         <iconset resource="../rtkconv_qt/rtkconv_qt.qrc">
-          <normaloff>:/buttons/sqr.bmp</normaloff>:/buttons/sqr.bmp</iconset>
+         <iconset resource="rtknavi_qt.qrc">
+          <normaloff>:/buttons/square</normaloff>:/buttons/square</iconset>
         </property>
         <property name="flat">
          <bool>true</bool>
@@ -1934,12 +1227,9 @@
        </widget>
       </item>
       <item>
-       <widget class="QLabel" name="Message">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
+       <widget class="QLabel" name="lblMessage">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -1947,16 +1237,10 @@
         <property name="toolTip">
          <string/>
         </property>
-        <property name="text">
-         <string/>
-        </property>
        </widget>
       </item>
       <item>
        <widget class="QWidget" name="Panel33" native="true">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
         <property name="toolTip">
          <string/>
         </property>
@@ -1980,12 +1264,9 @@
           <number>0</number>
          </property>
          <item>
-          <widget class="QPushButton" name="BtnTaskTray">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
+          <widget class="QPushButton" name="btnTaskTray">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Minimum" vsizetype="Ignored">
+            <sizepolicy hsizetype="Fixed" vsizetype="Ignored">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -1994,8 +1275,8 @@
             <string>Hide</string>
            </property>
            <property name="icon">
-            <iconset resource="../rtkconv_qt/rtkconv_qt.qrc">
-             <normaloff>:/buttons/ttray.bmp</normaloff>:/buttons/ttray.bmp</iconset>
+            <iconset resource="rtknavi_qt.qrc">
+             <normaloff>:/buttons/tray</normaloff>:/buttons/tray</iconset>
            </property>
            <property name="flat">
             <bool>true</bool>
@@ -2003,10 +1284,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="BtnAbout">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
+          <widget class="QPushButton" name="btnAbout">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Ignored">
              <horstretch>0</horstretch>
@@ -2032,9 +1310,6 @@
    </item>
    <item>
     <widget class="QWidget" name="Panel4" native="true">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -2061,10 +1336,7 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="QPushButton" name="BtnStart">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
+       <widget class="QPushButton" name="btnStart">
         <property name="toolTip">
          <string/>
         </property>
@@ -2072,13 +1344,13 @@
          <string>&amp;Start</string>
         </property>
         <property name="icon">
-         <iconset resource="../rtkconv_qt/rtkconv_qt.qrc">
-          <normaloff>:/buttons/start.bmp</normaloff>:/buttons/start.bmp</iconset>
+         <iconset resource="rtknavi_qt.qrc">
+          <normaloff>:/buttons/start</normaloff>:/buttons/start</iconset>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="BtnStop">
+       <widget class="QPushButton" name="btnStop">
         <property name="toolTip">
          <string/>
         </property>
@@ -2086,27 +1358,24 @@
          <string>S&amp;top</string>
         </property>
         <property name="icon">
-         <iconset resource="../rtkconv_qt/rtkconv_qt.qrc">
-          <normaloff>:/buttons/stop2.bmp</normaloff>:/buttons/stop2.bmp</iconset>
+         <iconset resource="rtknavi_qt.qrc">
+          <normaloff>:/buttons/shrink</normaloff>:/buttons/shrink</iconset>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="BtnMark">
+       <widget class="QPushButton" name="btnMark">
         <property name="text">
          <string>Mark...</string>
         </property>
         <property name="icon">
-         <iconset resource="../rtkconv_qt/rtkconv_qt.qrc">
-          <normaloff>:/buttons/point.bmp</normaloff>:/buttons/point.bmp</iconset>
+         <iconset resource="rtknavi_qt.qrc">
+          <normaloff>:/buttons/point</normaloff>:/buttons/point</iconset>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="BtnPlot">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
+       <widget class="QPushButton" name="btnPlot">
         <property name="toolTip">
          <string/>
         </property>
@@ -2114,16 +1383,13 @@
          <string>&amp;Plot...</string>
         </property>
         <property name="icon">
-         <iconset resource="../rtkconv_qt/rtkconv_qt.qrc">
-          <normaloff>:/buttons/chart.bmp</normaloff>:/buttons/chart.bmp</iconset>
+         <iconset resource="rtknavi_qt.qrc">
+          <normaloff>:/buttons/chart</normaloff>:/buttons/chart</iconset>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="BtnOpt">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
+       <widget class="QPushButton" name="btnOptions">
         <property name="toolTip">
          <string/>
         </property>
@@ -2131,16 +1397,13 @@
          <string>&amp;Options...</string>
         </property>
         <property name="icon">
-         <iconset resource="../rtkconv_qt/rtkconv_qt.qrc">
-          <normaloff>:/buttons/toolbmp</normaloff>:/buttons/toolbmp</iconset>
+         <iconset resource="rtknavi_qt.qrc">
+          <normaloff>:/buttons/tool</normaloff>:/buttons/tool</iconset>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="BtnExit">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
+       <widget class="QPushButton" name="btnExit">
         <property name="toolTip">
          <string/>
         </property>
@@ -2161,7 +1424,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="../rtkconv_qt/rtkconv_qt.qrc"/>
+  <include location="rtknavi_qt.qrc"/>
  </resources>
  <connections/>
 </ui>
