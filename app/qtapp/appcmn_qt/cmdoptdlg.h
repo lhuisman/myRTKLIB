@@ -13,15 +13,12 @@ class CmdOptDialog : public QDialog, private Ui_CmdOptDialog
 
 protected:
     void showEvent(QShowEvent *);
-    void updateEnable();
 
 public slots:
     void btnOkClicked();
-    void closeCommandsChecked();
-    void openCommandsChecked();
-    void periodicCommandsChecked();
     void btnLoadClicked();
     void btnSaveClicked();
+    void updateEnable();
 
 public:
     QString commands[3];

@@ -28,7 +28,8 @@ HEADERS  += \
     browsmain.h \
     staoptdlg.h \
     ../appcmn_qt/gmview.h \
-    ../appcmn_qt/aboutdlg.h
+    ../appcmn_qt/gm_template.h \
+    ../appcmn_qt/aboutdlg.h \
 
 FORMS    += \ 
     browsmain.ui \

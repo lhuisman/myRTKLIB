@@ -27,31 +27,25 @@ class MainForm : public QDialog, private Ui::MainForm
     Q_OBJECT
 
 public slots:
-    void btnExitClicked();
     void btnInputClicked();
     void btnOutputClicked();
-    void btnStartClicked();
-    void btnStopClicked();
     void serverStatusTimerTimeout();
     void btnOptionsClicked();
-    void outputChanged();
-    void inputChanged();
-    void BtnCommandClicked();
+    void btnCommandClicked();
     void btnAboutClicked();
     void btnStreamMonitorClicked();
     void streamMonitorTimerTimeout();
     void btnTaskIconClicked();
     void trayIconActivated(QSystemTrayIcon::ActivationReason);
     void menuExpandClicked();
-    void menuStartClicked();
-    void menuStopClicked();
-    void menuExitClicked();
-    void formCreated();
     void btnConvertClicked();
     void btnLogClicked();
+    void serverStart(void);
+    void serverStop(void);
 
 protected:
     void closeEvent(QCloseEvent*);
+    void showEvent(QShowEvent*);
 
 private:
     QString iniFile;
@@ -61,7 +55,7 @@ private:
     QString proxyAddress, logFile;
     QString conversionMessage[MAXSTR - 1], conversionOptions[MAXSTR - 1], antennaType, receiverType;
     QString pathLog[MAXSTR];
-    int conversionEnabled[MAXSTR - 1], ConversionInput[MAXSTR - 1], ConversionOutput[3], stationId, stationSelect;
+    int conversionEnabled[MAXSTR - 1], conversionInputFormat[MAXSTR - 1], conversionOutputFormat[3], stationId, stationSelect;
     int traceLevel, serverOptions[6], commandsEnabled[MAXSTR][3], commandsEnabledTcp[MAXSTR][3], nmeaRequest, fileSwapMargin, relayBack, progressBarRange, pathEnabled[MAXSTR];
     double antennaPosition[3], antennaOffsets[3];
     gtime_t startTime, endTime;
@@ -84,8 +78,6 @@ private:
     void udpServerOptions(int index, int path);
     void fileOptions(int index, int path);
     void showMessage(const QString &msg);
-    void serverStart(void);
-    void serverStop(void);
     void updateEnable(void);
     void setTrayIcon(int index);
     void loadOptions(void);

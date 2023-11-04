@@ -28,29 +28,30 @@ FileOptDialog::FileOptDialog(QWidget *parent)
     fileCompleter->setModel(fileModel);
     lEFilePath->setCompleter(fileCompleter);
 
-    connect(btnCancel, SIGNAL(clicked(bool)), this, SLOT(reject()));
-    connect(btnOk, SIGNAL(clicked(bool)), this, SLOT(btnOkClicked()));
-    connect(btnKey, SIGNAL(clicked(bool)), this, SLOT(btnKeyClicked()));
-    connect(btnFilePath, SIGNAL(clicked(bool)), this, SLOT(btnFilePathClicked()));
-    connect(cBTimeTag, SIGNAL(clicked(bool)), this, SLOT(timeTagChecked()));
+    connect(btnCancel, &QPushButton::clicked, this, &FileOptDialog::reject);
+    connect(btnOk, &QPushButton::clicked, this, &FileOptDialog::btnOkClicked);
+    connect(btnKey, &QPushButton::clicked, this, &FileOptDialog::btnKeyClicked);
+    connect(btnFilePath, &QPushButton::clicked, this, &FileOptDialog::btnFilePathClicked);
+    connect(cBTimeTag, &QCheckBox::clicked, this, &FileOptDialog::updateEnable);
+    connect(cBPathEnable, &QCheckBox::clicked, this, &FileOptDialog::updateEnable);
 
     cBSwapInterval->setValidator(new QIntValidator());
 }
 //---------------------------------------------------------------------------
 void FileOptDialog::showEvent(QShowEvent *event)
 {
-    int size_fpos=4;
+    int size_fpos = 4;
 
     if (event->spontaneous()) return;
 
     cBTimeTag->setText(options ? tr("TimeTag") : tr("Time"));
-    lbFilePath->setVisible(options!=2);
-    cBPathEnable->setVisible(options==2);
-    cBPathEnable->setChecked(options!=2||pathEnabled);
+    lbFilePath->setVisible(options != 2);
+    cBPathEnable->setVisible(options == 2);
+    cBPathEnable->setChecked(options != 2 || pathEnabled);
     cBTimeSpeed->setVisible(!options);
     sBTimeStart->setVisible(!options);
     lbFilePath->setText(options ? tr("Output File Path") : tr("Input File Path"));
-    lbSwapInterval->setVisible(!options);
+    lbPlus->setVisible(!options);
     lbSwapInterval->setVisible(options);
     lbH->setVisible(options);
     cBSwapInterval->setVisible(options);
@@ -67,7 +68,7 @@ void FileOptDialog::showEvent(QShowEvent *event)
             if (token == "T") cBTimeTag->setChecked(true);
             if (token.contains("+")) start = token.toDouble();
             if (token.contains("x")) speed = token.mid(1).toDouble();
-            if (token.contains('P')) size_fpos=token.mid(2).toInt();
+            if (token.contains('P')) size_fpos = token.mid(2).toInt();
         }
 
         if (start <= 0.0) start = 0.0;
@@ -81,7 +82,7 @@ void FileOptDialog::showEvent(QShowEvent *event)
             cBTimeSpeed->setCurrentIndex(cBTimeSpeed->count());
         }
         sBTimeStart->setValue(start);
-        cB64Bit->setChecked(size_fpos==8);
+        cB64Bit->setChecked(size_fpos == 8);
 
         lEFilePath->setText(tokens.at(0));
     } else { // output
@@ -103,7 +104,7 @@ void FileOptDialog::showEvent(QShowEvent *event)
         }
 
         lEFilePath->setText(tokens.at(0));
-        pathEnabled=cBPathEnable->isChecked();
+        pathEnabled = cBPathEnable->isChecked();
 	}
 	updateEnable();
 }
@@ -139,11 +140,6 @@ void FileOptDialog::btnFilePathClicked()
         lEFilePath->setText(QDir::toNativeSeparators(QFileDialog::getSaveFileName(this, QString(), lEFilePath->text())));
 }
 //---------------------------------------------------------------------------
-void FileOptDialog::timeTagChecked()
-{
-	updateEnable();
-}
-//---------------------------------------------------------------------------
 void FileOptDialog::btnKeyClicked()
 {
     keyDialog->exec();
@@ -161,5 +157,5 @@ void FileOptDialog::updateEnable(void)
     lbFilePath->setEnabled(cBPathEnable->isChecked());
     lbH->setEnabled(cBPathEnable->isChecked());
     cBTimeTag->setEnabled(cBPathEnable->isChecked());
-    //BtnKey->setEnabled(PathEnabled->isChecked());
+    btnKey->setEnabled(cBPathEnable->isChecked());
 }

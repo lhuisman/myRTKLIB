@@ -175,7 +175,7 @@ void LogStrDialog::serialOptions(int index, int opt)
 void LogStrDialog::tcpOptions(int index, int opt)
 {
     tcpOptDialog->path = paths[index][1];
-    tcpOptDialog->options = opt;
+    tcpOptDialog->showOptions = opt;
     for (int i = 0; i < 10; i++) {
         tcpOptDialog->history[i] = history[i];
 	}

@@ -19,15 +19,14 @@ public slots:
     void  btnOKClicked();
     void  stationListDblClick(int, int);
     void  btnLoadClicked();
-    void  btnFindClicked();
     void  findList(void);
 
 private:
     void  loadList(void);
     void  loadSinex(void);
     void  addReference(int n, double *pos, const QString code, const QString name);
-    int   inputReference(void);
-    void  updateDist(void);
+    int   selectReference(void);
+    void  updateDistances(void);
 
 public:
     QString stationPositionFile, stationId, stationName;

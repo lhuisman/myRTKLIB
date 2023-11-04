@@ -14,9 +14,7 @@ class SvrOptDialog : public QDialog, public Ui::SvrOptDialog
 public slots:
     void btnOkClicked();
     void btnPosClicked();
-    void nmeaReqChecked();
     void btnLocalDirClicked();
-    void stationIdChecked();
     void btnLogFileClicked();
 
 protected:
@@ -28,7 +26,7 @@ private:
 public:
     QString stationPositionFile, exeDirectory, localDirectory, proxyAddress;
     QString antennaType, receiverType, logFile;
-    int serverOptions[6], traceLevel, NmeaReq, fileSwapMargin, stationId, StaSel, RelayBack;
+    int serverOptions[6], traceLevel, nmeaRequest, fileSwapMargin, stationId, stationSelect, relayBack;
     int progressBarRange;
     double antennaPos[3], antennaOffset[3];
 

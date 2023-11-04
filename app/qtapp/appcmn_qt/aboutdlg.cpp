@@ -29,5 +29,5 @@ void AboutDialog::showEvent(QShowEvent *event)
     lbVersion->setText(tr("with RTKLIB ver.%1 %2").arg(VER_RTKLIB).arg(PATCH_LEVEL));
     lbCopyright->setText(COPYRIGHT_RTKLIB);
 
-    connect(pbOkay, SIGNAL(clicked(bool)), this, SLOT(accept()));
+    connect(pbOkay, &QPushButton::clicked, this, &AboutDialog::accept);
 }

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>379</width>
-    <height>210</height>
+    <height>185</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,7 +20,7 @@
    <item row="0" column="1" rowspan="3">
     <widget class="QComboBox" name="cBPort">
      <property name="toolTip">
-      <string/>
+      <string>Serial port</string>
      </property>
      <item>
       <property name="text">
@@ -31,9 +31,6 @@
    </item>
    <item row="1" column="0">
     <widget class="QLabel" name="Label3">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
      <property name="toolTip">
       <string/>
      </property>
@@ -45,7 +42,7 @@
    <item row="3" column="1" rowspan="3">
     <widget class="QComboBox" name="cBBitRate">
      <property name="toolTip">
-      <string/>
+      <string>Baud rate</string>
      </property>
      <item>
       <property name="text">
@@ -106,9 +103,6 @@
    </item>
    <item row="4" column="0">
     <widget class="QLabel" name="Label1">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
      <property name="toolTip">
       <string/>
      </property>
@@ -119,9 +113,6 @@
    </item>
    <item row="6" column="0">
     <widget class="QLabel" name="Label2">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
      <property name="toolTip">
       <string/>
      </property>
@@ -133,7 +124,7 @@
    <item row="6" column="1">
     <widget class="QComboBox" name="cBByteSize">
      <property name="toolTip">
-      <string/>
+      <string>Byte size</string>
      </property>
      <item>
       <property name="text">
@@ -149,9 +140,6 @@
    </item>
    <item row="1" column="2">
     <widget class="QLabel" name="Label4">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
      <property name="toolTip">
       <string/>
      </property>
@@ -162,9 +150,6 @@
    </item>
    <item row="4" column="2">
     <widget class="QLabel" name="Label5">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
      <property name="toolTip">
       <string/>
      </property>
@@ -175,9 +160,6 @@
    </item>
    <item row="6" column="2">
     <widget class="QLabel" name="Label8">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
      <property name="toolTip">
       <string/>
      </property>
@@ -189,7 +171,7 @@
    <item row="6" column="3">
     <widget class="QComboBox" name="cBFlowControl">
      <property name="toolTip">
-      <string/>
+      <string>Flow control</string>
      </property>
      <item>
       <property name="text">
@@ -211,7 +193,7 @@
    <item row="4" column="3">
     <widget class="QComboBox" name="cBStopBits">
      <property name="toolTip">
-      <string/>
+      <string>Number of stop bits</string>
      </property>
      <item>
       <property name="text">
@@ -228,7 +210,7 @@
    <item row="1" column="3">
     <widget class="QComboBox" name="cBParity">
      <property name="toolTip">
-      <string/>
+      <string>Parity bit</string>
      </property>
      <item>
       <property name="text">
@@ -296,6 +278,9 @@
    </item>
    <item row="7" column="0" colspan="3">
     <widget class="QCheckBox" name="cBOutputTcpPort">
+     <property name="toolTip">
+      <string>Stream serial data to TCP port</string>
+     </property>
      <property name="text">
       <string>Output Received Stream to  TCP Port :</string>
      </property>

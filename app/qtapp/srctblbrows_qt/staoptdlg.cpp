@@ -14,28 +14,28 @@ StaListDialog::StaListDialog(QWidget *parent)
 {
     setupUi(this);
 
-    connect(BtnCancel, SIGNAL(clicked(bool)), this, SLOT(reject()));
-    connect(BtnLoad, SIGNAL(clicked(bool)), this, SLOT(btnLoadClicked()));
-    connect(BtnOk, SIGNAL(clicked(bool)), this, SLOT(btnOkClicked()));
-    connect(BtnSave, SIGNAL(clicked(bool)), this, SLOT(btnSaveClicked()));
+    connect(btnCancel, &QPushButton::clicked, this, &StaListDialog::reject);
+    connect(btnLoad, &QPushButton::clicked, this, &StaListDialog::btnLoadClicked);
+    connect(btnOk, &QPushButton::clicked, this, &StaListDialog::btnOkClicked);
+    connect(btnSave, &QPushButton::clicked, this, &StaListDialog::btnSaveClicked);
 }
 //---------------------------------------------------------------------------
 void StaListDialog::showEvent(QShowEvent *event)
 {
     if (event->spontaneous()) return;
 
-    StationList->clear();
+    lWStationList->clear();
 
     for (int i = 0; i < mainForm->stationList.count(); i++)
-        StationList->addItem(mainForm->stationList.at(i));
+        lWStationList->addItem(mainForm->stationList.at(i));
 }
 //---------------------------------------------------------------------------
 void StaListDialog::btnOkClicked()
 {
     mainForm->stationList.clear();
 
-    for (int i = 0; i < StationList->count(); i++)
-        mainForm->stationList.append(StationList->item(i)->text());
+    for (int i = 0; i < lWStationList->count(); i++)
+        mainForm->stationList.append(lWStationList->item(i)->text());
 }
 //---------------------------------------------------------------------------
 void StaListDialog::btnLoadClicked()
@@ -49,16 +49,16 @@ void StaListDialog::btnLoadClicked()
     file.setFileName(filename);
     if (!file.open(QIODevice::ReadOnly)) return;
 
-    StationList->clear();
-    StationList->setVisible(false);
+    lWStationList->clear();
+    lWStationList->setVisible(false);
 
     while (!file.atEnd()) {
         buffer = file.readLine();
         buffer = buffer.mid(buffer.indexOf('#'));
-        StationList->addItem(buffer);
+        lWStationList->addItem(buffer);
     }
 
-    StationList->setVisible(true);
+    lWStationList->setVisible(true);
 }
 //---------------------------------------------------------------------------
 void StaListDialog::btnSaveClicked()
@@ -69,7 +69,7 @@ void StaListDialog::btnSaveClicked()
     file.setFileName(filename);
     if (!file.open(QIODevice::WriteOnly)) return;
 
-    for (int i = 0; i < StationList->count(); i++)
-        file.write((StationList->item(i)->text() + "\n").toLatin1());
+    for (int i = 0; i < lWStationList->count(); i++)
+        file.write((lWStationList->item(i)->text() + "\n").toLatin1());
 }
 //---------------------------------------------------------------------------

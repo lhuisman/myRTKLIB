@@ -16,13 +16,13 @@ CmdOptDialog::CmdOptDialog(QWidget *parent)
 
     commandsEnabled[0] = commandsEnabled[1] = 1;
 
-    connect(btnOk, SIGNAL(clicked()), this, SLOT(btnOkClicked()));
-    connect(btnCancel, SIGNAL(clicked()), this, SLOT(reject()));
-    connect(btnLoad, SIGNAL(clicked()), this, SLOT(btnLoadClicked()));
-    connect(btnSave, SIGNAL(clicked()), this, SLOT(btnSaveClicked()));
-    connect(cBCloseCommands, SIGNAL(clicked(bool)), this, SLOT(closeCommandsChecked()));
-    connect(cBOpenCommands, SIGNAL(clicked(bool)), this, SLOT(openCommandsChecked()));
-    connect(cBPeriodicCommands, SIGNAL(clicked(bool)), this, SLOT(periodicCommandsChecked()));
+    connect(btnOk, &QPushButton::clicked, this, &CmdOptDialog::btnOkClicked);
+    connect(btnCancel, &QPushButton::clicked, this, &CmdOptDialog::reject);
+    connect(btnLoad, &QPushButton::clicked, this, &CmdOptDialog::btnLoadClicked);
+    connect(btnSave, &QPushButton::clicked, this, &CmdOptDialog::btnSaveClicked);
+    connect(cBCloseCommands, &QPushButton::clicked, this, &CmdOptDialog::updateEnable);
+    connect(cBOpenCommands, &QPushButton::clicked, this, &CmdOptDialog::updateEnable);
+    connect(cBPeriodicCommands, &QPushButton::clicked, this, &CmdOptDialog::updateEnable);
 }
 
 //---------------------------------------------------------------------------
@@ -59,7 +59,7 @@ void CmdOptDialog::btnOkClicked()
 void CmdOptDialog::btnLoadClicked()
 {
     QString OpenDialog_FileName;
-    QPlainTextEdit *cmd[] = { tEOpenCommands, tECloseCommands, tEPeriodicCommands };
+    QPlainTextEdit *cmd[] = {tEOpenCommands, tECloseCommands, tEPeriodicCommands};
     QByteArray buff;
     int n = 0;
 
@@ -75,7 +75,7 @@ void CmdOptDialog::btnLoadClicked()
     while (!f.atEnd() && n < 3) {
         buff = f.readLine(0);
         if (buff.at(0) == '@') {
-            n ++; continue;
+            n++; continue;
         }
         if (buff[buff.length() - 1] == '\n') buff[buff.length() - 1] = '\0';
         cmd[n]->appendPlainText(buff);
@@ -101,22 +101,6 @@ void CmdOptDialog::btnSaveClicked()
     fp.write(PeriodicCmd_Text);
 }
 
-//---------------------------------------------------------------------------
-void CmdOptDialog::closeCommandsChecked()
-{
-	updateEnable();
-}
-
-//---------------------------------------------------------------------------
-void CmdOptDialog::openCommandsChecked()
-{
-	updateEnable();
-}
-//---------------------------------------------------------------------------
-void CmdOptDialog::periodicCommandsChecked()
-{
-    updateEnable();
-}
 //---------------------------------------------------------------------------
 void CmdOptDialog::updateEnable()
 {

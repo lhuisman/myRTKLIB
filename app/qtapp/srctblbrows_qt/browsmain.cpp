@@ -46,10 +46,10 @@ static char *getsrctbl(const QString addr)
     static int lock = 0;
 	stream_t str;
     char *p = buff, msg[MAXSTRMSG];
-    int len = strlen(ENDSRCTBL);
     unsigned int tick = tickget();
 
-    if (lock) return NULL; else lock = 1;
+    if (lock) return NULL;
+    else lock = 1;
 
     strinit(&str);
 
@@ -85,7 +85,7 @@ MainForm::MainForm(QWidget *parent)
 {
     mainForm = this;
     setupUi(this);
-    FiltFmt->setVisible(false);
+    cBFilterFormat->setVisible(false);  // TODO
 
     QCoreApplication::setApplicationName(PRGNAME);
     QCoreApplication::setApplicationVersion(PRGVERSION);
@@ -103,40 +103,40 @@ MainForm::MainForm(QWidget *parent)
     staListDialog = new StaListDialog(this);
     loadTimer = new QTimer();
 
-    TypeCas->setDefaultAction(MenuViewCas);
-    TypeNet->setDefaultAction(MenuViewNet);
-    TypeSrc->setDefaultAction(MenuViewSrc);
-    TypeStr->setDefaultAction(MenuViewStr);
+    btnTypeCas->setDefaultAction(actMenuViewCas);
+    btnTypeNet->setDefaultAction(actMenuViewNet);
+    btnTypeSrc->setDefaultAction(actMenuViewSrc);
+    btnTypeStr->setDefaultAction(actMenuViewStr);
 
-    connect(Address, SIGNAL(textActivated(QString)), this, SLOT(addressChanged()));
-    connect(BtnUpdate, SIGNAL(clicked(bool)), this, SLOT(btnUpdateClicked()));
-    connect(BtnMap, SIGNAL(clicked(bool)), this, SLOT(btnMapClicked()));
-    connect(BtnList, SIGNAL(clicked(bool)), this, SLOT(btnListClicked()));
-    connect(BtnSta, SIGNAL(clicked(bool)), this, SLOT(btnStatsionClicked()));
-    connect(StaMask, SIGNAL(clicked(bool)), this, SLOT(stationMaskClicked()));
-    connect(MenuOpen, SIGNAL(triggered(bool)), this, SLOT(menuOpenClicked()));
-    connect(MenuSave, SIGNAL(triggered(bool)), this, SLOT(menuSaveClicked()));
-    connect(MenuQuit, SIGNAL(triggered(bool)), this, SLOT(menuQuitClicked()));
-    connect(MenuUpdateCaster, SIGNAL(triggered(bool)), this, SLOT(menuUpdateCasterClicked()));
-    connect(MenuUpdateTable, SIGNAL(triggered(bool)), this, SLOT(menuUpdateTableClicked()));
-    connect(MenuViewCas, SIGNAL(triggered(bool)), this, SLOT(menuViewCasterClicked()));
-    connect(MenuViewNet, SIGNAL(triggered(bool)), this, SLOT(menuViewNetClicked()));
-    connect(MenuViewSrc, SIGNAL(triggered(bool)), this, SLOT(menuViewSourceClicked()));
-    connect(MenuViewStr, SIGNAL(triggered(bool)), this, SLOT(menuViewStrClicked()));
-    connect(MenuAbout, SIGNAL(triggered(bool)), this, SLOT(menuAboutClicked()));
-    connect(loadTimer, SIGNAL(timeout()), this, SLOT(loadTimerExpired()));
-    connect(Table0, SIGNAL(cellClicked(int,int)), this, SLOT(Table0SelectCell(int,int)));
+    connect(cBAddress, &QComboBox::textActivated, this, &MainForm::addressChanged);
+    connect(btnUpdate, &QPushButton::clicked, this, &MainForm::btnUpdateClicked);
+    connect(btnMap, &QPushButton::clicked, this, &MainForm::btnMapClicked);
+    connect(btnList, &QPushButton::clicked, this, &MainForm::btnListClicked);
+    connect(btnSta, &QPushButton::clicked, this, &MainForm::btnStatsionClicked);
+    connect(cBStatationMask, &QCheckBox::clicked, this, &MainForm::updateEnable);
+    connect(actMenuOpen, &QAction::triggered, this, &MainForm::menuOpenClicked);
+    connect(actMenuSave, &QAction::triggered, this, &MainForm::menuSaveClicked);
+    connect(actMenuQuit, &QAction::triggered, this, &MainForm::close);
+    connect(actMenuUpdateCaster, &QAction::triggered, this, &MainForm::menuUpdateCasterClicked);
+    connect(actMenuUpdateTable, &QAction::triggered, this, &MainForm::menuUpdateTableClicked);
+    connect(actMenuViewCas, &QAction::triggered, this, &MainForm::menuViewCasterClicked);
+    connect(actMenuViewNet, &QAction::triggered, this, &MainForm::menuViewNetClicked);
+    connect(actMenuViewSrc, &QAction::triggered, this, &MainForm::menuViewSourceClicked);
+    connect(actMenuViewStr, &QAction::triggered, this, &MainForm::menuViewStrClicked);
+    connect(actMenuAbout, &QAction::triggered, this, &MainForm::menuAboutClicked);
+    connect(loadTimer, &QTimer::timeout, this, &MainForm::loadTimerExpired);
+    connect(tWTableStr, &QTableWidget::cellClicked, this, &MainForm::Table0SelectCell);
 
-    BtnMap->setEnabled(false);
+    btnMap->setEnabled(false);
 #ifdef QWEBENGINE
-    BtnMap->setEnabled(true);
+    btnMap->setEnabled(true);
 #endif
 
-    Table0->setSortingEnabled(true);
-    Table1->setSortingEnabled(true);
-    Table2->setSortingEnabled(true);
+    tWTableStr->setSortingEnabled(true);
+    tWTableCas->setSortingEnabled(true);
+    tWTableNet->setSortingEnabled(true);
 
-    statusbar->addWidget(Panel2);
+    statusbar->addWidget(wgMessage);
 
     strinitcom();
 
@@ -172,14 +172,14 @@ void MainForm::showEvent(QShowEvent *event)
     list = setting.value("srctbl/addrlist", "").toString();
     QStringList items = list.split("@");
     foreach(QString item, items){
-        Address->addItem(item);
+        cBAddress->addItem(item);
     }
 
     if (url != "") {
-        Address->setCurrentText(url);
+        cBAddress->setCurrentText(url);
         getTable();
     } else {
-        Address->setCurrentText(setting.value("srctbl/address", "").toString());
+        cBAddress->setCurrentText(setting.value("srctbl/address", "").toString());
 	}
 
     fontScale = physicalDpiX();
@@ -187,17 +187,17 @@ void MainForm::showEvent(QShowEvent *event)
     colw = setting.value("srctbl/colwidth0", colw0).toString().split(",");
     i = 0;
     foreach(QString width, colw){
-        Table0->setColumnWidth(i++, width.toDouble() * fontScale / 96);
+        tWTableStr->setColumnWidth(i++, width.toDouble() * fontScale / 96);
     }
     colw = setting.value("srctbl/colwidth1", colw1).toString().split(",");
     i = 0;
     foreach(QString width, colw){
-        Table1->setColumnWidth(i++, width.toDouble() * fontScale / 96);
+        tWTableCas->setColumnWidth(i++, width.toDouble() * fontScale / 96);
     }
     colw = setting.value("srctbl/colwidth2", colw2).toString().split(",");
     i = 0;
     foreach(QString width, colw){
-        Table2->setColumnWidth(i++, width.toDouble() * fontScale / 96);
+        tWTableNet->setColumnWidth(i++, width.toDouble() * fontScale / 96);
 	}
 
     stationList.clear();
@@ -212,7 +212,7 @@ void MainForm::showEvent(QShowEvent *event)
     updateEnable();
     getTable();
 
-    QTimer::singleShot(0, this, SLOT(updateTable()));
+    QTimer::singleShot(0, this, &MainForm::updateTable);
 }
 //---------------------------------------------------------------------------
 void MainForm::closeEvent(QCloseEvent *)
@@ -221,28 +221,34 @@ void MainForm::closeEvent(QCloseEvent *)
     QString list, colw;
 
     // save table layout
-    setting.setValue("srctbl/address", Address->currentText());
-    for (int i = 0; i < Address->count(); i++)
-        list = list + Address->itemText(i) + "@";
+    setting.setValue("srctbl/address", cBAddress->currentText());
+    for (int i = 0; i < cBAddress->count(); i++)
+        list = list + cBAddress->itemText(i) + "@";
     setting.setValue("srctbl/addrlist", list);
 
     colw = "";
-    for (int i = 0; i < Table0->columnCount(); i++)
-        colw = colw + QString::number(Table0->columnWidth(i) * 96 / fontScale);
+    for (int i = 0; i < tWTableStr->columnCount(); i++)
+        colw = colw + QString::number(tWTableStr->columnWidth(i) * 96 / fontScale);
     setting.setValue("srctbl/colwidth0", colw);
 
     colw = "";
-    for (int i = 0; i < Table1->columnCount(); i++)
-        colw = colw + QString::number(Table1->columnWidth(i) * 96 / fontScale);
+    for (int i = 0; i < tWTableCas->columnCount(); i++)
+        colw = colw + QString::number(tWTableCas->columnWidth(i) * 96 / fontScale);
     setting.setValue("srctbl/colwidth1", colw);
 
     colw = "";
-    for (int i = 0; i < Table2->columnCount(); i++)
-        colw = colw + QString::number(Table2->columnWidth(i) * 96 / fontScale);
+    for (int i = 0; i < tWTableNet->columnCount(); i++)
+        colw = colw + QString::number(tWTableNet->columnWidth(i) * 96 / fontScale);
     setting.setValue("srctbl/colwidth2", colw);
 
-    for (int i = 0; i < 10; i++)
-        setting.setValue(QString("sta/station%1").arg(i), stationList.join(","));
+    for (int i = 0, j = 0; i < 10; i++)
+    {
+        QString buffer;
+        for (int k = 0; k < 256 && j < stationList.count(); k++) {
+            buffer.append(QStringLiteral("%1%1").arg(k==0?"":",").arg(stationList[j++]));
+        };
+        setting.setValue(QString("sta/station%1").arg(i), buffer);
+    }
 }
 //---------------------------------------------------------------------------
 void MainForm::menuOpenClicked()
@@ -256,7 +262,7 @@ void MainForm::menuOpenClicked()
 
     sourceTable = file.readAll();
 
-    addressCaster = Address->currentText();
+    addressCaster = cBAddress->currentText();
 
     showTable();
     showMsg(tr("source table loaded"));
@@ -274,11 +280,6 @@ void MainForm::menuSaveClicked()
     showMsg(tr("source table saved"));
 }
 //---------------------------------------------------------------------------
-void MainForm::menuQuitClicked()
-{
-    close();
-}
-//---------------------------------------------------------------------------
 void MainForm::menuUpdateCasterClicked()
 {
     getCaster();
@@ -291,36 +292,36 @@ void MainForm::menuUpdateTableClicked()
 //---------------------------------------------------------------------------
 void MainForm::menuViewStrClicked()
 {
-    MenuViewCas->setChecked(false);
-    MenuViewNet->setChecked(false);
-    MenuViewSrc->setChecked(false);
+    actMenuViewCas->setChecked(false);
+    actMenuViewNet->setChecked(false);
+    actMenuViewSrc->setChecked(false);
 
     showTable();
 }
 //---------------------------------------------------------------------------
 void MainForm::menuViewCasterClicked()
 {
-    MenuViewStr->setChecked(false);
-    MenuViewNet->setChecked(false);
-    MenuViewSrc->setChecked(false);
+    actMenuViewStr->setChecked(false);
+    actMenuViewNet->setChecked(false);
+    actMenuViewSrc->setChecked(false);
 
     showTable();
 }
 //---------------------------------------------------------------------------
 void MainForm::menuViewNetClicked()
 {
-    MenuViewStr->setChecked(false);
-    MenuViewCas->setChecked(false);
-    MenuViewSrc->setChecked(false);
+    actMenuViewStr->setChecked(false);
+    actMenuViewCas->setChecked(false);
+    actMenuViewSrc->setChecked(false);
 
     showTable();
 }
 //---------------------------------------------------------------------------
 void MainForm::menuViewSourceClicked()
 {
-    MenuViewStr->setChecked(false);
-    MenuViewCas->setChecked(false);
-    MenuViewNet->setChecked(false);
+    actMenuViewStr->setChecked(false);
+    actMenuViewCas->setChecked(false);
+    actMenuViewNet->setChecked(false);
 
     showTable();
 }
@@ -347,10 +348,10 @@ void MainForm::Table0SelectCell(int ARow, int ACol)
     Q_UNUSED(ACol);
     QString title;
 
-    if (0 <= ARow && ARow < Table0->rowCount()) {
-        title = Table0->item(ARow,1)->text();
+    if (0 <= ARow && ARow < tWTableStr->rowCount()) {
+        title = tWTableStr->item(ARow, 1)->text();
         mapView->highlightMark(title);
-        mapView->setWindowTitle(QString(tr("NTRIP Data Stream Map: %1/%2")).arg(Address->currentText()).arg(title));
+        mapView->setWindowTitle(QString(tr("NTRIP Data Stream Map: %1/%2")).arg(cBAddress->currentText()).arg(title));
 	}
 }
 //---------------------------------------------------------------------------
@@ -382,58 +383,60 @@ void MainForm::getCaster(void)
 {
     if (casterWatcher.isRunning()) return;
 
-    QString addressText = Address->currentText();
+    QString addressText = cBAddress->currentText();
     QString addr = NTRIP_HOME;
 
     if (addressText != "") addr = addressText;
 
-    BtnList->setEnabled(false);
-    MenuUpdateCaster->setEnabled(false);
+    btnList->setEnabled(false);
+    actMenuUpdateCaster->setEnabled(false);
 
+    // update source table in background and call updateCaster() when finished
     QFuture<char *> tblFuture = QtConcurrent::run(getsrctbl, addr);
-    connect(&casterWatcher, SIGNAL(finished()), this, SLOT(updateCaster()));
+    connect(&casterWatcher, &QFutureWatcher<char*>::finished, this, &MainForm::updateCaster);
     casterWatcher.setFuture(tblFuture);
 }
 //---------------------------------------------------------------------------
 void MainForm::updateCaster()
 {
-    QString text;
+    QString currentAddress;
     QString srctbl;
 
-    BtnList->setEnabled(true);
-    MenuUpdateCaster->setEnabled(true);
+    btnList->setEnabled(true);
+    actMenuUpdateCaster->setEnabled(true);
 
     if ((srctbl = casterWatcher.result()).isEmpty()) return;
 
-    text = Address->currentText();
-    Address->clear();
-    Address->setCurrentText(text);
-    Address->addItem("");
+    currentAddress = cBAddress->currentText();
+    cBAddress->clear();
+    cBAddress->setCurrentText(currentAddress);
+    cBAddress->addItem("");
 
     QStringList tokens, lines = srctbl.split('\n');
     foreach(const QString &line, lines) {
         if (!line.contains("CAS")) continue;
 
         tokens = line.split(";");
-        if (tokens.size() != 3) continue;
-        Address->addItem(tokens.at(1) + ":" + tokens.at(2));
+        if (tokens.size() < 3) continue;
+        cBAddress->addItem(tokens.at(1) + ":" + tokens.at(2), QString(line));
 	}
-    if (Address->count() > 1) Address->setCurrentIndex(0);
+    if (cBAddress->count() > 1) cBAddress->setCurrentIndex(0);
 }
 //---------------------------------------------------------------------------
 void MainForm::getTable()
 {
     if (tableWatcher.isRunning()) return;
 
-    QString Address_Text = Address->currentText();
+    QString Address_Text = cBAddress->currentText();
     QString addr = NTRIP_HOME;
 
     if (Address_Text != "") addr = Address_Text;
 
-    BtnUpdate->setEnabled(false);
-    Address->setEnabled(false);
-    MenuUpdateTable->setEnabled(false);
+    btnUpdate->setEnabled(false);
+    cBAddress->setEnabled(false);
+    actMenuUpdateTable->setEnabled(false);
 
+    // retrieve data in background and call updateTable() when finished
     QFuture<char *> tblFuture = QtConcurrent::run(getsrctbl, addr);
     connect(&tableWatcher, SIGNAL(finished()), this, SLOT(updateTable()));
     tableWatcher.setFuture(tblFuture);
@@ -443,15 +446,15 @@ void MainForm::updateTable(void)
 {
     QString srctbl;
 
-    BtnUpdate->setEnabled(true);
-    Address->setEnabled(true);
-    MenuUpdateTable->setEnabled(true);
+    btnUpdate->setEnabled(true);
+    cBAddress->setEnabled(true);
+    actMenuUpdateTable->setEnabled(true);
 
     srctbl = tableWatcher.result();
 
     if (!srctbl.isEmpty()) {
         sourceTable = srctbl;
-        addressCaster = Address->currentText();
+        addressCaster = cBAddress->currentText();
 	}
 
     showTable();
@@ -459,53 +462,52 @@ void MainForm::updateTable(void)
 //---------------------------------------------------------------------------
 void MainForm::showTable(void)
 {
-    const QString ti[3][19] = { {tr("No"), tr("Mountpoint"), tr("ID"),	tr("Format"),	      tr("Format-Details"), tr("Carrier"), tr("Nav-System"),
-                      tr("Network"), tr("Country"), tr("Latitude"), tr("Longitude"), tr("NMEA"), tr("Solution"),
-                      tr("Generator"), "Compr-Encrp", "Authentication", "Fee", "Bitrate", "" },
-                    { tr("No"), tr("Host"),	tr("Port"),	tr("ID"),	      tr("Operator"),	    tr("NMEA"),	   tr("Country"),   tr("Latitude"), tr("Longitude"),
-                      tr("Fallback_Host"), tr("Fallback_Port"), "", "", "", "", "", "", "" },
-                    { tr("No"), tr("ID"),		tr("Operator"), tr("Authentication"), tr("Fee"),	    tr("Web-Net"), tr("Web-Str"),   tr("Web-Reg"),  "",		    "","", "",
+    const QString ti[3][19] = {{tr("No"), tr("Mountpoint"), tr("ID"), tr("Format"), tr("Format-Details"), tr("Carrier"), tr("Nav-System"),
+                                tr("Network"), tr("Country"), tr("Latitude"), tr("Longitude"), tr("NMEA"), tr("Solution"),
+                                tr("Generator"), tr("Compr-Encrp"), tr("Authentication"), tr("Fee"), tr("Bitrate"), "" },
+                    { tr("No"), tr("Host"),	tr("Port"),	tr("ID"), tr("Operator"), tr("NMEA"), tr("Country"), tr("Latitude"), tr("Longitude"),
+                      tr("Fallback Host"), tr("Fallback Port"), "", "", "", "", "", "", "" },
+                    { tr("No"), tr("ID"), tr("Operator"), tr("Authentication"), tr("Fee"), tr("Web-Net"), tr("Web-Str"), tr("Web-Reg"),  "", "","", "",
                       "", "", "", "", "", "" } };
 
 
-    QTableWidget *table[] = { Table0, Table1, Table2 };
-    QAction *action[] = { MenuViewStr, MenuViewCas, MenuViewNet, MenuViewSrc };
-    int i, j, ns, type;
+    QTableWidget *table[] = { tWTableStr, tWTableCas, tWTableNet };
+    QAction *action[] = { actMenuViewStr, actMenuViewCas, actMenuViewNet, actMenuViewSrc };
+    int i, j, numStations, type;
 
-    Table3->setVisible(false);
+    tETableSrc->setVisible(false);
     for (i = 0; i < 3; i++) table[i]->setVisible(false);
 
-    type = MenuViewStr->isChecked() ? 0 : (MenuViewCas->isChecked() ? 1 : (MenuViewNet->isChecked() ? 2 : 3));
+    type = actMenuViewStr->isChecked() ? 0 : (actMenuViewCas->isChecked() ? 1 : (actMenuViewNet->isChecked() ? 2 : 3));
     for (i = 0; i < 4; i++) action[i]->setChecked(i == type);
 
     if (type == 3) {
-        Table3->setVisible(true);
-        Table3->setPlainText("");
+        tETableSrc->setVisible(true);
+        tETableSrc->setPlainText("");
     } else {
         table[type]->setVisible(true);
-        table[type]->setRowCount(1);
         table[type]->setColumnCount(18);
         for (i = 0; i < 18; i++) {
             table[type]->setHorizontalHeaderItem(i, new QTableWidgetItem(ti[type][i]));
-            table[type]->setItem(0, i, new QTableWidgetItem(""));
 		}
 	}
-    if (addressCaster != Address->currentText()) return;
+    if (addressCaster != cBAddress->currentText()) return;
     if (type == 3) {
-        Table3->setPlainText(sourceTable);
+        tETableSrc->setPlainText(sourceTable);
 		return;
 	}
     QStringList lines = sourceTable.split("\n");
-    ns = 0;
+    numStations = 0;
     foreach(QString line, lines) {
 		switch (type) {
-        case 0: if (line.startsWith("STR")) ns++; break;
-        case 1: if (line.startsWith("CAS")) ns++; break;
-        case 2: if (line.startsWith("NET")) ns++; break;
+            case 0: if (line.startsWith("STR")) numStations++; break;
+            case 1: if (line.startsWith("CAS")) numStations++; break;
+            case 2: if (line.startsWith("NET")) numStations++; break;
 		}
 	}
-    if (ns <= 0) return;
-    table[type]->setRowCount(ns);
+    if (numStations <= 0) return;
+
+    table[type]->setRowCount(numStations);
     j = 0;
     foreach(QString line, lines) {
 		switch (type) {
@@ -515,7 +517,7 @@ void MainForm::showTable(void)
 		}
         table[type]->setItem(j, 0, new QTableWidgetItem(QString::number(j)));
         QStringList tokens = line.split(";");
-        for (int i = 0; i < 18 && i < tokens.size(); i++)
+        for (int i = 0; i < table[type]->colorCount() && i < tokens.size(); i++)
             table[type]->setItem(j, i, new QTableWidgetItem(tokens.at(i)));
 		j++;
 	}
@@ -526,7 +528,7 @@ void MainForm::showMsg(const QString &msg)
 {
     QString str = msg;
 
-    Message->setText(str);
+    lblMessage->setText(str);
 }
 //---------------------------------------------------------------------------
 void MainForm::updateMap(void)
@@ -535,27 +537,27 @@ void MainForm::updateMap(void)
     double latitude, longitude;
     bool okay;
 
-    if (Address->currentText() == "")
+    if (cBAddress->currentText() == "")
         mapView->setWindowTitle(tr("NTRIP Data Stream Map"));
     else
-        mapView->setWindowTitle(QString(tr("NTRIP Data Stream Map: %1")).arg(Address->currentText()));
+        mapView->setWindowTitle(QString(tr("NTRIP Data Stream Map: %1")).arg(cBAddress->currentText()));
     mapView->clearMark();
 
-    for (int i = 0; i < Table0->rowCount(); i++) {
-        if (Table0->item(i, 8)->text() == "") continue;
+    for (int i = 0; i < tWTableStr->rowCount(); i++) {
+        if (tWTableStr->item(i, 8)->text() == "") continue;  // country
 
-        latitudeText = Table0->item(i, 9)->text();
-        longitudeText = Table0->item(i, 10)->text();
+        latitudeText = tWTableStr->item(i, 9)->text();
+        longitudeText = tWTableStr->item(i, 10)->text();
         latitude = latitudeText.toDouble(&okay); if (!okay) continue;
         longitude = longitudeText.toDouble(&okay); if (!okay) continue;
 
-        title = Table0->item(i, 1)->text();
-        msg = "<b>" + Table0->item(i, 1)->text() + "</b>: " + Table0->item(i, 2)->text() + " (" + Table0->item(i,8)->text()+")<br>"+
-              "Format: "+ Table0->item(i, 3)->text() + ", " + Table0->item(i, 4)->text() + ", <br> " +
-              "Nav-Sys: "+Table0->item(i, 6)->text() + "<br>" +
-              "Network: "+Table0->item(i, 7)->text() + "<br>" +
-              "Latitude/Longitude: "+Table0->item(i, 9)->text()+", "+Table0->item(i, 10)->text()+"<br>"+
-              "Generator: "+Table0->item(i, 13)->text();
+        title = tWTableStr->item(i, 1)->text();
+        msg = "<b>" + tWTableStr->item(i, 1)->text() + "</b>: " + tWTableStr->item(i, 2)->text() + " (" + tWTableStr->item(i,8)->text()+")<br>"+
+              "Format: "+ tWTableStr->item(i, 3)->text() + ", " + tWTableStr->item(i, 4)->text() + ", <br> " +
+              "Nav-Sys: "+tWTableStr->item(i, 6)->text() + "<br>" +
+              "Network: "+tWTableStr->item(i, 7)->text() + "<br>" +
+              "Latitude/Longitude: "+tWTableStr->item(i, 9)->text()+", "+tWTableStr->item(i, 10)->text()+"<br>"+
+              "Generator: "+tWTableStr->item(i, 13)->text();
 
         mapView->addMark(latitude, longitude, title, msg);
 	}
@@ -568,11 +570,6 @@ void MainForm::btnStatsionClicked()
 //---------------------------------------------------------------------------
 void MainForm::updateEnable(void)
 {
-    BtnSta->setEnabled(StaMask->isChecked());
-}
-//---------------------------------------------------------------------------
-void MainForm::stationMaskClicked()
-{
-    updateEnable();
+    btnSta->setEnabled(cBStatationMask->isChecked());
 }
 //---------------------------------------------------------------------------

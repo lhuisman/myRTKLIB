@@ -10,14 +10,13 @@ ConvDialog::ConvDialog(QWidget *parent)
 {
     setupUi(this);
 
-	int i;
-    for (i = 0; i <= MAXRCVFMT; i++)
+    for (int i = 0; i <= MAXRCVFMT; i++)
         cBInputFormat->addItem(formatstrs[i]);
     cBInputFormat->setCurrentIndex(0);
 
-    connect(btnOk, SIGNAL(clicked(bool)), this, SLOT(btnOkClicked()));
-    connect(btnCancel, SIGNAL(clicked(bool)), this, SLOT(reject()));
-    connect(cBConversion, SIGNAL(clicked(bool)), this, SLOT(conversionClicked()));
+    connect(btnOk, &QPushButton::clicked, this, &ConvDialog::btnOkClicked);
+    connect(btnCancel, &QPushButton::clicked, this, &ConvDialog::reject);
+    connect(cBConversion, &QPushButton::clicked, this, &ConvDialog::updateEnable);
 }
 //---------------------------------------------------------------------------
 void ConvDialog::showEvent(QShowEvent *event)
@@ -30,7 +29,7 @@ void ConvDialog::showEvent(QShowEvent *event)
     lEOutputMessages->setText(conversionMessage);
     lEOptions->setText(conversionOptions);
 
-	updateEnable();
+    updateEnable();
 }
 //---------------------------------------------------------------------------
 void ConvDialog::btnOkClicked()
@@ -42,11 +41,6 @@ void ConvDialog::btnOkClicked()
     conversionOptions = lEOptions->text();
 
     accept();
-}
-//---------------------------------------------------------------------------
-void ConvDialog::conversionClicked()
-{
-	updateEnable();
 }
 //---------------------------------------------------------------------------
 void ConvDialog::updateEnable(void)

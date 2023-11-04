@@ -29,7 +29,6 @@ public slots:
     void addressChanged();
     void menuOpenClicked();
     void menuSaveClicked();
-    void menuQuitClicked();
     void menuUpdateCasterClicked();
     void menuUpdateTableClicked();
     void menuViewStrClicked();
@@ -41,7 +40,6 @@ public slots:
     void loadTimerExpired();
     void Table0SelectCell(int ARow, int ACol);
     void btnStatsionClicked();
-    void stationMaskClicked();
     void updateCaster();
     void updateTable();
     void showMsg(const QString &);

@@ -30,10 +30,10 @@ class GoogleMapView : public QDialog, private Ui::GoogleMapView
 
 public slots:
     void loadTimerExpired();
-    void btnShrinkClick();
-    void btnExpandClick();
-    void btnFixCentClick();
-    void btnCloseClick();
+    void btnShrinkClicked();
+    void btnExpandClicked();
+    void btnFixCenterClicked();
+    void btnCloseClicked();
     void pageLoaded(bool);
 
 protected:
@@ -48,7 +48,8 @@ private:
     bool loaded;
     QWebEngineView *webBrowser;
     GMPageState *pageState;
-    void ExecFunc(const QString &func);
+    void load_page();
+    void execFunction(const QString &func);
 
 public:
     bool fixCenter;

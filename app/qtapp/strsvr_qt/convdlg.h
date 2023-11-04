@@ -6,6 +6,7 @@
 #include "ui_convdlg.h"
 
 class QShowEvent;
+
 //---------------------------------------------------------------------------
 class ConvDialog : public QDialog, private Ui::ConvDialog
 {
@@ -13,19 +14,16 @@ class ConvDialog : public QDialog, private Ui::ConvDialog
 
 public slots:
     void btnOkClicked();
-    void conversionClicked();
+    void updateEnable(void);
 
 protected:
     void showEvent(QShowEvent*);
 
-private:
-    void updateEnable(void);
-
 public:
     QString conversionMessage, conversionOptions, antennaType, receiverType;
     int conversionEnabled, conversionInputFormat, conversionOutputFormat, stationId;
-    double antennaPos[3], antennaOffset[3];
-	
+    double antennaPosition[3], antennaOffset[3];
+
     explicit ConvDialog(QWidget *parent);
 };
 //---------------------------------------------------------------------------

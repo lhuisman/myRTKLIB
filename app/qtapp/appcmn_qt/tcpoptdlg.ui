@@ -17,18 +17,15 @@
    <string/>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="7" column="3">
-    <spacer name="verticalSpacer_2">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
+   <item row="2" column="4">
+    <widget class="QSpinBox" name="sBPort">
+     <property name="toolTip">
+      <string>Port to connect to</string>
      </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
+     <property name="maximum">
+      <number>65535</number>
      </property>
-    </spacer>
+    </widget>
    </item>
    <item row="0" column="4">
     <widget class="QLabel" name="lblPort">
@@ -46,6 +43,42 @@
      </property>
     </widget>
    </item>
+   <item row="8" column="3">
+    <spacer name="verticalSpacer_2">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="5" column="3">
+    <widget class="QLabel" name="lblUser">
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="text">
+      <string>User-ID</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="3">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
    <item row="5" column="1">
     <widget class="QLabel" name="lblMountPoint">
      <property name="sizePolicy">
@@ -62,27 +95,19 @@
      </property>
     </widget>
    </item>
-   <item row="5" column="3">
-    <widget class="QLabel" name="lblUser">
+   <item row="0" column="1" colspan="3">
+    <widget class="QLabel" name="lblAddress">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="toolTip">
       <string/>
      </property>
      <property name="text">
-      <string>User-ID</string>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="3">
-    <widget class="QLineEdit" name="lEUser">
-     <property name="toolTip">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="4">
-    <widget class="QSpinBox" name="sBPort">
-     <property name="maximum">
-      <number>65535</number>
+      <string>TCP Server Address</string>
      </property>
     </widget>
    </item>
@@ -105,14 +130,37 @@
    <item row="2" column="1" colspan="3">
     <widget class="QComboBox" name="cBAddress">
      <property name="toolTip">
-      <string/>
+      <string>Server address</string>
      </property>
      <property name="editable">
       <bool>true</bool>
      </property>
     </widget>
    </item>
-   <item row="9" column="1" colspan="4">
+   <item row="6" column="1">
+    <widget class="QComboBox" name="cBMountPoint">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="toolTip">
+      <string>Mount point to connect to</string>
+     </property>
+     <property name="editable">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="3">
+    <widget class="QLineEdit" name="lEUser">
+     <property name="toolTip">
+      <string>User name for authentication</string>
+     </property>
+    </widget>
+   </item>
+   <item row="10" column="1" colspan="4">
     <widget class="QWidget" name="widget" native="true">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -136,7 +184,7 @@
       <item>
        <widget class="QPushButton" name="btnBrowse">
         <property name="toolTip">
-         <string/>
+         <string>Start source table browser</string>
         </property>
         <property name="text">
          <string>Browse</string>
@@ -146,7 +194,7 @@
       <item>
        <widget class="QPushButton" name="btnMountpointOptions">
         <property name="toolTip">
-         <string/>
+         <string>Mount point option</string>
         </property>
         <property name="text">
          <string>Mountpoint Options...</string>
@@ -156,7 +204,7 @@
       <item>
        <widget class="QPushButton" name="btnNtrip">
         <property name="toolTip">
-         <string/>
+         <string>Get available mount points</string>
         </property>
         <property name="text">
          <string>&amp;Get Mountpoint</string>
@@ -195,51 +243,12 @@
    <item row="6" column="4">
     <widget class="QLineEdit" name="lEPassword">
      <property name="toolTip">
-      <string/>
+      <string>Authentication password</string>
      </property>
      <property name="echoMode">
       <enum>QLineEdit::Password</enum>
      </property>
     </widget>
-   </item>
-   <item row="0" column="1" colspan="3">
-    <widget class="QLabel" name="lblAddress">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="toolTip">
-      <string/>
-     </property>
-     <property name="text">
-      <string>TCP Server Address</string>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="1">
-    <widget class="QComboBox" name="cBMountPoint">
-     <property name="toolTip">
-      <string/>
-     </property>
-     <property name="editable">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="3">
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
    </item>
   </layout>
  </widget>
@@ -247,8 +256,6 @@
   <tabstop>cBAddress</tabstop>
   <tabstop>sBPort</tabstop>
   <tabstop>cBMountPoint</tabstop>
-  <tabstop>lEUser</tabstop>
-  <tabstop>lEPassword</tabstop>
   <tabstop>btnNtrip</tabstop>
   <tabstop>btnOk</tabstop>
   <tabstop>btnCancel</tabstop>

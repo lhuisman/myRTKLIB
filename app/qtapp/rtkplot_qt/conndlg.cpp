@@ -157,7 +157,7 @@ void ConnectDialog::tcpOption1(int opt)
     TcpOptDialog dialog(this);
 
     dialog.path = paths1[1];
-    dialog.options = opt;
+    dialog.showOptions = opt;
     for (int i = 0; i < MAXHIST; i++) dialog.history [i] = TcpHistory [i];
     dialog.exec();
 
@@ -172,7 +172,7 @@ void ConnectDialog::tcpOption2(int opt)
     TcpOptDialog dialog(this);
 
     dialog.path = paths2[1];
-    dialog.options = opt;
+    dialog.showOptions = opt;
     for (int i = 0; i < MAXHIST; i++) dialog.history [i] = TcpHistory [i];
     dialog.exec();
 

@@ -21,11 +21,11 @@ Console::Console(QWidget *parent)
     btnHex->setChecked(true);
     btnAsc->setChecked(false);
 
-    connect(btnClose,SIGNAL(clicked(bool)),this,SLOT(btnCloseClicked()));
-    connect(btnClear,SIGNAL(clicked(bool)),this,SLOT(btnClearClicked()));
-    connect(btnAsc,SIGNAL(clicked(bool)),this,SLOT(btnAsciiClicked()));
-    connect(btnDown,SIGNAL(clicked(bool)),this,SLOT(btnDownClicked()));
-    connect(btnHex,SIGNAL(clicked(bool)),this,SLOT(btnHexClicked()));
+    connect(btnClose, &QPushButton::clicked, this, &Console::btnCloseClicked);
+    connect(btnClear, &QPushButton::clicked, this, &Console::btnClearClicked);
+    connect(btnAsc, &QPushButton::clicked, this, &Console::btnAsciiClicked);
+    connect(btnDown, &QPushButton::clicked, this, &Console::btnDownClicked);
+    connect(btnHex, &QPushButton::clicked, this, &Console::btnHexClicked);
 }
 //---------------------------------------------------------------------------
 void Console::btnCloseClicked()

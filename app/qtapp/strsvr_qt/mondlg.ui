@@ -41,7 +41,7 @@
       <item>
        <widget class="QComboBox" name="cBSelectFormat">
         <property name="toolTip">
-         <string/>
+         <string>Select display format for messages</string>
         </property>
         <item>
          <property name="text">
@@ -63,7 +63,7 @@
       <item>
        <widget class="QPushButton" name="btnClear">
         <property name="toolTip">
-         <string>Clear</string>
+         <string>Clear message window</string>
         </property>
         <property name="icon">
          <iconset resource="strsvr_qt.qrc">
@@ -77,7 +77,7 @@
       <item>
        <widget class="QPushButton" name="btnStop">
         <property name="toolTip">
-         <string>Pause</string>
+         <string>Pause messages</string>
         </property>
         <property name="icon">
          <iconset resource="strsvr_qt.qrc">
@@ -94,7 +94,7 @@
       <item>
        <widget class="QPushButton" name="btnDown">
         <property name="toolTip">
-         <string>Scroll Down</string>
+         <string>Scroll to bottom</string>
         </property>
         <property name="icon">
          <iconset resource="strsvr_qt.qrc">
@@ -124,7 +124,7 @@
       <item>
        <widget class="QPushButton" name="btnClose">
         <property name="toolTip">
-         <string/>
+         <string>Close Window</string>
         </property>
         <property name="text">
          <string>&amp;Close</string>

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>357</width>
-    <height>122</height>
+    <width>358</width>
+    <height>132</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -48,7 +48,7 @@
       <item>
        <widget class="QLineEdit" name="lEOptions">
         <property name="toolTip">
-         <string/>
+         <string>Additional options for conversion. Format specific.</string>
         </property>
        </widget>
       </item>
@@ -102,7 +102,7 @@
          <string/>
         </property>
         <property name="text">
-         <string>Conversion From</string>
+         <string>Conversion from</string>
         </property>
        </widget>
       </item>
@@ -112,7 +112,7 @@
          <bool>false</bool>
         </property>
         <property name="toolTip">
-         <string/>
+         <string>Source Format</string>
         </property>
        </widget>
       </item>
@@ -127,15 +127,15 @@
         <property name="text">
          <string>To</string>
         </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
        </widget>
       </item>
       <item>
        <widget class="QComboBox" name="cBOutputFormat">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
         <property name="toolTip">
-         <string/>
+         <string>Destination Format</string>
         </property>
         <item>
          <property name="text">
@@ -168,7 +168,7 @@
    <item row="3" column="0" colspan="2">
     <widget class="QLineEdit" name="lEOutputMessages">
      <property name="toolTip">
-      <string/>
+      <string>Comma separeted list of message typ IDs with interval given in round brackets.</string>
      </property>
      <property name="text">
       <string>1004(1),1012(1)</string>

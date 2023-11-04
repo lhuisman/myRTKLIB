@@ -17,18 +17,6 @@
    <string/>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
-    <number>0</number>
-   </property>
    <item>
     <widget class="QWidget" name="Panel3" native="true">
      <property name="toolTip">
@@ -80,7 +68,7 @@
          <item>
           <widget class="QLabel" name="lblTime">
            <property name="toolTip">
-            <string/>
+            <string>Current time</string>
            </property>
            <property name="text">
             <string>2010/01/01 00:00:00 GPST</string>
@@ -103,7 +91,7 @@
             <bool>true</bool>
            </property>
            <property name="toolTip">
-            <string/>
+            <string>Time of active connection</string>
            </property>
            <property name="text">
             <string>0d 00:00:00</string>
@@ -149,7 +137,7 @@
             <string/>
            </property>
            <property name="text">
-            <string>Cmd</string>
+            <string>Commands</string>
            </property>
           </widget>
          </item>
@@ -198,7 +186,7 @@
             <string/>
            </property>
            <property name="text">
-            <string>Conv</string>
+            <string>Convert</string>
            </property>
           </widget>
          </item>
@@ -313,34 +301,18 @@
          <item row="5" column="3" colspan="2">
           <widget class="QPushButton" name="btnOutput2">
            <property name="toolTip">
-            <string/>
+            <string>Options for stream</string>
            </property>
            <property name="text">
             <string>...</string>
            </property>
           </widget>
          </item>
-         <item row="0" column="1">
-          <widget class="QLabel" name="Label5">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="toolTip">
-            <string/>
-           </property>
-           <property name="text">
-            <string>Stream</string>
-           </property>
-          </widget>
-         </item>
          <item row="10" column="5">
           <widget class="QPushButton" name="btnCmd6">
+           <property name="toolTip">
+            <string>Specify additional commands to send to stream</string>
+           </property>
            <property name="text">
             <string>...</string>
            </property>
@@ -358,6 +330,9 @@
          </item>
          <item row="9" column="3" colspan="2">
           <widget class="QPushButton" name="btnOutput5">
+           <property name="toolTip">
+            <string>Options for stream</string>
+           </property>
            <property name="text">
             <string>...</string>
            </property>
@@ -390,6 +365,9 @@
          </item>
          <item row="5" column="5">
           <widget class="QPushButton" name="btnCmd2">
+           <property name="toolTip">
+            <string>Specify additional commands to send to stream</string>
+           </property>
            <property name="text">
             <string>...</string>
            </property>
@@ -398,7 +376,7 @@
          <item row="4" column="2">
           <widget class="QComboBox" name="cBOutput1">
            <property name="toolTip">
-            <string/>
+            <string>Output stream type</string>
            </property>
            <item>
             <property name="text">
@@ -439,6 +417,9 @@
          </item>
          <item row="4" column="5">
           <widget class="QPushButton" name="btnCmd1">
+           <property name="toolTip">
+            <string>Specify additional commands to send to stream</string>
+           </property>
            <property name="text">
             <string>...</string>
            </property>
@@ -536,7 +517,7 @@
          <item row="1" column="5">
           <widget class="QPushButton" name="btnCmd">
            <property name="toolTip">
-            <string/>
+            <string>Specify additional commands to send to stream</string>
            </property>
            <property name="text">
             <string>...</string>
@@ -546,7 +527,7 @@
          <item row="6" column="2">
           <widget class="QComboBox" name="cBOutput3">
            <property name="toolTip">
-            <string/>
+            <string>Output stream type</string>
            </property>
            <item>
             <property name="text">
@@ -603,7 +584,7 @@
          <item row="9" column="2">
           <widget class="QComboBox" name="cBOutput5">
            <property name="toolTip">
-            <string/>
+            <string>Output stream type</string>
            </property>
            <item>
             <property name="text">
@@ -701,7 +682,7 @@
          <item row="4" column="3" colspan="2">
           <widget class="QPushButton" name="btnOutput1">
            <property name="toolTip">
-            <string/>
+            <string>Options for stream</string>
            </property>
            <property name="text">
             <string>...</string>
@@ -766,7 +747,7 @@
          <item row="1" column="3" colspan="2">
           <widget class="QPushButton" name="btnInput">
            <property name="toolTip">
-            <string/>
+            <string>Options for stream</string>
            </property>
            <property name="text">
             <string>...</string>
@@ -808,7 +789,7 @@
             <string/>
            </property>
            <property name="text">
-            <string>Opt</string>
+            <string>Options</string>
            </property>
           </widget>
          </item>
@@ -864,6 +845,9 @@
          </item>
          <item row="10" column="3" colspan="2">
           <widget class="QPushButton" name="btnOutput6">
+           <property name="toolTip">
+            <string>Options for stream</string>
+           </property>
            <property name="text">
             <string>...</string>
            </property>
@@ -871,6 +855,9 @@
          </item>
          <item row="7" column="3" colspan="2">
           <widget class="QPushButton" name="btnOutput4">
+           <property name="toolTip">
+            <string>Options for stream</string>
+           </property>
            <property name="text">
             <string>...</string>
            </property>
@@ -891,6 +878,9 @@
          </item>
          <item row="6" column="5">
           <widget class="QPushButton" name="btnCmd3">
+           <property name="toolTip">
+            <string>Specify additional commands to send to stream</string>
+           </property>
            <property name="text">
             <string>...</string>
            </property>
@@ -924,7 +914,7 @@
          <item row="1" column="2">
           <widget class="QComboBox" name="cBInput">
            <property name="toolTip">
-            <string/>
+            <string>Input stream type</string>
            </property>
            <item>
             <property name="text">
@@ -1003,7 +993,7 @@
          <item row="6" column="3" colspan="2">
           <widget class="QPushButton" name="btnOutput3">
            <property name="toolTip">
-            <string/>
+            <string>Options for stream</string>
            </property>
            <property name="text">
             <string>...</string>
@@ -1026,7 +1016,7 @@
          <item row="7" column="2">
           <widget class="QComboBox" name="cBOutput4">
            <property name="toolTip">
-            <string/>
+            <string>Output stream type</string>
            </property>
            <item>
             <property name="text">
@@ -1138,6 +1128,9 @@
          </item>
          <item row="7" column="5">
           <widget class="QPushButton" name="btnCmd4">
+           <property name="toolTip">
+            <string>Specify additional commands to send to stream</string>
+           </property>
            <property name="text">
             <string>...</string>
            </property>
@@ -1243,7 +1236,7 @@
          <item row="5" column="2">
           <widget class="QComboBox" name="cBOutput2">
            <property name="toolTip">
-            <string/>
+            <string>Output stream type</string>
            </property>
            <item>
             <property name="text">
@@ -1341,6 +1334,9 @@
          </item>
          <item row="9" column="5">
           <widget class="QPushButton" name="btnCmd5">
+           <property name="toolTip">
+            <string>Specify additional commands to send to stream</string>
+           </property>
            <property name="text">
             <string>...</string>
            </property>
@@ -1368,6 +1364,9 @@
          </item>
          <item row="0" column="7">
           <widget class="QLabel" name="label_4">
+           <property name="toolTip">
+            <string/>
+           </property>
            <property name="text">
             <string>Log</string>
            </property>
@@ -1376,7 +1375,7 @@
          <item row="4" column="7">
           <widget class="QPushButton" name="btnLog1">
            <property name="toolTip">
-            <string/>
+            <string>Specify logging to file</string>
            </property>
            <property name="text">
             <string>...</string>
@@ -1386,7 +1385,7 @@
          <item row="5" column="7">
           <widget class="QPushButton" name="btnLog2">
            <property name="toolTip">
-            <string/>
+            <string>Specify logging to file</string>
            </property>
            <property name="text">
             <string>...</string>
@@ -1396,7 +1395,7 @@
          <item row="6" column="7">
           <widget class="QPushButton" name="btnLog3">
            <property name="toolTip">
-            <string/>
+            <string>Specify logging to file</string>
            </property>
            <property name="text">
             <string>...</string>
@@ -1406,7 +1405,7 @@
          <item row="7" column="7">
           <widget class="QPushButton" name="btnLog4">
            <property name="toolTip">
-            <string/>
+            <string>Specify logging to file</string>
            </property>
            <property name="text">
             <string>...</string>
@@ -1416,7 +1415,7 @@
          <item row="9" column="7">
           <widget class="QPushButton" name="btnLog5">
            <property name="toolTip">
-            <string/>
+            <string>Specify logging to file</string>
            </property>
            <property name="text">
             <string>...</string>
@@ -1426,7 +1425,7 @@
          <item row="10" column="7">
           <widget class="QPushButton" name="btnLog6">
            <property name="toolTip">
-            <string/>
+            <string>Specify logging to file</string>
            </property>
            <property name="text">
             <string>...</string>
@@ -1436,10 +1435,29 @@
          <item row="1" column="7">
           <widget class="QPushButton" name="btnLog">
            <property name="toolTip">
-            <string/>
+            <string>Specify logging to file</string>
            </property>
            <property name="text">
             <string>...</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0" colspan="2">
+          <widget class="QLabel" name="Label5">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="toolTip">
+            <string/>
+           </property>
+           <property name="text">
+            <string>Stream</string>
            </property>
           </widget>
          </item>
@@ -1449,7 +1467,7 @@
       <item>
        <widget class="QProgressBar" name="pBProgress">
         <property name="toolTip">
-         <string/>
+         <string>Input Stream bytes</string>
         </property>
        </widget>
       </item>
@@ -1489,7 +1507,7 @@
             </sizepolicy>
            </property>
            <property name="toolTip">
-            <string>Stream Monitor</string>
+            <string>Open stream Monitor</string>
            </property>
            <property name="icon">
             <iconset resource="strsvr_qt.qrc">
@@ -1505,9 +1523,6 @@
            <property name="toolTip">
             <string/>
            </property>
-           <property name="text">
-            <string>message area</string>
-           </property>
           </widget>
          </item>
          <item>
@@ -1519,7 +1534,7 @@
             </sizepolicy>
            </property>
            <property name="toolTip">
-            <string>Task Tray Icon</string>
+            <string>Hide window in task tray</string>
            </property>
            <property name="icon">
             <iconset resource="strsvr_qt.qrc">
@@ -1539,7 +1554,7 @@
             </sizepolicy>
            </property>
            <property name="toolTip">
-            <string/>
+            <string>About...</string>
            </property>
            <property name="text">
             <string>?</string>
@@ -1579,7 +1594,7 @@
       <item>
        <widget class="QPushButton" name="btnStart">
         <property name="toolTip">
-         <string/>
+         <string>Start server</string>
         </property>
         <property name="text">
          <string>&amp;Start</string>
@@ -1593,7 +1608,7 @@
       <item>
        <widget class="QPushButton" name="btnStop">
         <property name="toolTip">
-         <string/>
+         <string>Stop server</string>
         </property>
         <property name="text">
          <string>S&amp;top</string>
@@ -1607,7 +1622,7 @@
       <item>
        <widget class="QPushButton" name="btnOpt">
         <property name="toolTip">
-         <string/>
+         <string>Show options</string>
         </property>
         <property name="text">
          <string>&amp;Options...</string>
@@ -1621,7 +1636,7 @@
       <item>
        <widget class="QPushButton" name="btnExit">
         <property name="toolTip">
-         <string/>
+         <string>Exit</string>
         </property>
         <property name="text">
          <string>E&amp;xit</string>

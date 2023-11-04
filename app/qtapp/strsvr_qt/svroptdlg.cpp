@@ -22,13 +22,13 @@ SvrOptDialog::SvrOptDialog(QWidget *parent)
     dirCompleter->setModel(dirModel);
     lELocalDir->setCompleter(dirCompleter);
 
-    connect(btnOk, SIGNAL(clicked(bool)), this, SLOT(btnOkClicked()));
-    connect(btnCancel, SIGNAL(clicked(bool)), this, SLOT(reject()));
-    connect(btnPosition, SIGNAL(clicked(bool)), this, SLOT(btnPosClicked()));
-    connect(btnLogFile, SIGNAL(clicked(bool)), this, SLOT(btnLogFileClicked()));
-    connect(cBNmeaReq, SIGNAL(clicked(bool)), this, SLOT(nmeaReqChecked()));
-    connect(btnLocalDir, SIGNAL(clicked(bool)), this, SLOT(btnLocalDirClicked()));
-    connect(cBStationId, SIGNAL(clicked(bool)), this, SLOT(stationIdChecked()));
+    connect(btnOk, &QPushButton::clicked, this, &SvrOptDialog::btnOkClicked);
+    connect(btnCancel, &QPushButton::clicked, this, &SvrOptDialog::reject);
+    connect(btnPosition, &QPushButton::clicked, this, &SvrOptDialog::btnPosClicked);
+    connect(btnLogFile, &QPushButton::clicked, this, &SvrOptDialog::btnLogFileClicked);
+    connect(cBNmeaReq, &QPushButton::clicked, this, &SvrOptDialog::updateEnable);
+    connect(btnLocalDir, &QPushButton::clicked, this, &SvrOptDialog::btnLocalDirClicked);
+    connect(cBStationId, &QPushButton::clicked, this, &SvrOptDialog::updateEnable);
 
 }
 //---------------------------------------------------------------------------
@@ -41,7 +41,7 @@ void SvrOptDialog::showEvent(QShowEvent *event)
     sBAveragePeriodRate->setValue(serverOptions[2]);
     sBServerBufferSize->setValue(serverOptions[3]);
     sBServerCycle->setValue(serverOptions[4]);
-    cBRelayMessage->setCurrentIndex(RelayBack);
+    cBRelayMessage->setCurrentIndex(relayBack);
     sBProgressBar->setValue(progressBarRange);
     sBNmeaCycle->setValue(serverOptions[5]);
     sBFileSwapMargin->setValue(fileSwapMargin);
@@ -58,11 +58,11 @@ void SvrOptDialog::showEvent(QShowEvent *event)
         sBAntennaPos3->setValue(0);
 	}
     cBTraceLevel->setCurrentIndex(traceLevel);
-    cBNmeaReq->setChecked(NmeaReq);
+    cBNmeaReq->setChecked(nmeaRequest);
     lELocalDir->setText(localDirectory);
     lEProxyAddress->setText(proxyAddress);
     sBStationId->setValue(stationId);
-    cBStationId->setChecked(StaSel);
+    cBStationId->setChecked(stationSelect);
     lEAntennaInfo->setText(antennaType);
     lEReceiverInfo->setText(receiverType);
     sBAntennaOffset1->setValue(antennaOffset[0]);
@@ -84,7 +84,7 @@ void SvrOptDialog::btnOkClicked()
     serverOptions[4] = sBServerCycle->value();
     serverOptions[5] = sBNmeaCycle->value();
     fileSwapMargin = sBFileSwapMargin->value();
-    RelayBack = cBRelayMessage->currentIndex();
+    relayBack = cBRelayMessage->currentIndex();
     progressBarRange = sBProgressBar->value();
     pos[0] = sBAntennaPos1->value() * D2R;
     pos[1] = sBAntennaPos2->value() * D2R;
@@ -96,11 +96,11 @@ void SvrOptDialog::btnOkClicked()
         for (int i = 0; i < 3; i++) antennaPos[i] = 0.0;
 
     traceLevel = cBTraceLevel->currentIndex();
-    NmeaReq = cBNmeaReq->isChecked();
+    nmeaRequest = cBNmeaReq->isChecked();
     localDirectory = lELocalDir->text();
     proxyAddress = lEProxyAddress->text();
     stationId = sBStationId->value();
-    StaSel = cBStationId->isChecked();
+    stationSelect = cBStationId->isChecked();
     antennaType = lEAntennaInfo->text();
     receiverType = lEReceiverInfo->text();
     antennaOffset[0] = sBAntennaOffset1->value();
@@ -119,17 +119,16 @@ void SvrOptDialog::btnPosClicked()
     refDialog->RoverPosition[2] = sBAntennaPos3->value();
     refDialog->btnLoad->setEnabled(true);
     refDialog->stationPositionFile = stationPositionFile;
-    refDialog->options=1;
+    refDialog->options = 1;
 
     refDialog->exec();
-
     if (refDialog->result() != QDialog::Accepted) return;
 
     sBAntennaPos1->setValue(refDialog->position[0]);
     sBAntennaPos2->setValue(refDialog->position[1]);
     sBAntennaPos3->setValue(refDialog->position[2]);
     stationPositionFile = refDialog->stationPositionFile;
-    logFile=lELogFile->text();
+    logFile = lELogFile->text();
 
     delete refDialog;
 }
@@ -145,30 +144,27 @@ void SvrOptDialog::btnLocalDirClicked()
 void SvrOptDialog::updateEnable(void)
 {
     sBNmeaCycle->setEnabled(cBNmeaReq->isChecked());
-    cBStationId->setEnabled(cBStationId->isChecked());
+    sBStationId->setEnabled(cBStationId->isChecked());
+
     sBAntennaPos1->setEnabled(cBStationId->isChecked() || cBNmeaReq->isChecked());
     sBAntennaPos2->setEnabled(cBStationId->isChecked() || cBNmeaReq->isChecked());
     sBAntennaPos3->setEnabled(cBStationId->isChecked() || cBNmeaReq->isChecked());
+    lblLatLonHeight->setEnabled(cBStationId->isChecked() || cBNmeaReq->isChecked());
     btnPosition->setEnabled(cBStationId->isChecked() || cBNmeaReq->isChecked());
+
     sBAntennaOffset1->setEnabled(cBStationId->isChecked());
     sBAntennaOffset2->setEnabled(cBStationId->isChecked());
     sBAntennaOffset3->setEnabled(cBStationId->isChecked());
+    lblAntennaOffsets->setEnabled(cBStationId->isChecked());
+
     lEAntennaInfo->setEnabled(cBStationId->isChecked());
+    lblAntennaInfo->setEnabled(lEAntennaInfo->isEnabled());
     lEReceiverInfo->setEnabled(cBStationId->isChecked());
-}
-//---------------------------------------------------------------------------
-void SvrOptDialog::nmeaReqChecked()
-{
-	updateEnable();
-}
-//---------------------------------------------------------------------------
-void SvrOptDialog::stationIdChecked()
-{
-	updateEnable();
+    lblReceiverInfo->setEnabled(lEReceiverInfo->isEnabled());
 }
 //---------------------------------------------------------------------------
 void SvrOptDialog::btnLogFileClicked()
 {
-    lELogFile->setText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this,tr("Log File"),QString(),tr("All (*.*)"))));
+    lELogFile->setText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("Log File"), lELogFile->text(), tr("All (*.*)"))));
 }
 //---------------------------------------------------------------------------

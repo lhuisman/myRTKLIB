@@ -1002,7 +1002,7 @@ void OptDialog::btnHelpClicked()
 {
     KeyDialog *keyDialog = new KeyDialog(this);
 
-    keyDialog->Flag = 2;
+    keyDialog->flag = 2;
     keyDialog->exec();
 
     delete keyDialog;

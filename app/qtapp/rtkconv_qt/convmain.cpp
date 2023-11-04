@@ -449,7 +449,7 @@ void MainWindow::btnOutputDirrectoryClicked()
 // callback on button-keyword -----------------------------------------------
 void MainWindow::btnKeyClicked()
 {
-    keyDialog->Flag = 1;
+    keyDialog->flag = 1;
     keyDialog->show();
 }
 // callback on button-output-file-1 -----------------------------------------

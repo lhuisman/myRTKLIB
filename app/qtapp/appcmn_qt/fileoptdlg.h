@@ -20,11 +20,8 @@ protected:
 public slots:
     void btnFilePathClicked();
     void btnOkClicked();
-    void timeTagChecked();
     void btnKeyClicked();
-
-private:
-    void updateEnable(void);
+    void updateEnable();
 
 public:
     int options, pathEnabled;

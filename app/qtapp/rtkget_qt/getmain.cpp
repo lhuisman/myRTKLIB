@@ -482,7 +482,7 @@ void MainForm::btnKeywordClicked()
 {
     KeyDialog keyDialog(this);
 
-    keyDialog.Flag = 3;
+    keyDialog.flag = 3;
     keyDialog.exec();
 }
 //---------------------------------------------------------------------------

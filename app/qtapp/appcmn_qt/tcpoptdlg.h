@@ -27,8 +27,8 @@ private:
     int  ExecCommand(const QString &cmd, const QStringList &opt, int show);
 
 public:
-    int options;
-    QString path, history[MAXHIST], mountpoint;
+    int showOptions;
+    QString path, history[MAXHIST];
     MntpOptDialog *mntpOptDialog;
 
     explicit TcpOptDialog(QWidget* parent);

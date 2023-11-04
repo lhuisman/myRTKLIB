@@ -756,7 +756,7 @@ void MainForm::btnOutputDirectoryClicked()
 void MainForm::btnKeywordClicked()
 {
     KeyDialog *keyDialog=new KeyDialog(this);
-    keyDialog->Flag=2;
+    keyDialog->flag=2;
     keyDialog->exec();
 
     delete keyDialog;
