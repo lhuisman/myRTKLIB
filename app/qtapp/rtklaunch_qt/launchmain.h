@@ -40,8 +40,8 @@ private:
     QMenu *trayMenu;
     LaunchOptDialog *launchOptDlg;
     bool tray;
-	
-    int execCmd(const QString &cmd, const QStringList &opt);
+    
+    int execCommand(const QString &cmd, const QStringList &opt);
     void updatePanel();
 
 public:

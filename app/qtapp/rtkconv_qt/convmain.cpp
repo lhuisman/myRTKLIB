@@ -60,17 +60,19 @@ static int abortf = 0;
 
 // show message in message area ---------------------------------------------
 extern "C" {
-extern int showmsg(const char *format, ...)
-{
-    va_list arg;
-    char buff[1024];
+    extern int showmsg(const char *format, ...)
+    {
+        va_list arg;
+        char buff[1024];
 
-    va_start(arg, format); vsprintf(buff, format, arg); va_end(arg);
-    QMetaObject::invokeMethod(mainWindow->message, "setText", Qt::QueuedConnection, Q_ARG(QString, QString(buff)));
-    return abortf;
-}
-extern void settime(gtime_t) {}
-extern void settspan(gtime_t, gtime_t) {}
+        va_start(arg, format); vsprintf(buff, format, arg); va_end(arg);
+
+        QMetaObject::invokeMethod(mainWindow->message, "setText", Qt::QueuedConnection, Q_ARG(QString, QString(buff)));
+
+        return abortf;
+    }
+    extern void settime(gtime_t) {}
+    extern void settspan(gtime_t, gtime_t) {}
 }
 
 // constructor --------------------------------------------------------------
@@ -81,7 +83,6 @@ MainWindow::MainWindow(QWidget *parent)
     mainWindow = this;
 
     comboTimeInterval->setValidator(new QDoubleValidator());
-    lETimeUnit->setValidator(new QDoubleValidator());
 
     gtime_t time0 = { 0, 0 };
     int i;
@@ -101,11 +102,12 @@ MainWindow::MainWindow(QWidget *parent)
     startDialog = new StartDialog(this);
     viewer = new TextViewer(this);
 
+    // populate format combo box
     cBFormat->clear();
     cBFormat->addItem(tr("Auto"));
     for (i = 0; i <= MAXRCVFMT; i++)
-        cBFormat->addItem(formatstrs[i]);
-    cBFormat->addItem(formatstrs[STRFMT_RINEX]);
+        cBFormat->addItem(formatstrs[i], i);
+    cBFormat->addItem(formatstrs[STRFMT_RINEX], STRFMT_RINEX);
 
     rinexTime = time0;
 
@@ -133,55 +135,55 @@ MainWindow::MainWindow(QWidget *parent)
 
     btnAbort->setVisible(false);
 
-    connect(btnPlot, SIGNAL(clicked(bool)), this, SLOT(btnPlotClicked()));
-    connect(btnConvert, SIGNAL(clicked(bool)), this, SLOT(btnConvertClicked()));
-    connect(btnOptions, SIGNAL(clicked(bool)), this, SLOT(btnOptionsClicked()));
-    connect(btnExit, SIGNAL(clicked(bool)), this, SLOT(btnExitClicked()));
-    connect(btnAbout, SIGNAL(clicked(bool)), this, SLOT(btnAboutClicked()));
-    connect(btnTimeStart, SIGNAL(clicked(bool)), this, SLOT(btnTimeStartClicked()));
-    connect(btnTimeStop, SIGNAL(clicked(bool)), this, SLOT(btnTimeStopClicked()));
-    connect(btnInputFile, SIGNAL(clicked(bool)), this, SLOT(btnInputFileClicked()));
-    connect(btnInputFileView, SIGNAL(clicked(bool)), this, SLOT(btnInputFileViewClicked()));
-    connect(btnOutputFile1, SIGNAL(clicked(bool)), this, SLOT(btnOutputFile1Clicked()));
-    connect(btnOutputFile2, SIGNAL(clicked(bool)), this, SLOT(btnOutputFile2Clicked()));
-    connect(btnOutputFile3, SIGNAL(clicked(bool)), this, SLOT(btnOutputFile3Clicked()));
-    connect(btnOutputFile4, SIGNAL(clicked(bool)), this, SLOT(btnOutputFile4Clicked()));
-    connect(btnOutputFile5, SIGNAL(clicked(bool)), this, SLOT(btnOutputFile5Clicked()));
-    connect(btnOutputFile6, SIGNAL(clicked(bool)), this, SLOT(btnOutputFile6Clicked()));
-    connect(btnOutputFile7, SIGNAL(clicked(bool)), this, SLOT(btnOutputFile7Clicked()));
-    connect(btnOutputFile8, SIGNAL(clicked(bool)), this, SLOT(btnOutputFile8Clicked()));
-    connect(btnOutputFile9, SIGNAL(clicked(bool)), this, SLOT(btnOutputFile9Clicked()));
-    connect(btnOutputFileView1, SIGNAL(clicked(bool)), this, SLOT(btnOutputFileView1Clicked()));
-    connect(btnOutputFileView2, SIGNAL(clicked(bool)), this, SLOT(btnOutputFileView2Clicked()));
-    connect(btnOutputFileView3, SIGNAL(clicked(bool)), this, SLOT(btnOutputFileView3Clicked()));
-    connect(btnOutputFileView4, SIGNAL(clicked(bool)), this, SLOT(btnOutputFileView4Clicked()));
-    connect(btnOutputFileView5, SIGNAL(clicked(bool)), this, SLOT(btnOutputFileView5Clicked()));
-    connect(btnOutputFileView6, SIGNAL(clicked(bool)), this, SLOT(btnOutputFileView6Clicked()));
-    connect(btnOutputFileView7, SIGNAL(clicked(bool)), this, SLOT(btnOutputFileView7Clicked()));
-    connect(btnOutputFileView8, SIGNAL(clicked(bool)), this, SLOT(btnOutputFileView8Clicked()));
-    connect(btnOutputFileView9, SIGNAL(clicked(bool)), this, SLOT(btnOutputFileView9Clicked()));
-    connect(btnAbort, SIGNAL(clicked(bool)), this, SLOT(btnAbortClicked()));
-    connect(cBTimeStart, SIGNAL(clicked(bool)), this, SLOT(timeStartClicked()));
-    connect(cBTimeEnd, SIGNAL(clicked(bool)), this, SLOT(timeEndClicked()));
-    connect(cBTimeInterval, SIGNAL(clicked(bool)), this, SLOT(TimeIntervalClicked()));
-    connect(cBTimeUnit, SIGNAL(clicked(bool)), this, SLOT(updateEnable()));
-    connect(outputDirectoryEnable, SIGNAL(clicked(bool)), this, SLOT(outputDirrectoryEnableClicked()));
-    connect(inputFile, SIGNAL(currentIndexChanged(int)), this, SLOT(inputFileChanged()));
-    connect(inputFile, SIGNAL(editTextChanged(QString)), this, SLOT(inputFileChanged()));
-    connect(cBFormat, SIGNAL(currentIndexChanged(int)), this, SLOT(formatChanged()));
-    connect(outputDirectory, SIGNAL(editingFinished()), this, SLOT(outputDirectoryChanged()));
-    connect(btnOutputDirectory, SIGNAL(clicked(bool)), this, SLOT(btnOutputDirrectoryClicked()));
-    connect(btnKey, SIGNAL(clicked(bool)), this, SLOT(btnKeyClicked()));
-    connect(btnPost, SIGNAL(clicked(bool)), this, SLOT(btnPostClicked()));
-    connect(outputFileEnable1, SIGNAL(clicked(bool)), this, SLOT(updateEnable()));
-    connect(outputFileEnable2, SIGNAL(clicked(bool)), this, SLOT(updateEnable()));
-    connect(outputFileEnable3, SIGNAL(clicked(bool)), this, SLOT(updateEnable()));
-    connect(outputFileEnable4, SIGNAL(clicked(bool)), this, SLOT(updateEnable()));
-    connect(outputFileEnable5, SIGNAL(clicked(bool)), this, SLOT(updateEnable()));
-    connect(outputFileEnable6, SIGNAL(clicked(bool)), this, SLOT(updateEnable()));
-    connect(outputFileEnable7, SIGNAL(clicked(bool)), this, SLOT(updateEnable()));
-    connect(outputFileEnable8, SIGNAL(clicked(bool)), this, SLOT(updateEnable()));
-    connect(outputFileEnable9, SIGNAL(clicked(bool)), this, SLOT(updateEnable()));
+    connect(btnPlot, &QPushButton::clicked, this, &MainWindow::btnPlotClicked);
+    connect(btnConvert, &QPushButton::clicked, this, &MainWindow::convertFile);
+    connect(btnOptions, &QPushButton::clicked, this, &MainWindow::btnOptionsClicked);
+    connect(btnExit, &QPushButton::clicked, this, &MainWindow::close);
+    connect(btnAbout, &QPushButton::clicked, this, &MainWindow::btnAboutClicked);
+    connect(btnTimeStart, &QPushButton::clicked, this, &MainWindow::btnTimeStartClicked);
+    connect(btnTimeStop, &QPushButton::clicked, this, &MainWindow::btnTimeStopClicked);
+    connect(btnInputFile, &QPushButton::clicked, this, &MainWindow::btnInputFileClicked);
+    connect(btnInputFileView, &QPushButton::clicked, this, &MainWindow::btnInputFileViewClicked);
+    connect(btnOutputFile1, &QPushButton::clicked, this, &MainWindow::btnOutputFile1Clicked);
+    connect(btnOutputFile2, &QPushButton::clicked, this, &MainWindow::btnOutputFile2Clicked);
+    connect(btnOutputFile3, &QPushButton::clicked, this, &MainWindow::btnOutputFile3Clicked);
+    connect(btnOutputFile4, &QPushButton::clicked, this, &MainWindow::btnOutputFile4Clicked);
+    connect(btnOutputFile5, &QPushButton::clicked, this, &MainWindow::btnOutputFile5Clicked);
+    connect(btnOutputFile6, &QPushButton::clicked, this, &MainWindow::btnOutputFile6Clicked);
+    connect(btnOutputFile7, &QPushButton::clicked, this, &MainWindow::btnOutputFile7Clicked);
+    connect(btnOutputFile8, &QPushButton::clicked, this, &MainWindow::btnOutputFile8Clicked);
+    connect(btnOutputFile9, &QPushButton::clicked, this, &MainWindow::btnOutputFile9Clicked);
+    connect(btnOutputFileView1, &QPushButton::clicked, this, &MainWindow::btnOutputFileView1Clicked);
+    connect(btnOutputFileView2, &QPushButton::clicked, this, &MainWindow::btnOutputFileView2Clicked);
+    connect(btnOutputFileView3, &QPushButton::clicked, this, &MainWindow::btnOutputFileView3Clicked);
+    connect(btnOutputFileView4, &QPushButton::clicked, this, &MainWindow::btnOutputFileView4Clicked);
+    connect(btnOutputFileView5, &QPushButton::clicked, this, &MainWindow::btnOutputFileView5Clicked);
+    connect(btnOutputFileView6, &QPushButton::clicked, this, &MainWindow::btnOutputFileView6Clicked);
+    connect(btnOutputFileView7, &QPushButton::clicked, this, &MainWindow::btnOutputFileView7Clicked);
+    connect(btnOutputFileView8, &QPushButton::clicked, this, &MainWindow::btnOutputFileView8Clicked);
+    connect(btnOutputFileView9, &QPushButton::clicked, this, &MainWindow::btnOutputFileView9Clicked);
+    connect(btnAbort, &QCheckBox::clicked, this, &MainWindow::btnAbortClicked);
+    connect(cBTimeStart, &QCheckBox::clicked, this, &MainWindow::updateEnable);
+    connect(cBTimeEnd, &QCheckBox::clicked, this, &MainWindow::updateEnable);
+    connect(cBTimeInterval, &QCheckBox::clicked, this, &MainWindow::updateEnable);
+    connect(cBTimeUnit, &QCheckBox::clicked, this, &MainWindow::updateEnable);
+    connect(outputDirectoryEnable, &QCheckBox::clicked, this, &MainWindow::outputDirrectoryEnableClicked);
+    connect(inputFile, &QComboBox::currentIndexChanged, this, &MainWindow::inputFileChanged);
+    connect(inputFile, &QComboBox::editTextChanged, this, &MainWindow::inputFileChanged);
+    connect(cBFormat, &QComboBox::currentIndexChanged, this, &MainWindow::updateEnable);
+    connect(outputDirectory, &QLineEdit::editingFinished, this, &MainWindow::outputDirectoryChanged);
+    connect(btnOutputDirectory, &QPushButton::clicked, this, &MainWindow::btnOutputDirrectoryClicked);
+    connect(btnKey, &QPushButton::clicked, this, &MainWindow::btnKeyClicked);
+    connect(btnPost, &QPushButton::clicked, this, &MainWindow::btnPostClicked);
+    connect(outputFileEnable1, &QCheckBox::clicked, this, &MainWindow::updateEnable);
+    connect(outputFileEnable2, &QCheckBox::clicked, this, &MainWindow::updateEnable);
+    connect(outputFileEnable3, &QCheckBox::clicked, this, &MainWindow::updateEnable);
+    connect(outputFileEnable4, &QCheckBox::clicked, this, &MainWindow::updateEnable);
+    connect(outputFileEnable5, &QCheckBox::clicked, this, &MainWindow::updateEnable);
+    connect(outputFileEnable6, &QCheckBox::clicked, this, &MainWindow::updateEnable);
+    connect(outputFileEnable7, &QCheckBox::clicked, this, &MainWindow::updateEnable);
+    connect(outputFileEnable8, &QCheckBox::clicked, this, &MainWindow::updateEnable);
+    connect(outputFileEnable9, &QCheckBox::clicked, this, &MainWindow::updateEnable);
 
     setWindowTitle(QString(tr("%1 ver.%2 %3")).arg(PRGNAME).arg(VER_RTKLIB).arg(PATCH_LEVEL));
 }
@@ -226,14 +228,14 @@ void MainWindow::setOutputFiles(const QString &infile)
     QLineEdit *edit[] = {
         outputFile1, outputFile2, outputFile3, outputFile4, outputFile5, outputFile6, outputFile7, outputFile8, outputFile9
     };
-    QString format_Text = cBFormat->currentText();
+    QString formatText = cBFormat->currentText();
     QString outputDirectory_Text = outputDirectory->text();
     QString ofile[10];
 
     if (outputDirectoryEnable->isChecked()) {
         QFileInfo info(infile);
 
-        ofile[0] = outputDirectory_Text + "/" + info.fileName();
+        ofile[0] = outputDirectory_Text + QDir::separator() + info.fileName();
     } else {
         ofile[0] = infile;
     }
@@ -242,7 +244,7 @@ void MainWindow::setOutputFiles(const QString &infile)
 
     if (!rinexFile) {
         QFileInfo info(ofile[0]);
-        ofile[0] = info.absolutePath() + "/" + info.baseName();
+        ofile[0] = info.absolutePath() + QDir::separator() + info.baseName();
         ofile[1] = ofile[0] + ".obs";
         ofile[2] = ofile[0] + ".nav";
         ofile[3] = ofile[0] + ".gnav";
@@ -311,7 +313,7 @@ void MainWindow::addHistory(QComboBox *combo)
     combo->setCurrentIndex(0);
 }
 // read history -------------------------------------------------------------
-void MainWindow::readList(QComboBox *combo, QSettings *ini, const QString &key)
+void MainWindow::readHistory(QComboBox *combo, QSettings *ini, const QString &key)
 {
     QString item;
     int i;
@@ -322,7 +324,7 @@ void MainWindow::readList(QComboBox *combo, QSettings *ini, const QString &key)
     }
 }
 // write history ------------------------------------------------------------
-void MainWindow::writeList(QSettings *ini, const QString &key, const QComboBox *combo)
+void MainWindow::writeHistory(QSettings *ini, const QString &key, const QComboBox *combo)
 {
     int i;
 
@@ -354,6 +356,7 @@ void MainWindow::btnPlotClicked()
 
     for (i = 0; i < 8; i++)
         if (ena[i]) opts << " \"" + repPath(file[i]) + "\"";
+
     if (opts.size() == 1) return;
 
     if (!execCommand(cmd1, opts) && !execCommand(cmd2, opts) && !execCommand(cmd3, opts))
@@ -367,7 +370,7 @@ void MainWindow::btnPostClicked()
 
     if (!outputFileEnable1->isChecked()) return;
 
-    opts << + " -r \"" + outputFile1->text() + "\"";
+    opts << " -r \"" + outputFile1->text() + "\"";
     opts << " -n \"\" -n \"\"";
 
     if (outputFileEnable9->isChecked())
@@ -388,24 +391,16 @@ void MainWindow::btnOptionsClicked()
 
     convOptDialog->exec();
     if (convOptDialog->result() != QDialog::Accepted) return;
+
     if (rinexFile != rnxfile)
         setOutputFiles(inputFile->currentText());
+
     updateEnable();
 }
 //---------------------------------------------------------------------------
 void MainWindow::btnAbortClicked()
 {
     abortf = 1;
-}
-// callback on button-convert -----------------------------------------------
-void MainWindow::btnConvertClicked()
-{
-    convertFile();
-}
-// callback on button-exit --------------------------------------------------
-void MainWindow::btnExitClicked()
-{
-    close();
 }
 // callbck on button-time-1 -------------------------------------------------
 void MainWindow::btnTimeStartClicked()
@@ -545,8 +540,8 @@ void MainWindow::btnOutputFile9Clicked()
 // callback on button-view-input-file ----------------------------------------
 void MainWindow::btnInputFileViewClicked()
 {
-    QString InFile_Text = inputFile->currentText();
-    QString ext = QFileInfo(InFile_Text).suffix();
+    QString inputFilename = inputFile->currentText();
+    QString ext = QFileInfo(inputFilename).suffix();
 
     if (ext.length() < 3) return;
 
@@ -560,7 +555,7 @@ void MainWindow::btnInputFileViewClicked()
         (ext.at(2) == 'C') || (ext.at(2) == 'I') || (ext.at(2) == 'i') ||
             (ext == "rnx") || (ext == "RNX")) {
         viewer->show();
-        viewer->read(repPath(InFile_Text));
+        viewer->read(repPath(inputFilename));
     }
 }
 // callback on button-view-file-1 -------------------------------------------
@@ -651,21 +646,6 @@ void MainWindow::btnAboutClicked()
     aboutDialog->iconIndex = 3;
     aboutDialog->exec();
 }
-// callback on button-time-start --------------------------------------------
-void MainWindow::timeStartClicked()
-{
-    updateEnable();
-}
-// callback on button-time-end ----------------------------------------------
-void MainWindow::timeEndClicked()
-{
-    updateEnable();
-}
-// callback on button-time-interval -----------------------------------------
-void MainWindow::TimeIntervalClicked()
-{
-    updateEnable();
-}
 // callback on output-file check/uncheck ------------------------------------
 void MainWindow::outputDirrectoryEnableClicked()
 {
@@ -677,27 +657,26 @@ void MainWindow::inputFileChanged()
 {
     setOutputFiles(inputFile->currentText());
 }
-// callback on format change ------------------------------------------------
-void MainWindow::formatChanged()
-{
-    updateEnable();
-}
 // get time -----------------------------------------------------------------
 void MainWindow::getTime(gtime_t *ts, gtime_t *te, double *tint,
              double *tunit)
 {
     if (cBTimeStart->isChecked()) {
         QDateTime start(dateTime1->dateTime());
-        ts->time = start.toSecsSinceEpoch(); ts->sec = start.time().msec() / 1000;
+        ts->time = start.toSecsSinceEpoch();
+        ts->sec = start.time().msec() / 1000;
     } else {
-        ts->time = 0; ts->sec = 0;
+        ts->time = 0;
+        ts->sec = 0;
     }
 
     if (cBTimeEnd->isChecked()) {
         QDateTime end(dateTime2->dateTime());
-        te->time = end.toSecsSinceEpoch(); te->sec = end.time().msec() / 1000;
+        te->time = end.toSecsSinceEpoch();
+        te->sec = end.time().msec() / 1000;
     } else {
-        te->time = 0; te->sec = 0;
+        te->time = 0;
+        te->sec = 0;
     }
 
     if (cBTimeInterval->isChecked())
@@ -705,17 +684,16 @@ void MainWindow::getTime(gtime_t *ts, gtime_t *te, double *tint,
     else *tint = 0;
 
     if (cBTimeUnit->isChecked())
-        *tunit = cBTimeUnit->text().toDouble() * 3600;
+        *tunit = sBTimeUnit->value() * 3600;
     else *tunit = 0;
 }
 // replace keywords in file path --------------------------------------------
 QString MainWindow::repPath(const QString &File)
 {
-    QString Path;
     char path[1024];
 
     reppath(qPrintable(File), path, timeadd(rinexTime, TSTARTMARGIN), qPrintable(rinexStationCode), "");
-    return Path = path;
+    return QString(path);
 }
 // execute command ----------------------------------------------------------
 int MainWindow::execCommand(const QString &cmd, QStringList &opt)
@@ -725,9 +703,9 @@ int MainWindow::execCommand(const QString &cmd, QStringList &opt)
 // update enable/disable of widgets -----------------------------------------
 void MainWindow::updateEnable(void)
 {
-    QString FormatText = cBFormat->currentText();
-    int rnx = FormatText == "RINEX";
-    int sep_nav=(rinexVersion<3||separateNavigation);
+    QString formatText = cBFormat->currentText();
+    int rnx = (formatText == "RINEX");
+    int sep_nav=(rinexVersion < 3 || separateNavigation);
 
     dateTime1->setEnabled(cBTimeStart->isChecked());
     btnTimeStart->setEnabled(cBTimeStart->isChecked());
@@ -736,8 +714,7 @@ void MainWindow::updateEnable(void)
     comboTimeInterval->setEnabled(cBTimeInterval->isChecked());
     lbTimeInterval->setEnabled(cBTimeInterval->isEnabled());
     cBTimeUnit->setEnabled(cBTimeStart->isChecked() && cBTimeEnd->isChecked());
-    lETimeUnit->setEnabled(cBTimeStart->isChecked() && cBTimeEnd->isChecked() && cBTimeUnit->isChecked());
-    lbTimeUnit->setEnabled(cBTimeUnit->isEnabled());
+    sBTimeUnit->setEnabled(cBTimeStart->isChecked() && cBTimeEnd->isChecked() && cBTimeUnit->isChecked());
     outputFileEnable3->setEnabled(sep_nav && (navSys & SYS_GLO));
     outputFileEnable4->setEnabled(sep_nav && (navSys & SYS_SBS));
     outputFileEnable5->setEnabled(sep_nav && (navSys & SYS_QZS) && rinexVersion>=5);
@@ -791,7 +768,7 @@ void MainWindow::convertFile(void)
     conversionThread = new ConversionThread(this);
 
     // recognize input file format
-    strcpy(conversionThread->ifile, qPrintable(inputFile_Text));
+    strncpy(conversionThread->ifile, qPrintable(inputFile_Text), 1024);
     QFileInfo fi(inputFile_Text);
     if (cBFormat->currentIndex() == 0) { // auto
         if (fi.completeSuffix() == "rtcm2") {
@@ -865,10 +842,9 @@ void MainWindow::convertFile(void)
             return;
         }
     } else {
-        for (i = 0; formatstrs[i]; i++)
-            if (cBFormat->currentText() == formatstrs[i]) break;
-        if (formatstrs[i]) conversionThread->format = i;
-        else return;
+        conversionThread->format = cBFormat->currentData().toInt();
+        if (conversionThread->format<0)
+            return;
     }
     conversionThread->rnxopt.rnxver = RNXVER[rinexVersion];
 
@@ -878,15 +854,15 @@ void MainWindow::convertFile(void)
         if (startDialog->result() != QDialog::Accepted) return;
         conversionThread->rnxopt.trtcm = startDialog->time;
     }
-    if (outputFile1->isEnabled() && outputFileEnable1->isChecked()) strcpy(conversionThread->ofile[0], qPrintable(outputFile1_Text));
-    if (outputFile2->isEnabled() && outputFileEnable2->isChecked()) strcpy(conversionThread->ofile[1], qPrintable(outputFile2_Text));
-    if (outputFile3->isEnabled() && outputFileEnable3->isChecked()) strcpy(conversionThread->ofile[2], qPrintable(outputFile3_Text));
-    if (outputFile4->isEnabled() && outputFileEnable4->isChecked()) strcpy(conversionThread->ofile[3], qPrintable(outputFile4_Text));
-    if (outputFile5->isEnabled() && outputFileEnable5->isChecked()) strcpy(conversionThread->ofile[4], qPrintable(outputFile5_Text));
-    if (outputFile6->isEnabled() && outputFileEnable6->isChecked()) strcpy(conversionThread->ofile[5], qPrintable(outputFile6_Text));
-    if (outputFile7->isEnabled() && outputFileEnable7->isChecked()) strcpy(conversionThread->ofile[6], qPrintable(outputFile7_Text));
-    if (outputFile8->isEnabled() && outputFileEnable8->isChecked()) strcpy(conversionThread->ofile[7], qPrintable(outputFile8_Text));
-    if (outputFile9->isEnabled() && outputFileEnable9->isChecked()) strcpy(conversionThread->ofile[8], qPrintable(outputFile9_Text));
+    if (outputFile1->isEnabled() && outputFileEnable1->isChecked()) strncpy(conversionThread->ofile[0], qPrintable(outputFile1_Text), 1024);
+    if (outputFile2->isEnabled() && outputFileEnable2->isChecked()) strncpy(conversionThread->ofile[1], qPrintable(outputFile2_Text), 1024);
+    if (outputFile3->isEnabled() && outputFileEnable3->isChecked()) strncpy(conversionThread->ofile[2], qPrintable(outputFile3_Text), 1024);
+    if (outputFile4->isEnabled() && outputFileEnable4->isChecked()) strncpy(conversionThread->ofile[3], qPrintable(outputFile4_Text), 1024);
+    if (outputFile5->isEnabled() && outputFileEnable5->isChecked()) strncpy(conversionThread->ofile[4], qPrintable(outputFile5_Text), 1024);
+    if (outputFile6->isEnabled() && outputFileEnable6->isChecked()) strncpy(conversionThread->ofile[5], qPrintable(outputFile6_Text), 1024);
+    if (outputFile7->isEnabled() && outputFileEnable7->isChecked()) strncpy(conversionThread->ofile[6], qPrintable(outputFile7_Text), 1024);
+    if (outputFile8->isEnabled() && outputFileEnable8->isChecked()) strncpy(conversionThread->ofile[7], qPrintable(outputFile8_Text), 1024);
+    if (outputFile9->isEnabled() && outputFileEnable9->isChecked()) strncpy(conversionThread->ofile[8], qPrintable(outputFile9_Text), 1024);
 
     // check overwrite output file
     for (i = 0; i < 9; i++) {
@@ -901,8 +877,8 @@ void MainWindow::convertFile(void)
     strncpy(conversionThread->rnxopt.markerno, qPrintable(markerNo), 31);
     strncpy(conversionThread->rnxopt.markertype, qPrintable(markerType), 31);
     for (i = 0; i < 2; i++) strncpy(conversionThread->rnxopt.name[i], qPrintable(name[i]), 31);
-    for (i = 0; i < 3; i++) strncpy(conversionThread->rnxopt.rec [i], qPrintable(receiver [i]), 31);
-    for (i = 0; i < 3; i++) strncpy(conversionThread->rnxopt.ant [i], qPrintable(antenna [i]), 31);
+    for (i = 0; i < 3; i++) strncpy(conversionThread->rnxopt.rec[i], qPrintable(receiver [i]), 31);
+    for (i = 0; i < 3; i++) strncpy(conversionThread->rnxopt.ant[i], qPrintable(antenna [i]), 31);
     if (autoPosition)
         for (i = 0; i < 3; i++) conversionThread->rnxopt.apppos[i] = approxPosition[i];
     for (i = 0; i < 3; i++) conversionThread->rnxopt.antdel[i] = antennaDelta[i];
@@ -910,8 +886,8 @@ void MainWindow::convertFile(void)
     conversionThread->rnxopt.navsys = navSys;
     conversionThread->rnxopt.obstype = observationType;
     conversionThread->rnxopt.freqtype = frequencyType;
-    for (i=0;i<2;i++) sprintf(conversionThread->rnxopt.comment[i],"%.63s",qPrintable(comment[i]));
-    for (i = 0; i < 7; i++) strcpy(conversionThread->rnxopt.mask[i], qPrintable(modeMask[i]));
+    for (i = 0; i < 2; i++) sprintf(conversionThread->rnxopt.comment[i], "%.63s", qPrintable(comment[i]));
+    for (i = 0; i < 7; i++) strncpy(conversionThread->rnxopt.mask[i], qPrintable(codeMask[i]), 64);
     conversionThread->rnxopt.autopos = autoPosition;
     conversionThread->rnxopt.phshift = phaseShift;
     conversionThread->rnxopt.halfcyc = halfCycle;
@@ -921,7 +897,7 @@ void MainWindow::convertFile(void)
     conversionThread->rnxopt.sep_nav = separateNavigation;
     conversionThread->rnxopt.ttol = timeTolerance;
     if (enableGlonassFrequency) {
-        for (i=0;i<MAXPRNGLO;i++) conversionThread->rnxopt.glofcn[i]=glonassFrequency[i];
+        for (i = 0; i < MAXPRNGLO; i++) conversionThread->rnxopt.glofcn[i] = glonassFrequency[i];
     }
 
     QStringList exsatsLst = excludedSatellites.split(" ");
@@ -956,7 +932,7 @@ void MainWindow::convertFile(void)
     setCursor(Qt::WaitCursor);
 
     // post processing positioning
-    connect(conversionThread, SIGNAL(finished()), this, SLOT(conversionFinished()));
+    connect(conversionThread, &QThread::finished, this, &MainWindow::conversionFinished);
 
     conversionThread->start();
 }
@@ -967,6 +943,7 @@ void MainWindow::conversionFinished()
 
     if (traceLevel > 0)
         traceclose();
+
     btnConvert->setVisible(true);
     btnAbort->setVisible(false);
     panel1->setEnabled(true);
@@ -1039,13 +1016,13 @@ void MainWindow::loadOptions(void)
     excludedSatellites = ini.value("opt/exsats", "").toString();
     traceLevel = ini.value("opt/tracelevel", 0).toInt();
     rinexTime.time = ini.value("opt/rnxtime", 0).toInt();
-    modeMask[0] = ini.value("opt/codemask_1", mask).toString();
-    modeMask[1] = ini.value("opt/codemask_2", mask).toString();
-    modeMask[2] = ini.value("opt/codemask_3", mask).toString();
-    modeMask[3] = ini.value("opt/codemask_4", mask).toString();
-    modeMask[4] = ini.value("opt/codemask_5", mask).toString();
-    modeMask[5] = ini.value("opt/codemask_6", mask).toString();
-    modeMask[6] = ini.value("opt/codemask_7", mask).toString();
+    codeMask[0] = ini.value("opt/codemask_1", mask).toString();
+    codeMask[1] = ini.value("opt/codemask_2", mask).toString();
+    codeMask[2] = ini.value("opt/codemask_3", mask).toString();
+    codeMask[3] = ini.value("opt/codemask_4", mask).toString();
+    codeMask[4] = ini.value("opt/codemask_5", mask).toString();
+    codeMask[5] = ini.value("opt/codemask_6", mask).toString();
+    codeMask[6] = ini.value("opt/codemask_7", mask).toString();
     autoPosition = ini.value("opt/autopos", 0).toInt();
     phaseShift = ini.value("opt/phaseShift", 0).toInt();
     halfCycle = ini.value("opt/halfcyc", 0).toInt();
@@ -1055,8 +1032,8 @@ void MainWindow::loadOptions(void)
     separateNavigation = ini.value("opt/sepnav", 0).toInt();
     timeTolerance	= ini.value("opt/timetol", 0.005).toInt();
     enableGlonassFrequency = ini.value("opt/glofcnena", 0).toInt();
-    for (int i=0;i<27;i++)
-        glonassFrequency[i]=ini.value(QString("opt/glofcn%1").arg(i+1,2, 10, QLatin1Char('0')),0).toInt();
+    for (int i = 0; i < 27; i++)
+        glonassFrequency[i] = ini.value(QString("opt/glofcn%1").arg(i+1,2, 10, QLatin1Char('0')),0).toInt();
 
     cBTimeStart->setChecked(ini.value("set/timestartf", 0).toBool());
     cBTimeEnd->setChecked(ini.value("set/timeendf", 0).toBool());
@@ -1067,7 +1044,7 @@ void MainWindow::loadOptions(void)
     dateTime2->setTime(ini.value("set/timeh2", "00:00:00").value<QTime>());
     comboTimeInterval->setCurrentText(ini.value("set/timeint", "1").toString());
     cBTimeUnit->setChecked(ini.value("set/timeunitf", 0).toBool());
-    lETimeUnit->setText(ini.value("set/timeunit", "24").toString());
+    sBTimeUnit->setValue(ini.value("set/timeunit", "24").toDouble());
     inputFile->setCurrentText(ini.value("set/infile", "").toString());
     outputDirectory->setText(ini.value("set/outdir", "").toString());
     outputFile1->setText(ini.value("set/outfile1", "").toString());
@@ -1091,7 +1068,7 @@ void MainWindow::loadOptions(void)
     outputFileEnable9->setChecked(ini.value("set/outfileena9", true).toBool());
     cBFormat->setCurrentIndex(ini.value("set/format", 0).toInt());
 
-    readList(inputFile, &ini, "hist/inputfile");
+    readHistory(inputFile, &ini, "hist/inputfile");
 
     TextViewer::colorText = ini.value("viewer/color1", QColor(Qt::black)).value<QColor>();
     TextViewer::colorBackground = ini.value("viewer/color2", QColor(Qt::white)).value<QColor>();
@@ -1137,13 +1114,13 @@ void MainWindow::saveOptions(void)
     ini.setValue("opt/exsats", excludedSatellites);
     ini.setValue("opt/tracelevel", traceLevel);
     ini.setValue("opt/rnxtime", (int)(rinexTime.time));
-    ini.setValue("opt/codemask_1", modeMask[0]);
-    ini.setValue("opt/codemask_2", modeMask[1]);
-    ini.setValue("opt/codemask_3", modeMask[2]);
-    ini.setValue("opt/codemask_4", modeMask[3]);
-    ini.setValue("opt/codemask_5", modeMask[4]);
-    ini.setValue("opt/codemask_6", modeMask[5]);
-    ini.setValue("opt/codemask_7", modeMask[6]);
+    ini.setValue("opt/codemask_1", codeMask[0]);
+    ini.setValue("opt/codemask_2", codeMask[1]);
+    ini.setValue("opt/codemask_3", codeMask[2]);
+    ini.setValue("opt/codemask_4", codeMask[3]);
+    ini.setValue("opt/codemask_5", codeMask[4]);
+    ini.setValue("opt/codemask_6", codeMask[5]);
+    ini.setValue("opt/codemask_7", codeMask[6]);
     ini.setValue("opt/autopos", autoPosition);
     ini.setValue("opt/phasewhift", phaseShift);
     ini.setValue("opt/halfcyc", halfCycle);
@@ -1153,8 +1130,8 @@ void MainWindow::saveOptions(void)
     ini.setValue("opt/sepnav", separateNavigation);
     ini.setValue("opt/timetol", timeTolerance);
     ini.setValue("opt/glofcnena",  enableGlonassFrequency);
-    for (int i=0;i<27;i++) {
-        ini.setValue(QString("opt/glofcn%1").arg(i+1,2,10,QLatin1Char('0')),glonassFrequency[i]);
+    for (int i = 0; i < 27; i++) {
+        ini.setValue(QString("opt/glofcn%1").arg(i + 1, 2, 10, QLatin1Char('0')), glonassFrequency[i]);
     }
 
     ini.setValue("set/timestartf", cBTimeStart->isChecked());
@@ -1166,7 +1143,7 @@ void MainWindow::saveOptions(void)
     ini.setValue("set/timeh2", dateTime2->time());
     ini.setValue("set/timeint", comboTimeInterval->currentText());
     ini.setValue("set/timeunitf", cBTimeUnit->isChecked());
-    ini.setValue("set/timeunit", lETimeUnit->text());
+    ini.setValue("set/timeunit", sBTimeUnit->value());
     ini.setValue("set/infile", inputFile->currentText());
     ini.setValue("set/outdir", outputDirectory->text());
     ini.setValue("set/outfile1", outputFile1->text());
@@ -1190,7 +1167,7 @@ void MainWindow::saveOptions(void)
     ini.setValue("set/outfileena9", outputFileEnable9->isChecked());
     ini.setValue("set/format", cBFormat->currentIndex());
 
-    writeList(&ini, "hist/inputfile", inputFile);
+    writeHistory(&ini, "hist/inputfile", inputFile);
 
     ini.setValue("viewer/color1", TextViewer::colorText);
     ini.setValue("viewer/color2", TextViewer::colorText);

@@ -15,7 +15,6 @@ public slots:
     void btnColorTextClicked();
     void btnColorBackgroundClicked();
     void btnFontClicked();
-    void btnOkClicked();
 
 protected:
     void showEvent(QShowEvent*);

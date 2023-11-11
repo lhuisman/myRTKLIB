@@ -18,10 +18,7 @@ class ConvOptDialog : public QDialog, private Ui::ConvOptDialog
 
 public slots:
     void btnOkClicked();
-    void rinexFileClicked();
     void btnMaskClicked();
-    void rinexVersionChanged();
-    void autoPositionClicked();
     void btnFreqClicked();
     void btnFcnClicked();
 

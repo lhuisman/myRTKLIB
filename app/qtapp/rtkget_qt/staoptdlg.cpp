@@ -14,10 +14,10 @@ StaListDialog::StaListDialog(QWidget *parent)
 {
     setupUi(this);
 
-    connect(btnCancel, SIGNAL(clicked(bool)), this, SLOT(reject()));
-    connect(btnLoad, SIGNAL(clicked(bool)), this, SLOT(btnLoadClicked()));
-    connect(btnOk, SIGNAL(clicked(bool)), this, SLOT(btnOkClicked()));
-    connect(btnSave, SIGNAL(clicked(bool)), this, SLOT(btnSaveClicked()));
+    connect(btnCancel, &QPushButton::clicked, this, &StaListDialog::reject);
+    connect(btnLoad, &QPushButton::clicked, this, &StaListDialog::btnLoadClicked);
+    connect(btnOk, &QPushButton::clicked, this, &StaListDialog::btnOkClicked);
+    connect(btnSave, &QPushButton::clicked, this, &StaListDialog::btnSaveClicked);
 }
 //---------------------------------------------------------------------------
 void StaListDialog::showEvent(QShowEvent *event)
@@ -27,7 +27,7 @@ void StaListDialog::showEvent(QShowEvent *event)
     stationListWidget->clear();
 
     for (int i = 0; i < mainForm->stationListWidget->count(); i++)
-        stationListWidget->addItem(mainForm->stationListWidget->item(i)->text());
+        stationListWidget->addItem(mainForm->stationListWidget->item(i));
 }
 //---------------------------------------------------------------------------
 void StaListDialog::btnOkClicked()
@@ -35,7 +35,9 @@ void StaListDialog::btnOkClicked()
     mainForm->stationListWidget->clear();
 
     for (int i = 0; i < stationListWidget->count(); i++)
-        mainForm->stationListWidget->addItem(stationListWidget->item(i)->text());
+        mainForm->stationListWidget->addItem(new QListWidgetItem(*stationListWidget->item(i)));
+
+    accept();
 }
 //---------------------------------------------------------------------------
 void StaListDialog::btnLoadClicked()
@@ -50,15 +52,12 @@ void StaListDialog::btnLoadClicked()
     if (!fp.open(QIODevice::ReadOnly)) return;
 
     stationListWidget->clear();
-    stationListWidget->setVisible(false);
 
     while (!fp.atEnd()) {
         buff = fp.readLine();
         buff = buff.mid(buff.indexOf('#'));
-        stationListWidget->addItem(buff);
+        stationListWidget->addItem(buff.replace("\n", ""));
     }
-
-    stationListWidget->setVisible(true);
 }
 //---------------------------------------------------------------------------
 void StaListDialog::btnSaveClicked()

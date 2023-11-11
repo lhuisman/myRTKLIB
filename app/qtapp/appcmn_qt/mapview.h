@@ -7,8 +7,15 @@
 
 #include "ui_mapview.h"
 
-#ifdef QWEBENGINE
+#define NUM_MARK 256
+
 class QWebEngineView;
+class QWebChannel;
+class QResizeEvent;
+class QShowEvent;
+class MapViewOptDialog;
+
+//---------------------------------------------------------------------------
 class MapViewPageState : public QObject
 {
     Q_OBJECT
@@ -21,64 +28,68 @@ signals:
 private:
     QString text;
 };
-#endif
 
-class QResizeEvent;
-class QShowEvent;
-class MapViewOptDialog;
 //---------------------------------------------------------------------------
 class MapView : public QDialog, private Ui::MapView
 {
     Q_OBJECT
 
 public slots:
-    void btnCloseClicked();
-    void timer1Timer();
     void btnZoomOutClicked();
     void btnZoomInClicked();
-    void btnSyncClicked();
+    void btnCenterClicked();
     void pageLoaded(bool);
-
-    void btnOptionsClicked();
-    void mapSelect1Clicked();
-    void mapSelect2Clicked();
-    void timer2Timer();
-
-protected:
-    void resizeEvent(QResizeEvent*);
-     void showEvent(QShowEvent*);
-
-private:
-#ifdef QWEBENGINE
-    QWebEngineView *webBrowser;
-    MapViewPageState *pageState;
-#endif
-    int markState[2];
-    double center_latitude, center_longitude;
-    double markPosition[2][2];
-    QTimer timerLL, timerGM;
-    bool loaded;
-
-    MapViewOptDialog *mapViewOptDialog;
 
     void showMapLL(void);
     void showMapGM(void);
-    void showMap(int map);
     void setView(int map, double lat, double lon, int zoom);
-    void addMark(int map, int index, double lat, double lon, int state);
+    void btnOptionsClicked();
+    void mapSelect1Clicked();
+    void mapSelect2Clicked();
+    void timerLLTimer();
+    void timerGMTimer();
+
+protected:
+     void showEvent(QShowEvent*);
+
+private:
+    QWebEngineView *webBrowser;
+    MapViewPageState *pageState;
+    QWebChannel *webChannel;
+    bool loaded;
+
+    QString mapStrings[6][3];
+    int selectedMap;
+
+    double center_latitude, center_longitude;
+    int markState[NUM_MARK];
+    double markPosition[NUM_MARK][2];
+    QString markTitle[NUM_MARK];
+    QString markMessage[NUM_MARK];
+    int highlightedMark;
+
+    QTimer timerLL, timerGM;
+
+    MapViewOptDialog *mapViewOptDialog;
+
     void updateMap(void);
     void selectMap(int map);
     int  setState(int map);
     void execFunction(int map, const QString &func);
 
 public:
-    int selectedMap;
+    QString apiKey;
 
     explicit MapView(QWidget *parent = NULL);
+    void showMap(int map);
+    void addMark(int map, int index, double lat, double lon, const QString& title, const QString& msg);
     void setCenter(double lat, double lon);
-    void setMark(int index, double lat, double lon);
+    void setMark(int index, const QString &title, double lat, double lon);
     void showMark(int index);
     void hideMark(int index);
+    void highlightMark(int index);
+    void clearMark();
+    bool isLoaded();
 };
 //---------------------------------------------------------------------------
 #endif

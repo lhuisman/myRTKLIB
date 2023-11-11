@@ -15,9 +15,7 @@
 #include "rtklib.h"
 
 #include "aboutdlg.h"
-#ifdef QWEBENGINE
-    #include "gmview.h"
-#endif
+#include "mapview.h"
 #include "browsmain.h"
 #include "staoptdlg.h"
 //---------------------------------------------------------------------------
@@ -97,9 +95,7 @@ MainForm::MainForm(QWidget *parent)
     QFileInfo prg_fileinfo(prg_filename);
     iniFile = prg_fileinfo.absolutePath() + "/" + prg_fileinfo.baseName() + ".ini";
 
- #ifdef QWEBENGINE
-    mapView = new GoogleMapView(this);
-#endif
+    mapView = new MapView(this);
     staListDialog = new StaListDialog(this);
     loadTimer = new QTimer();
 
@@ -245,7 +241,7 @@ void MainForm::closeEvent(QCloseEvent *)
     {
         QString buffer;
         for (int k = 0; k < 256 && j < stationList.count(); k++) {
-            buffer.append(QStringLiteral("%1%1").arg(k==0?"":",").arg(stationList[j++]));
+            buffer.append(QStringLiteral("%1%2").arg(k==0?"":",").arg(stationList[j++]));
         };
         setting.setValue(QString("sta/station%1").arg(i), buffer);
     }
@@ -339,7 +335,33 @@ void MainForm::menuAboutClicked()
 //---------------------------------------------------------------------------
 void MainForm::btnMapClicked()
 {
+    int num = 0;
+    float mean_lat = 0, mean_lon = 0, min_lat = 180, max_lat = -180, min_lon = 90, max_lon = -90;
+    bool okay;
     loadTimer->start();
+
+    for (int i = 0; i < tWTableStr->rowCount(); i++) {
+        if (tWTableStr->item(i, 8)->text() == "") continue;  // country
+
+        QString latitudeText = tWTableStr->item(i, 9)->text();
+        QString longitudeText = tWTableStr->item(i, 10)->text();
+        float lat = latitudeText.toDouble(&okay); if (!okay) continue;
+        float lon = longitudeText.toDouble(&okay); if (!okay) continue;
+        mean_lat+=lat;
+        mean_lon+=lon;
+        if (lat < min_lat) min_lat = lat;
+        if (lat > max_lat) max_lat = lat;
+        if (lon < min_lon) min_lon = lon;
+        if (lon > max_lon) max_lon = lon;
+        num++;
+    }
+    if (num > 0)
+    {
+        mean_lat/=num;
+        mean_lon/=num;
+
+        mapView->setCenter(mean_lat, mean_lon);
+    }
     mapView->show();
 }
 //---------------------------------------------------------------------------
@@ -350,7 +372,7 @@ void MainForm::Table0SelectCell(int ARow, int ACol)
 
     if (0 <= ARow && ARow < tWTableStr->rowCount()) {
         title = tWTableStr->item(ARow, 1)->text();
-        mapView->highlightMark(title);
+        mapView->highlightMark(ARow);
         mapView->setWindowTitle(QString(tr("NTRIP Data Stream Map: %1/%2")).arg(cBAddress->currentText()).arg(title));
 	}
 }
@@ -372,7 +394,7 @@ void MainForm::addressChanged()
 //---------------------------------------------------------------------------
 void MainForm::loadTimerExpired()
 {
-    if (!mapView->getState()) return;
+    if (!mapView->isLoaded()) return;
 
     updateMap();
 
@@ -438,7 +460,7 @@ void MainForm::getTable()
 
     // retrieve data in background and call updateTable() when finished
     QFuture<char *> tblFuture = QtConcurrent::run(getsrctbl, addr);
-    connect(&tableWatcher, SIGNAL(finished()), this, SLOT(updateTable()));
+    connect(&tableWatcher, &QFutureWatcher<char*>::finished, this, &MainForm::updateTable);
     tableWatcher.setFuture(tblFuture);
 }
 //---------------------------------------------------------------------------
@@ -517,7 +539,7 @@ void MainForm::showTable(void)
 		}
         table[type]->setItem(j, 0, new QTableWidgetItem(QString::number(j)));
         QStringList tokens = line.split(";");
-        for (int i = 0; i < table[type]->colorCount() && i < tokens.size(); i++)
+        for (int i = 0; i < table[type]->columnCount() && i < tokens.size(); i++)
             table[type]->setItem(j, i, new QTableWidgetItem(tokens.at(i)));
 		j++;
 	}
@@ -559,7 +581,7 @@ void MainForm::updateMap(void)
               "Latitude/Longitude: "+tWTableStr->item(i, 9)->text()+", "+tWTableStr->item(i, 10)->text()+"<br>"+
               "Generator: "+tWTableStr->item(i, 13)->text();
 
-        mapView->addMark(latitude, longitude, title, msg);
+        mapView->addMark(0, i, latitude, longitude, title, msg);
 	}
 }
 //---------------------------------------------------------------------------

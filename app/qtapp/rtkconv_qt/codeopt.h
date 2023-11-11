@@ -13,6 +13,7 @@ class ConvOptDialog;
 class CodeOptDialog : public QDialog, private Ui::CodeOptDialog
 {
     Q_OBJECT
+
 public slots:
     void btnOkClicked();
     void btnSetAllClicked();
@@ -23,11 +24,11 @@ protected:
 private:
     void updateEnable(void);
 
-    ConvOptDialog* convOptDialog;
-
 public:
-	int NavSys,FreqType;
-    CodeOptDialog(QWidget *parent, ConvOptDialog *);
+    int navSystem, frequencyType;
+    QString codeMask[7];
+
+    CodeOptDialog(QWidget *parent);
 };
 //----------------------------------------------------------------------
 #endif

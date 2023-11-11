@@ -1,13 +1,10 @@
 //---------------------------------------------------------------------------
 // ported to Qt by Jens Reimann
 
-#include <stdio.h>
-
 #include <QShowEvent>
 #include <QUrl>
 #include <QIntValidator>
 
-#include "rtklib.h"
 #include "ftpoptdlg.h"
 #include "keydlg.h"
 
@@ -19,9 +16,11 @@ FtpOptDialog::FtpOptDialog(QWidget *parent)
 
     keyDlg = new KeyDialog(this);
 
-    connect(btnOk, SIGNAL(clicked(bool)), this, SLOT(btnOkClicked()));
-    connect(btnKey, SIGNAL(clicked(bool)), this, SLOT(btnKeyClicked()));
-    connect(btnCancel, SIGNAL(clicked(bool)), this, SLOT(reject()));
+    connect(btnOk, &QPushButton::clicked, this, &FtpOptDialog::btnOkClicked);
+    connect(btnKey, &QPushButton::clicked, this, &FtpOptDialog::btnKeyClicked);
+    connect(btnCancel, &QPushButton::clicked, this, &FtpOptDialog::reject);
+
+    options = 0;
 
     cBPathOffset->setValidator(new QIntValidator(this));
     cBInterval->setValidator(new QIntValidator(this));
@@ -40,8 +39,8 @@ void FtpOptDialog::showEvent(QShowEvent *event)
     QStringList tokens = path.split("::");
     if (tokens.size() > 1) {
         QString t = tokens.at(1);
-        if (t.contains("T=")) {
-            QStringList values = t.mid(2).split(",");
+        if (t.startsWith("T=")) {
+            QStringList values = t.mid(2).split(",");  // remove "T=" and split list:
             for (int i = 0; (i < 4) || (i < values.size()); i++)
                 topts[i] = values.at(i).toInt();
         }
@@ -60,27 +59,27 @@ void FtpOptDialog::showEvent(QShowEvent *event)
     cBPathOffset->insertItem(0, QString::number(topts[0] / 3600.0, 'g', 2)); cBPathOffset->setCurrentIndex(0);
     cBInterval->insertItem(0, QString::number(topts[1] / 3600.0, 'g', 2)); cBInterval->setCurrentIndex(0);
     cBOffset->insertItem(0, QString::number(topts[2] / 3600.0, 'g', 2)); cBOffset->setCurrentIndex(0);
-    cBRetryInterval->setValue(topts[3]);
+    sBRetryInterval->setValue(topts[3]);
 	updateEnable();
 }
 //---------------------------------------------------------------------------
 void FtpOptDialog::btnOkClicked()
 {
-    QString PathOffset_Text = cBPathOffset->currentText();
-    QString Interval_Text = cBInterval->currentText();
-    QString Offset_Text = cBOffset->currentText();
-    QString User_Text = lEUser->text(), Passwd_Text = lEPassword->text();
-    QString Addr_Text = cBAddress->currentText(), s;
+    QString pathOffset_Text = cBPathOffset->currentText();
+    QString interval_Text = cBInterval->currentText();
+    QString offset_Text = cBOffset->currentText();
+    QString user_Text = lEUser->text(), password_Text = lEPassword->text();
+    QString address_Text = cBAddress->currentText(), s;
 	int topts[4];
     bool ok;
 
-    topts[0] = PathOffset_Text.toInt(&ok) * 3600.0;
-    topts[1] = Interval_Text.toInt(&ok) * 3600.0;
-    topts[2] = Offset_Text.toInt(&ok) * 3600.0;
-    topts[3] = cBRetryInterval->value();
+    topts[0] = pathOffset_Text.toInt(&ok) * 3600.0;
+    topts[1] = interval_Text.toInt(&ok) * 3600.0;
+    topts[2] = offset_Text.toInt(&ok) * 3600.0;
+    topts[3] = sBRetryInterval->value();
 
-    path = QString("%1:%2@%3::T=%4,%5,%6,%7").arg(User_Text)
-           .arg(Passwd_Text).arg(Addr_Text)
+    path = QString("%1:%2@%3::T=%4,%5,%6,%7").arg(user_Text)
+           .arg(password_Text).arg(address_Text)
            .arg(topts[0]).arg(topts[1]).arg(topts[2]).arg(topts[3]);
 
     addHistory(cBAddress, history);

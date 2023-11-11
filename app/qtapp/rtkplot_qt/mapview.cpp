@@ -38,9 +38,9 @@ MapView::MapView(QWidget *parent)
 {
     loaded = false;
     setupUi(this);
-
-    mapSelect=0;
-    latitude=longitude=0.0;
+    
+    selectedMap=0;
+    center_latitude=center_longitude=0.0;
     for (int i=0;i<2;i++) {
         markState[0]=markState[1]=0;
         markPosition[i][0]=markPosition[i][1]=0.0;
@@ -52,8 +52,8 @@ MapView::MapView(QWidget *parent)
     connect(btnShrink, SIGNAL(clicked(bool)), this, SLOT(btnZoomOutClicked()));
     connect(btnExpand, SIGNAL(clicked(bool)), this, SLOT(btnZoomInClicked()));
     connect(btnSync, SIGNAL(clicked(bool)), this, SLOT(btnSyncClicked()));
-    connect(&timer1, SIGNAL(timeout()), this, SLOT(timer1Timer()));
-    connect(&timer2, SIGNAL(timeout()), this, SLOT(timer2Timer()));
+    connect(&timerLL, SIGNAL(timeout()), this, SLOT(timer1Timer()));
+    connect(&timerGM, SIGNAL(timeout()), this, SLOT(timer2Timer()));
     connect(rBMapSelect1, SIGNAL(clicked(bool)), this, SLOT(mapSelect1Clicked()));
     connect(rBMapSelect2, SIGNAL(clicked(bool)), this, SLOT(mapSelect2Clicked()));
 
@@ -76,10 +76,10 @@ MapView::MapView(QWidget *parent)
 //---------------------------------------------------------------------------
 void MapView::showEvent(QShowEvent*)
 {
-    rBMapSelect1->setChecked(!mapSelect);
-    rBMapSelect2->setChecked(mapSelect);
-    selectMap(mapSelect);
-    showMap(mapSelect);
+    rBMapSelect1->setChecked(!selectedMap);
+    rBMapSelect2->setChecked(selectedMap);
+    selectMap(selectedMap);
+    showMap(selectedMap);
 }
 //---------------------------------------------------------------------------
 void MapView::btnCloseClicked()
@@ -112,7 +112,7 @@ void MapView::btnOptionsClicked()
     for (int i=0;i<6;i++) for (int j=0;j<3;j++) {
         plot->mapStreams[i][j]=mapViewOptDialog->mapStrings[i][j];
     }
-    showMap(mapSelect);
+    showMap(selectedMap);
 }
 //---------------------------------------------------------------------------
 void MapView::pageLoaded(bool ok)
@@ -130,24 +130,24 @@ void MapView::pageLoaded(bool ok)
 //---------------------------------------------------------------------------
 void MapView::btnZoomOutClicked()
 {
-    execFunction(mapSelect,"ZoomOut()");
+    execFunction(selectedMap,"ZoomOut()");
 }
 //---------------------------------------------------------------------------
 void MapView::btnZoomInClicked()
 {
-    execFunction(mapSelect,"ZoomIn()");
+    execFunction(selectedMap,"ZoomIn()");
 }
 //---------------------------------------------------------------------------
 void MapView::btnSyncClicked()
 {
     if (btnSync->isChecked()) {
-        setCenter(latitude,longitude);
+        setCenter(center_latitude,center_longitude);
     }
 }
 //---------------------------------------------------------------------------
 void MapView::resizeEvent(QResizeEvent *)
 {
-    if (btnSync->isChecked()) setCenter(latitude, longitude);
+    if (btnSync->isChecked()) setCenter(center_latitude, center_longitude);
 }
 //---------------------------------------------------------------------------
 void MapView::showMap(int map)
@@ -218,19 +218,19 @@ void MapView::showMapLL(void)
 
     webBrowser->show();
 #endif
-
-    timer1.start();
+    
+    timerLL.start();
 }
 //---------------------------------------------------------------------------
 void MapView::timer1Timer()
 {
     if (!setState(0)) return;
-
-    setView(0,latitude,longitude,INIT_ZOOM);
+    
+    setView(0,center_latitude,center_longitude,INIT_ZOOM);
     addMark(0,1,markPosition[0][0],markPosition[0][1],markState[0]);
     addMark(0,2,markPosition[1][0],markPosition[1][1],markState[1]);
-
-    timer1.stop();
+    
+    timerLL.stop();
 }
 void MapView::showMapGM(void)
 {
@@ -270,19 +270,19 @@ void MapView::showMapGM(void)
 
     webBrowser->show();
 #endif
-
-    timer2.start();
+    
+    timerGM.start();
 
 }
 //---------------------------------------------------------------------------
 void MapView::timer2Timer()
 {
     if (!setState(1)) return;
-
-    setView(1,latitude,longitude,INIT_ZOOM);
+    
+    setView(1,center_latitude,center_longitude,INIT_ZOOM);
         addMark(1,1,markPosition[0][0],markPosition[0][1],markState[0]);
         addMark(1,2,markPosition[1][0],markPosition[1][1],markState[1]);
-        timer2.stop();
+        timerGM.stop();
 }
 
 //---------------------------------------------------------------------------
@@ -305,7 +305,7 @@ void MapView::addMark(int map, int index, double lat, double lon,
 //---------------------------------------------------------------------------
 void MapView::updateMap(void)
 {
-    setCenter(latitude,longitude);
+    setCenter(center_latitude,center_longitude);
     for (int i=0;i<2;i++) {
         setMark(i+1,markPosition[i][0],markPosition[i][1]);
         if (markState[i]) showMark(i+1); else hideMark(i+1);
@@ -314,7 +314,7 @@ void MapView::updateMap(void)
 //---------------------------------------------------------------------------
 void MapView::selectMap(int map)
 {
-    mapSelect=map;
+    selectedMap=map;
     showMap(map);
 }
 
@@ -322,10 +322,10 @@ void MapView::selectMap(int map)
 void MapView::setCenter(double lat, double lon)
 {
     QString func=QString("SetCent(%1,%2)").arg(lat, 0, 'f', 9).arg(lon, 0, 'f', 9);
-    latitude = lat; longitude = lon;
+    center_latitude = lat; center_longitude = lon;
 
     if (btnSync->isChecked()) {
-        execFunction(mapSelect,func);
+        execFunction(selectedMap,func);
     }
 }
 //---------------------------------------------------------------------------
@@ -335,8 +335,8 @@ void MapView::setMark(int index, double lat, double lon)
 
     markPosition[index-1][0]=lat;
     markPosition[index-1][1]=lon;
-
-    execFunction(mapSelect,func);
+    
+    execFunction(selectedMap,func);
 
 }
 //---------------------------------------------------------------------------
@@ -345,7 +345,7 @@ void MapView::showMark(int index)
     QString func = QString("ShowMark('SOL%1')").arg(index);
 
     markState[index-1]=1;
-    execFunction(mapSelect,func);
+    execFunction(selectedMap,func);
 }
 //---------------------------------------------------------------------------
 void MapView::hideMark(int index)
@@ -353,7 +353,7 @@ void MapView::hideMark(int index)
     QString func = QString("HideMark('SOL%1')").arg(index);
 
     markState[index-1]=0;
-    execFunction(mapSelect,func);
+    execFunction(selectedMap,func);
 }
 //---------------------------------------------------------------------------
 int MapView::setState(int map)

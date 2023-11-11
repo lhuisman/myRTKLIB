@@ -49,7 +49,7 @@
       <item row="0" column="0" colspan="2">
        <widget class="QCheckBox" name="cBKeepErr">
         <property name="toolTip">
-         <string/>
+         <string>Keep error file</string>
         </property>
         <property name="text">
          <string> Keep Error Info on Download Error (*.err)</string>
@@ -59,7 +59,7 @@
       <item row="1" column="0" colspan="2">
        <widget class="QCheckBox" name="cBKeepList">
         <property name="toolTip">
-         <string/>
+         <string>Kepp directory listing</string>
         </property>
         <property name="text">
          <string> Keep Remote Directory Listings (.listing)</string>
@@ -109,7 +109,7 @@
       <item row="4" column="1">
        <widget class="QComboBox" name="cBDateFormat">
         <property name="toolTip">
-         <string/>
+         <string>Date format for test to generate files</string>
         </property>
         <item>
          <property name="text">
@@ -131,7 +131,7 @@
       <item row="10" column="0" colspan="3">
        <widget class="QLineEdit" name="lEUrlFilename">
         <property name="toolTip">
-         <string/>
+         <string>File containing URLs for download. Leave empty for default file.</string>
         </property>
        </widget>
       </item>
@@ -168,7 +168,7 @@
       <item row="8" column="0" colspan="3">
        <widget class="QLineEdit" name="lELogFilename">
         <property name="toolTip">
-         <string/>
+         <string>Path to log file</string>
         </property>
         <property name="text">
          <string/>
@@ -178,7 +178,7 @@
       <item row="5" column="1">
        <widget class="QComboBox" name="cBTraceLevel">
         <property name="toolTip">
-         <string/>
+         <string>Level of details for debug trace</string>
         </property>
         <item>
          <property name="text">
@@ -218,14 +218,17 @@
          <bool>false</bool>
         </property>
         <property name="toolTip">
-         <string/>
+         <string>Address of proxy server</string>
         </property>
        </widget>
       </item>
       <item row="3" column="1">
        <widget class="QSpinBox" name="sBTestColumnCount">
+        <property name="toolTip">
+         <string>Number of columns for test</string>
+        </property>
         <property name="maximum">
-         <number>9999</number>
+         <number>200</number>
         </property>
        </widget>
       </item>
@@ -241,6 +244,18 @@
       </sizepolicy>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
       <item>
        <widget class="QPushButton" name="btnOk">
         <property name="toolTip">

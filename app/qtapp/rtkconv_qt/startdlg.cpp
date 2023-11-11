@@ -15,8 +15,8 @@ StartDialog::StartDialog(QWidget *parent)
     time.time = 0;
     time.sec = 0.0;
 
-    connect(btnOk, SIGNAL(clicked(bool)), this, SLOT(btnOkClicked()));
-    connect(btnCancel, SIGNAL(clicked(bool)), this, SLOT(reject()));
+    connect(btnOk, &QPushButton::clicked, this, &StartDialog::btnOkClicked);
+    connect(btnCancel, &QPushButton::clicked, this, &StartDialog::reject);
 }
 //---------------------------------------------------------------------------
 void StartDialog::showEvent(QShowEvent *event)
@@ -39,6 +39,7 @@ void StartDialog::showEvent(QShowEvent *event)
             fread(buff, 64, 1, fp);
             if (!strncmp((char *)buff, "TIMETAG", 7) && fread(&timetag, 4, 1, fp)) {
                 time.time = timetag;
+                time.sec = 0;
             }
             fclose(fp);
         }
@@ -62,17 +63,18 @@ void StartDialog::btnOkClicked()
 //---------------------------------------------------------------------------
 void StartDialog::btnFileTimeClicked()
 {
+    char path[1024], *paths[1];
+
+    // extend wild-card and get first file
+    paths[0] = path;
+    if (expath(qPrintable(filename), paths, 1)) {
+        filename = path;
+    }
+
     QFileInfo fi(filename);
     QDateTime d = fi.birthTime();
 
     tETime->setDateTime(d);
-
-    char path[1024], *paths[1];
-
-    // extend wild-card and get first file
-    paths[0]=path;
-    if (expath(qPrintable(filename), paths, 1)) {
-        filename = path;
-    }
 }
 //---------------------------------------------------------------------------
+    

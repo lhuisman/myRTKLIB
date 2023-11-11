@@ -39,7 +39,6 @@
 #include "cmdoptdlg.h"
 #include "convdlg.h"
 #include "aboutdlg.h"
-#include "refdlg.h"
 #include "mondlg.h"
 #include "svrmain.h"
 #include "mondlg.h"
@@ -516,13 +515,13 @@ void MainForm::serverStart(void)
     }
 
     streamTypes[0] = itype[type[0]->currentIndex()];
-    strcpy(pths[0], qPrintable(paths[0][type[0]->currentIndex()]));
-    strcpy(logs[0], type[0]->currentIndex()>5 || !pathEnabled[0]?"":qPrintable(pathLog[0]));
+    strncpy(pths[0], qPrintable(paths[0][type[0]->currentIndex()]), 1024);
+    strncpy(logs[0], type[0]->currentIndex()>5 || !pathEnabled[0]?"":qPrintable(pathLog[0]), 1024);
 
     for (int i = 1; i < MAXSTR; i++) {
         streamTypes[i] = otype[type[i]->currentIndex()];
-        strcpy(pths[i], !type[i]->currentIndex() ? "" : qPrintable(paths[i][type[i]->currentIndex() - 1]));
-        strcpy(logs[i], !pathEnabled[i] ? "" : qPrintable(pathLog[i]));
+        strncpy(pths[i], !type[i]->currentIndex() ? "" : qPrintable(paths[i][type[i]->currentIndex() - 1]), 1024);
+        strncpy(logs[i], !pathEnabled[i] ? "" : qPrintable(pathLog[i]), 1024);
     }
 
     // get start and period commands
@@ -553,7 +552,7 @@ void MainForm::serverStart(void)
     // check for file overwrite
     for (int i = 1; i < MAXSTR; i++) { // for each out stream
         if (streamTypes[i] != STR_FILE) continue;
-        strcpy(filepath, pths[i]);
+        strncpy(filepath, pths[i], 1024);
         if (strstr(filepath, "::A")) continue;
         if ((p = strstr(filepath, "::"))) *p = '\0';
         if (!QFile::exists(filepath)) continue;
@@ -561,7 +560,7 @@ void MainForm::serverStart(void)
     }
     for (int i = 0; i < MAXSTR; i++) { // for each log stream
         if (!*logs[i]) continue;
-        strcpy(filepath, logs[i]);
+        strncpy(filepath, logs[i], 1024);
         if (strstr(filepath, "::A")) continue;
         if ((p  =strstr(filepath, "::"))) *p = '\0';
         if (!QFile::exists(filepath)) continue;
@@ -580,16 +579,16 @@ void MainForm::serverStart(void)
         QStringList tokens = antennaType.split(',');
         if (tokens.size() >= 3)
         {
-            strcpy(conv[i]->out.sta.antdes, qPrintable(tokens.at(0)));
-            strcpy(conv[i]->out.sta.antsno, qPrintable(tokens.at(1)));
+            strncpy(conv[i]->out.sta.antdes, qPrintable(tokens.at(0)), 64);
+            strncpy(conv[i]->out.sta.antsno, qPrintable(tokens.at(1)), 64);
             conv[i]->out.sta.antsetup = atoi(qPrintable(tokens.at(2)));
         }
         tokens = receiverType.split(',');
         if (tokens.size() >= 3)
         {
-            strcpy(conv[i]->out.sta.rectype, qPrintable(tokens.at(0)));
-            strcpy(conv[i]->out.sta.recver, qPrintable(tokens.at(1)));
-            strcpy(conv[i]->out.sta.recsno, qPrintable(tokens.at(2)));
+            strncpy(conv[i]->out.sta.rectype, qPrintable(tokens.at(0)), 64);
+            strncpy(conv[i]->out.sta.recver, qPrintable(tokens.at(1)), 64);
+            strncpy(conv[i]->out.sta.recsno, qPrintable(tokens.at(2)), 64);
         }
         matcpy(conv[i]->out.sta.pos, antennaPosition, 3, 1);
         matcpy(conv[i]->out.sta.del, antennaOffsets, 3, 1);

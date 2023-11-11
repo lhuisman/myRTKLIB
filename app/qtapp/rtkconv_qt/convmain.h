@@ -21,7 +21,7 @@ class StartDialog;
 class TextViewer;
 
 // Conversion Thread Class ------------------------------------------------------------------
-
+// to allow conversion in background without blocking the GUI
 class ConversionThread : public QThread
 {
     Q_OBJECT
@@ -58,16 +58,14 @@ class MainWindow : public QMainWindow, public Ui::MainWindow
     Q_OBJECT
 
 protected:
-    void showEvent           (QShowEvent*);
-    void closeEvent          (QCloseEvent*);
-    void dragEnterEvent      (QDragEnterEvent *);
-    void dropEvent           (QDropEvent *);
+    void showEvent(QShowEvent*);
+    void closeEvent(QCloseEvent*);
+    void dragEnterEvent(QDragEnterEvent *);
+    void dropEvent(QDropEvent *);
 
 public slots:
     void btnPlotClicked();
-    void btnConvertClicked();
     void btnOptionsClicked();
-    void btnExitClicked();
     void btnAboutClicked();
     void btnTimeStartClicked();
     void btnTimeStopClicked();
@@ -91,14 +89,9 @@ public slots:
     void btnOutputFileView8Clicked();
     void btnOutputFileView9Clicked();
     void btnAbortClicked();
-	
-    void timeStartClicked();
-    void timeEndClicked();
-    void TimeIntervalClicked();
     void outputDirrectoryEnableClicked();
 	
     void inputFileChanged();
-    void formatChanged();
     void outputDirectoryChanged();
     void btnOutputDirrectoryClicked();
     void btnKeyClicked();
@@ -107,16 +100,17 @@ public slots:
     void conversionFinished();
     void updateEnable();
 
+    void convertFile(void);
+
 private:
     QString iniFile, commandPostExe;
     ConversionThread *conversionThread;
 
-    void readList(QComboBox* combo, QSettings *ini, const QString &key);
-    void writeList(QSettings *ini, const QString &key, const QComboBox *combo);
+    void readHistory(QComboBox* combo, QSettings *ini, const QString &key);
+    void writeHistory(QSettings *ini, const QString &key, const QComboBox *combo);
     void addHistory(QComboBox *combo);
 	
     int autoFormat(const QString &file);
-    void convertFile(void);
     void setOutputFiles(const QString &infile);
     void getTime(gtime_t *ts, gtime_t *te, double *tint, double *tunit);
     int  execCommand(const QString &cmd, QStringList &opt);
@@ -134,7 +128,7 @@ public:
     gtime_t rinexTime;
     QString runBy, marker, markerNo, markerType, name[2], receiver[3], antenna[3];
     QString rinexStationCode, comment[2], receiverOptions, excludedSatellites;
-    QString modeMask[7];
+    QString codeMask[7];
     double approxPosition[3], antennaDelta[3], timeTolerance;
     int rinexVersion, rinexFile, navSys, observationType, frequencyType, traceLevel;
     int autoPosition, phaseShift, halfCycle, outputIonoCorr, outputTimeCorr, outputLeapSeconds, separateNavigation;

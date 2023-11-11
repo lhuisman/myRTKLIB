@@ -42,13 +42,13 @@ void MntpOptDialog::showEvent(QShowEvent* event)
     for (int i = 3; i < 18; i++) {
         if (edit[i] != NULL) edit[i]->setText("");
         else if (spinbox[i] != NULL) spinbox[i]->setValue(0);
-        else {box[i]->setCurrentIndex(0);box[i]->setDisabled(true);}
+        else if (box[i] != NULL) {box[i]->setCurrentIndex(0);box[i]->setDisabled(true);}
     }
 
     for (int i = 3; i < tokens.size() && i < 18; i++) {
         if (edit[i] != NULL) edit[i]->setText(tokens.at(i));
         else if (spinbox[i] != NULL) spinbox[i]->setValue(tokens.at(i).toDouble());
-        else box[i]->setCurrentText(tokens.at(i));
+        else if (box[i] != NULL) box[i]->setCurrentText(tokens.at(i));
     }
 }
 //---------------------------------------------------------------------------

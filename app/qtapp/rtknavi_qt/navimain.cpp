@@ -2796,7 +2796,7 @@ void MainWindow::BtnMarkClick()
     markerComment = markDialog->comment;
 
     delete markDialog;
-
-    updatesEnabled();
+    
+    UpdateEnable();
 }
 //---------------------------------------------------------------------------

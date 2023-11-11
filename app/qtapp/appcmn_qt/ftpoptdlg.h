@@ -28,7 +28,7 @@ private:
     KeyDialog *keyDlg;
 
 public:
-    int options;
+    int options;  // 0(default): FTP options; 1: HTTP options
     QString path, history[MAXHIST], MountpointHistory[MAXHIST];
     explicit FtpOptDialog(QWidget *parent);
 };

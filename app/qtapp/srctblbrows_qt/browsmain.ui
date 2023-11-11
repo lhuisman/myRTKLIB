@@ -250,7 +250,14 @@
         </widget>
        </item>
        <item>
-        <widget class="QTableWidget" name="tWTableCas"/>
+        <widget class="QTableWidget" name="tWTableCas">
+         <property name="selectionBehavior">
+          <enum>QAbstractItemView::SelectRows</enum>
+         </property>
+         <property name="sortingEnabled">
+          <bool>true</bool>
+         </property>
+        </widget>
        </item>
        <item>
         <widget class="QPlainTextEdit" name="tETableSrc">
@@ -263,10 +270,24 @@
         </widget>
        </item>
        <item>
-        <widget class="QTableWidget" name="tWTableNet"/>
+        <widget class="QTableWidget" name="tWTableNet">
+         <property name="selectionBehavior">
+          <enum>QAbstractItemView::SelectRows</enum>
+         </property>
+         <property name="sortingEnabled">
+          <bool>true</bool>
+         </property>
+        </widget>
        </item>
        <item>
-        <widget class="QTableWidget" name="tWTableStr"/>
+        <widget class="QTableWidget" name="tWTableStr">
+         <property name="selectionBehavior">
+          <enum>QAbstractItemView::SelectRows</enum>
+         </property>
+         <property name="sortingEnabled">
+          <bool>true</bool>
+         </property>
+        </widget>
        </item>
        <item>
         <widget class="QWidget" name="wgMessage" native="true">

@@ -11,7 +11,7 @@
 class QShowEvent;
 class QCloseEvent;
 class StaListDialog;
-class GoogleMapView;
+class MapView;
 class QTimer;
 
 //---------------------------------------------------------------------------
@@ -47,9 +47,7 @@ public slots:
 private:
     QString addressList, addressCaster, sourceTable, iniFile;
     float fontScale;
-#ifdef QWEBENGINE
-    GoogleMapView *mapView;
-#endif
+    MapView *mapView;
     StaListDialog *staListDialog;
     QTimer *loadTimer;
     QFutureWatcher<char*> tableWatcher;

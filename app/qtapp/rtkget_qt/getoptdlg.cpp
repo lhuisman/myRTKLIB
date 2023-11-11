@@ -24,10 +24,10 @@ DownOptDialog::DownOptDialog(QWidget *parent)
     lEUrlFilename->setCompleter(fileCompleter);
     lELogFilename->setCompleter(fileCompleter);
 
-    connect(btnCancel, SIGNAL(clicked(bool)), this, SLOT(reject()));
-    connect(btnLogFile, SIGNAL(clicked(bool)), this, SLOT(btnLogFileClicked()));
-    connect(btnOk, SIGNAL(clicked(bool)), this, SLOT(btnOkClicked()));
-    connect(btnUrlFile, SIGNAL(clicked(bool)), this, SLOT(btnUrlFileClicked()));
+    connect(btnCancel, &QPushButton::clicked, this, &DownOptDialog::reject);
+    connect(btnLogFile, &QPushButton::clicked, this, &DownOptDialog::btnLogFileClicked);
+    connect(btnOk, &QPushButton::clicked, this, &DownOptDialog::btnOkClicked);
+    connect(btnUrlFile, &QPushButton::clicked, this, &DownOptDialog::btnUrlFileClicked);
 }
 //---------------------------------------------------------------------------
 void DownOptDialog::btnUrlFileClicked()

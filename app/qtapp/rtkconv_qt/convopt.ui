@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>833</width>
-    <height>590</height>
+    <width>819</width>
+    <height>591</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -45,7 +45,7 @@
       <item>
        <widget class="QComboBox" name="cBRinexVersion">
         <property name="toolTip">
-         <string/>
+         <string>Version of the RINEX standard to generate</string>
         </property>
         <item>
          <property name="text">
@@ -91,28 +91,28 @@
       </item>
       <item>
        <widget class="QCheckBox" name="cBSeperateNavigation">
+        <property name="toolTip">
+         <string>Generate separate navigation file</string>
+        </property>
         <property name="text">
-         <string>Sep NAV</string>
+         <string>Separate NAV</string>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QLabel" name="lbStationID">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
         <property name="toolTip">
          <string/>
         </property>
         <property name="text">
-         <string>Station ID</string>
+         <string>Station ID:</string>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QLineEdit" name="lERinexStationCode">
         <property name="toolTip">
-         <string/>
+         <string>Station ID</string>
         </property>
         <property name="text">
          <string>0000</string>
@@ -128,6 +128,9 @@
       </item>
       <item>
        <widget class="QDoubleSpinBox" name="sBTimeTolerance">
+        <property name="toolTip">
+         <string>Time tolerance for start and stop time</string>
+        </property>
         <property name="decimals">
          <number>4</number>
         </property>
@@ -142,10 +145,10 @@
       <item>
        <widget class="QCheckBox" name="cBRinexFilename">
         <property name="toolTip">
-         <string/>
+         <string>Use RINEX 2 file names</string>
         </property>
         <property name="text">
-         <string>RINEX2 Name</string>
+         <string>RINEX2 Names</string>
         </property>
        </widget>
       </item>
@@ -158,134 +161,30 @@
       <string/>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="9" column="0" colspan="7">
-       <widget class="QWidget" name="options" native="true">
-        <layout class="QHBoxLayout" name="horizontalLayout_7">
-         <property name="leftMargin">
-          <number>0</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>8</number>
-         </property>
-         <property name="bottomMargin">
-          <number>0</number>
-         </property>
-         <item>
-          <widget class="QCheckBox" name="cBPhaseShift">
-           <property name="toolTip">
-            <string/>
-           </property>
-           <property name="text">
-            <string>Phase Shift</string>
-           </property>
-           <property name="checked">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QCheckBox" name="cBHalfCycle">
-           <property name="text">
-            <string>Half Cyc Corr</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QCheckBox" name="cBOutputIonoCorr">
-           <property name="toolTip">
-            <string/>
-           </property>
-           <property name="text">
-            <string>Iono Corr</string>
-           </property>
-           <property name="checked">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QCheckBox" name="cBOutputTimeCorr">
-           <property name="toolTip">
-            <string/>
-           </property>
-           <property name="text">
-            <string>Time Corr</string>
-           </property>
-           <property name="checked">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QCheckBox" name="cBOutputLeapSecs">
-           <property name="toolTip">
-            <string/>
-           </property>
-           <property name="text">
-            <string>Leap Sec</string>
-           </property>
-           <property name="checked">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item row="3" column="5" colspan="2">
-       <widget class="QLineEdit" name="lEMarkerType">
-        <property name="toolTip">
-         <string/>
+      <item row="5" column="0">
+       <widget class="QLabel" name="lbAntenna">
+        <property name="enabled">
+         <bool>true</bool>
         </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="lbRunBy">
         <property name="toolTip">
          <string/>
         </property>
         <property name="text">
-         <string>RunBy/Obsrv/Agency</string>
+         <string>Antenna #/Type</string>
         </property>
        </widget>
       </item>
-      <item row="7" column="1">
-       <widget class="QCheckBox" name="cBAutoPosition">
+      <item row="0" column="2">
+       <widget class="QLineEdit" name="lERunBy">
         <property name="toolTip">
-         <string/>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="checked">
-         <bool>false</bool>
+         <string>Run By</string>
         </property>
        </widget>
       </item>
-      <item row="7" column="0">
-       <widget class="QLabel" name="lbApproxPosition">
+      <item row="4" column="4">
+       <widget class="QLineEdit" name="lEReceiverVersion">
         <property name="toolTip">
-         <string/>
-        </property>
-        <property name="text">
-         <string>Approx Pos XYZ</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="2">
-       <widget class="QLineEdit" name="lEMarker">
-        <property name="toolTip">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="3" colspan="2">
-       <widget class="QLineEdit" name="lEObserver">
-        <property name="toolTip">
-         <string/>
+         <string>Receiver version</string>
         </property>
        </widget>
       </item>
@@ -299,47 +198,43 @@
         </property>
        </widget>
       </item>
-      <item row="4" column="5" colspan="2">
-       <widget class="QLineEdit" name="lEReceiverVersion">
+      <item row="8" column="3">
+       <widget class="QDoubleSpinBox" name="sBAntennaDelta1">
         <property name="toolTip">
-         <string/>
+         <string>East</string>
+        </property>
+        <property name="suffix">
+         <string> m</string>
+        </property>
+        <property name="decimals">
+         <number>4</number>
         </property>
        </widget>
       </item>
-      <item row="0" column="5" colspan="2">
-       <widget class="QLineEdit" name="lEAgency">
-        <property name="toolTip">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="0">
-       <widget class="QLabel" name="lbAntenna">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="toolTip">
-         <string/>
-        </property>
-        <property name="text">
-         <string>Ant #/Type</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="2" colspan="5">
+      <item row="2" column="2" colspan="3">
        <widget class="QLineEdit" name="lEComment1">
         <property name="toolTip">
-         <string/>
+         <string>Comment</string>
         </property>
        </widget>
       </item>
-      <item row="5" column="2">
-       <widget class="QLineEdit" name="lEAntenna">
+      <item row="7" column="1">
+       <widget class="QCheckBox" name="cBAutoPosition">
         <property name="toolTip">
-         <string/>
+         <string>Specify approximate position or automatically detect it</string>
         </property>
         <property name="text">
          <string/>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="2">
+       <widget class="QLineEdit" name="lEMarker">
+        <property name="toolTip">
+         <string>Marker name</string>
         </property>
        </widget>
       </item>
@@ -349,24 +244,24 @@
          <string/>
         </property>
         <property name="text">
-         <string>Rec #/Type/Vers</string>
+         <string>Receiver #/Type/Version</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="2">
-       <widget class="QLineEdit" name="lERunBy">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
+      <item row="5" column="2">
+       <widget class="QLineEdit" name="lEAntenna">
         <property name="toolTip">
+         <string>Antenna number</string>
+        </property>
+        <property name="text">
          <string/>
         </property>
        </widget>
       </item>
-      <item row="4" column="3" colspan="2">
-       <widget class="QLineEdit" name="lEReceiverType">
+      <item row="0" column="4">
+       <widget class="QLineEdit" name="lEAgency">
         <property name="toolTip">
-         <string/>
+         <string>Agency</string>
         </property>
        </widget>
       </item>
@@ -376,45 +271,20 @@
          <string/>
         </property>
         <property name="text">
-         <string>Maker Name/#/Type</string>
+         <string>Marker Name/#/Type</string>
         </property>
        </widget>
       </item>
-      <item row="5" column="3" colspan="2">
-       <widget class="QLineEdit" name="lEAntennaType">
-        <property name="toolTip">
-         <string/>
+      <item row="7" column="3">
+       <widget class="QDoubleSpinBox" name="sBApproxPosition1">
+        <property name="suffix">
+         <string> m</string>
         </property>
-       </widget>
-      </item>
-      <item row="1" column="2" colspan="5">
-       <widget class="QLineEdit" name="lEComment0">
-        <property name="toolTip">
-         <string/>
+        <property name="decimals">
+         <number>4</number>
         </property>
-       </widget>
-      </item>
-      <item row="4" column="2">
-       <widget class="QLineEdit" name="lEReceiver">
-        <property name="toolTip">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0" rowspan="2">
-       <widget class="QLabel" name="lbComment">
-        <property name="toolTip">
-         <string/>
-        </property>
-        <property name="text">
-         <string>Comment</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="3" colspan="2">
-       <widget class="QLineEdit" name="lEMarkerNo">
-        <property name="toolTip">
-         <string/>
+        <property name="maximum">
+         <double>1000000.000000000000000</double>
         </property>
        </widget>
       </item>
@@ -431,20 +301,105 @@
         </property>
        </widget>
       </item>
-      <item row="7" column="3" colspan="2">
-       <widget class="QDoubleSpinBox" name="sBApproxPosition1">
+      <item row="3" column="4">
+       <widget class="QLineEdit" name="lEMarkerType">
+        <property name="toolTip">
+         <string>Marker type (RINEX V3)</string>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="2">
+       <widget class="QDoubleSpinBox" name="sBAntennaDelta0">
+        <property name="toolTip">
+         <string>Height</string>
+        </property>
         <property name="suffix">
          <string> m</string>
         </property>
         <property name="decimals">
          <number>4</number>
         </property>
-        <property name="maximum">
-         <double>1000000.000000000000000</double>
+       </widget>
+      </item>
+      <item row="5" column="3">
+       <widget class="QLineEdit" name="lEAntennaType">
+        <property name="toolTip">
+         <string>Antenna type</string>
         </property>
        </widget>
       </item>
-      <item row="7" column="5" colspan="2">
+      <item row="4" column="2">
+       <widget class="QLineEdit" name="lEReceiver">
+        <property name="toolTip">
+         <string>Receiver name</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="lbRunBy">
+        <property name="toolTip">
+         <string/>
+        </property>
+        <property name="text">
+         <string>RunBy/Observer/Agency</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="0">
+       <widget class="QLabel" name="lbApproxPosition">
+        <property name="toolTip">
+         <string/>
+        </property>
+        <property name="text">
+         <string>Approx. Position XYZ</string>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="4">
+       <widget class="QDoubleSpinBox" name="sBAntennaDelta2">
+        <property name="toolTip">
+         <string>North</string>
+        </property>
+        <property name="suffix">
+         <string> m</string>
+        </property>
+        <property name="decimals">
+         <number>4</number>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" rowspan="2">
+       <widget class="QLabel" name="lbComment">
+        <property name="toolTip">
+         <string/>
+        </property>
+        <property name="text">
+         <string>Comment</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="3">
+       <widget class="QLineEdit" name="lEMarkerNo">
+        <property name="toolTip">
+         <string>Marker number</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="3">
+       <widget class="QLineEdit" name="lEReceiverType">
+        <property name="toolTip">
+         <string>Receiver type</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="QLineEdit" name="lEObserver">
+        <property name="toolTip">
+         <string>Observer</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="4">
        <widget class="QDoubleSpinBox" name="sBApproxPosition2">
         <property name="suffix">
          <string> m</string>
@@ -457,33 +412,81 @@
         </property>
        </widget>
       </item>
-      <item row="8" column="2">
-       <widget class="QDoubleSpinBox" name="sBAntennaDelta0">
-        <property name="suffix">
-         <string> m</string>
-        </property>
-        <property name="decimals">
-         <number>4</number>
+      <item row="1" column="2" colspan="3">
+       <widget class="QLineEdit" name="lEComment0">
+        <property name="toolTip">
+         <string>Comment</string>
         </property>
        </widget>
       </item>
-      <item row="8" column="5" colspan="2">
-       <widget class="QDoubleSpinBox" name="sBAntennaDelta2">
-        <property name="suffix">
-         <string> m</string>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="gBOptions">
+     <property name="title">
+      <string>Output Options</string>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_8">
+      <item>
+       <widget class="QCheckBox" name="cBOutputIonoCorr">
+        <property name="toolTip">
+         <string>Output ionospheric corrections</string>
         </property>
-        <property name="decimals">
-         <number>4</number>
+        <property name="text">
+         <string>Ionospheric Correction</string>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
         </property>
        </widget>
       </item>
-      <item row="8" column="3" colspan="2">
-       <widget class="QDoubleSpinBox" name="sBAntennaDelta1">
-        <property name="suffix">
-         <string> m</string>
+      <item>
+       <widget class="QCheckBox" name="cBHalfCycle">
+        <property name="toolTip">
+         <string>Output half cycle correction</string>
         </property>
-        <property name="decimals">
-         <number>4</number>
+        <property name="text">
+         <string>Half Cycle Correction</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="cBPhaseShift">
+        <property name="toolTip">
+         <string>Output phase shift correction</string>
+        </property>
+        <property name="text">
+         <string>Phase Shift</string>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="cBOutputLeapSecs">
+        <property name="toolTip">
+         <string>Output leap seconds</string>
+        </property>
+        <property name="text">
+         <string>Leap Seconds</string>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="cBOutputTimeCorr">
+        <property name="toolTip">
+         <string>Output time system correction</string>
+        </property>
+        <property name="text">
+         <string>Time Correction</string>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -505,23 +508,6 @@
       <property name="bottomMargin">
        <number>0</number>
       </property>
-      <item row="2" column="2">
-       <widget class="QLineEdit" name="lEExcludedSatellites">
-        <property name="toolTip">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="2">
-       <widget class="QLabel" name="lbExcludedSatellites">
-        <property name="toolTip">
-         <string/>
-        </property>
-        <property name="text">
-         <string>Excluded Satellites</string>
-        </property>
-       </widget>
-      </item>
       <item row="1" column="1" rowspan="2">
        <widget class="QGroupBox" name="groupBox2">
         <property name="toolTip">
@@ -534,7 +520,7 @@
          <item>
           <widget class="QCheckBox" name="cBNavSys1">
            <property name="toolTip">
-            <string/>
+            <string>GPS</string>
            </property>
            <property name="text">
             <string>GPS</string>
@@ -547,7 +533,7 @@
          <item>
           <widget class="QCheckBox" name="cBNavSys2">
            <property name="toolTip">
-            <string/>
+            <string>Glonass</string>
            </property>
            <property name="text">
             <string>GLO</string>
@@ -557,7 +543,7 @@
          <item>
           <widget class="QCheckBox" name="cBNavSys3">
            <property name="toolTip">
-            <string/>
+            <string>Galileo</string>
            </property>
            <property name="text">
             <string>GAL</string>
@@ -567,7 +553,7 @@
          <item>
           <widget class="QCheckBox" name="cBNavSys4">
            <property name="toolTip">
-            <string/>
+            <string>QZSS</string>
            </property>
            <property name="text">
             <string>QZS</string>
@@ -577,7 +563,7 @@
          <item>
           <widget class="QCheckBox" name="cBNavSys6">
            <property name="toolTip">
-            <string/>
+            <string>BDS/Baidou</string>
            </property>
            <property name="text">
             <string>BDS</string>
@@ -586,6 +572,9 @@
          </item>
          <item>
           <widget class="QCheckBox" name="cBNavSys7">
+           <property name="toolTip">
+            <string>NavIC/IRNSS</string>
+           </property>
            <property name="text">
             <string>NavIC</string>
            </property>
@@ -594,10 +583,26 @@
          <item>
           <widget class="QCheckBox" name="cBNavSys5">
            <property name="toolTip">
-            <string/>
+            <string>SBAS</string>
            </property>
            <property name="text">
             <string>SBS</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QGroupBox" name="gNExcludedSatellites">
+        <property name="title">
+         <string>Excluded Satellites</string>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_3">
+         <item row="0" column="0">
+          <widget class="QLineEdit" name="lEExcludedSatellites">
+           <property name="toolTip">
+            <string>Whitespace separated list of satellites to exclude</string>
            </property>
           </widget>
          </item>
@@ -625,7 +630,7 @@
       <item>
        <widget class="QGroupBox" name="groupBox3">
         <property name="toolTip">
-         <string/>
+         <string>Observation types to include</string>
         </property>
         <property name="title">
          <string>Observation Types</string>
@@ -634,7 +639,7 @@
          <item>
           <widget class="QCheckBox" name="cBObservationTypeC">
            <property name="toolTip">
-            <string/>
+            <string>Pseudo range</string>
            </property>
            <property name="text">
             <string>C</string>
@@ -647,7 +652,7 @@
          <item>
           <widget class="QCheckBox" name="cBObservationTypeL">
            <property name="toolTip">
-            <string/>
+            <string>Carrier phase</string>
            </property>
            <property name="text">
             <string>L</string>
@@ -660,7 +665,7 @@
          <item>
           <widget class="QCheckBox" name="cBObservationTypeD">
            <property name="toolTip">
-            <string/>
+            <string>Doppler frequency</string>
            </property>
            <property name="text">
             <string>D</string>
@@ -673,7 +678,7 @@
          <item>
           <widget class="QCheckBox" name="cBObservationTypeS">
            <property name="toolTip">
-            <string/>
+            <string>Signal strength</string>
            </property>
            <property name="text">
             <string>S</string>
@@ -754,7 +759,7 @@
          <item>
           <widget class="QPushButton" name="btnMask">
            <property name="toolTip">
-            <string/>
+            <string>Edit code mask</string>
            </property>
            <property name="text">
             <string>Mask...</string>
@@ -767,7 +772,7 @@
             <bool>true</bool>
            </property>
            <property name="toolTip">
-            <string/>
+            <string>Specify Glonass frequency numbers</string>
            </property>
            <property name="text">
             <string>FCN...</string>
@@ -775,9 +780,27 @@
           </widget>
          </item>
          <item>
-          <widget class="QToolButton" name="btnFrequencies">
+          <widget class="QPushButton" name="btnFrequencies">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>30</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="toolTip">
+            <string>Show frequency assignment for all navigation systems</string>
+           </property>
            <property name="text">
             <string>?</string>
+           </property>
+           <property name="flat">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
@@ -815,7 +838,7 @@
       <item>
        <widget class="QLineEdit" name="lEReceiverOptions">
         <property name="toolTip">
-         <string/>
+         <string>Additional receiver specific options</string>
         </property>
        </widget>
       </item>
@@ -832,7 +855,7 @@
       <item>
        <widget class="QComboBox" name="cBTraceLevel">
         <property name="toolTip">
-         <string/>
+         <string>Generate debug output</string>
         </property>
         <item>
          <property name="text">
@@ -901,6 +924,7 @@
   <zorder>widget_2</zorder>
   <zorder>widget_3</zorder>
   <zorder>widget_4</zorder>
+  <zorder>gBOptions</zorder>
  </widget>
  <tabstops>
   <tabstop>cBRinexVersion</tabstop>
@@ -908,33 +932,25 @@
   <tabstop>cBRinexFilename</tabstop>
   <tabstop>lERunBy</tabstop>
   <tabstop>lEObserver</tabstop>
-  <tabstop>lEAgency</tabstop>
   <tabstop>lEComment0</tabstop>
   <tabstop>lEComment1</tabstop>
   <tabstop>lEMarker</tabstop>
   <tabstop>lEMarkerNo</tabstop>
-  <tabstop>lEMarkerType</tabstop>
   <tabstop>lEReceiver</tabstop>
   <tabstop>lEReceiverType</tabstop>
-  <tabstop>lEReceiverVersion</tabstop>
   <tabstop>lEAntenna</tabstop>
   <tabstop>lEAntennaType</tabstop>
   <tabstop>cBAutoPosition</tabstop>
   <tabstop>sBApproxPosition0</tabstop>
   <tabstop>sBApproxPosition1</tabstop>
-  <tabstop>sBApproxPosition2</tabstop>
   <tabstop>sBAntennaDelta0</tabstop>
   <tabstop>sBAntennaDelta1</tabstop>
-  <tabstop>sBAntennaDelta2</tabstop>
-  <tabstop>cBPhaseShift</tabstop>
-  <tabstop>cBOutputIonoCorr</tabstop>
   <tabstop>cBNavSys1</tabstop>
   <tabstop>cBNavSys2</tabstop>
   <tabstop>cBNavSys3</tabstop>
   <tabstop>cBNavSys4</tabstop>
   <tabstop>cBNavSys6</tabstop>
   <tabstop>cBNavSys7</tabstop>
-  <tabstop>lEExcludedSatellites</tabstop>
   <tabstop>cBObservationTypeC</tabstop>
   <tabstop>cBObservationTypeL</tabstop>
   <tabstop>cBObservationTypeD</tabstop>

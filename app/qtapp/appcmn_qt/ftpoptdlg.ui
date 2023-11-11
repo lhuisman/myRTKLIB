@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>484</width>
-    <height>245</height>
+    <width>487</width>
+    <height>250</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,26 +17,6 @@
    <string/>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="6" column="5">
-    <widget class="QPushButton" name="btnCancel">
-     <property name="toolTip">
-      <string/>
-     </property>
-     <property name="text">
-      <string>&amp;Cancel</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="4" colspan="2">
-    <widget class="QLineEdit" name="lEUser">
-     <property name="toolTip">
-      <string/>
-     </property>
-     <property name="text">
-      <string>anonymous</string>
-     </property>
-    </widget>
-   </item>
    <item row="3" column="0">
     <widget class="QLabel" name="Label3">
      <property name="enabled">
@@ -140,13 +120,6 @@
      </property>
      <property name="text">
       <string>Password</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="4" colspan="2">
-    <widget class="QLineEdit" name="lEPassword">
-     <property name="toolTip">
-      <string/>
      </property>
     </widget>
    </item>
@@ -254,22 +227,6 @@
      </property>
     </widget>
    </item>
-   <item row="6" column="3" colspan="2">
-    <widget class="QPushButton" name="btnOk">
-     <property name="toolTip">
-      <string/>
-     </property>
-     <property name="text">
-      <string>&amp;OK</string>
-     </property>
-     <property name="autoDefault">
-      <bool>true</bool>
-     </property>
-     <property name="default">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
    <item row="2" column="3">
     <widget class="QLabel" name="lbUser">
      <property name="toolTip">
@@ -308,16 +265,6 @@
       <string>?</string>
      </property>
      <property name="flat">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0" colspan="6">
-    <widget class="QComboBox" name="cBAddress">
-     <property name="toolTip">
-      <string/>
-     </property>
-     <property name="editable">
       <bool>true</bool>
      </property>
     </widget>
@@ -394,7 +341,7 @@
     </widget>
    </item>
    <item row="6" column="1">
-    <widget class="QSpinBox" name="cBRetryInterval">
+    <widget class="QSpinBox" name="sBRetryInterval">
      <property name="suffix">
       <string> s</string>
      </property>
@@ -403,6 +350,80 @@
      </property>
      <property name="value">
       <number>300</number>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="3" colspan="2">
+    <widget class="QWidget" name="widget" native="true">
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QPushButton" name="btnOk">
+        <property name="toolTip">
+         <string/>
+        </property>
+        <property name="text">
+         <string>&amp;OK</string>
+        </property>
+        <property name="autoDefault">
+         <bool>true</bool>
+        </property>
+        <property name="default">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btnCancel">
+        <property name="toolTip">
+         <string/>
+        </property>
+        <property name="text">
+         <string>&amp;Cancel</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="3" column="4">
+    <widget class="QLineEdit" name="lEPassword">
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="echoMode">
+      <enum>QLineEdit::Password</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="4">
+    <widget class="QLineEdit" name="lEUser">
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="text">
+      <string>anonymous</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="5">
+    <widget class="QComboBox" name="cBAddress">
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="editable">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
@@ -416,9 +437,7 @@
   <tabstop>cBOffset</tabstop>
   <tabstop>lEPassword</tabstop>
   <tabstop>cBPathOffset</tabstop>
-  <tabstop>cBRetryInterval</tabstop>
-  <tabstop>btnOk</tabstop>
-  <tabstop>btnCancel</tabstop>
+  <tabstop>sBRetryInterval</tabstop>
  </tabstops>
  <resources/>
  <connections/>

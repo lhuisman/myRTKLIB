@@ -24,12 +24,12 @@ TextViewer::TextViewer(QWidget *parent)
 
     viewerOptDialog = new ViewerOptDialog(this);
 
-    connect(btnClose, SIGNAL(clicked(bool)), this, SLOT(btnCloseClicked()));
-    connect(btnFind, SIGNAL(clicked(bool)), this, SLOT(btnFindClicked()));
-    connect(btnOpt, SIGNAL(clicked(bool)), this, SLOT(btnOptionsClicked()));
-    connect(btnRead, SIGNAL(clicked(bool)), this, SLOT(btnReadClicked()));
-    connect(btnReload, SIGNAL(clicked(bool)), this, SLOT(btnReloadClicked()));
-    connect(findStr, SIGNAL(editingFinished()), this, SLOT(btnFindClicked()));
+    connect(btnClose, &QPushButton::clicked, this, &TextViewer::accept);
+    connect(btnFind, &QPushButton::clicked, this, &TextViewer::btnFindClicked);
+    connect(btnOpt, &QPushButton::clicked, this, &TextViewer::btnOptionsClicked);
+    connect(btnRead, &QPushButton::clicked, this, &TextViewer::btnReadClicked);
+    connect(btnReload, &QPushButton::clicked, this, &TextViewer::btnReloadClicked);
+    connect(findStr, &QLineEdit::editingFinished, this, &TextViewer::btnFindClicked);
 }
 //---------------------------------------------------------------------------
 void TextViewer::showEvent(QShowEvent *event)
@@ -77,11 +77,6 @@ void TextViewer::btnOptionsClicked()
     colorBackground = viewerOptDialog->colorBackground;
 
 	updateText();
-}
-//---------------------------------------------------------------------------
-void TextViewer::btnCloseClicked()
-{
-    accept();
 }
 //---------------------------------------------------------------------------
 void TextViewer::btnFindClicked()

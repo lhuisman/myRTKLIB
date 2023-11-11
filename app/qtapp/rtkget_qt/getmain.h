@@ -24,36 +24,33 @@ class MainForm : public QWidget, public Ui::MainForm
 protected:
     void  closeEvent(QCloseEvent *);
 
-    void  FormCreate();
+    void  showEvent(QShowEvent*);
 
     void  dragEnterEvent(QDragEnterEvent *event);
     void  dropEvent(QDropEvent * event);
 
 public slots:
-    void  btnExitClicked();
     void  btnOptionsClicked();
     void  btnLogClicked();
     void  btnDownloadClicked();
-    void  dataTypeChanged();
     void  btnFileClicked();
     void  dataListClicked();
     void  btnDirClicked();
     void  localDirClicked();
     void  btnStationsClicked();
     void  btnKeywordClicked();
-    void  btnHelpClicked();
-    void  hidePasswordClicked();
-    void  TimerTimer();
+    void  btnAboutClicked();
+    void  busyTimerTriggered();
     void  btnTrayClicked();
     void  trayIconActivated(QSystemTrayIcon::ActivationReason);
     void  btnTestClicked();
-    void  StationListClicked();
     void  btnAllClicked();
-    void  directoryChanged();
     void  downloadFinished();
     void  btnTimeStartClicked();
     void  btnTimeStopClicked();
     void  updateEnable(void);
+    void  updateType(void);
+    void  updateMessage(void);
 
 private:
     QStringList types;
@@ -67,8 +64,6 @@ private:
 
     void  loadOptions(void);
     void  saveOptions(void);
-    void  updateType(void);
-    void  updateMessage(void);
     void  updateStationList(void);
     void  panelEnable(int ena);
     void  getTime(gtime_t *ts, gtime_t *te, double *ti);
@@ -94,7 +89,7 @@ public:
     int traceLevel;
     int logAppend;
     int timerCnt;
-    QTimer Timer;
+    QTimer busyTimer;
 
     explicit MainForm(QWidget* parent);
 };

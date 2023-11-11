@@ -20,7 +20,6 @@ protected:
     ViewerOptDialog *viewerOptDialog;
 
 public slots:
-    void btnCloseClicked();
     void btnReadClicked();
     void btnOptionsClicked();
     void btnReloadClicked();
@@ -32,7 +31,7 @@ private:
     void updateText(void);
 
 public:
-    int option;
+    int option;  // 0: disable file loading; 1(default): allow file loading; 2: switch to file saving
     static QColor colorText, colorBackground;
     static QFont font;
 

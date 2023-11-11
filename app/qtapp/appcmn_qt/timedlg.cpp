@@ -9,7 +9,7 @@ TimeDialog::TimeDialog(QWidget *parent)
 {
     setupUi(this);
 
-    connect(btnOk, SIGNAL(clicked(bool)), this, SLOT(close()));
+    connect(btnOk, &QPushButton::clicked, this, &TimeDialog::close);
 }
 //---------------------------------------------------------------------------
 void TimeDialog::showEvent(QShowEvent *event)

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>507</width>
-    <height>602</height>
+    <width>510</width>
+    <height>650</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -39,9 +39,6 @@
        <number>0</number>
       </property>
       <property name="bottomMargin">
-       <number>0</number>
-      </property>
-      <property name="spacing">
        <number>0</number>
       </property>
       <item row="0" column="0">
@@ -341,9 +338,6 @@
       <property name="bottomMargin">
        <number>0</number>
       </property>
-      <property name="spacing">
-       <number>0</number>
-      </property>
       <item row="0" column="5">
        <widget class="QCheckBox" name="R45">
         <property name="toolTip">
@@ -532,9 +526,6 @@
        <number>0</number>
       </property>
       <property name="bottomMargin">
-       <number>0</number>
-      </property>
-      <property name="spacing">
        <number>0</number>
       </property>
       <item row="0" column="0">
@@ -808,9 +799,6 @@
       <property name="bottomMargin">
        <number>0</number>
       </property>
-      <property name="spacing">
-       <number>0</number>
-      </property>
       <item row="0" column="9">
        <widget class="QCheckBox" name="J25">
         <property name="toolTip">
@@ -1080,9 +1068,6 @@
        <number>0</number>
       </property>
       <property name="bottomMargin">
-       <number>0</number>
-      </property>
-      <property name="spacing">
        <number>0</number>
       </property>
       <item row="1" column="6">
@@ -1418,9 +1403,6 @@
       <property name="bottomMargin">
        <number>0</number>
       </property>
-      <property name="spacing">
-       <number>0</number>
-      </property>
       <item row="1" column="2">
        <widget class="QCheckBox" name="I51">
         <property name="text">
@@ -1499,9 +1481,6 @@
        <number>0</number>
       </property>
       <property name="bottomMargin">
-       <number>0</number>
-      </property>
-      <property name="spacing">
        <number>0</number>
       </property>
       <item row="0" column="1">

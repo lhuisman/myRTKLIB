@@ -14,7 +14,7 @@ ConvOptDialog::ConvOptDialog(QWidget *parent)
 {
     setupUi(this);
 
-    codeOptDialog = new CodeOptDialog(this, this);
+    codeOptDialog = new CodeOptDialog(this);
     gloFcnDialog = new GloFcnDialog(this);
     freqDialog = new FreqDialog(this);
 
@@ -25,16 +25,14 @@ ConvOptDialog::ConvOptDialog(QWidget *parent)
     if (cmp <= 0) cBNavSys6->setEnabled(false);
     if (irn <= 0) cBNavSys7->setEnabled(false);
 
-    connect(btnCancel, SIGNAL(clicked(bool)), this, SLOT(reject()));
-    connect(btnOk, SIGNAL(clicked(bool)), this, SLOT(btnOkClicked()));
-    connect(btnMask, SIGNAL(clicked(bool)), this, SLOT(btnMaskClicked()));
-    connect(cBAutoPosition, SIGNAL(clicked(bool)), this, SLOT(autoPositionClicked()));
-    connect(cBRinexFilename, SIGNAL(clicked(bool)), this, SLOT(rinexFileClicked()));
-    connect(cBRinexVersion, SIGNAL(currentIndexChanged(int)), this, SLOT(rinexVersionChanged()));
-    connect(btnFcn, SIGNAL(clicked(bool)), this, SLOT(btnFcnClicked()));
-    connect(btnFrequencies, SIGNAL(clicked(bool)), this, SLOT(btnFreqClicked()));
-
-    updateEnable();
+    connect(btnCancel, &QPushButton::clicked, this, &ConvOptDialog::reject);
+    connect(btnOk, &QPushButton::clicked, this, &ConvOptDialog::btnOkClicked);
+    connect(btnMask, &QPushButton::clicked, this, &ConvOptDialog::btnMaskClicked);
+    connect(cBAutoPosition, &QCheckBox::clicked, this, &ConvOptDialog::updateEnable);
+    connect(cBRinexFilename, &QCheckBox::clicked, this, &ConvOptDialog::updateEnable);
+    connect(cBRinexVersion, &QComboBox::currentIndexChanged, this, &ConvOptDialog::updateEnable);
+    connect(btnFcn, &QPushButton::clicked, this, &ConvOptDialog::btnFcnClicked);
+    connect(btnFrequencies, &QPushButton::clicked, this, &ConvOptDialog::btnFreqClicked);
 }
 //---------------------------------------------------------------------------
 void ConvOptDialog::showEvent(QShowEvent *event)
@@ -65,7 +63,7 @@ void ConvOptDialog::showEvent(QShowEvent *event)
     lEComment1->setText(mainWindow->comment[1]);
     lEReceiverOptions->setText(mainWindow->receiverOptions);
 
-    for (int i = 0; i < 7; i++) codeMask[i] = mainWindow->modeMask[i];
+    for (int i = 0; i < 7; i++) codeMask[i] = mainWindow->codeMask[i];
 
     cBAutoPosition->setChecked(mainWindow->autoPosition);
     cBPhaseShift->setChecked(mainWindow->phaseShift);
@@ -73,9 +71,9 @@ void ConvOptDialog::showEvent(QShowEvent *event)
     cBOutputIonoCorr->setChecked(mainWindow->outputIonoCorr);
     cBOutputTimeCorr->setChecked(mainWindow->outputTimeCorr);
     cBOutputLeapSecs->setChecked(mainWindow->outputLeapSeconds);
-    gloFcnDialog->EnaGloFcn=mainWindow->enableGlonassFrequency;
-    for (int i=0;i<27;i++) {
-        gloFcnDialog->GloFcn[i]=mainWindow->glonassFrequency[i];
+    gloFcnDialog->enableGloFcn = mainWindow->enableGlonassFrequency;
+    for (int i = 0; i < 27; i++) {
+        gloFcnDialog->gloFcn[i] = mainWindow->glonassFrequency[i];
     }
 
     cBNavSys1->setChecked(mainWindow->navSys & SYS_GPS);
@@ -129,7 +127,7 @@ void ConvOptDialog::btnOkClicked()
     mainWindow->comment[1] = lEComment1->text();
     mainWindow->receiverOptions = lEReceiverOptions->text();
 
-    for (int i = 0; i < 7; i++) mainWindow->modeMask[i] = codeMask[i];
+    for (int i = 0; i < 7; i++) mainWindow->codeMask[i] = codeMask[i];
 
     mainWindow->autoPosition = cBAutoPosition->isChecked();
     mainWindow->phaseShift = cBPhaseShift->isChecked();
@@ -137,9 +135,9 @@ void ConvOptDialog::btnOkClicked()
     mainWindow->outputIonoCorr = cBOutputIonoCorr->isChecked();
     mainWindow->outputTimeCorr = cBOutputTimeCorr->isChecked();
     mainWindow->outputLeapSeconds = cBOutputLeapSecs->isChecked();
-    mainWindow->enableGlonassFrequency=gloFcnDialog->EnaGloFcn;
-    for (int i=0;i<27;i++) {
-        mainWindow->glonassFrequency[i]=gloFcnDialog->GloFcn[i];
+    mainWindow->enableGlonassFrequency=gloFcnDialog->enableGloFcn;
+    for (int i = 0; i < 27; i++) {
+        mainWindow->glonassFrequency[i] = gloFcnDialog->gloFcn[i];
     }
 
     int navsys = 0, obstype = 0, freqtype = 0;
@@ -174,20 +172,6 @@ void ConvOptDialog::btnOkClicked()
     accept();
 }
 //---------------------------------------------------------------------------
-void ConvOptDialog::rinexFileClicked()
-{
-    updateEnable();
-}
-//---------------------------------------------------------------------------
-void ConvOptDialog::rinexVersionChanged()
-{
-    updateEnable();
-}
-//---------------------------------------------------------------------------
-void ConvOptDialog::autoPositionClicked()
-{
-    updateEnable();
-}
 void ConvOptDialog::btnFreqClicked()
 {
     freqDialog->exec();
@@ -195,24 +179,28 @@ void ConvOptDialog::btnFreqClicked()
 //---------------------------------------------------------------------------
 void ConvOptDialog::btnMaskClicked()
 {
-    codeOptDialog->NavSys = 0;
-    codeOptDialog->FreqType = 0;
+    codeOptDialog->navSystem = 0;
+    codeOptDialog->frequencyType = 0;
+    
+    if (cBNavSys1->isChecked()) codeOptDialog->navSystem |= SYS_GPS;
+    if (cBNavSys2->isChecked()) codeOptDialog->navSystem |= SYS_GLO;
+    if (cBNavSys3->isChecked()) codeOptDialog->navSystem |= SYS_GAL;
+    if (cBNavSys4->isChecked()) codeOptDialog->navSystem |= SYS_QZS;
+    if (cBNavSys5->isChecked()) codeOptDialog->navSystem |= SYS_SBS;
+    if (cBNavSys6->isChecked()) codeOptDialog->navSystem |= SYS_CMP;
+    if (cBNavSys7->isChecked()) codeOptDialog->navSystem |= SYS_IRN;
+    
+    if (cBFreq1->isChecked()) codeOptDialog->frequencyType |= FREQTYPE_L1;
+    if (cBFreq2->isChecked()) codeOptDialog->frequencyType |= FREQTYPE_L2;
+    if (cBFreq3->isChecked()) codeOptDialog->frequencyType |= FREQTYPE_L3;
+    if (cBFreq4->isChecked()) codeOptDialog->frequencyType |= FREQTYPE_L4;
+    if (cBFreq5->isChecked()) codeOptDialog->frequencyType |= FREQTYPE_L5;
 
-    if (cBNavSys1->isChecked()) codeOptDialog->NavSys |= SYS_GPS;
-    if (cBNavSys2->isChecked()) codeOptDialog->NavSys |= SYS_GLO;
-    if (cBNavSys3->isChecked()) codeOptDialog->NavSys |= SYS_GAL;
-    if (cBNavSys4->isChecked()) codeOptDialog->NavSys |= SYS_QZS;
-    if (cBNavSys5->isChecked()) codeOptDialog->NavSys |= SYS_SBS;
-    if (cBNavSys6->isChecked()) codeOptDialog->NavSys |= SYS_CMP;
-    if (cBNavSys7->isChecked()) codeOptDialog->NavSys |= SYS_IRN;
-
-    if (cBFreq1->isChecked()) codeOptDialog->FreqType |= FREQTYPE_L1;
-    if (cBFreq2->isChecked()) codeOptDialog->FreqType |= FREQTYPE_L2;
-    if (cBFreq3->isChecked()) codeOptDialog->FreqType |= FREQTYPE_L3;
-    if (cBFreq4->isChecked()) codeOptDialog->FreqType |= FREQTYPE_L4;
-    if (cBFreq5->isChecked()) codeOptDialog->FreqType |= FREQTYPE_L5;
+    for (int i = 0; i < 7; i++) codeOptDialog->codeMask[i] = codeMask[i];
 
     codeOptDialog->show();
+
+    for (int i = 0; i < 7; i++) codeMask[i] = codeOptDialog->codeMask[i];
 }
 //---------------------------------------------------------------------------
 void ConvOptDialog::updateEnable(void)
@@ -220,17 +208,17 @@ void ConvOptDialog::updateEnable(void)
     sBApproxPosition0->setEnabled(cBAutoPosition->isChecked());
     sBApproxPosition1->setEnabled(cBAutoPosition->isChecked());
     sBApproxPosition2->setEnabled(cBAutoPosition->isChecked());
-    cBSeperateNavigation->setEnabled(cBRinexVersion->currentIndex()>=3);
+    cBSeperateNavigation->setEnabled(cBRinexVersion->currentIndex() >= 3);
     lbTimeTolerance->setEnabled(mainWindow->cBTimeInterval->isChecked());
     sBTimeTolerance->setEnabled(mainWindow->cBTimeInterval->isChecked());
-    cBNavSys3->setEnabled(cBRinexVersion->currentIndex()>=1);
-    cBNavSys4->setEnabled(cBRinexVersion->currentIndex()>=5);
-    cBNavSys6->setEnabled(cBRinexVersion->currentIndex()==2||cBRinexVersion->currentIndex()>=4);
-    cBNavSys7->setEnabled(cBRinexVersion->currentIndex()>=6);
-    cBFreq3->setEnabled(cBRinexVersion->currentIndex()>=1);
-    cBFreq4->setEnabled(cBRinexVersion->currentIndex()>=1);
-    cBFreq5->setEnabled(cBRinexVersion->currentIndex()>=1);
-    cBPhaseShift->setEnabled(cBRinexVersion->currentIndex()>=4);
+    cBNavSys3->setEnabled(cBRinexVersion->currentIndex() >= 1);
+    cBNavSys4->setEnabled(cBRinexVersion->currentIndex() >= 5);
+    cBNavSys6->setEnabled(cBRinexVersion->currentIndex() == 2 || cBRinexVersion->currentIndex() >= 4);
+    cBNavSys7->setEnabled(cBRinexVersion->currentIndex() >= 6);
+    cBFreq3->setEnabled(cBRinexVersion->currentIndex() >=1 );
+    cBFreq4->setEnabled(cBRinexVersion->currentIndex() >=1 );
+    cBFreq5->setEnabled(cBRinexVersion->currentIndex() >=1 );
+    cBPhaseShift->setEnabled(cBRinexVersion->currentIndex() >=4 );
 }
 //---------------------------------------------------------------------------
 void ConvOptDialog::btnFcnClicked()
