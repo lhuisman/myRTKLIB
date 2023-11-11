@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>643</width>
-    <height>612</height>
+    <width>668</width>
+    <height>538</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,23 +17,13 @@
    <string/>
   </property>
   <layout class="QGridLayout" name="gridLayout_10">
-   <item row="2" column="6" colspan="2">
-    <widget class="QPushButton" name="btnOk">
+   <item row="2" column="7">
+    <widget class="QPushButton" name="btnCancel">
      <property name="toolTip">
       <string/>
      </property>
      <property name="text">
-      <string>&amp;OK</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="1" colspan="2">
-    <widget class="QPushButton" name="btnLoad">
-     <property name="toolTip">
-      <string/>
-     </property>
-     <property name="text">
-      <string>&amp;Load...</string>
+      <string>&amp;Cancel</string>
      </property>
     </widget>
    </item>
@@ -47,76 +37,33 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="5" colspan="4">
-    <widget class="QWidget" name="widget" native="true">
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
-       <widget class="QLabel" name="Label87">
-        <property name="toolTip">
-         <string/>
-        </property>
-        <property name="text">
-         <string>a</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="Label5">
-        <property name="toolTip">
-         <string/>
-        </property>
-        <property name="text">
-         <string>Correction File</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="Label82">
-        <property name="toolTip">
-         <string/>
-        </property>
-        <property name="text">
-         <string>a</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="Label83">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="toolTip">
-         <string/>
-        </property>
-        <property name="text">
-         <string>b</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="Label86">
-        <property name="toolTip">
-         <string/>
-        </property>
-        <property name="text">
-         <string>b</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
+   <item row="2" column="1" colspan="2">
+    <widget class="QPushButton" name="btnLoad">
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="text">
+      <string>&amp;Load...</string>
+     </property>
     </widget>
    </item>
-   <item row="2" column="8">
-    <widget class="QPushButton" name="btnCancel">
+   <item row="2" column="6">
+    <widget class="QPushButton" name="BtnCancel">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
      <property name="toolTip">
       <string/>
      </property>
      <property name="text">
       <string>&amp;Cancel</string>
      </property>
+     <property name="flat">
+      <bool>false</bool>
+     </property>
     </widget>
    </item>
-   <item row="0" column="0" rowspan="2" colspan="9">
+   <item row="0" column="0" rowspan="2" colspan="8">
     <widget class="QTabWidget" name="Misc">
      <property name="toolTip">
       <string/>
@@ -249,6 +196,11 @@
          <item>
           <property name="text">
            <string>Static</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Static-Start</string>
           </property>
          </item>
          <item>
@@ -485,6 +437,11 @@
            <string>Combined</string>
           </property>
          </item>
+         <item>
+          <property name="text">
+           <string>Combined - no phase reset</string>
+          </property>
+         </item>
         </widget>
        </item>
        <item row="6" column="0">
@@ -680,7 +637,17 @@
          </item>
          <item>
           <property name="text">
-           <string>QZSS Broardcast</string>
+           <string>QZSS Broadcast</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>QZSS LEX</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Input TEC</string>
           </property>
          </item>
         </widget>
@@ -733,6 +700,11 @@
          <item>
           <property name="text">
            <string>Broadcast+SSR CoM</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>QZSS LEX</string>
           </property>
          </item>
         </widget>
@@ -819,7 +791,7 @@
           <string> m</string>
          </property>
          <property name="decimals">
-          <number>1</number>
+          <number>2</number>
          </property>
          <property name="maximum">
           <double>1000.000000000000000</double>
@@ -831,8 +803,11 @@
        </item>
        <item row="14" column="3" colspan="2">
         <widget class="QDoubleSpinBox" name="sBRejectPhase">
+         <property name="suffix">
+          <string>m</string>
+         </property>
          <property name="decimals">
-          <number>1</number>
+          <number>2</number>
          </property>
          <property name="maximum">
           <double>1000.000000000000000</double>
@@ -1112,7 +1087,7 @@
           <string/>
          </property>
          <property name="text">
-          <string>Reject Threshold of Code / Phase</string>
+          <string>Outlier Threshold for Code / Phase</string>
          </property>
         </widget>
        </item>
@@ -1896,7 +1871,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="../rtknavi_qt/rtknavi_qt.qrc">
+          <iconset>
            <normaloff>:/buttons/doc</normaloff>:/buttons/doc</iconset>
          </property>
          <property name="flat">
@@ -2355,7 +2330,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="../rtknavi_qt/rtknavi_qt.qrc">
+          <iconset>
            <normaloff>:/buttons/doc</normaloff>:/buttons/doc</iconset>
          </property>
          <property name="flat">
@@ -2372,7 +2347,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="../rtknavi_qt/rtknavi_qt.qrc">
+          <iconset>
            <normaloff>:/buttons/doc</normaloff>:/buttons/doc</iconset>
          </property>
          <property name="flat">
@@ -2447,7 +2422,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="../rtknavi_qt/rtknavi_qt.qrc">
+          <iconset>
            <normaloff>:/buttons/doc</normaloff>:/buttons/doc</iconset>
          </property>
          <property name="flat">
@@ -2488,7 +2463,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="../rtknavi_qt/rtknavi_qt.qrc">
+          <iconset>
            <normaloff>:/buttons/doc</normaloff>:/buttons/doc</iconset>
          </property>
          <property name="flat">
@@ -2529,7 +2504,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="../rtknavi_qt/rtknavi_qt.qrc">
+          <iconset>
            <normaloff>:/buttons/doc</normaloff>:/buttons/doc</iconset>
          </property>
          <property name="flat">
@@ -2882,6 +2857,16 @@
        </item>
       </layout>
      </widget>
+    </widget>
+   </item>
+   <item row="2" column="5">
+    <widget class="QPushButton" name="btnOk">
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="text">
+      <string>&amp;OK</string>
+     </property>
     </widget>
    </item>
   </layout>

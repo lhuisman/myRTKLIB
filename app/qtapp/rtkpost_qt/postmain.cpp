@@ -12,7 +12,7 @@
 //           -i file    ini file path
 //           -r file    rinex obs rover file
 //           -b file    rinex obs base station file
-//           -n file    rinex nav/clk, sp3, ionex or sp3 file
+//           -n file    rinex nav/clk, sp3, Bias-SINEX or ionex file
 //           -d dir     output directory
 //           -o file    output file
 //           -ts y/m/d h:m:s time start
@@ -436,7 +436,7 @@ void MainForm::btnPlotClicked()
     QString cmd1="rtkplot_qt",cmd2="../../../bin/rtkplot_qt";
     QStringList opts;
 
-    opts+=" \""+file+"\"";
+    opts += file;
 
     if (!execCommand(cmd1, opts, 1)&&!execCommand(cmd2, opts, 1)) {
         showMessage("error : rtkplot_qt execution");
@@ -485,15 +485,14 @@ void MainForm::btnExecClicked()
         showmsg("error : no output file");
         return;
     }
-    if (OutputFile_Text.contains(".obs",Qt::CaseInsensitive)||
-        OutputFile_Text.contains(".nav",Qt::CaseInsensitive)||
-        OutputFile_Text.contains(".gnav",Qt::CaseInsensitive)||
-        OutputFile_Text.contains(".gz",Qt::CaseInsensitive)||
-        OutputFile_Text.contains(".Z",Qt::CaseInsensitive)||
-        OutputFile_Text.contains(QRegularExpression(QStringLiteral(".??o"), QRegularExpression::CaseInsensitiveOption))||
-        OutputFile_Text.contains(QRegularExpression(QStringLiteral(".??d"), QRegularExpression::CaseInsensitiveOption))||
-        OutputFile_Text.contains(QRegularExpression(QStringLiteral(".??n"), QRegularExpression::CaseInsensitiveOption))||
-        OutputFile_Text.contains(QRegularExpression(QStringLiteral(".??g"), QRegularExpression::CaseInsensitiveOption))){
+    QFileInfo f = QFileInfo(OutputFile_Text);
+    if (f.suffix().contains(".obs",Qt::CaseInsensitive)||
+        f.suffix().contains(".rnx",Qt::CaseInsensitive)||
+        f.suffix().contains(".nav",Qt::CaseInsensitive)||
+        f.suffix().contains(".gnav",Qt::CaseInsensitive)||
+        f.suffix().contains(".gz",Qt::CaseInsensitive)||
+        f.suffix().contains(".Z",Qt::CaseInsensitive)||
+        f.suffix().contains(QRegularExpression(R"(\.\d\d[ondg])",QRegularExpression::CaseInsensitiveOption))) {
         showmsg("error : invalid extension of output file (%s)",qPrintable(OutputFile_Text));
         return;
     }
@@ -583,38 +582,38 @@ void MainForm::btnTimeStopClicked()
 // callback on button-inputfile-1 -------------------------------------------
 void MainForm::btnInputFile1Clicked()
 {
-    cBInputFile1->setCurrentText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this,tr("RINEX OBS (Rover) File"), cBInputFile1->currentText(),tr("All (*.*);;RINEX OBS (*.rnx *.obs *.*O *.*D)"))));
+    cBInputFile1->setCurrentText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("RINEX OBS (Rover) File"), cBInputFile1->currentText(), tr("All (*.*);;RINEX OBS (*.rnx *.obs *.*O *.*D)"))));
     setOutputFile();
 }
 // callback on button-inputfile-2 ------------------------------------------
 void MainForm::btnInputFile2Clicked()
 {
-    cBInputFile2->setCurrentText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this,tr("RINEX OBS (Base Station) File"),cBInputFile2->currentText(),tr("All (*.*);;RINEX OBS (*.rnx *.obs *.*O *.*D)"))));
+    cBInputFile2->setCurrentText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("RINEX OBS (Base Station) File"),cBInputFile2->currentText(), tr("All (*.*);;RINEX OBS (*.rnx *.obs *.*O *.*D)"))));
 }
 // callback on button-inputfile-3 -------------------------------------------
 void MainForm::btnInputFile3Clicked()
 {
-    cBInputFile3->setCurrentText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this,tr("RINEX NAV/CLK,SP3,FCB,IONEX or SBAS/EMS File"), cBInputFile3->currentText(),tr("All (*.*);;RINEX NAV (*.rnx *.*nav *.*N *.*P *.*G *.*H *.*Q)"))));
+    cBInputFile3->setCurrentText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("RINEX NAV/CLK,SP3,Bias-SINEX,IONEX or SBAS/EMS File"), cBInputFile3->currentText(), tr("All (*.*);;RINEX NAV (*.rnx *.*nav *.*N *.*P *.*G *.*H *.*Q)"))));
 }
 // callback on button-inputfile-4 -------------------------------------------
 void MainForm::btnInputFile4Clicked()
 {
-    cBInputFile4->setCurrentText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this,tr("RINEX NAV/CLK,SP3,FCB,IONEX or SBAS/EMS File"), cBInputFile4->currentText(),tr("All (*.*);;Precise Ephemeris/Clock (*.SP3 *.sp3 *.eph* *.clk*)"))));
+    cBInputFile4->setCurrentText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("RINEX NAV/CLK,SP3,Bias-SINEX,IONEX or SBAS/EMS File"), cBInputFile4->currentText(), tr("All (*.*);;Precise Ephemeris/Clock/Biases (*.SP3 *.sp3 *.eph* *.CLK *.clk* *.BIA)"))));
 }
 // callback on button-inputfile-5 -------------------------------------------
 void MainForm::btnInputFile5Clicked()
 {
-    cBInputFile5->setCurrentText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this,tr("RINEX NAV/CLK,SP3,FCB,IONEX or SBAS/EMS File"), cBInputFile5->currentText(),tr("All (*.*);;Precise Ephemeris/Clock (*.CLK *.sp3 *.eph* *.clk*)"))));
+    cBInputFile5->setCurrentText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("RINEX NAV/CLK,SP3,Bias-SINEX,IONEX or SBAS/EMS File"), cBInputFile5->currentText(), tr("All (*.*);;Precise Ephemeris/Clock/Biases (*.SP3 *.sp3 *.eph* *.CLK *.clk* *.BIA)"))));
 }
 // callback on button-inputfile-6 -------------------------------------------
 void MainForm::btnInputFile6Clicked()
 {
-    cBInputFile6->setCurrentText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this,tr("RINEX NAV/CLK,SP3,FCB,IONEX or SBAS/EMS File"), cBInputFile6->currentText(),tr("All (*.*);;FCB (*.fcb),IONEX (*.*i *.ionex),SBAS (*.sbs *.ems)"))));
+    cBInputFile6->setCurrentText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("RINEX NAV/CLK,SP3,Bias-SINEX,IONEX or SBAS/EMS File"), cBInputFile6->currentText(), tr("All (*.*);;Bias-SINEX (*.BIA *.BSX),IONEX (*.*i *.ionex),SBAS (*.sbs *.ems)"))));
 }
 // callback on button-outputfile --------------------------------------------
 void MainForm::btnOutputFileClicked()
 {
-    cBOutputFile->setCurrentText(QDir::toNativeSeparators(QFileDialog::getSaveFileName(this,tr("Output File"), cBOutputFile->currentText(),tr("All (*.*);;Position Files (*.pos)"))));
+    cBOutputFile->setCurrentText(QDir::toNativeSeparators(QFileDialog::getSaveFileName(this, tr("Output File"), cBOutputFile->currentText(), tr("All (*.*);;Position Files (*.pos)"))));
 }
 // callback on button-inputview-1 -------------------------------------------
 void MainForm::btnInputView1Clicked()
@@ -701,9 +700,7 @@ void MainForm::btnInputPlot1Clicked()
     if (files[2]=="") {
         if (obsToNav(files[0],navfile)) files[2]=navfile;
     }
-    opts << "-r";
-    for (int i=0;i<5;i++)
-            opts <<"\""+files[i]+"\"";
+    opts << "-r" << files[0] << files[2] << files[3] << files[4] << files[5];
 
     if (!execCommand(cmd1, opts,1)&&!execCommand(cmd2, opts,1)) {
         showMessage("error : rtkplot_qt execution");
@@ -733,9 +730,7 @@ void MainForm::btnInputPlot2Clicked()
     if (files[2]=="") {
         if (obsToNav(files[0],navfile)) files[2]=navfile;
     }
-    opts << "-r";
-    for (int i=0;i<5;i++)
-            opts <<"\""+files[i]+"\"";
+    opts << "-r" << files[1] << files[2] << files[3] << files[4] << files[5];
 
     if (!execCommand(cmd1, opts,1)&&!execCommand(cmd2, opts,1)) {
         showMessage("error : rtkplot_qt execution");
@@ -806,20 +801,24 @@ void MainForm::setOutputFile(void)
 
     if (cBInputFile1->currentText()=="") return;
 
-    ifile=InputFile1_Text;
-
-    if (cBOutputDirectoryEnable->isChecked()) {
-        QFileInfo f(ifile);
-        ofile=OutDir_Text+"/"+f.baseName();
+    if (cBOutputFile->currentText()=="") {
+      ifile=InputFile1_Text;
+      if (cBOutputDirectoryEnable->isChecked()) {
+          QFileInfo f(ifile);
+          ofile=OutDir_Text+"/"+f.baseName();
+      }
+      else {
+          QFileInfo f(ifile);
+          ofile=f.absolutePath()+"/"+f.baseName();
+      }
+      ofile+=solutionFormat==SOLF_NMEA?".nmea":".pos";
+      ofile.replace('*','0');
     }
     else {
-        QFileInfo f(ifile);
-        ofile=f.absolutePath()+"/"+f.baseName();
-    }
-    ofile+=solutionFormat==SOLF_NMEA?".nmea":".pos";
-    ofile.replace('*','0');
-
+      ofile=cBOutputFile->currentText();
+    };
     cBOutputFile->setCurrentText(QDir::toNativeSeparators(ofile));
+
 }
 // execute post-processing --------------------------------------------------
 void MainForm::execProcessing(void)
@@ -899,30 +898,29 @@ int MainForm::getOption(prcopt_t &prcopt, solopt_t &solopt,
     int sat,ex;
 
     // processing options
-    prcopt.mode     =positionMode;
-    prcopt.soltype  =solution;
-    prcopt.nf       =frequencies+1;
-    prcopt.navsys   =navigationSystems;
-    prcopt.elmin    =elevationMask*D2R;
-    prcopt.snrmask  =snrMask;
-    prcopt.sateph   =satelliteEphemeris;
-    prcopt.modear   =ambiguityResolutionGPS;
-    prcopt.glomodear=ambiguityResolutionGLO;
-    prcopt.bdsmodear=ambiguityResolutionBDS;
-    prcopt.maxout   =outputCntResetAmbiguity;
-    prcopt.minfix   =fixCntHoldAmbiguity;
-    prcopt.minlock  =LockCntFixAmbiguity;
-    prcopt.ionoopt  =ionosphereOption;
-    prcopt.tropopt  =troposphereOption;
-    prcopt.posopt[0]=positionOption[0];
-    prcopt.posopt[1]=positionOption[1];
-    prcopt.posopt[2]=positionOption[2];
-    prcopt.posopt[3]=positionOption[3];
-    prcopt.posopt[4]=positionOption[4];
-    prcopt.posopt[5]=positionOption[5];
-    prcopt.dynamics =positionMode==PMODE_KINEMA||
-                     positionMode==PMODE_PPP_KINEMA;
-    prcopt.tidecorr =tideCorrection;
+    prcopt.mode     = positionMode;
+    prcopt.soltype  = solution;
+    prcopt.nf       = frequencies+1;
+    prcopt.navsys   = navigationSystems;
+    prcopt.elmin    = elevationMask*D2R;
+    prcopt.snrmask  = snrMask;
+    prcopt.sateph   = satelliteEphemeris;
+    prcopt.modear   = ambiguityResolutionGPS;
+    prcopt.glomodear= ambiguityResolutionGLO;
+    prcopt.bdsmodear= ambiguityResolutionBDS;
+    prcopt.maxout   = outputCntResetAmbiguity;
+    prcopt.minfix   = fixCntHoldAmbiguity;
+    prcopt.minlock  = LockCntFixAmbiguity;
+    prcopt.ionoopt  = ionosphereOption;
+    prcopt.tropopt  = troposphereOption;
+    prcopt.posopt[0]= positionOption[0];
+    prcopt.posopt[1]= positionOption[1];
+    prcopt.posopt[2]= positionOption[2];
+    prcopt.posopt[3]= positionOption[3];
+    prcopt.posopt[4]= positionOption[4];
+    prcopt.posopt[5]= positionOption[5];
+    prcopt.dynamics = dynamicModel;
+    prcopt.tidecorr = tideCorrection;
     prcopt.armaxiter=ARIter;
     prcopt.niter    =numIter;
     prcopt.intpref  =intpolateReferenceObs;

@@ -266,7 +266,7 @@ void MainWindow::showEvent(QShowEvent *event)
     strinitcom();
 
     QCommandLineParser parser;
-    parser.setApplicationDescription("RTK Navi Qt");
+    parser.setApplicationDescription("RTK navi");
     parser.addHelpOption();
     parser.addVersionOption();
 

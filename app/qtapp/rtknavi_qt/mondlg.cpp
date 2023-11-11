@@ -719,7 +719,7 @@ void MonitorDialog::showSat()
 
     for (i = 0; i < MAXSAT; i++) for (j = 0; j < 2; j++)
             cbias[i][j] = rtksvr.nav.cbias[i][j][0];
-    pmode=rtksvr.rtk.opt.mode;
+    pmode=rtksvr.rtk.opt.mode;  //FIXME: unused
     nfreq=rtksvr.rtk.opt.nf;
 	rtksvrunlock(&rtksvr);
 

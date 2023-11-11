@@ -20,6 +20,7 @@ public slots:
     void compressClicked();
     void googleEarthFileChanged();
     void btnGoogleEarthFileClicked();
+    void btnGoogleEarthClick();
     void formatKMLClicked();
     void formatGPXClicked();
     void updateEnable(void);

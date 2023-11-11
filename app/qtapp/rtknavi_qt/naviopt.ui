@@ -355,6 +355,11 @@
          </item>
          <item>
           <property name="text">
+           <string>Static-Start</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
            <string>Moving-Base</string>
           </property>
          </item>

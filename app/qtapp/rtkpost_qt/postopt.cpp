@@ -20,7 +20,6 @@ OptDialog::OptDialog(QWidget *parent)
     : QDialog(parent)
 {
     setupUi(this);
-    widget->setVisible(false);
 
     int nglo = MAXPRNGLO, ngal = MAXPRNGAL, nqzs = MAXPRNQZS, ncmp = MAXPRNCMP;
     int nirn = MAXPRNIRN;
@@ -691,6 +690,7 @@ void OptDialog::loadOptions(const QString &file)
 	readAntennaList();
 	updateEnable();
 }
+
 //---------------------------------------------------------------------------
 void OptDialog::saveOptions(const QString &file)
 {
@@ -944,7 +944,7 @@ void OptDialog::getPosition(int type, QLineEdit **edit, double *pos)
         p[1] = edit[1]->text().toDouble() * D2R;
         p[2] = edit[2]->text().toDouble();
         pos2ecef(p, pos);
-	}
+  }
 }
 //---------------------------------------------------------------------------
 void OptDialog::setPosition(int type, QLineEdit **edit, double *pos)
@@ -970,17 +970,25 @@ void OptDialog::setPosition(int type, QLineEdit **edit, double *pos)
         edit[0]->setText(QString::number(p[0] * R2D, 'f', 9));
         edit[1]->setText(QString::number(p[1] * R2D, 'f', 9));
         edit[2]->setText(QString::number(p[2], 'f', 4));
-	}
+  }
 }
 //---------------------------------------------------------------------------
 void OptDialog::readAntennaList(void)
 {
     QString AntPcvFile_Text = lEAntennaPcvFile->text();
     pcvs_t pcvs = { 0, 0, 0 };
-	char *p;
+    char *p;
+    QString RovAnt_Text, RefAnt_Text;
+    int i;
 
     if (!readpcv(qPrintable(AntPcvFile_Text), &pcvs)) return;
 
+    /* Save currently defined antennas */
+
+    RovAnt_Text = cBRoverAntenna->currentText();
+    RefAnt_Text = cBReferenceAntenna->currentText();
+
+    /* Clear and add antennas from ANTEX file */
     cBRoverAntenna->clear();
     cBReferenceAntenna->clear();
 
@@ -988,14 +996,21 @@ void OptDialog::readAntennaList(void)
     cBRoverAntenna->addItem("*"); cBReferenceAntenna->addItem("*");
 
     for (int i = 0; i < pcvs.n; i++) {
-		if (pcvs.pcv[i].sat) continue;
+    if (pcvs.pcv[i].sat) continue;
         if ((p = strchr(pcvs.pcv[i].type, ' '))) *p = '\0';
         if (i > 0 && !strcmp(pcvs.pcv[i].type, pcvs.pcv[i - 1].type)) continue;
         cBRoverAntenna->addItem(pcvs.pcv[i].type);
         cBReferenceAntenna->addItem(pcvs.pcv[i].type);
     }
 
-	free(pcvs.pcv);
+    /* Restore previously defined antennas */
+
+    i = cBRoverAntenna->findText(RovAnt_Text);
+    cBRoverAntenna->setCurrentIndex(i==-1? 0:i);
+    i = cBReferenceAntenna->findText(RefAnt_Text);
+    cBReferenceAntenna->setCurrentIndex(i==-1? 0:i);
+
+    free(pcvs.pcv);
 }
 //---------------------------------------------------------------------------
 void OptDialog::btnHelpClicked()

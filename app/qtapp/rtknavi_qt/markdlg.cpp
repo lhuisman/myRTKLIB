@@ -39,8 +39,8 @@ void QMarkDialog::btnCancelClicked()
 //---------------------------------------------------------------------------
 void QMarkDialog::btnOkClicked()
 {
-    QString marker = cBMarkerName->currentText();
-    QString comment = lEMarkerComment->text();
+    QString mrkr = cBMarkerName->currentText();
+    QString cmnt = lEMarkerComment->text();
     char str2[1024];
 
     if (rBGo->isChecked()) {
@@ -62,13 +62,13 @@ void QMarkDialog::btnOkClicked()
         }
     }
     if (cBMarkerNameC->isChecked()) {
-        reppath(qPrintable(marker), str2, utc2gpst(timeget()), qPrintable(QString("%1").arg(nMark, 3, 10, QChar('0'))), "");
-        rtksvrmark(&rtksvr, str2, qPrintable(comment));
+        reppath(qPrintable(mrkr), str2, utc2gpst(timeget()), qPrintable(QString("%1").arg(nMark, 3, 10, QChar('0'))), "");
+        rtksvrmark(&rtksvr, str2, qPrintable(cmnt));
         nMark++;
         Label1->setText(QString("%%r=%1").arg(nMark, 3, 10, QLatin1Char('0')));
 	}
-    marker = marker;
-    comment = comment;
+    marker = mrkr;
+    comment = cmnt;
 }
 //---------------------------------------------------------------------------
 void QMarkDialog::showEvent(QShowEvent *event)

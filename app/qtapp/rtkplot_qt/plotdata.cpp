@@ -17,7 +17,7 @@
 #include "mapoptdlg.h"
 #include "pntdlg.h"
 
-#define MAX_SIMOBS   16384              // max genrated obs epochs
+#define MAX_SIMOBS   16384              // max generated obs epochs
 #define MAX_SKYIMG_R 2048               // max size of resampled sky image
 
 static char path_str[MAXNFILE][1024];

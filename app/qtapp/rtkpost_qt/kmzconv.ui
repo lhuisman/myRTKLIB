@@ -487,6 +487,17 @@
        <number>0</number>
       </property>
       <item>
+       <widget class="QPushButton" name="btnGoogleEarth">
+        <property name="text">
+         <string>&amp;Google Earth</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>:/buttons/gearth</normaloff>:/buttons/gearth</iconset>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="btnView">
         <property name="text">
          <string>&amp;View....</string>

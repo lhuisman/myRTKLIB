@@ -1,5 +1,4 @@
 //---------------------------------------------------------------------------
-#include <stdio.h>
 #include <string.h>
 
 #include "postmain.h"
@@ -37,6 +36,7 @@ ConvDialog::ConvDialog(QWidget *parent)
     connect(btnConvert, SIGNAL(clicked(bool)), this, SLOT(btnConvertClicked()));
     connect(btnGoogleEarthFile, SIGNAL(clicked(bool)), this, SLOT(btnGoogleEarthFileClicked()));
     connect(btnView, SIGNAL(clicked(bool)), this, SLOT(btnViewClicked()));
+    connect(btnGoogleEarth, SIGNAL(clicked(bool)), this, SLOT(BtnGoogleEarthClick()));
     connect(cBAddOffset, SIGNAL(clicked(bool)), this, SLOT(updateEnable()));
     connect(cBTimeSpan, SIGNAL(clicked(bool)), this, SLOT(updateEnable()));
     connect(sBTimeInterval, SIGNAL(valueChanged(double)), this, SLOT(updateEnable()));
@@ -91,7 +91,7 @@ void ConvDialog::btnConvertClicked()
         QDateTime end(dateTimeStop->dateTime());
         ts.time = start.toSecsSinceEpoch(); ts.sec = start.time().msec() / 1000;
         te.time = end.toSecsSinceEpoch(); te.sec = end.time().msec() / 1000;
-	}
+  }
 
     if (cBAddOffset->isChecked()) {
         offset[0] = sBOffset1->value();
@@ -168,6 +168,7 @@ void ConvDialog::updateEnable(void)
     cBCompress->setVisible(rBFormatKML->isChecked());
     lEGoogleEarthFile->setEnabled(rBFormatKML->isChecked());
     btnGoogleEarthFile->setEnabled(rBFormatKML->isChecked());
+    btnGoogleEarth->setEnabled(rBFormatKML->isChecked());
 
     cBCompress->setEnabled(false);
 #ifdef Q_OS_WIN
@@ -212,6 +213,21 @@ void ConvDialog::btnGoogleEarthFileClicked()
     lEGoogleEarthFile->setText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("Google Earth Exe File"))));
 }
 //---------------------------------------------------------------------------
+void ConvDialog::btnGoogleEarthClick()
+{
+
+    QString cmd;
+    QStringList opt;
+
+    cmd = lEGoogleEarthFile->text();
+    opt << lEOutputFile->text();
+
+    if (!ExecCommand(cmd, opt))
+        showMessage(tr("error : Google Earth execution"));
+
+    return;
+
+}
 void ConvDialog::formatKMLClicked()
 {
     updateOutputFile();
