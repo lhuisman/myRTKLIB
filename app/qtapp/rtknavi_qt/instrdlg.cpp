@@ -306,9 +306,9 @@ void InputStrDialog::btnReceiverOptions3Click()
 //---------------------------------------------------------------------------
 void InputStrDialog::btnPositionClicked()
 {
-    refDialog->RoverPosition[0] = sBNmeaPosition1->value();
-    refDialog->RoverPosition[1] = sBNmeaPosition2->value();
-    refDialog->RoverPosition[2] = sBNmeaPosition3->value();
+    refDialog->roverPosition[0] = sBNmeaPosition1->value();
+    refDialog->roverPosition[1] = sBNmeaPosition2->value();
+    refDialog->roverPosition[2] = sBNmeaPosition3->value();
     refDialog->stationPositionFile = mainForm->stationPositionFileF;
 
     refDialog->exec();

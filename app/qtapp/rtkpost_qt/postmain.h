@@ -32,13 +32,13 @@ public:
     double ti, tu;
     int n, stat;
     char *infile[6], outfile[1024];
-    char *rov, *base;
+    QString rov, base;
 
     explicit ProcessingThread(QObject *parent);
     ~ProcessingThread();
 
     void addInput(const QString &);
-    void addList(char * &sta, const QString & list);
+    static QString toList(const QString & list);
 
 protected:
     void run();
@@ -59,7 +59,6 @@ public slots:
     void btnOptionClicked();
     void btnExecClicked();
     void btnAbortClicked();
-    void btnExitClicked();
     void btnAboutClicked();
 	
     void btnTimeStartClicked();
@@ -80,20 +79,12 @@ public slots:
     void btnInputPlot1Clicked();
     void btnInputPlot2Clicked();
     void btnKeywordClicked();
-	
-    void timeStartClicked();
-    void timeEndClicked();
-    void timeIntervalFClicked();
-    void timeUnitFClicked();
-	
-    void inputFile1Changed();
+		
     void outputDirectoryEnableClicked();
     void btnOutputDirectoryClicked();
-    void outputDirectoryChanged();
     void btnInputFile6Clicked();
     void btnInputView6Clicked();
 
-    void formCreate();
     void processingFinished(int);
     void showMessage(const QString  &msg);
 
@@ -107,6 +98,8 @@ private:
     OptDialog  *optDialog;
     ConvDialog *convDialog;
     TextViewer *textViewer;
+
+    ProcessingThread *processingThread;
 
     void execProcessing (void);
     int  getOption(prcopt_t &prcopt, solopt_t &solopt, filopt_t &filopt);
@@ -133,7 +126,8 @@ public:
 	
     // options
     int positionMode, frequencies, solution, dynamicModel, ionosphereOption, troposphereOption, receiverBiasEstimation;
-    int ARIter, numIter, codeSmooth, tideCorrection;
+    int ARIter, minFixSats, minHoldSats, minDropSats, ARFilter;
+    int numIter, codeSmooth, tideCorrection;
     int outputCntResetAmbiguity, fixCntHoldAmbiguity, LockCntFixAmbiguity, roverPositionType, referencePositionType;
     int satelliteEphemeris, navigationSystems;
     int roverAntennaPcv, referenceAntennaPcv, ambiguityResolutionGPS, ambiguityResolutionGLO, ambiguityResolutionBDS;
@@ -143,12 +137,13 @@ public:
     int sbasCorrection, sbasCorrection1, sbasCorrection2, sbasCorrection3, sbasCorrection4, timeDecimal;
     int solutionStatic, sbasSat, mapFunction;
     int positionOption[6];
-    double elevationMask, maxAgeDiff, rejectPhase, rejectCode;
-    double measurementErrorR1, measurementErrorR2, measurementError2, measurementError3, measurementError4, measurementError5;
+    double elevationMask, maxAgeDiff, varHoldAmb, gainHoldAmb, rejectPhase, rejectCode;
+    double measurementErrorR1, measurementErrorR2, measurementErrorR5, measurementError2, measurementError3, measurementError4, measurementError5;
+    double measurementError6, measurementError7, measurementError8;
     double satelliteClockStability, roverAntennaE, roverAntennaN, roverAntennaU, referenceAntennaE, referenceAntennaN, referenceAntennaU;
     double processNoise1, processNoise2, processNoise3, processNoise4, processNoise5;
-    double validThresAR, elevationMaskAR, elevationMaskHold, slipThres;
-    double thresAR2, thresAR3;
+    double validThresAR, elevationMaskAR, elevationMaskHold, slipThreshold, dopplerThreshold;
+    double maxPositionVarAR, glonassHwBias, thresAR3, thresAR4, validThresARMin, validThresARMax;
     double roverPosition[3], referencePosition[3], baseLine[2];
     double maxSolutionStd;
     snrmask_t snrMask;

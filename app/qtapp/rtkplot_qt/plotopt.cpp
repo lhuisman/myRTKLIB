@@ -348,9 +348,9 @@ void PlotOptDialog::btnTLESatelliteFileClicked()
 //---------------------------------------------------------------------------
 void PlotOptDialog::btnReferencePositionClicked()
 {
-    refDialog->RoverPosition[0] = sBReferencePosition1->value();
-    refDialog->RoverPosition[1] = sBReferencePosition2->value();
-    refDialog->RoverPosition[2] = sBReferencePosition3->value();
+    refDialog->roverPosition[0] = sBReferencePosition1->value();
+    refDialog->roverPosition[1] = sBReferencePosition2->value();
+    refDialog->roverPosition[2] = sBReferencePosition3->value();
     refDialog->move(pos().x() + size().width() / 2 - refDialog->size().width() / 2,
             pos().y() + size().height() / 2 - refDialog->size().height() / 2);
     refDialog->options=1;

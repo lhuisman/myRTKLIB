@@ -343,7 +343,7 @@ void MonitorDialog::setRtk(void)
     tWConsole->setRowCount(56);
     tWConsole->setHorizontalHeaderLabels(header);
 
-    for (int i = 0; i < tWConsole->columnCount(); i++)
+    for (int i = 0; i < tWConsole->columnCount() & i < 2; i++)
         tWConsole->setColumnWidth(i, width[i] * fontScale / 96);
 }
 //---------------------------------------------------------------------------
@@ -397,7 +397,7 @@ void MonitorDialog::showRtk(void)
         time2str(rtksvr.nav.peph[ne - 1].time, s2, 0);
         time2str(rtksvr.ftime[2], s3, 0);
 	}
-    strcpy(file, rtksvr.files[2]);
+    strncpy(file, rtksvr.files[2], 1024);
 
 	rtksvrunlock(&rtksvr); // unlock
 
@@ -732,7 +732,7 @@ void MonitorDialog::showSat()
 
     for (i = 0, n = 1; i < MAXSAT; i++) {
         if (!(satsys(i + 1, NULL) & sys)) continue;
-        ssat = rtk.ssat + i;
+        ssat = rtk.ssat + i;  //FIXME: ssat never used
         if (cBSelectSatellites->currentIndex() == 1 && !vsat[i]) continue;
 		n++;
 	}
@@ -1315,7 +1315,7 @@ void MonitorDialog::setIonUtc(void)
 
     tWConsole->setColumnCount(2);
     tWConsole->setRowCount(1);
-    for (i = 0; i < tWConsole->columnCount(); i++)
+    for (i = 0; i < tWConsole->columnCount() & i < 2; i++)
         tWConsole->setColumnWidth(i, width[i] * fontScale / 96);
     tWConsole->setHorizontalHeaderLabels(header);
 }
@@ -1483,7 +1483,7 @@ void MonitorDialog::showStream(void)
         tWConsole->setItem(i, j++, new QTableWidgetItem(QString::number(stream[i].inr)));
         tWConsole->setItem(i, j++, new QTableWidgetItem(QString::number(stream[i].outb)));
         tWConsole->setItem(i, j++, new QTableWidgetItem(QString::number(stream[i].outr)));
-        strcpy(path, stream[i].path);
+        strncpy(path, stream[i].path, 1024);
         char *pp = path;
         if ((p = strchr(path, '@'))) {
             for (q = p - 1; q >= path; q--) if (*q == ':') break;
@@ -1518,18 +1518,18 @@ void MonitorDialog::showSbsMsg(void)
 {
 	sbsmsg_t msg[MAXSBSMSG];
     const QString content[] = {
-        tr("For Testing"),						    tr("PRN Mask"),				     tr("Fast Corrections"),	  tr("Fast Corrections"),
-        tr("Fast Corrections"),						    tr("Fast Corrections"),			     tr("Integrity Information"),
-        tr("Fast Correction Degradation Factor"),			    tr("GEO Navigation Message"),
-        tr("Degradation Parameters"),					    tr("WAAS Network Time/UTC Offset Parameters"),
-        tr("GEO Satellite Almanacs"),					    tr("Ionospheric Grid Point Masks"),
+        tr("For Testing"), tr("PRN Mask"), tr("Fast Corrections"), tr("Fast Corrections"),
+        tr("Fast Corrections"), tr("Fast Corrections"), tr("Integrity Information"),
+        tr("Fast Correction Degradation Factor"), tr("GEO Navigation Message"),
+        tr("Degradation Parameters"), tr("WAAS Network Time/UTC Offset Parameters"),
+        tr("GEO Satellite Almanacs"),  tr("Ionospheric Grid Point Masks"),
         tr("Mixed Fast Corrections/Long Term Satellite Error Corrections"),
-        tr("Long Term Satellite Error Corrections",			    "Ionospheric Delay Corrections"),
-        tr("WAAS Service Messages"),					    tr("Clock-Ephemeris Covariance Matrix Message"),
-        tr("Internal Test Message"),					    tr("Null Message"),
-        tr("QZSS: DC Report (JMA)","QZSS: DC Report (Other)"),
-        tr("QZSS: Monitoring Station Info","QZSS: PRN Mask"),
-        tr("QZSS: Data Issue Number","QZSS: DGPS Correction"),
+        tr("Long Term Satellite Error Corrections"), tr("Ionospheric Delay Corrections"),
+        tr("WAAS Service Messages"), tr("Clock-Ephemeris Covariance Matrix Message"),
+        tr("Internal Test Message"), tr("Null Message"),
+        tr("QZSS: DC Report (JMA)"), tr("QZSS: DC Report (Other)"),
+        tr("QZSS: Monitoring Station Info"), tr("QZSS: PRN Mask"),
+        tr("QZSS: Data Issue Number"), tr("QZSS: DGPS Correction"),
         tr("QZSS: Satellite Health"),
         ""
 	};
@@ -1731,7 +1731,7 @@ void MonitorDialog::setRtcm(void)
 
     tWConsole->setColumnCount(2);
     tWConsole->setRowCount(0);
-    for (i = 0; i < tWConsole->columnCount(); i++)
+    for (i = 0; i < tWConsole->columnCount() && i < 2; i++)
         tWConsole->setColumnWidth(i, width[i] * fontScale / 96);
     tWConsole->setHorizontalHeaderLabels(header);
 }

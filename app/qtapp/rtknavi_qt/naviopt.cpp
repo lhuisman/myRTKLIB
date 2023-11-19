@@ -232,12 +232,12 @@ void OptDialog::btnStationPositionFileClicked()
 void OptDialog::btnSnrMaskClicked()
 {
     MaskOptDialog maskOptDialog(this);
-
-    maskOptDialog.Mask = processOptions.snrmask;
+    
+    maskOptDialog.mask = processOptions.snrmask;
 
     maskOptDialog.exec();
     if (maskOptDialog.result() != QDialog::Accepted) return;
-    processOptions.snrmask = maskOptDialog.Mask;
+    processOptions.snrmask = maskOptDialog.mask;
 }
 //---------------------------------------------------------------------------
 void OptDialog::roverPositionTypePChanged(int)
@@ -271,9 +271,9 @@ void OptDialog::btnRoverPositionClicked()
 
     getPosition(cBRoverPositionTypeP->currentIndex(), edit, p);
     ecef2pos(p, posi);
-
-    refDialog.RoverPosition[0] = posi[0] * R2D;
-    refDialog.RoverPosition[1] = posi[1] * R2D;
+    
+    refDialog.roverPosition[0] = posi[0] * R2D;
+    refDialog.roverPosition[1] = posi[1] * R2D;
     refDialog.position[2] = posi[2];
     refDialog.stationPositionFile = lEStationPositionFile->text();
     refDialog.move(pos().x() + size().width() / 2 - refDialog.size().width() / 2,
@@ -298,9 +298,9 @@ void OptDialog::btnReferencePositionClicked()
 
     getPosition(cBReferencePositionTypeP->currentIndex(), edit, p);
     ecef2pos(p, posi);
-    refDialog.RoverPosition[0] = posi[0] * R2D;
-    refDialog.RoverPosition[1] = posi[1] * R2D;
-    refDialog.RoverPosition[2] = posi[2];
+    refDialog.roverPosition[0] = posi[0] * R2D;
+    refDialog.roverPosition[1] = posi[1] * R2D;
+    refDialog.roverPosition[2] = posi[2];
     refDialog.stationPositionFile = lEStationPositionFile->text();
     refDialog.move(pos().x() + size().width() / 2 - refDialog.size().width() / 2,
                pos().y() + size().height() / 2 - refDialog.size().height() / 2);

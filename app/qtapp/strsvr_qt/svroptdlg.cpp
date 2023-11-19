@@ -113,10 +113,10 @@ void SvrOptDialog::btnOkClicked()
 void SvrOptDialog::btnPosClicked()
 {
     RefDialog *refDialog = new RefDialog(this);
-
-    refDialog->RoverPosition[0] = sBAntennaPos1->value();
-    refDialog->RoverPosition[1] = sBAntennaPos2->value();
-    refDialog->RoverPosition[2] = sBAntennaPos3->value();
+    
+    refDialog->roverPosition[0] = sBAntennaPos1->value();
+    refDialog->roverPosition[1] = sBAntennaPos2->value();
+    refDialog->roverPosition[2] = sBAntennaPos3->value();
     refDialog->btnLoad->setEnabled(true);
     refDialog->stationPositionFile = stationPositionFile;
     refDialog->options = 1;

@@ -58,7 +58,7 @@ private:
     QStringList locals;
     QPixmap images[8];
     QSystemTrayIcon trayIcon;
-    DownloadThread *thread;
+    DownloadThread *processingThread;
     TextViewer *viewer;
     TimeDialog *timeDialog;
 

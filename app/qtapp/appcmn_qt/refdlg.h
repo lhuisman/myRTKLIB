@@ -31,7 +31,7 @@ private:
 public:
     QString stationPositionFile, stationId, stationName;
     int options, fontScale;
-    double position[3], RoverPosition[3];
+    double position[3], roverPosition[3];
 
     explicit RefDialog(QWidget* parent);
 };

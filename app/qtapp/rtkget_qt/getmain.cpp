@@ -291,21 +291,21 @@ void MainForm::btnTestClicked()
         abortf = 1;
         return;
     }
-
-    thread = new DownloadThread(this, TEST_FILE, false, true);
-    getTime(&thread->ts, &thread->te, &thread->ti);
-    thread->nurl = selectUrl(thread->urls);
-    if (timediff(thread->ts, thread->te) > 0.0 || thread->nurl <= 0) {
+    
+    processingThread = new DownloadThread(this, TEST_FILE, false, true);
+    getTime(&processingThread->ts, &processingThread->te, &processingThread->ti);
+    processingThread->nurl = selectUrl(processingThread->urls);
+    if (timediff(processingThread->ts, processingThread->te) > 0.0 || processingThread->nurl <= 0) {
         messageLabel3->setText(tr("no local data"));
         return;
     }
-
-    thread->nsta = selectStation(thread->stas);
-    thread->columnCnt = columnCnt;
-    thread->dateFormat = dateFormat;
+    
+    processingThread->nsta = selectStation(processingThread->stas);
+    processingThread->columnCnt = columnCnt;
+    processingThread->dateFormat = dateFormat;
 
     if (cBLocalDirectory->isChecked())
-        strncpy(thread->dir, qPrintable(cBDirectory->currentText()), 1024);
+        strncpy(processingThread->dir, qPrintable(cBDirectory->currentText()), 1024);
 
     panelEnable(0);
 
@@ -314,10 +314,10 @@ void MainForm::btnTestClicked()
     messageLabel1->setStyleSheet("QLabel { color: gray;}");
     messageLabel3->setText("");
     abortf = 0;
-
-    connect(thread, &QThread::finished, this, &MainForm::downloadFinished);
-
-    thread->start();
+    
+    connect(processingThread, &QThread::finished, this, &MainForm::downloadFinished);
+    
+    processingThread->start();
 }
 //---------------------------------------------------------------------------
 void MainForm::btnOptionsClicked()
@@ -345,50 +345,50 @@ void MainForm::btnDownloadClicked()
         abortf = 1;
         return;
     }
-
-    thread = new DownloadThread(this, logFile, logAppend, false);
-    getTime(&thread->ts, &thread->te, &thread->ti);
+    
+    processingThread = new DownloadThread(this, logFile, logAppend, false);
+    getTime(&processingThread->ts, &processingThread->te, &processingThread->ti);
 
     str = lENumber->text();
     QStringList tokens = str.split('-');
     if (tokens.size() == 2) {
-        thread->seqnos = tokens.at(0).toInt();
-        thread->seqnoe = tokens.at(1).toInt();
+        processingThread->seqnos = tokens.at(0).toInt();
+        processingThread->seqnoe = tokens.at(1).toInt();
     } else if (tokens.size() == 1) {
-        thread->seqnos = thread->seqnoe = tokens.at(0).toInt();
+        processingThread->seqnos = processingThread->seqnoe = tokens.at(0).toInt();
     } else {
         return;
     }
-
-    thread->nurl = selectUrl(thread->urls);
-    if (timediff(thread->ts, thread->te) > 0.0 || thread->nurl <= 0) {
+    
+    processingThread->nurl = selectUrl(processingThread->urls);
+    if (timediff(processingThread->ts, processingThread->te) > 0.0 || processingThread->nurl <= 0) {
         messageLabel3->setText(tr("no download data"));
         return;
     }
-
-    thread->nsta = selectStation(thread->stas);
-    thread->usr = lEFtpLogin->text();
-    thread->pwd = lEFtpPasswd->text();
-    thread->proxy = proxyAddr;
-
-    if (!cBSkipExist->isChecked()) thread->opts |= DLOPT_FORCE;
-    if (!cBUnzip->isChecked()) thread->opts |= DLOPT_KEEPCMP;
-    if (holdErr) thread->opts |= DLOPT_HOLDERR;
-    if (holdList) thread->opts |= DLOPT_HOLDLST;
+    
+    processingThread->nsta = selectStation(processingThread->stas);
+    processingThread->usr = lEFtpLogin->text();
+    processingThread->pwd = lEFtpPasswd->text();
+    processingThread->proxy = proxyAddr;
+    
+    if (!cBSkipExist->isChecked()) processingThread->opts |= DLOPT_FORCE;
+    if (!cBUnzip->isChecked()) processingThread->opts |= DLOPT_KEEPCMP;
+    if (holdErr) processingThread->opts |= DLOPT_HOLDERR;
+    if (holdList) processingThread->opts |= DLOPT_HOLDLST;
 
     if (cBLocalDirectory->isChecked())
-        strncpy(thread->dir, qPrintable(cBDirectory->currentText()), 1024);
+        strncpy(processingThread->dir, qPrintable(cBDirectory->currentText()), 1024);
     abortf = 0;
     panelEnable(0);
     btnDownload->setEnabled(true);
     btnDownload->setText(tr("Abort"));
     messageLabel3->setText("");
-
-    connect(thread, &QThread::finished, this, &MainForm::downloadFinished);
+    
+    connect(processingThread, &QThread::finished, this, &MainForm::downloadFinished);
 
     busyTimer.start(200);
-
-    thread->start();
+    
+    processingThread->start();
 }
 //---------------------------------------------------------------------------
 void MainForm::downloadFinished()
@@ -400,8 +400,8 @@ void MainForm::downloadFinished()
 
     if (cBDirectory->isEnabled())
         addHistory(cBDirectory);
-
-    if (thread->test) {
+    
+    if (processingThread->test) {
         btnTest->setText(tr("&Test..."));
         messageLabel1->setStyleSheet("QLabel { color: bloack;}");
         messageLabel3->setText("");
@@ -417,13 +417,13 @@ void MainForm::downloadFinished()
         remove(TEST_FILE);
     } else {
         btnDownload->setText(tr("&Download"));
-        messageLabel3->setText(thread->msg);
+        messageLabel3->setText(processingThread->msg);
     }
 
     updateMessage();
     updateEnable();
-
-    delete thread;
+    
+    delete processingThread;
 }
 
 //---------------------------------------------------------------------------

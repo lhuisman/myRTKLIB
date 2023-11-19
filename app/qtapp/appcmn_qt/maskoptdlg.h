@@ -17,13 +17,10 @@ protected:
 
 public slots:
     void  btnOkClicked();
-    void  maskEnabledClicked();
-
-private:
     void  updateEnable(void);
 
 public:
-	snrmask_t Mask;
+    snrmask_t mask;
     explicit MaskOptDialog(QWidget* parent);
 };
 //---------------------------------------------------------------------------

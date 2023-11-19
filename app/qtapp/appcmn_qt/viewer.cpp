@@ -1,7 +1,5 @@
 //---------------------------------------------------------------------------
 // ported to Qt by Jens Reimann
-#include <stdio.h>
-
 #include <QShowEvent>
 #include <QFileDialog>
 #include <QPalette>

@@ -38,16 +38,12 @@ public slots:
     void btnDCBViewClicked();
     void btnDCBFileClicked();
     void btnHelpClicked();
-    void extEna0Clicked();
-    void extEna1Clicked();
-    void extEna2Clicked();
     void btnBLQFileViewClicked();
     void btnBLQFileClicked();
     void btnEOPFileClicked();
     void btnEOPViewClicked();
     void btnFrequenciesClicked();
     void btnMaskClicked();
-    void NavSys6Click();
     void updateEnable();
 
 protected:
@@ -57,7 +53,7 @@ protected:
 private:
 
     snrmask_t snrMask;
-    int roverPositionType, ReferencePositionType;
+    int roverPositionType, referencePositionType;
 
     void getOptions(void);
     void setOptions(void);

@@ -1,7 +1,5 @@
 //---------------------------------------------------------------------------
 // ported to Qt by Jens Reimann
-#include <stdio.h>
-
 #include <QShowEvent>
 #include <QScreen>
 #include <QLabel>
@@ -19,7 +17,7 @@ RefDialog::RefDialog(QWidget *parent)
 {
     setupUi(this);
     options = 0;
-    position[0] = position[1] = position[2] = RoverPosition[0] = RoverPosition[1] = RoverPosition[2] = 0.0;
+    position[0] = position[1] = position[2] = roverPosition[0] = roverPosition[1] = roverPosition[2] = 0.0;
 
     connect(tWStationList, &QTableWidget::cellDoubleClicked, this, &RefDialog::stationListDblClick);
     connect(btnOK, &QPushButton::clicked, this, &RefDialog::btnOKClicked);
@@ -213,7 +211,7 @@ void RefDialog::updateDistances(void)
     double pos[3], ru[3], rr[3];
     bool ok;
 
-    matcpy(pos, RoverPosition, 3, 1);
+    matcpy(pos, roverPosition, 3, 1);
 
     if (norm(pos, 3) <= 0.0) return;
 

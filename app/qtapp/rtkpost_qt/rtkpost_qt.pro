@@ -11,13 +11,15 @@ include(../qtapp.pri)
 TARGET = rtkpost_qt
 TEMPLATE = app
 
-INCLUDEPATH += ../../../src/ ../appcmn_qt
+INCLUDEPATH += ../../../src/ ../appcmn_qt ../widgets_qt
 
-SOURCES += \ 
+SOURCES += \
     kmzconv.cpp \
     postmain.cpp \
     postopt.cpp \
     rtkpost.cpp \
+    ../widgets_qt/scientificspinbox.cpp \
+    ../widgets_qt/filelineedit.cpp \
     ../appcmn_qt/aboutdlg.cpp \
     ../appcmn_qt/freqdlg.cpp \
     ../appcmn_qt/keydlg.cpp \
@@ -27,10 +29,12 @@ SOURCES += \
     ../appcmn_qt/vieweropt.cpp \
     ../appcmn_qt/timedlg.cpp
 
-HEADERS  += \ 
+HEADERS  += \
     kmzconv.h \
     postmain.h \
     postopt.h \
+    ../widgets_qt/scientificspinbox.h \
+    ../widgets_qt/filelineedit.h \
     ../appcmn_qt/keydlg.h \
     ../appcmn_qt/freqdlg.h \
     ../appcmn_qt/maskoptdlg.h \

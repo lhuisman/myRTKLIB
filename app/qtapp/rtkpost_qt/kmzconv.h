@@ -13,11 +13,9 @@ class ConvDialog : public QDialog, public Ui::ConvDialog
     Q_OBJECT
 
 public slots:
-    void btnCloseClicked();
     void btnConvertClicked();
     void btnViewClicked();
     void btnInputFileClicked();
-    void compressClicked();
     void googleEarthFileChanged();
     void btnGoogleEarthFileClicked();
     void btnGoogleEarthClick();
@@ -26,7 +24,7 @@ public slots:
     void updateEnable(void);
 
 private:
-    int ExecCommand(const QString &cmd, const QStringList &opt);
+    int execCommand(const QString &cmd, const QStringList &opt);
     void showMessage(const QString &msg);
     void updateOutputFile(void);
 
@@ -38,7 +36,7 @@ protected:
 public:
     explicit ConvDialog(QWidget *parent);
 
-    void SetInput(const QString &File);
+    void setInput(const QString &File);
 };
 //---------------------------------------------------------------------------
 #endif
