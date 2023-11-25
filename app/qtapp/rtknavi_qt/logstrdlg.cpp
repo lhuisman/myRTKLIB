@@ -5,9 +5,7 @@
 #include <QCompleter>
 #include <QFileSystemModel>
 
-#include "rtklib.h"
 #include "serioptdlg.h"
-#include "cmdoptdlg.h"
 #include "fileoptdlg.h"
 #include "tcpoptdlg.h"
 #include "logstrdlg.h"
@@ -31,21 +29,21 @@ LogStrDialog::LogStrDialog(QWidget *parent)
     lEFilePath2->setCompleter(fileCompleter);
     lEFilePath3->setCompleter(fileCompleter);
 
-    connect(btnCancel, SIGNAL(clicked(bool)), this, SLOT(reject()));
-    connect(btnOk, SIGNAL(clicked(bool)), this, SLOT(btnOkClicked()));
-    connect(btnFile1, SIGNAL(clicked(bool)), this, SLOT(btnFile1Clicked()));
-    connect(btnFile2, SIGNAL(clicked(bool)), this, SLOT(btnFile2Clicked()));
-    connect(btnFile3, SIGNAL(clicked(bool)), this, SLOT(btnFile3Clicked()));
-    connect(btnKey, SIGNAL(clicked(bool)), this, SLOT(btnKeyClicked()));
-    connect(btnStream1, SIGNAL(clicked(bool)), this, SLOT(btnStream1Click()));
-    connect(btnStream2, SIGNAL(clicked(bool)), this, SLOT(btnStream2Click()));
-    connect(btnStream3, SIGNAL(clicked(bool)), this, SLOT(btnStream3Clicked()));
-    connect(cBStream1, SIGNAL(currentIndexChanged(int)), this, SLOT(updateEnable()));
-    connect(cBStream2, SIGNAL(currentIndexChanged(int)), this, SLOT(updateEnable()));
-    connect(cBStream3, SIGNAL(currentIndexChanged(int)), this, SLOT(updateEnable()));
-    connect(cBStream1C, SIGNAL(clicked(bool)), this, SLOT(updateEnable()));
-    connect(cBStream2C, SIGNAL(clicked(bool)), this, SLOT(updateEnable()));
-    connect(cBStream3C, SIGNAL(clicked(bool)), this, SLOT(updateEnable()));
+    connect(btnCancel, &QPushButton::clicked, this, &LogStrDialog::reject);
+    connect(btnOk, &QPushButton::clicked, this, &LogStrDialog::btnOkClicked);
+    connect(btnFile1, &QPushButton::clicked, this, &LogStrDialog::btnFile1Clicked);
+    connect(btnFile2, &QPushButton::clicked, this, &LogStrDialog::btnFile2Clicked);
+    connect(btnFile3, &QPushButton::clicked, this, &LogStrDialog::btnFile3Clicked);
+    connect(btnKey, &QPushButton::clicked, this, &LogStrDialog::btnKeyClicked);
+    connect(btnStream1, &QPushButton::clicked, this, &LogStrDialog::btnStream1Clicked);
+    connect(btnStream2, &QPushButton::clicked, this, &LogStrDialog::btnStream2Clicked);
+    connect(btnStream3, &QPushButton::clicked, this, &LogStrDialog::btnStream3Clicked);
+    connect(cBStream1, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &LogStrDialog::updateEnable);
+    connect(cBStream2, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &LogStrDialog::updateEnable);
+    connect(cBStream3, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &LogStrDialog::updateEnable);
+    connect(cBStream1C, &QCheckBox::clicked, this, &LogStrDialog::updateEnable);
+    connect(cBStream2C, &QCheckBox::clicked, this, &LogStrDialog::updateEnable);
+    connect(cBStream3C, &QCheckBox::clicked, this, &LogStrDialog::updateEnable);
 
     cBSwapInterval->setValidator(new QDoubleValidator(this));
 }
@@ -53,10 +51,10 @@ LogStrDialog::LogStrDialog(QWidget *parent)
 void LogStrDialog::showEvent(QShowEvent *event)
 {
     if (event->spontaneous()) return;
-
-    cBStream1C->setChecked(streamC[0]);
-    cBStream2C->setChecked(streamC[1]);
-    cBStream3C->setChecked(streamC[2]);
+    
+    cBStream1C->setChecked(streamEnabled[0]);
+    cBStream2C->setChecked(streamEnabled[1]);
+    cBStream3C->setChecked(streamEnabled[2]);
     cBStream1->setCurrentIndex(stream[0]);
     cBStream2->setCurrentIndex(stream[1]);
     cBStream3->setCurrentIndex(stream[2]);
@@ -71,12 +69,12 @@ void LogStrDialog::showEvent(QShowEvent *event)
 //---------------------------------------------------------------------------
 void LogStrDialog::btnOkClicked()
 {
-    streamC [0] = cBStream1C->isChecked();
-    streamC [1] = cBStream2C->isChecked();
-    streamC [2] = cBStream3C->isChecked();
-    stream  [0] = cBStream1->currentIndex();
-    stream  [1] = cBStream2->currentIndex();
-    stream  [2] = cBStream3->currentIndex();
+    streamEnabled[0] = cBStream1C->isChecked();
+    streamEnabled[1] = cBStream2C->isChecked();
+    streamEnabled[2] = cBStream3C->isChecked();
+    stream[0] = cBStream1->currentIndex();
+    stream[1] = cBStream2->currentIndex();
+    stream[2] = cBStream3->currentIndex();
     paths[0][2] = setFilePath(lEFilePath1->text());
     paths[1][2] = setFilePath(lEFilePath2->text());
     paths[2][2] = setFilePath(lEFilePath3->text());
@@ -106,46 +104,42 @@ void LogStrDialog::btnKeyClicked()
     keyDialog->exec();
 }
 //---------------------------------------------------------------------------
-void LogStrDialog::btnStream1Click()
+void LogStrDialog::btnStream1Clicked()
 {
     switch (cBStream1->currentIndex()) {
-    case 0: serialOptions(0, 0); break;
-    case 1: tcpOptions(0, 1); break;
-    case 2: tcpOptions(0, 0); break;
-    case 3: tcpOptions(0, 2); break;
-    case 4: tcpOptions(0, 4); break;
+        case 0: serialOptions(0, 0); break;
+        case 1: tcpOptions(0, 1); break;
+        case 2: tcpOptions(0, 0); break;
+        case 3: tcpOptions(0, 2); break;
+        case 4: tcpOptions(0, 4); break;
     }
 }
 //---------------------------------------------------------------------------
-void LogStrDialog::btnStream2Click()
+void LogStrDialog::btnStream2Clicked()
 {
     switch (cBStream2->currentIndex()) {
-    case 0: serialOptions(1, 0); break;
-    case 1: tcpOptions(1, 1); break;
-    case 2: tcpOptions(1, 0); break;
-    case 3: tcpOptions(1, 2); break;
-    case 4: tcpOptions(0, 4); break;
+        case 0: serialOptions(1, 0); break;
+        case 1: tcpOptions(1, 1); break;
+        case 2: tcpOptions(1, 0); break;
+        case 3: tcpOptions(1, 2); break;
+        case 4: tcpOptions(0, 4); break;
 	}
 }
 //---------------------------------------------------------------------------
 void LogStrDialog::btnStream3Clicked()
 {
     switch (cBStream3->currentIndex()) {
-    case 0: serialOptions(2, 0); break;
-    case 1: tcpOptions(2, 1); break;
-    case 2: tcpOptions(2, 0); break;
-    case 3: tcpOptions(2, 2); break;
+        case 0: serialOptions(2, 0); break;
+        case 1: tcpOptions(2, 1); break;
+        case 2: tcpOptions(2, 0); break;
+        case 3: tcpOptions(2, 2); break;
     case 4: tcpOptions(0, 4); break;
     }
 }
 //---------------------------------------------------------------------------
 QString LogStrDialog::getFilePath(const QString &path)
 {
-    QString file;
-
-    file = path.mid(0, path.indexOf("::"));
-
-    return file;
+    return path.mid(0, path.indexOf("::"));
 }
 //---------------------------------------------------------------------------
 QString LogStrDialog::setFilePath(const QString &p)
@@ -188,11 +182,11 @@ void LogStrDialog::tcpOptions(int index, int opt)
 	}
 }
 //---------------------------------------------------------------------------
-void LogStrDialog::updateEnable(void)
+void LogStrDialog::updateEnable()
 {
     int ena = (cBStream1C->isChecked() && cBStream1->currentIndex() == 5) ||
-          (cBStream2C->isChecked() && cBStream2->currentIndex() == 5) ||
-          (cBStream3C->isChecked() && cBStream3->currentIndex() == 5);
+              (cBStream2C->isChecked() && cBStream2->currentIndex() == 5) ||
+              (cBStream3C->isChecked() && cBStream3->currentIndex() == 5);
 
     cBStream1->setEnabled(cBStream1C->isChecked());
     cBStream2->setEnabled(cBStream2C->isChecked());

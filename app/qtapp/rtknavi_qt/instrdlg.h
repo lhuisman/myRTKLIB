@@ -33,11 +33,11 @@ public slots:
     void  btnFile2Clicked();
     void  btnFile3Clicked();
     void  btnReceiverOptions1Clicked();
-    void  btnReceiverOptions2Click();
-    void  btnReceiverOptions3Click();
+    void  btnReceiverOptions2Clicked();
+    void  btnReceiverOptions3Clicked();
     void  btnOkClicked();
     void  btnPositionClicked();
-    void  updateEnable(void);
+    void  updateEnable();
 
 private:
     QString  getFilePath(const QString &path);
@@ -45,6 +45,8 @@ private:
     void  serialOptions(int index, int opt);
     void  tcpOptions(int index, int opt);
     void  ftpOptions(int index, int opt);
+    void showCommandDialog(int streamNo);
+    void showReceiverOptionDialog(int streamNo);
 
     CmdOptDialog *cmdOptDialog;
     RcvOptDialog *rcvOptDialog;
@@ -53,7 +55,7 @@ private:
     TcpOptDialog *tcpOptDialog;
     FtpOptDialog *ftpOptDialog;
 public:
-    bool streamC[3], timeTag;
+    bool streamEnabled[3], timeTag;
     int stream[3], format[3], commandEnable[3][3], commandEnableTcp[3][3];
     int nmeaReq, NReceivers, time64Bit;
     double nmeaPosition[3], maxBaseLine;

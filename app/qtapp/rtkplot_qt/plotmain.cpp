@@ -78,14 +78,13 @@
 #include "viewer.h"
 #include "vmapdlg.h"
 #include "fileseldlg.h"
+#include "helper.h"
 
 #define YLIM_AGE    10.0        // ylimit of age of differential
 #define YLIM_RATIO  20.0        // ylimit of ratio factor
 #define MAXSHAPEFILE 16             // max number of shape files
 
 static int RefreshTime = 100;    // update only every 100ms
-
-extern QString color2String(const QColor &c);
 
 extern "C" {
 extern void settime(gtime_t) {}
@@ -156,7 +155,7 @@ Plot::Plot(QWidget *parent) : QMainWindow(parent)
 
     for (int i = 0; i < 3; i++) {
         graphG[i] = new Graph(lblDisplay);
-        graphG[i]->xLPosition = 0;
+        graphG[i]->xLabelPosition = 0;
         graphG[i]->getLimits(xl, yl);
         graphG[i]->setLimits(xs, yl);
     }
@@ -1477,8 +1476,13 @@ void Plot::timeScrollbarChanged()
 // callback on mouse-down event ---------------------------------------------
 void Plot::mousePressEvent(QMouseEvent *event)
 {
+#if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
     X0 = lblDisplay->mapFromGlobal(event->globalPosition()).x();
     Y0 = lblDisplay->mapFromGlobal(event->globalPosition()).y();
+#else
+    X0 = lblDisplay->mapFromGlobal(event->globalPos()).x();
+    Y0 = lblDisplay->mapFromGlobal(event->globalPos()).y();
+#endif
     Xcent0 = Xcent;
 
     trace(3, "DispMouseDown: X=%d Y=%d\n", X0, Y0);
@@ -1500,12 +1504,19 @@ void Plot::mouseMove(QMouseEvent *event)
 {
     double dx, dy, dxs, dys;
 
+#if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
     if ((abs(lblDisplay->mapFromGlobal(event->globalPosition()).x() - Xn) < 1) &&
         (abs(lblDisplay->mapFromGlobal(event->globalPosition()).y() - Yn) < 1)) return;
 
     Xn = lblDisplay->mapFromGlobal(event->globalPosition()).x();
     Yn = lblDisplay->mapFromGlobal(event->globalPosition()).y();
+#else
+    if ((abs(lblDisplay->mapFromGlobal(event->globalPos()).x() - Xn) < 1) &&
+        (abs(lblDisplay->mapFromGlobal(event->globalPos()).y() - Yn) < 1)) return;
 
+    Xn = lblDisplay->mapFromGlobal(event->globalPos()).x();
+    Yn = lblDisplay->mapFromGlobal(event->globalPos()).y();
+#endif
     trace(4, "DispMouseMove: X=%d Y=%d\n", Xn, Yn);
 
     if (Drag == 0) {
@@ -1528,8 +1539,11 @@ void Plot::mouseMove(QMouseEvent *event)
 // callback on mouse-up event -----------------------------------------------
 void Plot::mouseReleaseEvent(QMouseEvent *event)
 {
+#if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
     trace(3, "DispMouseUp: X=%d Y=%d\n", lblDisplay->mapFromGlobal(event->globalPosition()).x(), lblDisplay->mapFromGlobal(event->globalPosition()).y());
-
+#else
+    trace(3, "DispMouseUp: X=%d Y=%d\n", lblDisplay->mapFromGlobal(event->globalPos()).x(), lblDisplay->mapFromGlobal(event->globalPos()).y());
+#endif
     Drag = 0;
     setCursor(Qt::ArrowCursor);
     refresh();

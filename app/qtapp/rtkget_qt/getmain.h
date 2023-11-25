@@ -48,9 +48,9 @@ public slots:
     void  downloadFinished();
     void  btnTimeStartClicked();
     void  btnTimeStopClicked();
-    void  updateEnable(void);
-    void  updateType(void);
-    void  updateMessage(void);
+    void  updateEnable();
+    void  updateType();
+    void  updateMessage();
 
 private:
     QStringList types;
@@ -62,9 +62,9 @@ private:
     TextViewer *viewer;
     TimeDialog *timeDialog;
 
-    void  loadOptions(void);
-    void  saveOptions(void);
-    void  updateStationList(void);
+    void  loadOptions();
+    void  saveOptions();
+    void  updateStationList();
     void  panelEnable(int ena);
     void  getTime(gtime_t *ts, gtime_t *te, double *ti);
     int   selectUrl(url_t *urls);

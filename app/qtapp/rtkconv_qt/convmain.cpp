@@ -134,8 +134,8 @@ MainWindow::MainWindow(QWidget *parent)
     outputDirectory->setCompleter(dirCompleter);
 
     btnAbort->setVisible(false);
-
-    connect(btnPlot, &QPushButton::clicked, this, &MainWindow::btnPlotClicked);
+    
+    connect(btnPlot, &QPushButton::clicked, this, &MainWindow::showRtkPlot);
     connect(btnConvert, &QPushButton::clicked, this, &MainWindow::convertFile);
     connect(btnOptions, &QPushButton::clicked, this, &MainWindow::btnOptionsClicked);
     connect(btnExit, &QPushButton::clicked, this, &MainWindow::close);
@@ -168,9 +168,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(cBTimeInterval, &QCheckBox::clicked, this, &MainWindow::updateEnable);
     connect(cBTimeUnit, &QCheckBox::clicked, this, &MainWindow::updateEnable);
     connect(outputDirectoryEnable, &QCheckBox::clicked, this, &MainWindow::outputDirrectoryEnableClicked);
-    connect(inputFile, &QComboBox::currentIndexChanged, this, &MainWindow::inputFileChanged);
+    connect(inputFile, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &MainWindow::inputFileChanged);
     connect(inputFile, &QComboBox::editTextChanged, this, &MainWindow::inputFileChanged);
-    connect(cBFormat, &QComboBox::currentIndexChanged, this, &MainWindow::updateEnable);
+    connect(cBFormat, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &MainWindow::updateEnable);
     connect(outputDirectory, &QLineEdit::editingFinished, this, &MainWindow::outputDirectoryChanged);
     connect(btnOutputDirectory, &QPushButton::clicked, this, &MainWindow::btnOutputDirrectoryClicked);
     connect(btnKey, &QPushButton::clicked, this, &MainWindow::btnKeyClicked);
@@ -332,7 +332,7 @@ void MainWindow::writeHistory(QSettings *ini, const QString &key, const QComboBo
         ini->setValue(QString("%1_%2").arg(key).arg(i, 3), combo->itemText(i));
 }
 // callback on button-plot --------------------------------------------------
-void MainWindow::btnPlotClicked()
+void MainWindow::showRtkPlot()
 {
     QString file1 = outputFile1->text();
     QString file2 = outputFile2->text();

@@ -39,7 +39,7 @@ ConvDialog::ConvDialog(QWidget *parent)
     connect(btnGoogleEarth, &QPushButton::clicked, this, &ConvDialog::btnGoogleEarthClick);
     connect(cBAddOffset, &QCheckBox::clicked, this, &ConvDialog::updateEnable);
     connect(cBTimeSpan, &QCheckBox::clicked, this, &ConvDialog::updateEnable);
-    connect(sBTimeInterval, &QDoubleSpinBox::valueChanged, this, &ConvDialog::updateEnable);
+    connect(sBTimeInterval, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, &ConvDialog::updateEnable);
     connect(lEInputFile, &QLineEdit::editingFinished, this, &ConvDialog::updateEnable);
     connect(cBCompress, &QCheckBox::clicked, this, &ConvDialog::updateOutputFile);
     connect(lEGoogleEarthFile, &QLineEdit::editingFinished, this, &ConvDialog::googleEarthFileChanged);
@@ -107,7 +107,7 @@ void ConvDialog::btnConvertClicked()
         if (cBCompress->isChecked()) {
             strncpy(kmlfile, file, 1020);
             if (!(p = strrchr(kmlfile, '.'))) p = kmlfile + strlen(kmlfile);
-            strncpy(p, ".kml", 4);
+            strncpy(p, ".kml", 5);
         }
         stat = convkml(file, cBCompress->isChecked() ? kmlfile : qPrintable(OutputFile_Text),
                    ts, te, tint, cBQFlags->currentIndex(), offset,
@@ -147,7 +147,7 @@ void ConvDialog::btnConvertClicked()
 }
 
 //---------------------------------------------------------------------------
-void ConvDialog::updateEnable(void)
+void ConvDialog::updateEnable()
 {
     sBOffset1->setEnabled(cBAddOffset->isChecked());
     sBOffset2->setEnabled(cBAddOffset->isChecked());
@@ -182,7 +182,7 @@ void ConvDialog::showMessage(const QString &msg)
     else lblMessage->setStyleSheet("QLabel {color : blue}");
 }
 //---------------------------------------------------------------------------
-void ConvDialog::updateOutputFile(void)
+void ConvDialog::updateOutputFile()
 {
     QString inputFile_Text = lEInputFile->text();
 

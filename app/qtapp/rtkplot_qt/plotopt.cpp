@@ -5,6 +5,7 @@
 #include "refdlg.h"
 #include "viewer.h"
 #include "rtklib.h"
+#include "helper.h"
 
 #include <QShowEvent>
 #include <QColorDialog>
@@ -14,8 +15,6 @@
 #include <QDebug>
 #include <QFileSystemModel>
 #include <QCompleter>
-
-QString color2String(const QColor &c);
 
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------

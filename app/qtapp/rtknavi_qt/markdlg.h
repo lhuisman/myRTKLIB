@@ -13,7 +13,6 @@ class QMarkDialog : public QDialog, private Ui::MarkDialog
 {
     Q_OBJECT
 public slots:
-    void btnCancelClicked();
     void btnOkClicked();
     void btnKeyDlgClicked();
     void btnPositionClicked();
@@ -26,7 +25,7 @@ private:
     KeyDialog *keyDialog;
 
 public:
-    QString marker, comment;
+    QString name, comment;
     int positionMode, nMark;
     double fixPosition[3];
 	

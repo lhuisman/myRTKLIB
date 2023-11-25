@@ -40,7 +40,7 @@
    <item row="1" column="7">
     <widget class="QPushButton" name="btnStream1">
      <property name="toolTip">
-      <string/>
+      <string>Select options for the first solution data stream</string>
      </property>
      <property name="text">
       <string>...</string>
@@ -50,7 +50,7 @@
    <item row="1" column="8" colspan="3">
     <widget class="QComboBox" name="cBFormat1">
      <property name="toolTip">
-      <string/>
+      <string>Select time and position format for data stream</string>
      </property>
      <item>
       <property name="text">
@@ -82,7 +82,7 @@
    <item row="2" column="7">
     <widget class="QPushButton" name="btnStream2">
      <property name="toolTip">
-      <string/>
+      <string>Select options for the second solution data stream</string>
      </property>
      <property name="text">
       <string>...</string>
@@ -92,7 +92,7 @@
    <item row="2" column="8" colspan="3">
     <widget class="QComboBox" name="cBFormat2">
      <property name="toolTip">
-      <string/>
+      <string>Select time and position format for data stream</string>
      </property>
      <item>
       <property name="text">
@@ -134,14 +134,14 @@
    <item row="4" column="0" colspan="10">
     <widget class="QLineEdit" name="lEFilePath1">
      <property name="toolTip">
-      <string/>
+      <string>Specify file name for first solution data stream</string>
      </property>
     </widget>
    </item>
    <item row="4" column="10">
     <widget class="QPushButton" name="btnFile1">
      <property name="toolTip">
-      <string/>
+      <string>Select file name for first solution data stream</string>
      </property>
      <property name="text">
       <string>...</string>
@@ -151,14 +151,14 @@
    <item row="5" column="0" colspan="10">
     <widget class="QLineEdit" name="lEFilePath2">
      <property name="toolTip">
-      <string/>
+      <string>Specify file name for second solution data stream</string>
      </property>
     </widget>
    </item>
    <item row="5" column="10">
     <widget class="QPushButton" name="btnFile2">
      <property name="toolTip">
-      <string/>
+      <string>Select file name for second solution data stream</string>
      </property>
      <property name="text">
       <string>...</string>
@@ -168,7 +168,7 @@
    <item row="6" column="0">
     <widget class="QCheckBox" name="cBTimeTag">
      <property name="toolTip">
-      <string/>
+      <string>Generate time-tags</string>
      </property>
      <property name="text">
       <string>Time-Tag</string>
@@ -188,10 +188,10 @@
    <item row="6" column="2" colspan="2">
     <widget class="QComboBox" name="cBSwapInterval">
      <property name="toolTip">
-      <string/>
+      <string>Select swap interval for output data. Use specific keys (see &quot;?&quot; button) in the file path to generate unique filenames.</string>
      </property>
      <property name="editable">
-      <bool>true</bool>
+      <bool>false</bool>
      </property>
      <item>
       <property name="text">
@@ -261,7 +261,7 @@
    <item row="6" column="6" colspan="3">
     <widget class="QPushButton" name="btnOk">
      <property name="toolTip">
-      <string/>
+      <string>Accept changes</string>
      </property>
      <property name="text">
       <string>&amp;OK</string>
@@ -277,7 +277,7 @@
    <item row="6" column="9" colspan="2">
     <widget class="QPushButton" name="btnCancel">
      <property name="toolTip">
-      <string/>
+      <string>Cancle</string>
      </property>
      <property name="text">
       <string>&amp;Cancel</string>
@@ -290,7 +290,7 @@
       <string/>
      </property>
      <property name="text">
-      <string>Option</string>
+      <string>Stream Option</string>
      </property>
     </widget>
    </item>
@@ -307,7 +307,7 @@
    <item row="2" column="0" colspan="2">
     <widget class="QCheckBox" name="cBStream2C">
      <property name="toolTip">
-      <string/>
+      <string>Enable second output stream for solution data</string>
      </property>
      <property name="text">
       <string>(5) Solution 2</string>
@@ -317,7 +317,7 @@
    <item row="2" column="2" colspan="5">
     <widget class="QComboBox" name="cBStream2">
      <property name="toolTip">
-      <string/>
+      <string>Select stream type for second solution output stream</string>
      </property>
      <item>
       <property name="text">
@@ -354,7 +354,7 @@
    <item row="1" column="0" colspan="2">
     <widget class="QCheckBox" name="cBStream1C">
      <property name="toolTip">
-      <string/>
+      <string>Enable first output stream for solution data</string>
      </property>
      <property name="text">
       <string>(4) Solution 1</string>
@@ -364,7 +364,7 @@
    <item row="1" column="2" colspan="5">
     <widget class="QComboBox" name="cBStream1">
      <property name="toolTip">
-      <string/>
+      <string>Select stream type for first solution output stream</string>
      </property>
      <item>
       <property name="text">

@@ -14,10 +14,10 @@ protected:
     void showEvent(QShowEvent *);
 
 public slots:
-    void btnOkClick();
+    void btnOkClicked();
 
 public:
-    QString Option;
+    QString options;
 
     explicit RcvOptDialog(QWidget* parent);
 };

@@ -59,7 +59,7 @@
          </sizepolicy>
         </property>
         <property name="toolTip">
-         <string/>
+         <string>Change the number of visible panels</string>
         </property>
         <property name="icon">
          <iconset resource="rtknavi_qt.qrc">
@@ -73,7 +73,7 @@
       <item>
        <widget class="QPushButton" name="btnTimeSys">
         <property name="toolTip">
-         <string/>
+         <string>Time system</string>
         </property>
         <property name="text">
          <string>GPST</string>
@@ -86,7 +86,7 @@
       <item>
        <widget class="QLabel" name="lblTime">
         <property name="toolTip">
-         <string/>
+         <string>Server time</string>
         </property>
         <property name="text">
          <string>2000/01/01 00:00:00.0</string>
@@ -148,7 +148,7 @@
             </sizepolicy>
            </property>
            <property name="toolTip">
-            <string>Input Streams</string>
+            <string>Define input streams</string>
            </property>
            <property name="text">
             <string>I</string>
@@ -176,7 +176,7 @@
             <item>
              <widget class="QLabel" name="lblStream1">
               <property name="toolTip">
-               <string/>
+               <string>Rover input stream</string>
               </property>
               <property name="frameShape">
                <enum>QFrame::Box</enum>
@@ -186,7 +186,7 @@
             <item>
              <widget class="QLabel" name="lblStream2">
               <property name="toolTip">
-               <string/>
+               <string>Base station input stream</string>
               </property>
               <property name="frameShape">
                <enum>QFrame::Box</enum>
@@ -196,7 +196,7 @@
             <item>
              <widget class="QLabel" name="lblStream3">
               <property name="toolTip">
-               <string/>
+               <string>Correction data input stream</string>
               </property>
               <property name="frameShape">
                <enum>QFrame::Box</enum>
@@ -222,7 +222,7 @@
             <item>
              <widget class="QLabel" name="lblServer">
               <property name="toolTip">
-               <string/>
+               <string>RTK Server</string>
               </property>
               <property name="frameShape">
                <enum>QFrame::Box</enum>
@@ -248,7 +248,7 @@
             <item>
              <widget class="QLabel" name="lblStream4">
               <property name="toolTip">
-               <string/>
+               <string>Solution stream 1</string>
               </property>
               <property name="frameShape">
                <enum>QFrame::Box</enum>
@@ -258,7 +258,7 @@
             <item>
              <widget class="QLabel" name="lblStream5">
               <property name="toolTip">
-               <string/>
+               <string>Solution stream 2</string>
               </property>
               <property name="frameShape">
                <enum>QFrame::Box</enum>
@@ -268,7 +268,7 @@
             <item>
              <widget class="QLabel" name="lblStream6">
               <property name="toolTip">
-               <string/>
+               <string>Log stream rover</string>
               </property>
               <property name="frameShape">
                <enum>QFrame::Box</enum>
@@ -276,9 +276,12 @@
              </widget>
             </item>
             <item>
+             <widget class="QWidget" name="widget_2" native="true"/>
+            </item>
+            <item>
              <widget class="QLabel" name="lblStream7">
               <property name="toolTip">
-               <string/>
+               <string>Log stream base station</string>
               </property>
               <property name="frameShape">
                <enum>QFrame::Box</enum>
@@ -288,7 +291,7 @@
             <item>
              <widget class="QLabel" name="lblStream8">
               <property name="toolTip">
-               <string/>
+               <string>Log stream corrections</string>
               </property>
               <property name="frameShape">
                <enum>QFrame::Box</enum>
@@ -307,7 +310,7 @@
             </sizepolicy>
            </property>
            <property name="toolTip">
-            <string>Output Streams</string>
+            <string>Define output streams</string>
            </property>
            <property name="text">
             <string>O</string>
@@ -323,7 +326,7 @@
             </sizepolicy>
            </property>
            <property name="toolTip">
-            <string>Log Streams</string>
+            <string>Define log streams</string>
            </property>
            <property name="text">
             <string>L</string>
@@ -337,7 +340,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QWidget" name="Panel5" native="true">
+    <widget class="QWidget" name="panelSolution" native="true">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -351,9 +354,6 @@
       <string/>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout">
-      <property name="spacing">
-       <number>0</number>
-      </property>
       <property name="leftMargin">
        <number>0</number>
       </property>
@@ -368,8 +368,20 @@
       </property>
       <item>
        <widget class="QLabel" name="lblIndicatorQ">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>20</width>
+          <height>20</height>
+         </size>
+        </property>
         <property name="toolTip">
-         <string/>
+         <string>Solution state</string>
         </property>
         <property name="frameShape">
          <enum>QFrame::Box</enum>
@@ -408,7 +420,7 @@
          </sizepolicy>
         </property>
         <property name="toolTip">
-         <string/>
+         <string>Change solution format</string>
         </property>
         <property name="icon">
          <iconset resource="rtknavi_qt.qrc">
@@ -430,13 +442,10 @@
      <property name="text" stdset="0">
       <string/>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_9">
-      <item>
+     <layout class="QGridLayout" name="gridLayout_7">
+      <item row="0" column="0">
        <widget class="QSplitter" name="splitter">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <widget class="QWidget" name="Panel21" native="true">
+        <widget class="QWidget" name="panel21" native="true">
          <property name="toolTip">
           <string/>
          </property>
@@ -520,7 +529,7 @@
              </size>
             </property>
             <property name="toolTip">
-             <string/>
+             <string>Solution state</string>
             </property>
             <property name="frameShape">
              <enum>QFrame::Box</enum>
@@ -651,7 +660,7 @@
              </sizepolicy>
             </property>
             <property name="toolTip">
-             <string/>
+             <string>Change solution format</string>
             </property>
             <property name="icon">
              <iconset resource="rtknavi_qt.qrc">
@@ -698,7 +707,7 @@
                 </sizepolicy>
                </property>
                <property name="toolTip">
-                <string/>
+                <string>Solution buffer</string>
                </property>
                <property name="maximum">
                 <number>0</number>
@@ -714,7 +723,7 @@
              <item>
               <widget class="QPushButton" name="btnSave">
                <property name="toolTip">
-                <string/>
+                <string>Save solutions</string>
                </property>
                <property name="text">
                 <string>...</string>
@@ -726,7 +735,7 @@
           </item>
          </layout>
         </widget>
-        <widget class="QWidget" name="Panel22" native="true">
+        <widget class="QWidget" name="panel22" native="true">
          <property name="toolTip">
           <string/>
          </property>
@@ -771,7 +780,7 @@
              </sizepolicy>
             </property>
             <property name="toolTip">
-             <string/>
+             <string>Change plot type</string>
             </property>
             <property name="icon">
              <iconset resource="rtknavi_qt.qrc">
@@ -791,7 +800,7 @@
              </sizepolicy>
             </property>
             <property name="toolTip">
-             <string/>
+             <string>Change frequency</string>
             </property>
             <property name="icon">
              <iconset resource="rtknavi_qt.qrc">
@@ -838,7 +847,7 @@
           </item>
          </layout>
         </widget>
-        <widget class="QWidget" name="Panel23" native="true">
+        <widget class="QWidget" name="panel23" native="true">
          <property name="toolTip">
           <string/>
          </property>
@@ -900,7 +909,7 @@
              </sizepolicy>
             </property>
             <property name="toolTip">
-             <string/>
+             <string>Change frequency</string>
             </property>
             <property name="icon">
              <iconset resource="rtknavi_qt.qrc">
@@ -920,7 +929,7 @@
              </sizepolicy>
             </property>
             <property name="toolTip">
-             <string/>
+             <string>Change plot type</string>
             </property>
             <property name="icon">
              <iconset resource="rtknavi_qt.qrc">
@@ -950,7 +959,7 @@
           </item>
          </layout>
         </widget>
-        <widget class="QWidget" name="Panel24" native="true">
+        <widget class="QWidget" name="panel24" native="true">
          <property name="toolTip">
           <string/>
          </property>
@@ -1012,7 +1021,7 @@
              </sizepolicy>
             </property>
             <property name="toolTip">
-             <string/>
+             <string>Change frequency</string>
             </property>
             <property name="icon">
              <iconset resource="rtknavi_qt.qrc">
@@ -1032,7 +1041,7 @@
              </sizepolicy>
             </property>
             <property name="toolTip">
-             <string/>
+             <string>Change plot type</string>
             </property>
             <property name="icon">
              <iconset resource="rtknavi_qt.qrc">
@@ -1062,7 +1071,7 @@
           </item>
          </layout>
         </widget>
-        <widget class="QWidget" name="Panel25" native="true">
+        <widget class="QWidget" name="panel25" native="true">
          <property name="toolTip">
           <string/>
          </property>
@@ -1127,7 +1136,7 @@
              </sizepolicy>
             </property>
             <property name="toolTip">
-             <string/>
+             <string>Change frequency</string>
             </property>
             <property name="icon">
              <iconset resource="rtknavi_qt.qrc">
@@ -1147,7 +1156,7 @@
              </sizepolicy>
             </property>
             <property name="toolTip">
-             <string/>
+             <string>Change plot type</string>
             </property>
             <property name="icon">
              <iconset resource="rtknavi_qt.qrc">
@@ -1215,7 +1224,7 @@
       <item>
        <widget class="QPushButton" name="btnMonitor">
         <property name="toolTip">
-         <string>RTK Monitor</string>
+         <string>Open data monitor</string>
         </property>
         <property name="icon">
          <iconset resource="rtknavi_qt.qrc">
@@ -1272,7 +1281,7 @@
             </sizepolicy>
            </property>
            <property name="toolTip">
-            <string>Hide</string>
+            <string>Move to task tray</string>
            </property>
            <property name="icon">
             <iconset resource="rtknavi_qt.qrc">
@@ -1338,7 +1347,7 @@
       <item>
        <widget class="QPushButton" name="btnStart">
         <property name="toolTip">
-         <string/>
+         <string>Start reading of input streams</string>
         </property>
         <property name="text">
          <string>&amp;Start</string>
@@ -1352,14 +1361,14 @@
       <item>
        <widget class="QPushButton" name="btnStop">
         <property name="toolTip">
-         <string/>
+         <string>Stop</string>
         </property>
         <property name="text">
          <string>S&amp;top</string>
         </property>
         <property name="icon">
          <iconset resource="rtknavi_qt.qrc">
-          <normaloff>:/buttons/shrink</normaloff>:/buttons/shrink</iconset>
+          <normaloff>:/buttons/stop</normaloff>:/buttons/stop</iconset>
         </property>
        </widget>
       </item>
@@ -1369,7 +1378,7 @@
          <string>Mark...</string>
         </property>
         <property name="icon">
-         <iconset resource="rtknavi_qt.qrc">
+         <iconset>
           <normaloff>:/buttons/point</normaloff>:/buttons/point</iconset>
         </property>
        </widget>
@@ -1377,7 +1386,7 @@
       <item>
        <widget class="QPushButton" name="btnPlot">
         <property name="toolTip">
-         <string/>
+         <string>Open RTK plot to view solution</string>
         </property>
         <property name="text">
          <string>&amp;Plot...</string>
@@ -1391,7 +1400,7 @@
       <item>
        <widget class="QPushButton" name="btnOptions">
         <property name="toolTip">
-         <string/>
+         <string>Show options dialog</string>
         </property>
         <property name="text">
          <string>&amp;Options...</string>

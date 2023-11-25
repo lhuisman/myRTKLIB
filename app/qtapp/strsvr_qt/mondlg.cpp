@@ -21,7 +21,7 @@ StrMonDialog::StrMonDialog(QWidget *parent)
     connect(btnClose, &QPushButton::clicked, this, &StrMonDialog::accept);
     connect(btnClear, &QPushButton::clicked, this, &StrMonDialog::btnClearClicked);
     connect(btnDown, &QPushButton::clicked, this, &StrMonDialog::btnDownClicked);
-    connect(cBSelectFormat, &QComboBox::currentIndexChanged, this, &StrMonDialog::selectFormatChanged);
+    connect(cBSelectFormat, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &StrMonDialog::selectFormatChanged);
 
     consoleBuffer.clear();
     tWConsole->clear();

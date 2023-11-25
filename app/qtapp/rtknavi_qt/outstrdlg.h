@@ -36,7 +36,7 @@ private:
     void tcpOptions(int index, int opt);
 
 public:
-    int streamC[2], stream[2], format[2], outputTimeTag, outputAppend;
+    int streamEnabled[2], stream[2], format[2], outputTimeTag, outputAppend;
     QString paths[2][4], swapInterval;
     QString history[10];
 

@@ -13,7 +13,6 @@
 #include "serioptdlg.h"
 #include "cmdoptdlg.h"
 #include "tcpoptdlg.h"
-#include "fileoptdlg.h"
 #include "ftpoptdlg.h"
 #include "rcvoptdlg.h"
 
@@ -23,8 +22,6 @@
 InputStrDialog::InputStrDialog(QWidget *parent)
     : QDialog(parent)
 {
-    int i;
-
     setupUi(this);
 
     cBFormat1->clear();
@@ -33,7 +30,7 @@ InputStrDialog::InputStrDialog(QWidget *parent)
 
     NReceivers = 0;
 
-    for (i = 0; i <= MAXRCVFMT; i++) {
+    for (int i = 0; i <= MAXRCVFMT; i++) {
         cBFormat1->addItem(formatstrs[i]);
         cBFormat2->addItem(formatstrs[i]);
         cBFormat3->addItem(formatstrs[i]);
@@ -56,38 +53,38 @@ InputStrDialog::InputStrDialog(QWidget *parent)
     lEFilePath2->setCompleter(fileCompleter);
     lEFilePath3->setCompleter(fileCompleter);
 
-    connect(cBStream1, SIGNAL(currentIndexChanged(int)), this, SLOT(updateEnable()));
-    connect(cBStream2, SIGNAL(currentIndexChanged(int)), this, SLOT(updateEnable()));
-    connect(cBStream3, SIGNAL(currentIndexChanged(int)), this, SLOT(updateEnable()));
-    connect(cBNmeaReqL, SIGNAL(currentIndexChanged(int)), this, SLOT(updateEnable()));
-    connect(btnCancel, SIGNAL(clicked(bool)), this, SLOT(reject()));
-    connect(btnOk, SIGNAL(clicked(bool)), this, SLOT(btnOkClicked()));
-    connect(btnCmd1, SIGNAL(clicked(bool)), this, SLOT(btnCmd1Clicked()));
-    connect(btnCmd2, SIGNAL(clicked(bool)), this, SLOT(btnCmd2Clicked()));
-    connect(btnCmd3, SIGNAL(clicked(bool)), this, SLOT(btnCmd3Clicked()));
-    connect(btnFile1, SIGNAL(clicked(bool)), this, SLOT(btnFile1Clicked()));
-    connect(btnFile2, SIGNAL(clicked(bool)), this, SLOT(btnFile2Clicked()));
-    connect(btnFile3, SIGNAL(clicked(bool)), this, SLOT(btnFile3Clicked()));
-    connect(btnPosition, SIGNAL(clicked(bool)), this, SLOT(btnPositionClicked()));
-    connect(btnReceiverOptions1, SIGNAL(clicked(bool)), this, SLOT(btnReceiverOptions1Clicked()));
-    connect(btnReceiverOptions2, SIGNAL(clicked(bool)), this, SLOT(btnReceiverOptions2Click()));
-    connect(btnReceiverOptions3, SIGNAL(clicked(bool)), this, SLOT(btnReceiverOptions3Click()));
-    connect(btnStream1, SIGNAL(clicked(bool)), this, SLOT(btnStream1Clicked()));
-    connect(btnStream2, SIGNAL(clicked(bool)), this, SLOT(btnStream2Clicked()));
-    connect(btnStream3, SIGNAL(clicked(bool)), this, SLOT(btnStream3Clicked()));
-    connect(cBStreamC1, SIGNAL(clicked(bool)), this, SLOT(updateEnable()));
-    connect(cBStreamC2, SIGNAL(clicked(bool)), this, SLOT(updateEnable()));
-    connect(cBStreamC3, SIGNAL(clicked(bool)), this, SLOT(updateEnable()));
-    connect(cBTimeTagC, SIGNAL(clicked(bool)), this, SLOT(updateEnable()));
+    connect(cBStream1, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &InputStrDialog::updateEnable);
+    connect(cBStream2, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &InputStrDialog::updateEnable);
+    connect(cBStream3, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &InputStrDialog::updateEnable);
+    connect(cBNmeaReqL, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &InputStrDialog::updateEnable);
+    connect(btnCancel, &QPushButton::clicked, this, &InputStrDialog::reject);
+    connect(btnOk, &QPushButton::clicked, this, &InputStrDialog::btnOkClicked);
+    connect(btnCmd1, &QPushButton::clicked, this, &InputStrDialog::btnCmd1Clicked);
+    connect(btnCmd2, &QPushButton::clicked, this, &InputStrDialog::btnCmd2Clicked);
+    connect(btnCmd3, &QPushButton::clicked, this, &InputStrDialog::btnCmd3Clicked);
+    connect(btnFile1, &QPushButton::clicked, this, &InputStrDialog::btnFile1Clicked);
+    connect(btnFile2, &QPushButton::clicked, this, &InputStrDialog::btnFile2Clicked);
+    connect(btnFile3, &QPushButton::clicked, this, &InputStrDialog::btnFile3Clicked);
+    connect(btnPosition, &QPushButton::clicked, this, &InputStrDialog::btnPositionClicked);
+    connect(btnReceiverOptions1, &QPushButton::clicked, this, &InputStrDialog::btnReceiverOptions1Clicked);
+    connect(btnReceiverOptions2, &QPushButton::clicked, this, &InputStrDialog::btnReceiverOptions2Clicked);
+    connect(btnReceiverOptions3, &QPushButton::clicked, this, &InputStrDialog::btnReceiverOptions3Clicked);
+    connect(btnStream1, &QPushButton::clicked, this, &InputStrDialog::btnStream1Clicked);
+    connect(btnStream2, &QPushButton::clicked, this, &InputStrDialog::btnStream2Clicked);
+    connect(btnStream3, &QPushButton::clicked, this, &InputStrDialog::btnStream3Clicked);
+    connect(cBStreamC1, &QCheckBox::clicked, this, &InputStrDialog::updateEnable);
+    connect(cBStreamC2, &QCheckBox::clicked, this, &InputStrDialog::updateEnable);
+    connect(cBStreamC3, &QCheckBox::clicked, this, &InputStrDialog::updateEnable);
+    connect(cBTimeTagC, &QCheckBox::clicked, this, &InputStrDialog::updateEnable);
 }
 //---------------------------------------------------------------------------
 void InputStrDialog::showEvent(QShowEvent *event)
 {
     if (event->spontaneous()) return;
 
-    cBStreamC1->setChecked(streamC[0]);
-    cBStreamC2->setChecked(streamC[1]);
-    cBStreamC3->setChecked(streamC[2]);
+    cBStreamC1->setChecked(streamEnabled[0]);
+    cBStreamC2->setChecked(streamEnabled[1]);
+    cBStreamC3->setChecked(streamEnabled[2]);
     cBStream1->setCurrentIndex(stream[0]);
     cBStream2->setCurrentIndex(stream[1]);
     cBStream3->setCurrentIndex(stream[2]);
@@ -113,9 +110,9 @@ void InputStrDialog::showEvent(QShowEvent *event)
 //---------------------------------------------------------------------------
 void InputStrDialog::btnOkClicked()
 {
-    streamC[0] = cBStreamC1->isChecked();
-    streamC[1] = cBStreamC2->isChecked();
-    streamC[2] = cBStreamC3->isChecked();
+    streamEnabled[0] = cBStreamC1->isChecked();
+    streamEnabled[1] = cBStreamC2->isChecked();
+    streamEnabled[2] = cBStreamC3->isChecked();
     stream[0] = cBStream1->currentIndex();
     stream[1] = cBStream2->currentIndex();
     stream[2] = cBStream3->currentIndex();
@@ -133,19 +130,15 @@ void InputStrDialog::btnOkClicked()
     nmeaPosition[0] = sBNmeaPosition1->value();
     nmeaPosition[1] = sBNmeaPosition2->value();
     nmeaPosition[2] = sBNmeaPosition3->value();
-    maxBaseLine      = sBMaxBaseLine->value();
-    resetCommand   = lEResetCmd->text();
+    maxBaseLine = sBMaxBaseLine->value();
+    resetCommand = lEResetCmd->text();
 
     accept();
 }
 //---------------------------------------------------------------------------
 QString InputStrDialog::getFilePath(const QString &path)
 {
-    QString file;
-
-    file = path.mid(0, path.indexOf("::"));
-
-    return file;
+    return path.mid(0, path.indexOf("::"));
 }
 //---------------------------------------------------------------------------
 QString InputStrDialog::setFilePath(const QString &p)
@@ -162,146 +155,103 @@ QString InputStrDialog::setFilePath(const QString &p)
 void InputStrDialog::btnStream1Clicked()
 {
     switch (cBStream1->currentIndex()) {
-    case 0: serialOptions(0, 0); break;
-    case 1: tcpOptions(0, 1); break;
-    case 2: tcpOptions(0, 0); break;
-    case 3: tcpOptions(0, 3); break;
+        case 0: serialOptions(0, 0); break;
+        case 1: tcpOptions(0, 1); break;
+        case 2: tcpOptions(0, 0); break;
+        case 3: tcpOptions(0, 3); break;
 	}
 }
 //---------------------------------------------------------------------------
 void InputStrDialog::btnStream2Clicked()
 {
     switch (cBStream2->currentIndex()) {
-    case 0: serialOptions(1, 0); break;
-    case 1: tcpOptions(1, 1); break;
-    case 2: tcpOptions(1, 0); break;
-    case 3: tcpOptions(1, 3); break;
-    case 5: ftpOptions(1, 0); break;
-    case 6: ftpOptions(1, 1); break;
+        case 0: serialOptions(1, 0); break;
+        case 1: tcpOptions(1, 1); break;
+        case 2: tcpOptions(1, 0); break;
+        case 3: tcpOptions(1, 3); break;
+        case 5: ftpOptions(1, 0); break;
+        case 6: ftpOptions(1, 1); break;
 	}
 }
 //---------------------------------------------------------------------------
 void InputStrDialog::btnStream3Clicked()
 {
     switch (cBStream3->currentIndex()) {
-    case 0: serialOptions(2, 0); break;
-    case 1: tcpOptions(2, 1); break;
-    case 2: tcpOptions(2, 0); break;
-    case 3: tcpOptions(2, 3); break;
-    case 5: ftpOptions(2, 0); break;
-    case 6: ftpOptions(2, 1); break;
+        case 0: serialOptions(2, 0); break;
+        case 1: tcpOptions(2, 1); break;
+        case 2: tcpOptions(2, 0); break;
+        case 3: tcpOptions(2, 3); break;
+        case 5: ftpOptions(2, 0); break;
+        case 6: ftpOptions(2, 1); break;
 	}
+}
+//---------------------------------------------------------------------------
+void InputStrDialog::showCommandDialog(int streamNo)
+{
+    for (int i = 0; i < 3; i++) {
+        if (cBStream1->currentIndex() == 0) {
+            cmdOptDialog->commands[i] = commands[streamNo][i];
+            cmdOptDialog->commandsEnabled[i] = commandEnable[streamNo][i];
+        }
+        else {
+            cmdOptDialog->commands[i] = commandsTcp[streamNo][i];
+            cmdOptDialog->commandsEnabled[i] = commandEnableTcp[streamNo][i];
+        }
+    }
+
+    cmdOptDialog->exec();
+    if (cmdOptDialog->result() != QDialog::Accepted) return;
+
+    for (int i = 0; i < 3; i++) {
+        if (cBStream1->currentIndex() == 0) {
+            commands[streamNo][i] = cmdOptDialog->commands[i];
+            commandEnable[streamNo][i] = cmdOptDialog->commandsEnabled[i];
+        }
+        else {
+            commandsTcp[streamNo][i] = cmdOptDialog->commands[i];
+            commandEnableTcp[streamNo][i] = cmdOptDialog->commandsEnabled[i];
+        }
+    }
 }
 //---------------------------------------------------------------------------
 void InputStrDialog::btnCmd1Clicked()
 {
-    for (int i = 0;i<3;i++) {
-        if (cBStream1->currentIndex() == 0) {
-            cmdOptDialog->commands  [i] = commands  [0][i];
-            cmdOptDialog->commandsEnabled[i] = commandEnable[0][i];
-        }
-        else {
-            cmdOptDialog->commands  [i] = commandsTcp  [0][i];
-            cmdOptDialog->commandsEnabled[i] = commandEnableTcp[0][i];
-        }
-    }
-
-    cmdOptDialog->exec();
-    if (cmdOptDialog->result() != QDialog::Accepted) return;
-
-    for (int i = 0; i < 3; i++) {
-        if (cBStream1->currentIndex() == 0) {
-            commands  [0][i] = cmdOptDialog->commands  [i];
-            commandEnable[0][i] = cmdOptDialog->commandsEnabled[i];
-        }
-        else {
-            commandsTcp  [0][i] = cmdOptDialog->commands  [i];
-            commandEnableTcp[0][i] = cmdOptDialog->commandsEnabled[i];
-        }
-    }
+    this->showCommandDialog(0);
 }
 //---------------------------------------------------------------------------
 void InputStrDialog::btnCmd2Clicked()
 {
-    for (int i = 0;i<3;i++) {
-        if (cBStream2->currentIndex() == 0) {
-            cmdOptDialog->commands  [i] = commands  [1][i];
-            cmdOptDialog->commandsEnabled[i] = commandEnable[1][i];
-        }
-        else {
-            cmdOptDialog->commands  [i] = commandsTcp  [1][i];
-            cmdOptDialog->commandsEnabled[i] = commandEnableTcp[1][i];
-        }
-    }
-
-    cmdOptDialog->exec();
-    if (cmdOptDialog->result() != QDialog::Accepted) return;
-
-    for (int i = 0; i < 3; i++) {
-        if (cBStream2->currentIndex() == 0) {
-            commands  [1][i] = cmdOptDialog->commands  [i];
-            commandEnable[1][i] = cmdOptDialog->commandsEnabled[i];
-        }
-        else {
-            commandsTcp  [1][i] = cmdOptDialog->commands  [i];
-            commandEnableTcp[1][i] = cmdOptDialog->commandsEnabled[i];
-        }
-    }}
+    this->showCommandDialog(1);
+}
 //---------------------------------------------------------------------------
 void InputStrDialog::btnCmd3Clicked()
 {
-    for (int i = 0;i<3;i++) {
-        if (cBStream3->currentIndex() == 0) {
-            cmdOptDialog->commands  [i] = commands  [2][i];
-            cmdOptDialog->commandsEnabled[i] = commandEnable[2][i];
-        }
-        else {
-            cmdOptDialog->commands  [i] = commandsTcp  [2][i];
-            cmdOptDialog->commandsEnabled[i] = commandEnableTcp[2][i];
-        }
-    }
+    this->showCommandDialog(2);
+}
+//---------------------------------------------------------------------------
+void InputStrDialog::showReceiverOptionDialog(int streamNo)
+{
+    rcvOptDialog->options = receiverOptions[streamNo];
 
-    cmdOptDialog->exec();
-    if (cmdOptDialog->result() != QDialog::Accepted) return;
+    rcvOptDialog->exec();
+    if (rcvOptDialog->result() != QDialog::Accepted) return;
 
-    for (int i = 0; i < 3; i++) {
-        if (cBStream3->currentIndex() == 0) {
-            commands  [2][i] = cmdOptDialog->commands  [i];
-            commandEnable[2][i] = cmdOptDialog->commandsEnabled[i];
-        }
-        else {
-            commandsTcp  [2][i] = cmdOptDialog->commands  [i];
-            commandEnableTcp[2][i] = cmdOptDialog->commandsEnabled[i];
-        }
-    }}
+    receiverOptions[streamNo] = rcvOptDialog->options;
+}
 //---------------------------------------------------------------------------
 void InputStrDialog::btnReceiverOptions1Clicked()
 {
-    rcvOptDialog->Option = receiverOptions[0];
-
-    rcvOptDialog->exec();
-    if (rcvOptDialog->result() != QDialog::Accepted) return;
-
-    receiverOptions[0] = rcvOptDialog->Option;
+    this->showReceiverOptionDialog(0);
 }
 //---------------------------------------------------------------------------
-void InputStrDialog::btnReceiverOptions2Click()
+void InputStrDialog::btnReceiverOptions2Clicked()
 {
-    rcvOptDialog->Option = receiverOptions[1];
-
-    rcvOptDialog->exec();
-    if (rcvOptDialog->result() != QDialog::Accepted) return;
-
-    receiverOptions[1] = rcvOptDialog->Option;
+    this->showReceiverOptionDialog(1);
 }
 //---------------------------------------------------------------------------
-void InputStrDialog::btnReceiverOptions3Click()
+void InputStrDialog::btnReceiverOptions3Clicked()
 {
-    rcvOptDialog->Option = receiverOptions[2];
-
-    rcvOptDialog->exec();
-    if (rcvOptDialog->result() != QDialog::Accepted) return;
-    receiverOptions[2] = rcvOptDialog->Option;
+    this->showReceiverOptionDialog(2);
 }
 //---------------------------------------------------------------------------
 void InputStrDialog::btnPositionClicked()
@@ -319,17 +269,6 @@ void InputStrDialog::btnPositionClicked()
     sBNmeaPosition3->setValue(refDialog->position[2]);
 }
 //---------------------------------------------------------------------------
-void InputStrDialog::serialOptions(int index, int opt)
-{
-    serialOptDialog->path = paths[index][0];
-    serialOptDialog->options = opt;
-
-    serialOptDialog->exec();
-    if (serialOptDialog->result() != QDialog::Accepted) return;
-
-    paths[index][0] = serialOptDialog->path;
-}
-//---------------------------------------------------------------------------
 void InputStrDialog::btnFile1Clicked()
 {
     lEFilePath1->setText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("Open..."), lEFilePath1->text())));
@@ -343,6 +282,17 @@ void InputStrDialog::btnFile2Clicked()
 void InputStrDialog::btnFile3Clicked()
 {
     lEFilePath3->setText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("Open..."), lEFilePath3->text())));
+}
+//---------------------------------------------------------------------------
+void InputStrDialog::serialOptions(int index, int opt)
+{
+    serialOptDialog->path = paths[index][0];
+    serialOptDialog->options = opt;
+
+    serialOptDialog->exec();
+    if (serialOptDialog->result() != QDialog::Accepted) return;
+
+    paths[index][0] = serialOptDialog->path;
 }
 //---------------------------------------------------------------------------
 void InputStrDialog::tcpOptions(int index, int opt)
@@ -373,11 +323,11 @@ void InputStrDialog::ftpOptions(int index, int opt)
     paths[index][3] = ftpOptDialog->path;
 }
 //---------------------------------------------------------------------------
-void InputStrDialog::updateEnable(void)
+void InputStrDialog::updateEnable()
 {
     int ena1 = (cBStreamC1->isChecked() && (cBStream1->currentIndex() == 4)) ||
-           (cBStreamC2->isChecked() && (cBStream2->currentIndex() == 4)) ||
-           (cBStreamC3->isChecked() && (cBStream3->currentIndex() == 4));
+               (cBStreamC2->isChecked() && (cBStream2->currentIndex() == 4)) ||
+               (cBStreamC3->isChecked() && (cBStream3->currentIndex() == 4));
     int ena2 = cBStreamC2->isChecked() && (cBStream2->currentIndex() <= 3);
 
     cBStream1->setEnabled(cBStreamC1->isChecked());

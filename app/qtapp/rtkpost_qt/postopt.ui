@@ -63,7 +63,7 @@
       <string/>
      </property>
      <property name="currentIndex">
-      <number>4</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="TabSheet1">
       <property name="toolTip">
@@ -74,7 +74,7 @@
       </attribute>
       <layout class="QGridLayout" name="gridLayout">
        <item row="5" column="2" colspan="2">
-        <widget class="QComboBox" name="cBIonosphericOption">
+        <widget class="QComboBox" name="cBIonosphereOption">
          <property name="toolTip">
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Define ionosphere correction method (option: &lt;span style=&quot; font-style:italic;&quot;&gt;pos1-ionoopt&lt;/span&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
@@ -126,7 +126,7 @@
         </widget>
        </item>
        <item row="11" column="0" colspan="4">
-        <widget class="QWidget" name="widget_2" native="true">
+        <widget class="QWidget" name="widget_4" native="true">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -147,7 +147,7 @@
            <number>0</number>
           </property>
           <item>
-           <widget class="QCheckBox" name="cBPosOption1">
+           <widget class="QCheckBox" name="cBPositionOption1">
             <property name="toolTip">
              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Apply phase center variation to satellite (option: &lt;span style=&quot; font-style:italic;&quot;&gt;pos1-posopt1&lt;/span&gt;). &lt;/p&gt;&lt;p&gt;A &amp;quot;Satellite Antenna PCV Fileʺ has to be specified in the &amp;quot;Files&amp;quot; tab.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
@@ -157,7 +157,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QCheckBox" name="cBPosOption2">
+           <widget class="QCheckBox" name="cBPositionOption2">
             <property name="toolTip">
              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Apply phase center variation to receiver (option: &lt;span style=&quot; font-style:italic;&quot;&gt;pos1-posopt2&lt;/span&gt;). &lt;/p&gt;&lt;p&gt;A &amp;quot;Receiver Antenna PCV Fileʺ has to be specified in the &amp;quot;Files&amp;quot; tab.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
@@ -167,7 +167,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QCheckBox" name="cBPosOption3">
+           <widget class="QCheckBox" name="cBPositionOption3">
             <property name="toolTip">
              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Apply phase windup correction in PPP mode (option: &lt;span style=&quot; font-style:italic;&quot;&gt;pos1-posopt3&lt;/span&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
@@ -177,7 +177,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QCheckBox" name="cBPosOption4">
+           <widget class="QCheckBox" name="cBPositionOption4">
             <property name="toolTip">
              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Exclude GPS Block IIA satellites in eclipse (option: &lt;span style=&quot; font-style:italic;&quot;&gt;pos1-posopt4&lt;/span&gt;). &lt;/p&gt;&lt;p&gt;The eclipsing Block IIA satellitesoften degrade the PPP solutions due to unpredicted behavior of yaw‐attitude.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
@@ -187,7 +187,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QCheckBox" name="cBPosOption5">
+           <widget class="QCheckBox" name="cBPositionOption5">
             <property name="toolTip">
              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enable RAIM (receiver autonomous integrity monitoring) FDE (fault detection and exclusion) feature (option: &lt;span style=&quot; font-style:italic;&quot;&gt;pos1-posopt5&lt;/span&gt;). &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
@@ -197,12 +197,12 @@
            </widget>
           </item>
           <item>
-           <widget class="QCheckBox" name="cBPosOption6">
+           <widget class="QCheckBox" name="cBPositionOption6">
             <property name="toolTip">
              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Apply correction for day-boundary clock jumps (option: &lt;span style=&quot; font-style:italic;&quot;&gt;pos1-posopt6&lt;/span&gt;). &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="text">
-             <string>DBCorr</string>
+             <string>DB Correction</string>
             </property>
            </widget>
           </item>
@@ -331,7 +331,7 @@
         </widget>
        </item>
        <item row="4" column="3">
-        <widget class="QComboBox" name="cBTideCorr">
+        <widget class="QComboBox" name="cBTideCorrection">
          <property name="toolTip">
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enable Earth tide correction (option: &lt;span style=&quot; font-style:italic;&quot;&gt;pos1-tidecorr&lt;/span&gt;).&lt;/p&gt;&lt;p&gt;For pole tides an EOP data file has to be specified.&lt;/p&gt;&lt;p&gt;For ocean tide loading an OTL BLQ file has to be given.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
@@ -363,7 +363,7 @@
         </widget>
        </item>
        <item row="3" column="0">
-        <widget class="QLabel" name="LabelElMask">
+        <widget class="QLabel" name="lblElevationMask">
          <property name="toolTip">
           <string/>
          </property>
@@ -383,7 +383,7 @@
         </widget>
        </item>
        <item row="1" column="0">
-        <widget class="QLabel" name="LabelPosMode">
+        <widget class="QLabel" name="lblPosMode">
          <property name="toolTip">
           <string/>
          </property>
@@ -566,7 +566,7 @@
         </widget>
        </item>
        <item row="3" column="3">
-        <widget class="QPushButton" name="btnMask">
+        <widget class="QPushButton" name="btnSnrMask">
          <property name="toolTip">
           <string>Edit elevation mask</string>
          </property>
@@ -576,7 +576,7 @@
         </widget>
        </item>
        <item row="2" column="0">
-        <widget class="QLabel" name="LabelFreq">
+        <widget class="QLabel" name="lblFrequency">
          <property name="toolTip">
           <string/>
          </property>
@@ -596,7 +596,7 @@
         </widget>
        </item>
        <item row="6" column="2" colspan="2">
-        <widget class="QComboBox" name="cBTroposphericOption">
+        <widget class="QComboBox" name="cBTroposphereOption">
          <property name="toolTip">
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Define troposhere correction method (option: &lt;span style=&quot; font-style:italic;&quot;&gt;pos1-tropopt&lt;/span&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
@@ -633,7 +633,7 @@
           <string/>
          </property>
          <property name="text">
-          <string>Satellite Ephemeris/Clock</string>
+          <string>Satellite Ephemeris / Clock</string>
          </property>
         </widget>
        </item>
@@ -730,7 +730,7 @@
       </attribute>
       <layout class="QGridLayout" name="gridLayout_2">
        <item row="12" column="1" colspan="2">
-        <widget class="QDoubleSpinBox" name="sBMaxAgeDiff">
+        <widget class="QDoubleSpinBox" name="sBMaxAgeDifferences">
          <property name="toolTip">
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Define the maximum value of age of differential between the rover and the base station (option: &lt;span style=&quot; font-style:italic;&quot;&gt;pos2-maxage&lt;/span&gt;) &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
@@ -741,7 +741,7 @@
           <number>1</number>
          </property>
          <property name="maximum">
-          <double>10000.000000000000000</double>
+          <double>3600.000000000000000</double>
          </property>
          <property name="value">
           <double>30.000000000000000</double>
@@ -888,7 +888,7 @@
        <item row="2" column="1">
         <widget class="QDoubleSpinBox" name="sBValidThresARMin">
          <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the integer ambiguity validation threshold for ʺratio‐testʺ, which uses the ratio of squared residuals of the best integer vector to the second‐best vector. (option: &lt;span style=&quot; font-style:italic;&quot;&gt;pos2-arthres&lt;/span&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="decimals">
           <number>3</number>
@@ -1014,6 +1014,9 @@
        </item>
        <item row="2" column="2" colspan="2">
         <widget class="QDoubleSpinBox" name="sBValidThresAR">
+         <property name="toolTip">
+          <string>Set the integer ambiguity validation threshold for ʺratio‐testʺ, which uses the ratio of squared residuals of the best integer vector to the second‐best vector. (option: pos2-arthres)</string>
+         </property>
          <property name="decimals">
           <number>3</number>
          </property>
@@ -1165,7 +1168,7 @@
           <number>3</number>
          </property>
          <property name="maximum">
-          <double>10000.000000000000000</double>
+          <double>1000000.000000000000000</double>
          </property>
         </widget>
        </item>
@@ -1195,7 +1198,7 @@
         </widget>
        </item>
        <item row="12" column="3" colspan="2">
-        <widget class="QSpinBox" name="sBOutageCountReset"/>
+        <widget class="QSpinBox" name="sBOutageCountResetAmbiguity"/>
        </item>
        <item row="22" column="1" colspan="4">
         <widget class="QSpinBox" name="sBMinDropSats"/>
@@ -1204,9 +1207,6 @@
         <widget class="QDoubleSpinBox" name="sBVarHoldAmb">
          <property name="decimals">
           <number>4</number>
-         </property>
-         <property name="maximum">
-          <double>128.990000000000009</double>
          </property>
         </widget>
        </item>
@@ -1218,7 +1218,7 @@
         </widget>
        </item>
        <item row="16" column="1" colspan="2">
-        <widget class="QSpinBox" name="sBNumIter">
+        <widget class="QSpinBox" name="sBNumIteration">
          <property name="toolTip">
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Define the number of iteration in the measurement update of the estimation filter (option: &lt;span style=&quot; font-style:italic;&quot;&gt;pos2-niter&lt;/span&gt;). &lt;/p&gt;&lt;p&gt;If the baseline length is very short like 1 m, the iteration may be effective to handle the nonlinearity of measurement equation.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
@@ -1722,7 +1722,7 @@
          </property>
          <layout class="QGridLayout" name="gridLayout_5">
           <item row="0" column="0">
-           <widget class="QLabel" name="Label10">
+           <widget class="QLabel" name="Label33">
             <property name="toolTip">
              <string/>
             </property>
@@ -1918,6 +1918,12 @@
             <property name="decimals">
              <number>3</number>
             </property>
+            <property name="minimum">
+             <double>-10000.000000000000000</double>
+            </property>
+            <property name="maximum">
+             <double>10000.000000000000000</double>
+            </property>
             <property name="value">
              <double>1.000000000000000</double>
             </property>
@@ -1970,7 +1976,7 @@
            </widget>
           </item>
           <item row="8" column="0">
-           <widget class="QLabel" name="Label64">
+           <widget class="QLabel" name="Label10">
             <property name="toolTip">
              <string/>
             </property>
@@ -2022,6 +2028,9 @@
             <property name="decimals">
              <number>3</number>
             </property>
+            <property name="maximum">
+             <double>100.000000000000000</double>
+            </property>
             <property name="value">
              <double>0.003000000000000</double>
             </property>
@@ -2030,7 +2039,7 @@
           <item row="6" column="0">
            <widget class="QLabel" name="label_3">
             <property name="text">
-             <string>Carrier Phase Error: SNR / SNR maxDb</string>
+             <string>Carrier Phase Error: SNR / SNR max</string>
             </property>
            </widget>
           </item>
@@ -2059,6 +2068,9 @@
            <widget class="QDoubleSpinBox" name="sBMeasurementErrorSNR_Max">
             <property name="toolTip">
              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the max component of the SNR dependent terms of carrier-phase error standard deviation (option: &lt;span style=&quot; font-style:italic;&quot;&gt;stats-snrmax&lt;/span&gt;)&lt;/p&gt;&lt;p&gt;e * 10^(0.1*(SNR_MAX - snr))&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="suffix">
+             <string> dB</string>
             </property>
             <property name="value">
              <double>0.000000000000000</double>
@@ -2097,69 +2109,6 @@
        <string>&amp;Positions</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_13">
-       <item row="5" column="2">
-        <widget class="QPushButton" name="btnStationPositionView">
-         <property name="toolTip">
-          <string>Show station position file</string>
-         </property>
-         <property name="icon">
-          <iconset resource="rtkpost_qt.qrc">
-           <normaloff>:/buttons/doc</normaloff>:/buttons/doc</iconset>
-         </property>
-         <property name="flat">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="3">
-        <widget class="QPushButton" name="btnStationPositionFile">
-         <property name="toolTip">
-          <string>Select station position file</string>
-         </property>
-         <property name="text">
-          <string>...</string>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="1">
-        <widget class="QLineEdit" name="lEStationPositionFile">
-         <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Input the station position file path to retrieve the position from the station list (option: &lt;span style=&quot; font-style:italic;&quot;&gt;file-staposfile&lt;/span&gt;). &lt;/p&gt;&lt;p&gt;The station position file is a text file which contains the multiple lines. Each line represents a record for a station. A record contains:&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;- Latitude (deg)&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;- Longitude (deg)&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;- Ellipsoidal height (m)&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;- Station ID&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;- Station name&lt;/span&gt;&lt;/p&gt;&lt;p&gt;separated by spaces. The line starting &amp;quot;%&amp;quot; is treated as the comment line. &lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;An example station position file is found at &amp;quot;data\stations.pos&amp;quot;.&lt;/p&gt;&lt;p&gt;SINEX station positions can be used as well. An sample SINEX file is found at &amp;quot;data\igs10P1565_wocov.snx&amp;quot;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="maxLength">
-          <number>1024</number>
-         </property>
-        </widget>
-       </item>
-       <item row="6" column="0" colspan="4">
-        <widget class="QLabel" name="Label4">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="toolTip">
-          <string/>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="0">
-        <widget class="QLabel" name="Label30">
-         <property name="toolTip">
-          <string/>
-         </property>
-         <property name="text">
-          <string>Station Position File</string>
-         </property>
-        </widget>
-       </item>
        <item row="4" column="0" colspan="4">
         <widget class="QGroupBox" name="GroupRefAnt">
          <property name="sizePolicy">
@@ -2290,8 +2239,11 @@
             <property name="decimals">
              <number>4</number>
             </property>
+            <property name="minimum">
+             <double>-100000.000000000000000</double>
+            </property>
             <property name="maximum">
-             <double>1000.000000000000000</double>
+             <double>100000.000000000000000</double>
             </property>
            </widget>
           </item>
@@ -2306,8 +2258,11 @@
             <property name="decimals">
              <number>4</number>
             </property>
+            <property name="minimum">
+             <double>-100000.000000000000000</double>
+            </property>
             <property name="maximum">
-             <double>1000.000000000000000</double>
+             <double>100000.000000000000000</double>
             </property>
            </widget>
           </item>
@@ -2322,8 +2277,11 @@
             <property name="decimals">
              <number>4</number>
             </property>
+            <property name="minimum">
+             <double>-10000.000000000000000</double>
+            </property>
             <property name="maximum">
-             <double>1000.000000000000000</double>
+             <double>10000.000000000000000</double>
             </property>
            </widget>
           </item>
@@ -2442,7 +2400,7 @@
           <item row="0" column="5">
            <widget class="QPushButton" name="btnRoverPosition">
             <property name="toolTip">
-             <string/>
+             <string>Select rover position</string>
             </property>
             <property name="text">
              <string>...</string>
@@ -2495,10 +2453,13 @@
              <string> m</string>
             </property>
             <property name="decimals">
-             <number>4</number>
+             <number>3</number>
+            </property>
+            <property name="minimum">
+             <double>-100000.000000000000000</double>
             </property>
             <property name="maximum">
-             <double>1000.000000000000000</double>
+             <double>100000.000000000000000</double>
             </property>
            </widget>
           </item>
@@ -2531,10 +2492,13 @@
              <string> m</string>
             </property>
             <property name="decimals">
-             <number>4</number>
+             <number>3</number>
+            </property>
+            <property name="minimum">
+             <double>-100000.000000000000000</double>
             </property>
             <property name="maximum">
-             <double>1000.000000000000000</double>
+             <double>100000.000000000000000</double>
             </property>
            </widget>
           </item>
@@ -2547,14 +2511,61 @@
              <string> m</string>
             </property>
             <property name="decimals">
-             <number>4</number>
+             <number>3</number>
+            </property>
+            <property name="minimum">
+             <double>-10000.000000000000000</double>
             </property>
             <property name="maximum">
-             <double>1000.000000000000000</double>
+             <double>10000.000000000000000</double>
             </property>
            </widget>
           </item>
          </layout>
+        </widget>
+       </item>
+       <item row="5" column="1">
+        <widget class="QLineEdit" name="lEStationPositionFile">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Input the station position file path to retrieve the position from the station list (option: &lt;span style=&quot; font-style:italic;&quot;&gt;file-staposfile&lt;/span&gt;). &lt;/p&gt;&lt;p&gt;The station position file is a text file which contains the multiple lines. Each line represents a record for a station. A record contains:&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;- Latitude (deg)&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;- Longitude (deg)&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;- Ellipsoidal height (m)&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;- Station ID&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;- Station name&lt;/span&gt;&lt;/p&gt;&lt;p&gt;separated by spaces. The line starting &amp;quot;%&amp;quot; is treated as the comment line. &lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;An example station position file is found at &amp;quot;data\stations.pos&amp;quot;.&lt;/p&gt;&lt;p&gt;SINEX station positions can be used as well. An sample SINEX file is found at &amp;quot;data\igs10P1565_wocov.snx&amp;quot;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="maxLength">
+          <number>1024</number>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="3">
+        <widget class="QPushButton" name="btnStationPositionFile">
+         <property name="toolTip">
+          <string>Select station position file</string>
+         </property>
+         <property name="text">
+          <string>...</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0">
+        <widget class="QLabel" name="Label30">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="text">
+          <string>Station Position File</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="2">
+        <widget class="QPushButton" name="btnStationPositionView">
+         <property name="toolTip">
+          <string>Show station position file</string>
+         </property>
+         <property name="icon">
+          <iconset resource="rtkpost_qt.qrc">
+           <normaloff>:/buttons/doc</normaloff>:/buttons/doc</iconset>
+         </property>
+         <property name="flat">
+          <bool>true</bool>
+         </property>
         </widget>
        </item>
       </layout>
@@ -3162,18 +3173,18 @@
   <tabstop>cBFrequencies</tabstop>
   <tabstop>cBSolution</tabstop>
   <tabstop>cBElevationMask</tabstop>
-  <tabstop>btnMask</tabstop>
+  <tabstop>btnSnrMask</tabstop>
   <tabstop>cBDynamicModel</tabstop>
-  <tabstop>cBTideCorr</tabstop>
-  <tabstop>cBIonosphericOption</tabstop>
-  <tabstop>cBTroposphericOption</tabstop>
+  <tabstop>cBTideCorrection</tabstop>
+  <tabstop>cBIonosphereOption</tabstop>
+  <tabstop>cBTroposphereOption</tabstop>
   <tabstop>cBSatelliteEphemeris</tabstop>
-  <tabstop>cBPosOption1</tabstop>
-  <tabstop>cBPosOption2</tabstop>
-  <tabstop>cBPosOption3</tabstop>
-  <tabstop>cBPosOption4</tabstop>
-  <tabstop>cBPosOption5</tabstop>
-  <tabstop>cBPosOption6</tabstop>
+  <tabstop>cBPositionOption1</tabstop>
+  <tabstop>cBPositionOption2</tabstop>
+  <tabstop>cBPositionOption3</tabstop>
+  <tabstop>cBPositionOption4</tabstop>
+  <tabstop>cBPositionOption5</tabstop>
+  <tabstop>cBPositionOption6</tabstop>
   <tabstop>lEExcludedSatellites</tabstop>
   <tabstop>cBAmbiguityResolutionGPS</tabstop>
   <tabstop>cBAmbiguityResolutionGLO</tabstop>
@@ -3182,7 +3193,7 @@
   <tabstop>sBFixCountHoldAmbiguity</tabstop>
   <tabstop>sBElevationMaskHold</tabstop>
   <tabstop>sBSlipThreshold</tabstop>
-  <tabstop>sBMaxAgeDiff</tabstop>
+  <tabstop>sBMaxAgeDifferences</tabstop>
   <tabstop>sBRejectCode</tabstop>
   <tabstop>sBRejectPhase</tabstop>
   <tabstop>cBBaselineConstrain</tabstop>

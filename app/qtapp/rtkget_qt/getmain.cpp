@@ -184,8 +184,8 @@ MainForm::MainForm(QWidget *parent)
     connect(btnStations, &QPushButton::clicked, this, &MainForm::btnStationsClicked);
     connect(btnTest, &QPushButton::clicked, this, &MainForm::btnTestClicked);
     connect(btnTray, &QPushButton::clicked, this, &MainForm::btnTrayClicked);
-    connect(cBDataType, &QComboBox::currentIndexChanged, this, &MainForm::updateType);
-    connect(cBSubType, &QComboBox::currentIndexChanged, this, &MainForm::updateType);
+    connect(cBDataType, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &MainForm::updateType);
+    connect(cBSubType, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &MainForm::updateType);
     connect(cBDirectory, &QComboBox::currentTextChanged, this, &MainForm::updateMessage);
     connect(cBLocalDirectory, &QCheckBox::clicked, this, &MainForm::localDirClicked);
     connect(cBHidePasswd, &QCheckBox::clicked, this, &MainForm::updateEnable);
@@ -195,7 +195,7 @@ MainForm::MainForm(QWidget *parent)
     connect(&busyTimer, &QTimer::timeout, this, &MainForm::busyTimerTriggered);
     connect(btnTimeStart, &QPushButton::clicked, this, &MainForm::btnTimeStartClicked);
     connect(btnTimeStop, &QPushButton::clicked, this, &MainForm::btnTimeStopClicked);
-    connect(cBTimeInterval, &QComboBox::currentIndexChanged, this, &MainForm::updateEnable);
+    connect(cBTimeInterval, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &MainForm::updateEnable);
 
     for (int i = 0; i < 8; i++) {
         images[i].load(QString(":/buttons/wait%1").arg(i + 1));
@@ -509,7 +509,12 @@ void MainForm::dragEnterEvent(QDragEnterEvent *event)
 //---------------------------------------------------------------------------
 void MainForm::dropEvent(QDropEvent *event)
 {
-    if (stationListWidget == childAt(event->position().toPoint()))
+#if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
+    QPoint pos = event->position().toPoint();
+#else
+    QPoint pos = event->pos();
+#endif
+    if (stationListWidget == childAt(pos))
         loadStation(event->mimeData()->text());
     event->acceptProposedAction();
 }
@@ -548,7 +553,7 @@ void MainForm::busyTimerTriggered()
     timerCnt++;
 }
 //---------------------------------------------------------------------------
-void MainForm::loadOptions(void)
+void MainForm::loadOptions()
 {
     QSettings setting(iniFilename, QSettings::IniFormat);
     QStringList stas;
@@ -596,7 +601,7 @@ void MainForm::loadOptions(void)
     TextViewer::font.setPixelSize(setting.value("viewer/fontsize", 9).toInt());
 }
 //---------------------------------------------------------------------------
-void MainForm::saveOptions(void)
+void MainForm::saveOptions()
 {
     QSettings setting(iniFilename, QSettings::IniFormat);
     QString sta;
@@ -781,7 +786,7 @@ int MainForm::selectStation(char **stas)
     return nsta;
 }
 //---------------------------------------------------------------------------
-void MainForm::updateType(void)
+void MainForm::updateType()
 {
     QString str;
     QString type, subtype;
@@ -809,7 +814,7 @@ void MainForm::updateType(void)
     messageLabel2->setText("");
 }
 //---------------------------------------------------------------------------
-void MainForm::updateMessage(void)
+void MainForm::updateMessage()
 {
     int i, j, n = 0;
 
@@ -832,7 +837,7 @@ void MainForm::updateMessage(void)
     }
 }
 //---------------------------------------------------------------------------
-void MainForm::updateStationList(void)
+void MainForm::updateStationList()
 {
     int i, n = 0;
 
@@ -841,7 +846,7 @@ void MainForm::updateStationList(void)
     lbStation->setText(QString(tr("Stations (%1)")).arg(n));
 }
 //---------------------------------------------------------------------------
-void MainForm::updateEnable(void)
+void MainForm::updateEnable()
 {
     cBDirectory->setEnabled(cBLocalDirectory->isChecked());
     btnDir->setEnabled(cBLocalDirectory->isChecked());

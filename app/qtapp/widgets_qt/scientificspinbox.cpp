@@ -1,7 +1,7 @@
 #include "scientificspinbox.h"
 #include <QLineEdit>
 #include <qlocale.h>
-#include "scientificspinbox.h"
+#include <math.h>
 
 #include <limits>
 
@@ -32,7 +32,7 @@ void ScientificSpinBox::setDecimals(int value)
 // overwrites virtual function of QAbstractSpinBox
 void ScientificSpinBox::stepBy(int steps)
 {
-    setValue(value()* pow(10, steps));
+    setValue(value() * pow(10, steps));
 }
 
 QString ScientificSpinBox::textFromValue(double value) const
@@ -164,7 +164,11 @@ QVariant ScientificSpinBox::validateAndInterpret(QString &input, int &pos, QVali
                 goto end;
             }
             // two space chars is invalid
+#if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
             else if (last.isSpace() && (!loc.groupSeparator().simplified().isEmpty() || secondLast.isSpace())) {
+#else
+            else if (last.isSpace() && (!loc.groupSeparator().isNull() || secondLast.isSpace())) {
+#endif
                 state = QValidator::Invalid;
                 goto end;
             }
@@ -183,7 +187,12 @@ QVariant ScientificSpinBox::validateAndInterpret(QString &input, int &pos, QVali
         // conversion to double did fail
         if (!ok) {
             // maybe group separator caused failure
+#if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
             if (loc.groupSeparator()[0].isPrint())
+#else
+            if (loc.groupSeparator().isPrint())
+#endif
+
             {
                 // if no group separator is possible but exist
                 if (max < 1000 && min > -1000 && copy.contains(loc.groupSeparator())) {

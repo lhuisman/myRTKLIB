@@ -17,40 +17,28 @@ protected:
 
 public slots:
     void btnOkClicked();
-    void roverAntennaPcvClicked();
     void btnAntennaPcvFileClicked();
     void btnDCBFileClicked();
     void btnAntennaPcvViewClicked();
-    void ambiguityResolutionChanged(int);
-    void positionModeChanged(int);
-    void solutionFormatChanged(int);
     void btnLoadClicked();
     void btnSaveClicked();
-    void frequencyChanged();
     void btnReferencePositionClicked();
     void btnRoverPositionClicked();
     void btnStationPositionViewClicked();
     void btnStationPositionFileClicked();
-    void outputHeightClicked();
     void referencePositionTypePChanged(int);
     void roverPositionTypePChanged(int);
     void getPosition(int type, QLineEdit **edit, double *pos);
     void setPosition(int type, QLineEdit **edit, double *pos);
-    void btnFont1Clicked();
-    void btnFont2Clicked();
+    void btnFontPanelClicked();
+    void btnFontSolutionClicked();
     void btnGeoidDataFileClicked();
-    void navSys2Clicked();
-    void baselineConstrainClicked();
     void btnSatellitePcvViewClicked();
     void btnSatellitePcvFileClicked();
     void btnLocalDirectoryClicked();
     void btnEOPFileClicked();
     void btnEOPViewClicked();
     void btnSnrMaskClicked();
-    void navSys6Clicked();
-    void btnFrequencyClicked();
-    void referenceAntennaClicked();
-    void roverAntennaClicked();
 
 private:
     void getOption(void);

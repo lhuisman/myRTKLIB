@@ -128,7 +128,7 @@ void Plot::readSolutionStat(const QStringList &files, int sel)
 // read observation data ----------------------------------------------------
 void Plot::readObservation(const QStringList &files)
 {
-    obs_t obs = { 0, 0, NULL };
+    obs_t obs = {0};
     nav_t nav;
     sta_t sta;
     int nobs;

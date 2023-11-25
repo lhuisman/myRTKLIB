@@ -4,7 +4,11 @@
 #
 #-------------------------------------------------
 
-QT       += core gui widgets quickwidgets
+QT       += core gui widgets
+
+greaterThan(QT_MAJOR_VERSION, 5) {  # QT 6
+    QT += quickwidgets
+}
 
 include(../qtapp.pri)
 
@@ -24,6 +28,7 @@ SOURCES += \
     ../appcmn_qt/mapview.cpp \
     ../appcmn_qt/mapviewopt.cpp \
     ../appcmn_qt/aboutdlg.cpp \
+    ../appcmn_qt/helper.cpp \
     ../appcmn_qt/viewer.cpp \
     ../appcmn_qt/vieweropt.cpp
 
@@ -34,6 +39,7 @@ HEADERS  += \
     ../appcmn_qt/mapviewopt.h \
     ../appcmn_qt/gm_template.h \
     ../appcmn_qt/aboutdlg.h \
+    ../appcmn_qt/helper.h \
     ../appcmn_qt/viewer.h \
     ../appcmn_qt/vieweropt.h
 

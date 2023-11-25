@@ -8,14 +8,10 @@
 #include <QColorDialog>
 #include <QFontDialog>
 
+#include "helper.h"
 #include "viewer.h"
 #include "vieweropt.h"
 
-//---------------------------------------------------------------------------
-QString ViewerOptDialog::color2String(const QColor &c)
-{
-    return QString("rgb(%1,%2,%3)").arg(c.red()).arg(c.green()).arg(c.blue());
-}
 //---------------------------------------------------------------------------
 ViewerOptDialog::ViewerOptDialog(QWidget *parent)
     : QDialog(parent)

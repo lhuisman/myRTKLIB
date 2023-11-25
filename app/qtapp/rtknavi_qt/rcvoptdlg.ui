@@ -20,7 +20,7 @@
    <item>
     <widget class="QLineEdit" name="lEOption">
      <property name="toolTip">
-      <string/>
+      <string>Receiver options</string>
      </property>
     </widget>
    </item>

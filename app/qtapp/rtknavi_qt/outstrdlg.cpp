@@ -6,7 +6,6 @@
 
 #include "rtklib.h"
 #include "serioptdlg.h"
-#include "cmdoptdlg.h"
 #include "fileoptdlg.h"
 #include "tcpoptdlg.h"
 #include "outstrdlg.h"
@@ -30,17 +29,17 @@ OutputStrDialog::OutputStrDialog(QWidget *parent)
     lEFilePath1->setCompleter(fileCompleter);
     lEFilePath2->setCompleter(fileCompleter);
 
-    connect(btnCancel, SIGNAL(clicked(bool)), this, SLOT(reject()));
-    connect(btnFile1, SIGNAL(clicked(bool)), this, SLOT(btnFile1Clicked()));
-    connect(btnFile2, SIGNAL(clicked(bool)), this, SLOT(btnFile2Clicked()));
-    connect(btnKey, SIGNAL(clicked(bool)), this, SLOT(btnKeyClicked()));
-    connect(btnOk, SIGNAL(clicked(bool)), this, SLOT(btnOkClicked()));
-    connect(btnStream1, SIGNAL(clicked(bool)), this, SLOT(btnStream1Clicked()));
-    connect(btnStream2, SIGNAL(clicked(bool)), this, SLOT(btnStream2Clicked()));
-    connect(cBStream1, SIGNAL(currentIndexChanged(int)), this, SLOT(updateEnable()));
-    connect(cBStream2, SIGNAL(currentIndexChanged(int)), this, SLOT(updateEnable()));
-    connect(cBStream1C, SIGNAL(clicked(bool)), this, SLOT(updateEnable()));
-    connect(cBStream2C, SIGNAL(clicked(bool)), this, SLOT(updateEnable()));
+    connect(btnCancel, &QPushButton::clicked, this, &OutputStrDialog::reject);
+    connect(btnFile1, &QPushButton::clicked, this, &OutputStrDialog::btnFile1Clicked);
+    connect(btnFile2, &QPushButton::clicked, this, &OutputStrDialog::btnFile2Clicked);
+    connect(btnKey, &QPushButton::clicked, this, &OutputStrDialog::btnKeyClicked);
+    connect(btnOk, &QPushButton::clicked, this, &OutputStrDialog::btnOkClicked);
+    connect(btnStream1, &QPushButton::clicked, this, &OutputStrDialog::btnStream1Clicked);
+    connect(btnStream2, &QPushButton::clicked, this, &OutputStrDialog::btnStream2Clicked);
+    connect(cBStream1, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &OutputStrDialog::updateEnable);
+    connect(cBStream2, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &OutputStrDialog::updateEnable);
+    connect(cBStream1C, &QCheckBox::clicked, this, &OutputStrDialog::updateEnable);
+    connect(cBStream2C, &QCheckBox::clicked, this, &OutputStrDialog::updateEnable);
 
     cBSwapInterval->setValidator(new QDoubleValidator(this));
 }
@@ -48,9 +47,9 @@ OutputStrDialog::OutputStrDialog(QWidget *parent)
 void OutputStrDialog::showEvent(QShowEvent *event)
 {
     if (event->spontaneous()) return;
-
-    cBStream1C->setChecked(streamC[0]);
-    cBStream2C->setChecked(streamC[1]);
+    
+    cBStream1C->setChecked(streamEnabled[0]);
+    cBStream2C->setChecked(streamEnabled[1]);
     cBStream1->setCurrentIndex(stream[0]);
     cBStream2->setCurrentIndex(stream[1]);
     cBFormat1->setCurrentIndex(format[0]);
@@ -65,8 +64,8 @@ void OutputStrDialog::showEvent(QShowEvent *event)
 //---------------------------------------------------------------------------
 void OutputStrDialog::btnOkClicked()
 {
-    streamC[0] = cBStream1C->isChecked();
-    streamC[1] = cBStream2C->isChecked();
+    streamEnabled[0] = cBStream1C->isChecked();
+    streamEnabled[1] = cBStream2C->isChecked();
     stream[0] = cBStream1->currentIndex();
     stream[1] = cBStream2->currentIndex();
     format[0] = cBFormat1->currentIndex();
@@ -97,32 +96,28 @@ void OutputStrDialog::btnKeyClicked()
 void OutputStrDialog::btnStream1Clicked()
 {
     switch (cBStream1->currentIndex()) {
-    case 0: serialOptions(0, 0); break;
-    case 1: tcpOptions(0, 1); break;
-    case 2: tcpOptions(0, 0); break;
-    case 3: tcpOptions(0, 2); break;
-    case 4: tcpOptions(0, 4); break;
+        case 0: serialOptions(0, 0); break;
+        case 1: tcpOptions(0, 1); break;
+        case 2: tcpOptions(0, 0); break;
+        case 3: tcpOptions(0, 2); break;
+        case 4: tcpOptions(0, 4); break;
     }
 }
 //---------------------------------------------------------------------------
 void OutputStrDialog::btnStream2Clicked()
 {
     switch (cBStream2->currentIndex()) {
-    case 0: serialOptions(1, 0); break;
-    case 1: tcpOptions(1, 1); break;
-    case 2: tcpOptions(1, 0); break;
-    case 3: tcpOptions(1, 2); break;
-    case 4: tcpOptions(0, 4); break;
+        case 0: serialOptions(1, 0); break;
+        case 1: tcpOptions(1, 1); break;
+        case 2: tcpOptions(1, 0); break;
+        case 3: tcpOptions(1, 2); break;
+        case 4: tcpOptions(0, 4); break;
     }
 }
 //---------------------------------------------------------------------------
 QString OutputStrDialog::getFilePath(const QString path)
 {
-    QString file;
-
-    file = path.mid(0, path.indexOf("::"));
-
-    return file;
+    return path.mid(0, path.indexOf("::"));
 }
 //---------------------------------------------------------------------------
 QString OutputStrDialog::setFilePath(const QString p)
@@ -170,7 +165,7 @@ void OutputStrDialog::tcpOptions(int index, int opt)
 void OutputStrDialog::updateEnable(void)
 {
     int ena = (cBStream1C->isChecked() && (cBStream1->currentIndex() == 5)) ||
-          (cBStream2C->isChecked() && (cBStream2->currentIndex() == 5));
+              (cBStream2C->isChecked() && (cBStream2->currentIndex() == 5));
 
     cBStream1->setEnabled(cBStream1C->isChecked());
     cBStream2->setEnabled(cBStream2C->isChecked());

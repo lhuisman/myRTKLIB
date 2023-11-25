@@ -21,12 +21,12 @@ public slots:
     void btnGoogleEarthClick();
     void formatKMLClicked();
     void formatGPXClicked();
-    void updateEnable(void);
+    void updateEnable();
 
 private:
     int execCommand(const QString &cmd, const QStringList &opt);
     void showMessage(const QString &msg);
-    void updateOutputFile(void);
+    void updateOutputFile();
 
 protected:
     void showEvent(QShowEvent*);

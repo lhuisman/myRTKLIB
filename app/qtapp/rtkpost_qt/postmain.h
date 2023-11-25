@@ -101,7 +101,7 @@ private:
 
     ProcessingThread *processingThread;
 
-    void execProcessing (void);
+    void execProcessing();
     int  getOption(prcopt_t &prcopt, solopt_t &solopt, filopt_t &filopt);
     int  obsToNav (const QString &obsfile, QString &navfile);
 	
@@ -111,14 +111,14 @@ private:
     void addHistory(QComboBox *combo);
     int execCommand(const QString &cmd, const QStringList &opt, int show);
 	
-    gtime_t getTimeStart(void);
-    gtime_t getTimeStop(void);
-    void setOutputFile(void);
+    gtime_t getTimeStart();
+    gtime_t getTimeStop();
+    void setOutputFile();
     void setTimeStart(gtime_t time);
     void setTimeStop(gtime_t time);
-    void updateEnable(void);
-    void loadOptions(void);
-    void saveOptions(void);
+    void updateEnable();
+    void loadOptions();
+    void saveOptions();
 	
 public:
     QString iniFile;

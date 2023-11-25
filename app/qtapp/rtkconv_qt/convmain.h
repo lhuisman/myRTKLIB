@@ -64,7 +64,7 @@ protected:
     void dropEvent(QDropEvent *);
 
 public slots:
-    void btnPlotClicked();
+    void showRtkPlot();
     void btnOptionsClicked();
     void btnAboutClicked();
     void btnTimeStartClicked();

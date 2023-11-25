@@ -21,17 +21,39 @@ private:
         int clipPoint(QPoint *p0, int area, QPoint *p1);
 
         QPoint p_;
-        QColor color_;
         QPaintDevice *parent;
-        int mark_, size_, rot_;
         int x, y, width, height;
-        double xCenter, yCenter, xScale, yScale, xTick, yTick;
+        double xCenter, yCenter;  // center coordinate (unit)
+        double xScale, yScale;  // scale factor (unit/pixel)
+        double xTick, yTick;   // grid interval (unit) (0:auto)
 
 public:
         explicit Graph(QPaintDevice *parent);
 
-        int isInArea(QPoint &p);
-        int toPoint(const double &x, const double &y, QPoint &p);
+        enum MarkerTypes {
+            Dot = 0, // (.)
+            Circle = 1, // (o)
+            Rect = 2,  // (#)
+            Cross = 3, // (x)
+            Line = 4, // (-)
+            Plus = 5, // (+)
+            Arrow = 10, // (->)
+            HScale = 11,
+            VScale = 12,
+            Compass = 13
+        };
+        enum LabelPosition {
+            Off = 0,
+            Outer = 1,
+            Inner = 2,
+            OuterRot = 3,
+            InnerRot = 4,
+            Time = 6,
+            Axis = 7
+        };
+
+        bool isInArea(const QPoint &p);
+        int toPoint(double x, double y, QPoint &p);
         int onAxis(const QPoint &p);
         QString numText(double x, double dx);
         QString timeText(double x, double dx);
@@ -40,22 +62,22 @@ public:
         void resize();
         void setPosition(const QPoint &p1, const QPoint &p2);
         void getPosition(QPoint &p1, QPoint &p2);
-        void setCenter(double x, double y);
+        void setCenter(const double x, const double y);
         void getCenter(double &x, double &y);
-        void setRight(double x, double y);
+        void setRight(const double x, const double y);
         void getRight(double &x, double &y);
-        void setScale(double xs, double ys);
+        void setScale(const double xs, const double ys);
         void getScale(double &xs, double &ys);
         void setLimits(const double *xl, const double *yl);
         void getLimits(double *xl, double *yl);
-        void setTick(double xt, double yt);
+        void setTick(const double xt, const double yt);
         void getTick(double &xt, double &yt);
         void drawAxis(QPainter &c,int label, int glabel);
         void drawMark(QPainter &c,const QPoint &p, int mark, const QColor &color, int size, int rot);
         void drawMark(QPainter &c,double x, double y, int mark, const QColor &color, int size, int rot);
         void drawMark(QPainter &c,const QPoint &p, int mark, const QColor &color, const QColor &bgcolor, int size,int rot);
         void drawMark(QPainter &c,double x, double y, int mark, const QColor &color, const QColor &bgcolor,int size, int rot);
-        void drawMarks(QPainter &c,const double *x, const double *y,const QVector<QColor> &colors, int n,
+        void drawMarks(QPainter &c,const double *x, const double *y,const QColor *colors, int n,
 				   int mark, int size, int rot);
         void drawCircle(QPainter &c,const QPoint &p, const QColor &color, int rx, int ry, int style);
         void drawCircle(QPainter &c,double x, double y, const QColor &color, double rx, double ry, int style);
@@ -76,8 +98,12 @@ public:
         void drawSkyPlot(QPainter &c,const QPoint &p, const QColor &color1, const QColor &color2, const QColor &bgcolor, int size);
         void drawSkyPlot(QPainter &c,double x, double y, const QColor &color1, const QColor &color2, const QColor &bgcolor,double size);
 
-        int box, fit, xGrid, yGrid, xLPosition, yLPosition, week;
-        QString title, xLabel, yLabel;
-        QColor color[3];
+        int box;  // show box (0:off, 1:on)
+        int fit;  // fit scale on resize (0:off, 1:on)
+        int xGrid, yGrid;  // show grid (0:off, 1:on)
+        int xLabelPosition, yLabelPosition; // grid label pos (0:off, 1:outer, 2:inner, 3:outer-rot, 4:inner-rot, 5/6:time, 7:axis)
+        int week;  // gpsweek no. for time label
+        QString title, xLabel, yLabel;  // lable string ("":no label)
+        QColor color[3];  // background color, grid color, and title/label color
 };
 #endif

@@ -123,7 +123,7 @@ ProcessingThread::ProcessingThread(QObject *parent) : QThread(parent)
     ts.time = ts.sec = 0;
     te.time = te.sec = 0;
     ti = tu = 0;
-    rov = base = NULL;
+    rov = base = QString();
     for (int i = 0; i < 6; i++) {infile[i] = new char[1024]; infile[i][0] = '\0';};
     outfile[0] = '\0';
 
@@ -134,7 +134,7 @@ ProcessingThread::ProcessingThread(QObject *parent) : QThread(parent)
 ProcessingThread::~ProcessingThread()
 {
     for (int i = 0; i < 6; i++) delete[] infile[i];
-    rov = base = NULL;
+    rov = base = QString();
 }
 void ProcessingThread::addInput(const QString & file) {
     if (file != "") {
@@ -257,7 +257,7 @@ MainForm::MainForm(QWidget *parent)
     connect(cBTimeEnd, &QCheckBox::clicked, this, &MainForm::updateEnable);
     connect(cBTimeIntervalF, &QCheckBox::clicked, this, &MainForm::updateEnable);
     connect(cBTimeUnitF, &QCheckBox::clicked, this, &MainForm::updateEnable);
-    connect(cBInputFile1, &QComboBox::currentIndexChanged, this, &MainForm::setOutputFile);
+    connect(cBInputFile1, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &MainForm::setOutputFile);
     connect(cBOutputDirectoryEnable, &QCheckBox::clicked, this, &MainForm::outputDirectoryEnableClicked);
     connect(lEOutputDirectory, &QLineEdit::editingFinished, this, &MainForm::setOutputFile);
     connect(btnOutputDirectory, &QPushButton::clicked, this, &MainForm::btnOutputDirectoryClicked);
@@ -397,7 +397,11 @@ void  MainForm::dragEnterEvent(QDragEnterEvent *event)
 }
 void  MainForm::dropEvent(QDropEvent *event)
 {
+#if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
     QPointF point = event->position();
+#else
+    QPointF point = event->pos();
+#endif
     int top;
 
     if (!event->mimeData()->hasFormat("text/uri-list")) return;
@@ -752,7 +756,7 @@ void MainForm::outputDirectoryEnableClicked()
     setOutputFile();
 }
 // set output file path -----------------------------------------------------
-void MainForm::setOutputFile(void)
+void MainForm::setOutputFile()
 {
     QString InputFile1_Text = cBInputFile1->currentText();
     QString OutDir_Text = lEOutputDirectory->text();
@@ -780,7 +784,7 @@ void MainForm::setOutputFile(void)
 
 }
 // execute post-processing --------------------------------------------------
-void MainForm::execProcessing(void)
+void MainForm::execProcessing()
 {
     QString InputFile1_Text = cBInputFile1->currentText(), InputFile2_Text = cBInputFile2->currentText();
     QString InputFile3_Text = cBInputFile3->currentText(), InputFile4_Text = cBInputFile4->currentText();
@@ -1115,7 +1119,7 @@ void MainForm::showMessage(const QString &msg)
     lblMessage->setText(msg);
 }
 // get time from time-1 -----------------------------------------------------
-gtime_t MainForm::getTimeStart(void)
+gtime_t MainForm::getTimeStart()
 {
     QDateTime time(dtDateTimeStart->dateTime());
 
@@ -1126,7 +1130,7 @@ gtime_t MainForm::getTimeStart(void)
     return t;
 }
 // get time from time-2 -----------------------------------------------------
-gtime_t MainForm::getTimeStop(void)
+gtime_t MainForm::getTimeStop()
 {
     QDateTime time(dtDateTimeStop->dateTime());
 
@@ -1150,7 +1154,7 @@ void MainForm::setTimeStop(gtime_t time)
     dtDateTimeStop->setDateTime(t);
 }
 // update enable/disable of widgets -----------------------------------------
-void MainForm::updateEnable(void)
+void MainForm::updateEnable()
 {
     bool moder = PMODE_DGPS <= positionMode && positionMode <= PMODE_FIXED;
 
@@ -1175,7 +1179,7 @@ void MainForm::updateEnable(void)
     btnOutputDirectory->setEnabled(cBOutputDirectoryEnable->isChecked());
 }
 // load options from ini file -----------------------------------------------
-void MainForm::loadOptions(void)
+void MainForm::loadOptions()
 {
     QSettings ini(iniFile,QSettings::IniFormat);
 
@@ -1379,7 +1383,7 @@ void MainForm::loadOptions(void)
     textViewer->font.setPointSize(ini.value("viewer/fontsize", 9).toInt());
 }
 // save options to ini file -------------------------------------------------
-void MainForm::saveOptions(void)
+void MainForm::saveOptions()
 {
     QSettings ini(iniFile,QSettings::IniFormat);
 

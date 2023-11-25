@@ -16,25 +16,21 @@ QMarkDialog::QMarkDialog(QWidget *parent)
     : QDialog(parent)
 {
     setupUi(this);
+
     nMark = 1;
-    fixPosition[0]=fixPosition[1]=fixPosition[2]=0.0;
+    fixPosition[0] = fixPosition[1] = fixPosition[2] = 0.0;
     Label1->setText(QString("%%r=%1").arg(nMark, 3, 10, QLatin1Char('0')));
 
-    connect(btnKeyDlg, SIGNAL(clicked(bool)), this, SLOT(btnKeyDlgClicked()));
-    connect(btnOk, SIGNAL(clicked(bool)), this, SLOT(btnOkClicked()));
-    connect(btnCancel, SIGNAL(clicked(bool)), this, SLOT(btnCancelClicked()));
-    connect(cBMarkerNameC, SIGNAL(clicked(bool)), this, SLOT(updateEnable()));
-    connect(rBGo,SIGNAL(toggled(bool)),this,SLOT(updateEnable()));
-    connect(rBStop,SIGNAL(toggled(bool)),this,SLOT(updateEnable()));
-    connect(rBFix,SIGNAL(toggled(bool)),this,SLOT(updateEnable()));
-    connect(btnPosition,SIGNAL(clicked(bool)),this,SLOT(btnPositionClicked()));
+    connect(btnKeyDlg, &QPushButton::clicked, this, &QMarkDialog::btnKeyDlgClicked);
+    connect(btnOk, &QPushButton::clicked, this, &QMarkDialog::btnOkClicked);
+    connect(btnCancel, &QPushButton::clicked, this, &QMarkDialog::close);
+    connect(cBMarkerNameC, &QCheckBox::clicked, this, &QMarkDialog::updateEnable);
+    connect(rBGo, &QRadioButton::toggled, this, &QMarkDialog::updateEnable);
+    connect(rBStop, &QRadioButton::toggled, this, &QMarkDialog::updateEnable);
+    connect(rBFix, &QRadioButton::toggled, this, &QMarkDialog::updateEnable);
+    connect(btnPosition, &QPushButton::clicked, this, &QMarkDialog::btnPositionClicked);
 
     keyDialog = new KeyDialog(this);
-}
-//---------------------------------------------------------------------------
-void QMarkDialog::btnCancelClicked()
-{
-    close();
 }
 //---------------------------------------------------------------------------
 void QMarkDialog::btnOkClicked()
@@ -67,7 +63,7 @@ void QMarkDialog::btnOkClicked()
         nMark++;
         Label1->setText(QString("%%r=%1").arg(nMark, 3, 10, QLatin1Char('0')));
 	}
-    marker = mrkr;
+    name = mrkr;
     comment = cmnt;
 }
 //---------------------------------------------------------------------------
@@ -89,8 +85,8 @@ void QMarkDialog::showEvent(QShowEvent *event)
 void QMarkDialog::updateEnable(void)
 {
     bool ena = positionMode == PMODE_STATIC || positionMode == PMODE_PPP_STATIC ||
-           positionMode == PMODE_KINEMA || positionMode == PMODE_PPP_KINEMA ||
-           positionMode == PMODE_FIXED || positionMode == PMODE_PPP_FIXED;
+               positionMode == PMODE_KINEMA || positionMode == PMODE_PPP_KINEMA ||
+               positionMode == PMODE_FIXED || positionMode == PMODE_PPP_FIXED;
 
     rBStop->setEnabled(ena);
     rBGo->setEnabled(ena);
@@ -114,10 +110,10 @@ void QMarkDialog::btnPositionClicked()
 {
     RefDialog *refDialog =  new RefDialog(this);
 
-    refDialog->position[0]=sBLatitude->value();
-    refDialog->position[1]=sBLongitude->value();
-    refDialog->position[2]=sBHeight->value();
-    refDialog->stationPositionFile=mainForm->optDialog->stationPositionFileF;
+    refDialog->position[0] = sBLatitude->value();
+    refDialog->position[1] = sBLongitude->value();
+    refDialog->position[2] = sBHeight->value();
+    refDialog->stationPositionFile = mainForm->optDialog->stationPositionFileF;
 
     if (refDialog->result() != QDialog::Accepted) return;
 

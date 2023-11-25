@@ -9,7 +9,6 @@
 #include "rtklib.h"
 #include "plotmain.h"
 #include "graph.h"
-#include "refdlg.h"
 #include "mapview.h"
 
 
@@ -120,11 +119,11 @@ void Plot::drawTrack(QPainter &c, int level)
             drawMark(graphT, c, p1, 5, cColor[1], 20, 0);
         }
         if (showGridLabel >= 3) { // circles
-            graphT->xLPosition = 7; graphT->yLPosition = 7;
+            graphT->xLabelPosition = 7; graphT->yLabelPosition = 7;
             graphT->drawCircles(c, showGridLabel == 4);
         }
         else if (showGridLabel >= 1) { // grid
-            graphT->xLPosition = 2; graphT->yLPosition = 4;
+            graphT->xLabelPosition = 2; graphT->yLabelPosition = 4;
             graphT->drawAxis(c, showLabel, showGridLabel == 2);
         }
     }
@@ -431,7 +430,7 @@ void Plot::drawTrackMap(QPainter &c, int level)
 // draw track-points on track-plot ------------------------------------------
 void Plot::drawTrackPoint(QPainter &c, const TIMEPOS *pos, int level, int style)
 {
-    QVector<QColor> color;
+    QColor* color = new QColor[pos->n];
     int i;
 
     trace(3, "DrawTrkPnt: level=%d style=%d\n", level, style);
@@ -446,15 +445,16 @@ void Plot::drawTrackPoint(QPainter &c, const TIMEPOS *pos, int level, int style)
 
     if (level && plotStyle < 2) {
         if (btnShowImage->isChecked()) {
-            for (i = 0; i < pos->n; i++) color.append(cColor[0]);
+            for (i = 0; i < pos->n; i++) color[i] = cColor[0];
             graphT->drawMarks(c, pos->x, pos->y, color, pos->n, 0, markSize + 2, 0);
         }
-        color.clear();
 
-        for (i = 0; i < pos->n; i++) color.append(mColor[style][pos->q[i]]);
+        for (i = 0; i < pos->n; i++) color[i] = mColor[style][pos->q[i]];
 
         graphT->drawMarks(c, pos->x, pos->y, color, pos->n, 0, markSize, 0);
     }
+
+    delete[] color;
 }
 // draw point with label on track-plot --------------------------------------
 void Plot::drawTrackPosition(QPainter &c, const double *rr, int type, int siz,
@@ -640,7 +640,7 @@ void Plot::drawSolution(QPainter &c, int level, int type)
 
     for (i = 0; i < 3; i++) {
         if (!btn[i]->isChecked()) continue;
-        graphG[i]->xLPosition = timeLabel ? (i == j ? 6 : 5) : (i == j ? 1 : 0);
+        graphG[i]->xLabelPosition = timeLabel ? (i == j ? 6 : 5) : (i == j ? 1 : 0);
         graphG[i]->week = week;
         graphG[i]->drawAxis(c, showLabel, showLabel);
     }
@@ -777,9 +777,10 @@ void Plot::DdrawSolutionPoint(QPainter &c, const TIMEPOS *pos, int level, int st
             }
         }
         if (level && plotStyle < 2) {
-            QVector<QColor> color;
-            for (j = 0; j < pos->n; j++) color.append(mColor[style][pos->q[j]]);
+            QColor * color = new QColor[pos->n];
+            for (j = 0; j < pos->n; j++) color[i] = mColor[style][pos->q[j]];
             graphG[i]->drawMarks(c, x, y, color, pos->n, 0, markSize, 0);
+            delete[] color;
         }
     }
     delete [] x;
@@ -854,7 +855,7 @@ void Plot::drawNsat(QPainter &c, int level)
     for (i = 0; i < 3; i++) if (btn[i]->isChecked()) j = i;
     for (i = 0; i < 3; i++) {
         if (!btn[i]->isChecked()) continue;
-        graphG[i]->xLPosition = timeLabel ? (i == j ? 6 : 5) : (i == j ? 1 : 0);
+        graphG[i]->xLabelPosition = timeLabel ? (i == j ? 6 : 5) : (i == j ? 1 : 0);
         graphG[i]->week = week;
         graphG[i]->drawAxis(c, showLabel, showLabel);
     }
@@ -920,9 +921,9 @@ void Plot::drawObservation(QPainter &c, int level)
         sats[observation.data[i].sat - 1] = 1;
     }
     for (i = 0; i < MAXSAT; i++) if (sats[i]) m++;
-
-    graphR->xLPosition = timeLabel ? 6 : 1;
-    graphR->yLPosition = 0;
+    
+    graphR->xLabelPosition = timeLabel ? 6 : 1;
+    graphR->yLabelPosition = 0;
     graphR->week = week;
     graphR->getLimits(xl, yl);
     yl[0] = 0.5;
@@ -1402,9 +1403,9 @@ void Plot::drawDop(QPainter &c, int level)
     int ind = observationIndex, doptype = cBDopType->currentIndex();
 
     trace(3, "DrawDop: level=%d\n", level);
-
-    graphR->xLPosition = timeLabel ? 6 : 1;
-    graphR->yLPosition = 1;
+    
+    graphR->xLabelPosition = timeLabel ? 6 : 1;
+    graphR->yLabelPosition = 1;
     graphR->week = week;
     graphR->getLimits(xl, yl);
     yl[0] = 0.0;
@@ -1607,7 +1608,7 @@ void Plot::drawSnr(QPainter &c, int level)
 
     for (int i = 0; i < 3; i++) {
         if (!btn[i]->isChecked()) continue;
-        graphG[i]->xLPosition = timeLabel ? (i == j ? 6 : 5) : (i == j ? 1 : 0);
+        graphG[i]->xLabelPosition = timeLabel ? (i == j ? 6 : 5) : (i == j ? 1 : 0);
         graphG[i]->week = week;
         graphG[i]->drawAxis(c, showLabel, showLabel);
     }
@@ -1756,8 +1757,8 @@ void Plot::drawSnrE(QPainter &c, int level)
         double xl[2]={-0.001,90.0},yl[2][2]={{10.0,65.0},{-maxMP,maxMP}};
 
         if (!btn[i]->isChecked()) continue;
-        graphE[i]->xLPosition = i == j ? 1 : 0;
-        graphE[i]->yLPosition = 1;
+        graphE[i]->xLabelPosition = i == j ? 1 : 0;
+        graphE[i]->yLabelPosition = 1;
         graphE[i]->setLimits(xl, yl[i]);
         graphE[i]->setTick(0.0, 0.0);
         graphE[i]->drawAxis(c, 1, 1);
@@ -2023,7 +2024,7 @@ void Plot::drawResidual(QPainter &c, int level)
 
     for (int i = 0; i < 3; i++) {
         if (!btn[i]->isChecked()) continue;
-        graphG[i]->xLPosition = timeLabel ? (i == j ? 6 : 5) : (i == j ? 1 : 0);
+        graphG[i]->xLabelPosition = timeLabel ? (i == j ? 6 : 5) : (i == j ? 1 : 0);
         graphG[i]->week = week;
         graphG[i]->drawAxis(c, showLabel, showLabel);
     }
@@ -2160,9 +2161,9 @@ void Plot::drawResidualE(QPainter &c, int level)
         QPoint p1,p2;
         double xl[2]={-0.001,90.0};
         double yl[2][2]={{-maxMP,maxMP},{-maxMP/100.0,maxMP/100.0}};
-
-        graphE[i]->xLPosition=i==j?1:0;
-        graphE[i]->yLPosition=1;
+        
+        graphE[i]->xLabelPosition=i==j?1:0;
+        graphE[i]->yLabelPosition=1;
         graphE[i]->setLimits(xl,yl[i]);
         graphE[i]->setTick(0.0,0.0);
         graphE[i]->drawAxis(c, 1,1);

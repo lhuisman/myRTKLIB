@@ -42,6 +42,7 @@
 #include "mondlg.h"
 #include "svrmain.h"
 #include "mondlg.h"
+#include "helper.h"
 
 //---------------------------------------------------------------------------
 
@@ -60,9 +61,6 @@ extern void settime(gtime_t) {}
 extern void settspan(gtime_t, gtime_t) {}
 }
 
-QString color2String(const QColor &c){
-    return QString("rgb(%1,%2,%3)").arg(c.red()).arg(c.green()).arg(c.blue());
-}
 
 // number to comma-separated number -----------------------------------------
 static void num2cnum(int num, char *str)
@@ -142,13 +140,13 @@ MainForm::MainForm(QWidget *parent)
     connect(btnOutput5, &QPushButton::clicked, this, &MainForm::btnOutputClicked);
     connect(btnOutput6, &QPushButton::clicked, this, &MainForm::btnOutputClicked);
     connect(btnTaskIcon, &QPushButton::clicked, this, &MainForm::btnTaskIconClicked);
-    connect(cBInput, &QComboBox::currentIndexChanged, this, &MainForm::updateEnable);
-    connect(cBOutput1, &QComboBox::currentIndexChanged, this, &MainForm::updateEnable);
-    connect(cBOutput2, &QComboBox::currentIndexChanged, this, &MainForm::updateEnable);
-    connect(cBOutput3, &QComboBox::currentIndexChanged, this, &MainForm::updateEnable);
-    connect(cBOutput4, &QComboBox::currentIndexChanged, this, &MainForm::updateEnable);
-    connect(cBOutput5, &QComboBox::currentIndexChanged, this, &MainForm::updateEnable);
-    connect(cBOutput6, &QComboBox::currentIndexChanged, this, &MainForm::updateEnable);
+    connect(cBInput, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &MainForm::updateEnable);
+    connect(cBOutput1, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &MainForm::updateEnable);
+    connect(cBOutput2, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &MainForm::updateEnable);
+    connect(cBOutput3, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &MainForm::updateEnable);
+    connect(cBOutput4, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &MainForm::updateEnable);
+    connect(cBOutput5, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &MainForm::updateEnable);
+    connect(cBOutput6, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &MainForm::updateEnable);
     connect(btnConv1, &QPushButton::clicked, this, &MainForm::btnConvertClicked);
     connect(btnConv2, &QPushButton::clicked, this, &MainForm::btnConvertClicked);
     connect(btnConv3, &QPushButton::clicked, this, &MainForm::btnConvertClicked);

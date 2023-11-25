@@ -30,7 +30,7 @@ ConvOptDialog::ConvOptDialog(QWidget *parent)
     connect(btnMask, &QPushButton::clicked, this, &ConvOptDialog::btnMaskClicked);
     connect(cBAutoPosition, &QCheckBox::clicked, this, &ConvOptDialog::updateEnable);
     connect(cBRinexFilename, &QCheckBox::clicked, this, &ConvOptDialog::updateEnable);
-    connect(cBRinexVersion, &QComboBox::currentIndexChanged, this, &ConvOptDialog::updateEnable);
+    connect(cBRinexVersion, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &ConvOptDialog::updateEnable);
     connect(btnFcn, &QPushButton::clicked, this, &ConvOptDialog::btnFcnClicked);
     connect(btnFrequencies, &QPushButton::clicked, this, &ConvOptDialog::btnFreqClicked);
 }

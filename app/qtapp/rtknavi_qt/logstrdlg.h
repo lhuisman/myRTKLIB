@@ -24,14 +24,14 @@ protected:
 
 public slots:
     void btnOkClicked();
-    void btnStream1Click();
-    void btnStream2Click();
+    void btnStream1Clicked();
+    void btnStream2Clicked();
     void btnStream3Clicked();
     void btnFile1Clicked();
     void btnFile2Clicked();
     void btnKeyClicked();
     void btnFile3Clicked();
-    void updateEnable(void);
+    void updateEnable();
 
 private:
     QString getFilePath(const QString &path);
@@ -41,7 +41,7 @@ private:
     void tcpOptions(int index, int opt);
 
 public:
-    int streamC[3], stream[3], logTimeTag, logAppend;
+    int streamEnabled[3], stream[3], logTimeTag, logAppend;
     QString paths[3][4], swapInterval;
     QString history[10];
 
