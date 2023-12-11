@@ -1073,7 +1073,7 @@ static void convnav(FILE **ofp, rnxopt_t *opt, strfile_t *str, int *n)
     ts=opt->ts;
     if (ts.time!=0) ts=timeadd(ts,-dtoe);
     if (!screent(str->time,ts,opt->te,0.0)) return;
-    
+
     if (sys==SYS_GPS) {
         if (ofp[1]) {
             outrnxnavb(ofp[1],opt,str->nav->eph+sat-1+MAXSAT*set);
@@ -1317,8 +1317,6 @@ static int convrnx_s(int sess, int format, rnxopt_t *opt, const char *file,
         for (j=0;(type=input_strfile(str))>=-1;j++) {
             
             if (!(j%11)&&(abort=showstat(sess,str->time,str->time,n))) break;
-            
-            if (opt->ts.time&&timediff(str->time,opt->ts)<-opt->ttol) continue;
             if (opt->te.time&&timediff(str->time,opt->te)>-opt->ttol) break;
             
             /* convert message */
