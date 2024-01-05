@@ -90,6 +90,7 @@ FORMS    += \
     markdlg.ui
 
 RESOURCES += \
-    rtknavi_qt.qrc
+    ../appcmn_qt/appcmn_qt.qrc \
+    ../icon/resources.qrc
 
 RC_FILE = rtknavi_qt.rc

@@ -64,7 +64,8 @@ FORMS    += \
     ../appcmn_qt/keydlg.ui \
     mondlg.ui
 
-RESOURCES +=  \
-    strsvr_qt.qrc
+RESOURCES += \
+    ../appcmn_qt/appcmn_qt.qrc \
+    ../icon/resources.qrc
 
 RC_FILE = strsvr_qt.rc

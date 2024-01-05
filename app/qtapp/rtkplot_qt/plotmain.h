@@ -21,7 +21,7 @@
 #define MAXMAPPATH  4096                // max number of map paths
 #define MAXMAPLAYER 12                  // max number of map layers
 
-#define PRGNAME     "RTKPLOT-QT"           // program name
+#define PRGNAME     "RTKPlot-Qt"           // program name
 
 const QChar degreeChar(0260);           // character code of degree (UTF-8)
 const QChar up2Char(0262);              // character code of ^2     (UTF-8)
@@ -124,13 +124,13 @@ protected:
     void mouseDoubleClickEvent(QMouseEvent*);
     void wheelEvent(QWheelEvent*);
     void closeEvent(QCloseEvent*);
-    void keyPressEvent(QKeyEvent *);
+    void keyPressEvent(QKeyEvent*);
     void showEvent(QShowEvent*);
-    void resizeEvent(QResizeEvent *);
+    void resizeEvent(QResizeEvent*);
     void leaveEvent(QEvent*);
-    void dragEnterEvent(QDragEnterEvent *event);
-    void dropEvent(QDropEvent *event);
-    void paintEvent(QPaintEvent *event);
+    void dragEnterEvent(QDragEnterEvent*);
+    void dropEvent(QDropEvent*);
+    void paintEvent(QPaintEvent*);
 
     void mouseMove(QMouseEvent*);
 public slots:
@@ -139,7 +139,7 @@ public slots:
     void menuOpenMapImageClicked();
     void menuOpenShapeClicked();
     void menuOpenObservationClicked();
-    void menuOpenNavigatioClicked();
+    void menuOpenNavigationClicked();
     void menuOpenElevationMaskClicked();
     void menuConnectClicked();
     void menuDisconnectClicked();
@@ -170,8 +170,8 @@ public slots:
     void menuShowMapClicked();
     void menuShowImageClicked();
     void menuShowGridClicked();
-    void menuAnimationStartClicker();
-    void menuAnimationStopClicker();
+    void menuAnimationStartClicked();
+    void menuAnimationStopClicked();
     void menuAboutClicked();
 
     void btnConnectClicked();
@@ -186,9 +186,9 @@ public slots:
     void btnRangeListClicked();
     void btnAnimateClicked();
     void btnFrequencyClicked();
-
-    void plotTypeSChanged();
-    void qFlagChanged();
+    
+    void plotTypeSeletionChanged();
+    void qualityFlagChanged();
     void observationTypeChanged();
     void dopTypeChanged();
     void satelliteListChanged();
@@ -229,12 +229,12 @@ private:
 
     QPixmap buffer;
     QImage mapImage;
-    QImage skyImageI;
-    Graph *graphT;
-    Graph *graphG[3];
-    Graph *graphR;
-    Graph *graphS;
-    Graph *graphE[2];
+    QImage skyImageOriginal;
+    Graph *graphTrack;
+    Graph *graphTriple[3];
+    Graph *graphSingle;
+    Graph *graphSky;
+    Graph *graphDual[2];
     Console *console1, *console2;
     QStringList openFiles;
     QStringList solutionFiles[2];
@@ -249,24 +249,23 @@ private:
     obs_t observation;
     nav_t navigation;
     sta_t station;
-    double *azimuth, *elevtion, *multipath[NFREQ+NEXOBS];
+    double *azimuth, *elevation, *multipath[NFREQ+NEXOBS];
     char streamBuffer[1024];
     int nStreamBuffer;
     QTimer timer;
     QElapsedTimer updateTimer;
     
-    gtime_t oEpoch;
+    gtime_t originEpoch;
     int formWidth, formHeight;
     int connectState, openRaw;
     int nObservation, *indexObservation, observationIndex;
     int week;
     int flush, plotType;
-    int nSolutionF1, nSolutionF2, nObservationF, nNavigationF;
     int satelliteMask[MAXSAT], satelliteSelection[MAXSAT];
-    int simObservation;
+    int simulatedObservation;
     
-    int Drag, Xn, Yn;
-    double X0, Y0, Xc, Yc, Xs, Ys, Xcent, Xcent0;
+    int dragInProgress, dragCurrentX, dragCurrentY;
+    double dragStartX, dragStartY, dragCenterX, dragCenterY, dragScaleX, dragScaleY, centX, dragCentX;
     uint32_t mouseDownTick;
     
     int GEState, GEDataState[2];
@@ -327,8 +326,8 @@ private:
 
     void drawTrack(QPainter &g,int level);
     void drawTrackImage(QPainter &g,int level);
-    void drawTrackMap(QPainter &g,int level);
     void drawTrackPath(QPainter &g,int level);
+    //void drawTrackPath(QPainter &g,int level);
     void drawTrackPoint(QPainter &g,const TIMEPOS *pos, int level, int style);
     void drawTrackPosition(QPainter &g,const double *rr, int type, int siz, QColor color, const QString &label);
     void drawTrackStat(QPainter &g,const TIMEPOS *pos, const QString &header, int p);
@@ -338,16 +337,15 @@ private:
     void drawLabel(Graph *,QPainter &g, const QPoint &p, const QString &label, int ha, int va);
     void drawMark(Graph *,QPainter &g, const QPoint &p, int mark, const QColor &color, int size, int rot);
     void drawSolution(QPainter &g,int level, int type);
-    void DdrawSolutionPoint(QPainter &g,const TIMEPOS *pos, int level, int style);
+    void drawSolutionPoint(QPainter &g,const TIMEPOS *pos, int level, int style);
     void drawSolutionStat(QPainter &g,const TIMEPOS *pos, const QString &unit, int p);
     void drawNsat(QPainter &g,int level);
     void drawResidual(QPainter &g,int level);
     void drawResidualE(QPainter &g,int level);
-    void drawPolyS(Graph *,QPainter &c, double *x, double *y, int n,
-                           const QColor &color, int style);
+    void drawPolyS(Graph *, QPainter &c, double *x, double *y, int n, const QColor &color, int style);
     
     void drawObservation(QPainter &g,int level);
-    void drawObservationSlip(QPainter &g,double *yp);
+    void drawObservationSlips(QPainter &g,double *yp);
     void drawObservationEphemeris(QPainter &g,double *yp);
     void drawSkyImage(QPainter &g,int level);
     void drawSky(QPainter &g,int level);
@@ -355,7 +353,7 @@ private:
     void drawDopStat(QPainter &g,double *dop, int *ns, int n);
     void drawSnr(QPainter &g,int level);
     void drawSnrE(QPainter &g,int level);
-    void drawMpS(QPainter &g,int level);
+    void drawMpSky(QPainter &g,int level);
     
     TIMEPOS *solutionToPosition(solbuf_t *sol, int index, int qflag, int type);
     TIMEPOS *solutionToNsat(solbuf_t *sol, int index, int qflag);
@@ -365,7 +363,7 @@ private:
                                     double *xyzs);
     void calcStats(const double *x, int n, double ref, double &ave,
                                     double &std, double &rms);
-    int fitPosition(gtime_t *time, double *opos, double *ovel);
+    int fitPositions(gtime_t *time, double *opos, double *ovel);
     
     QString latLonString(const double *pos, int ndec);
     QColor observationColor(const obsd_t *obs, double az, double el);
@@ -376,10 +374,10 @@ private:
     int searchPosition(int x, int y);
     void timeSpan(gtime_t *ts, gtime_t *te, double *tint);
     double timePosition(gtime_t time);
-    void timeStream(gtime_t time, int n, int tsys, QString &str);
+    void timeString(gtime_t time, int n, int tsys, QString &str);
     int execCmd(const QString &cmd, const QStringList &opt);
     void showMessage(const QString &msg);
-    void showLegend (QString *msgs);
+    void showLegend (const QStringList &msgs);
     void loadOptions();
     void saveOption();
     
@@ -397,7 +395,7 @@ private:
     VecMapDialog *vecMapDialog;
 
 public:
-    QImage skyImageR;
+    QImage skyImageResampled;
     QString iniFile;
     QString mapImageFile;
     QString skyImageFile;
@@ -434,19 +432,19 @@ public:
     int pointType;
     
     // sky image options
-    int skySize[2], skyDestCorrection, skyElevationMask, skyRes, skyFlip, skyBinarize;
-    double skyCenter[2], skyScale, skyScaleR, skyFOV[3], skyDest[10];
+    int skySize[2], skyDistortionCorrection, skyElevationMask, skyResample, skyFlip, skyBinarize;
+    double skyCenter[2], skyScale, skyScaleR, skyFOV[3], skyDistortion[10];
     double skyBinThres1, skyBinThres2;
     
     // plot options
-    int timeLabel;
+    int timeFormat;
     int latLonFormat;
     int showStats;
     int showSlip;
     int showHalfC;
     int showEphemeris;
     double elevationMask;
-    int elevationMaskP;
+    int elevationMaskEnabled;
     int hideLowSatellites;
     double maxDop, maxMP;
     int navSys;
@@ -465,7 +463,7 @@ public:
     int origin;
     int receiverPosition;
     double ooPosition[3];
-    QColor mColor[2][8]; // {{mark1 0-7},{mark2 0-7}}
+    QColor markerColor[2][8]; // {{mark1 0-7},{mark2 0-7}}
     QColor cColor[4];    // {background,grid,text,line}
     QColor mapColor[MAXMAPLAYER]; // mapcolors line
     QColor mapColorF[MAXMAPLAYER]; // mapcolors fill
@@ -481,14 +479,14 @@ public:
     QString tleSatelliteFile;
     // map view options
     int mapApi;
-    QString mapStreams[6][3],apiKey;
+    QString mapStreams[6][3], apiKey;
     
     QString title;
     QString pointName[MAXWAYPNT];
     double pointPosition[MAXWAYPNT][3];
     int nWayPoint, selectedWayPoint;
     int oPositionType;
-    double oPosition[3], oVelocity[3];
+    double originPosition[3], originVelocity[3];
     
     QString streamHistory [10];
     
@@ -506,7 +504,7 @@ public:
     void readSkyTag(const QString &file);
     void updateSky(void);
     void updatePlot (void);
-    void generateObservationSlip(int *LLI);
+    void generateObservationSlips(int *LLI);
     void readElevationMaskData(const QString &file);
     int getCurrentPosition(double *rr);
     int getCenterPosition(double *rr);

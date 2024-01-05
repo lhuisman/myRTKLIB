@@ -1,5 +1,4 @@
 //---------------------------------------------------------------------------
-#include <stdio.h>
 #define INHIBIT_RTK_LOCK_MACROS
 #include "rtklib.h"
 
@@ -22,8 +21,10 @@ MapOptDialog::MapOptDialog(QWidget* parent)
     : QDialog(parent)
 {
     setupUi(this);
-    connect(btnSave, SIGNAL(clicked(bool)), this, SLOT(btnSaveClicked()));
-    connect(btnClose, SIGNAL(clicked(bool)), this, SLOT(close()));
+    connect(btnSave, &QPushButton::clicked, this, &MapOptDialog::btnSaveClicked);
+    connect(btnClose, &QPushButton::clicked, this, &MapOptDialog::close);
+    connect(cBScaleEqual, &QCheckBox::clicked, this, &MapOptDialog::scaleEqualClicked);
+    connect(btnUpdate, &QPushButton::clicked, this, &MapOptDialog::updateMap);
 }
 //---------------------------------------------------------------------------
 void MapOptDialog::showEvent(QShowEvent*)
@@ -34,9 +35,9 @@ void MapOptDialog::showEvent(QShowEvent*)
 //---------------------------------------------------------------------------
 void MapOptDialog::btnSaveClicked()
 {
-    QString file=plot->mapImageFile;
-	if (file=="") return;
-	file=file+".tag";
+    QString file = plot->mapImageFile;
+    if (file == "") return;
+    file = file + ".tag";
 
     QFile fp(file);
     if (!fp.open(QIODevice::WriteOnly | QIODevice::Text)) {
@@ -44,45 +45,35 @@ void MapOptDialog::btnSaveClicked()
 	}
     QTextStream out(&fp);
     out << QString("%% map image tag file: rtkplot %1 %2\n\n").arg(VER_RTKLIB).arg(PATCH_LEVEL);
-    out << QString("scalex  = %1\n").arg(plot->mapScaleX,0,'g',6);
-    out << QString("scaley  = %1\n").arg(plot->mapScaleEqual?plot->mapScaleX:plot->mapScaleY,0,'g',6);
+    out << QString("scalex  = %1\n").arg(plot->mapScaleX, 0, 'g', 6);
+    out << QString("scaley  = %1\n").arg(plot->mapScaleEqual ? plot->mapScaleX : plot->mapScaleY, 0, 'g', 6);
     out << QString("scaleeq = %1\n").arg(plot->mapScaleEqual);
-    out << QString("lat     = %1\n").arg(plot->mapLatitude,0,'g',9);
-    out << QString("lon     = %1\n").arg(plot->mapLongitude,0,'g',9);
+    out << QString("lat     = %1\n").arg(plot->mapLatitude, 0, 'g', 9);
+    out << QString("lon     = %1\n").arg(plot->mapLongitude, 0, 'g', 9);
 
 }
 //---------------------------------------------------------------------------
 void MapOptDialog::btnCenterClicked()
 {
-    QString s;
-	double rr[3],pos[3];
+    double rr[3], pos[3];
     if (!plot->getCenterPosition(rr)) return;
+
 	ecef2pos(rr,pos);
+
     sBLatitude->setValue(pos[0]*R2D);
     sBLongitude->setValue(pos[1]*R2D);
+
 	updateMap();
 }
 //---------------------------------------------------------------------------
-void MapOptDialog::btnUpdateClicked()
-{
-	updateMap();
-}
-//---------------------------------------------------------------------------
-void MapOptDialog::btnCloseClicked()
-{
-    close();
-}
-//---------------------------------------------------------------------------
-void MapOptDialog::ScaleEqualClicked()
+void MapOptDialog::scaleEqualClicked()
 {
 	updateMap();
 	updateEnable();
 }
 //---------------------------------------------------------------------------
-//---------------------------------------------------------------------------
-void MapOptDialog::updateField(void)
+void MapOptDialog::updateField()
 {
-    QString s;
     setWindowTitle(plot->mapImageFile);
     sBMapSize1->setValue(plot->mapSize[0]);
     sBMapSize2->setValue(plot->mapSize[1]);
@@ -93,7 +84,7 @@ void MapOptDialog::updateField(void)
     cBScaleEqual->setChecked(plot->mapScaleEqual);
 }
 //---------------------------------------------------------------------------
-void MapOptDialog::updateMap(void)
+void MapOptDialog::updateMap()
 {
     plot->mapScaleX=sBScaleX->value();
     plot->mapScaleY=sBScaleY->value();
@@ -103,9 +94,9 @@ void MapOptDialog::updateMap(void)
     plot->updatePlot();
 }
 //---------------------------------------------------------------------------
-void MapOptDialog::updateEnable(void)
+void MapOptDialog::updateEnable()
 {
-    sBScaleY      ->setEnabled(!cBScaleEqual->isChecked());
+    sBScaleY->setEnabled(!cBScaleEqual->isChecked());
 } 
 //---------------------------------------------------------------------------
 

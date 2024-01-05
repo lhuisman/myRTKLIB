@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>746</width>
-    <height>295</height>
+    <width>837</width>
+    <height>411</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -53,14 +53,20 @@
          <string/>
         </property>
         <property name="text">
-         <string>Image Size W/ H (pixels)</string>
+         <string>Image Size Width / Height</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QDoubleSpinBox" name="sBSkySize1">
+       <widget class="QSpinBox" name="sBSkySize1">
         <property name="toolTip">
-         <string/>
+         <string>Sky image width</string>
+        </property>
+        <property name="suffix">
+         <string> px</string>
+        </property>
+        <property name="maximum">
+         <number>1000000</number>
         </property>
        </widget>
       </item>
@@ -81,16 +87,22 @@
        </widget>
       </item>
       <item>
-       <widget class="QDoubleSpinBox" name="sBSkySize2">
+       <widget class="QSpinBox" name="sBSkySize2">
         <property name="toolTip">
-         <string/>
+         <string>Sky image height</string>
+        </property>
+        <property name="suffix">
+         <string> px</string>
+        </property>
+        <property name="maximum">
+         <number>1000000</number>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QCheckBox" name="cBSkyFlip">
         <property name="toolTip">
-         <string/>
+         <string>Flip x-axis</string>
         </property>
         <property name="text">
          <string>Flip</string>
@@ -124,65 +136,9 @@
       <property name="bottomMargin">
        <number>0</number>
       </property>
-      <property name="spacing">
-       <number>0</number>
-      </property>
       <item row="2" column="0">
-       <widget class="QLabel" name="Label6">
-        <property name="toolTip">
-         <string/>
-        </property>
-        <property name="text">
-         <string>Roll</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QDoubleSpinBox" name="sBSkyCenter1">
-        <property name="minimum">
-         <double>-1.000000000000000</double>
-        </property>
-        <property name="maximum">
-         <double>1.000000000000000</double>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QDoubleSpinBox" name="sBSkyFOV1">
-        <property name="toolTip">
-         <string/>
-        </property>
-        <property name="minimum">
-         <double>-180.000000000000000</double>
-        </property>
-        <property name="maximum">
-         <double>180.000000000000000</double>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="Label9">
-        <property name="toolTip">
-         <string/>
-        </property>
-        <property name="text">
-         <string>X</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0" colspan="2">
-       <widget class="QLabel" name="Label7">
-        <property name="toolTip">
-         <string/>
-        </property>
-        <property name="text">
-         <string>Plot Center (pixels)</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0" colspan="7">
-       <widget class="QWidget" name="widget_2" native="true">
-        <layout class="QGridLayout" name="gridLayout_2">
+       <widget class="QWidget" name="widget_5" native="true">
+        <layout class="QGridLayout" name="gridLayout_5">
          <property name="leftMargin">
           <number>0</number>
          </property>
@@ -195,43 +151,49 @@
          <property name="bottomMargin">
           <number>0</number>
          </property>
-         <item row="1" column="6">
-          <widget class="QLabel" name="Label17">
+         <item row="1" column="1">
+          <widget class="QLabel" name="Label12">
            <property name="toolTip">
             <string/>
            </property>
            <property name="text">
-            <string>20</string>
+            <string>70°</string>
            </property>
           </widget>
          </item>
-         <item row="1" column="9">
-          <widget class="QLabel" name="Label19">
+         <item row="2" column="8">
+          <widget class="QDoubleSpinBox" name="sBSkyDest9">
            <property name="toolTip">
-            <string/>
+            <string>Distortion (1 = no distortion)</string>
            </property>
-           <property name="text">
-            <string>0</string>
+           <property name="decimals">
+            <number>1</number>
            </property>
           </widget>
          </item>
-         <item row="1" column="5">
-          <widget class="QLabel" name="Label16">
+         <item row="2" column="0">
+          <widget class="QDoubleSpinBox" name="sBSkyDest1">
            <property name="toolTip">
+            <string>Distortion (1 = no distortion)</string>
+           </property>
+           <property name="suffix">
             <string/>
            </property>
-           <property name="text">
-            <string>30</string>
+           <property name="decimals">
+            <number>1</number>
            </property>
           </widget>
          </item>
-         <item row="1" column="7">
-          <widget class="QLabel" name="Label18">
+         <item row="2" column="7">
+          <widget class="QDoubleSpinBox" name="sBSkyDest8">
            <property name="toolTip">
+            <string>Distortion (1 = no distortion)</string>
+           </property>
+           <property name="suffix">
             <string/>
            </property>
-           <property name="text">
-            <string>10</string>
+           <property name="decimals">
+            <number>1</number>
            </property>
           </widget>
          </item>
@@ -241,37 +203,56 @@
             <string/>
            </property>
            <property name="text">
-            <string>40</string>
+            <string>40°</string>
            </property>
           </widget>
          </item>
-         <item row="1" column="3">
-          <widget class="QLabel" name="Label14">
+         <item row="2" column="1">
+          <widget class="QDoubleSpinBox" name="sBSkyDest2">
+           <property name="toolTip">
+            <string>Distortion (1 = no distortion)</string>
+           </property>
+           <property name="suffix">
+            <string/>
+           </property>
+           <property name="decimals">
+            <number>1</number>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="6">
+          <widget class="QLabel" name="Label17">
            <property name="toolTip">
             <string/>
            </property>
            <property name="text">
-            <string>50</string>
+            <string>20°</string>
            </property>
           </widget>
          </item>
-         <item row="1" column="2">
-          <widget class="QLabel" name="Label13">
+         <item row="2" column="2">
+          <widget class="QDoubleSpinBox" name="sBSkyDest3">
            <property name="toolTip">
+            <string>Distortion (1 = no distortion)</string>
+           </property>
+           <property name="suffix">
             <string/>
            </property>
-           <property name="text">
-            <string>60</string>
+           <property name="decimals">
+            <number>1</number>
            </property>
           </widget>
          </item>
-         <item row="1" column="1">
-          <widget class="QLabel" name="Label12">
+         <item row="2" column="4">
+          <widget class="QDoubleSpinBox" name="sBSkyDest5">
            <property name="toolTip">
+            <string>Distortion (1 = no distortion)</string>
+           </property>
+           <property name="suffix">
             <string/>
            </property>
-           <property name="text">
-            <string>70</string>
+           <property name="decimals">
+            <number>1</number>
            </property>
           </widget>
          </item>
@@ -281,78 +262,107 @@
             <string/>
            </property>
            <property name="text">
-            <string>80</string>
+            <string>80°</string>
            </property>
           </widget>
          </item>
-         <item row="0" column="9">
-          <widget class="QLabel" name="Label20">
+         <item row="2" column="6">
+          <widget class="QDoubleSpinBox" name="sBSkyDest7">
+           <property name="toolTip">
+            <string>Distortion (1 = no distortion)</string>
+           </property>
+           <property name="suffix">
+            <string/>
+           </property>
+           <property name="decimals">
+            <number>1</number>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="8">
+          <widget class="QLabel" name="Label19">
            <property name="toolTip">
             <string/>
            </property>
            <property name="text">
-            <string>(deg)</string>
+            <string>0°</string>
            </property>
           </widget>
          </item>
-         <item row="3" column="0">
-          <widget class="QDoubleSpinBox" name="sBSkyDest1">
-           <property name="decimals">
-            <number>1</number>
+         <item row="1" column="5">
+          <widget class="QLabel" name="Label16">
+           <property name="toolTip">
+            <string/>
+           </property>
+           <property name="text">
+            <string>30°</string>
            </property>
           </widget>
          </item>
-         <item row="3" column="1">
-          <widget class="QDoubleSpinBox" name="sBSkyDest2">
-           <property name="decimals">
-            <number>1</number>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="2">
-          <widget class="QDoubleSpinBox" name="sBSkyDest3">
-           <property name="decimals">
-            <number>1</number>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="3">
+         <item row="2" column="3">
           <widget class="QDoubleSpinBox" name="sBSkyDest4">
+           <property name="toolTip">
+            <string>Distortion (1 = no distortion)</string>
+           </property>
+           <property name="suffix">
+            <string/>
+           </property>
            <property name="decimals">
             <number>1</number>
            </property>
           </widget>
          </item>
-         <item row="3" column="4">
-          <widget class="QDoubleSpinBox" name="sBSkyDest5">
-           <property name="decimals">
-            <number>1</number>
+         <item row="0" column="0" colspan="4">
+          <widget class="QCheckBox" name="cBSkyDestCorrection">
+           <property name="toolTip">
+            <string>Enable sky image distortion correction</string>
+           </property>
+           <property name="text">
+            <string>Pixels from Center - Elevation</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
-         <item row="3" column="5">
+         <item row="1" column="7">
+          <widget class="QLabel" name="Label18">
+           <property name="toolTip">
+            <string/>
+           </property>
+           <property name="text">
+            <string>10°</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="3">
+          <widget class="QLabel" name="Label14">
+           <property name="toolTip">
+            <string/>
+           </property>
+           <property name="text">
+            <string>50°</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="2">
+          <widget class="QLabel" name="Label13">
+           <property name="toolTip">
+            <string/>
+           </property>
+           <property name="text">
+            <string>60°</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="5">
           <widget class="QDoubleSpinBox" name="sBSkyDest6">
-           <property name="decimals">
-            <number>1</number>
+           <property name="toolTip">
+            <string>Distortion (1 = no distortion)</string>
            </property>
-          </widget>
-         </item>
-         <item row="3" column="6">
-          <widget class="QDoubleSpinBox" name="sBSkyDest7">
-           <property name="decimals">
-            <number>1</number>
+           <property name="suffix">
+            <string/>
            </property>
-          </widget>
-         </item>
-         <item row="3" column="7">
-          <widget class="QDoubleSpinBox" name="sBSkyDest8">
-           <property name="decimals">
-            <number>1</number>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="9">
-          <widget class="QDoubleSpinBox" name="sBSkyDest9">
            <property name="decimals">
             <number>1</number>
            </property>
@@ -361,89 +371,209 @@
         </layout>
        </widget>
       </item>
-      <item row="1" column="2">
-       <widget class="QLabel" name="Label5">
-        <property name="toolTip">
-         <string/>
-        </property>
-        <property name="text">
-         <string>Y</string>
-        </property>
+      <item row="1" column="0">
+       <widget class="QWidget" name="widget_4" native="true">
+        <layout class="QGridLayout" name="gridLayout_4">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item row="2" column="0">
+          <widget class="QLabel" name="Label6">
+           <property name="toolTip">
+            <string/>
+           </property>
+           <property name="text">
+            <string>Roll</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QDoubleSpinBox" name="sBSkyFOV1">
+           <property name="toolTip">
+            <string>Rotation of image along roll direction</string>
+           </property>
+           <property name="suffix">
+            <string>°</string>
+           </property>
+           <property name="minimum">
+            <double>-180.000000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>180.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="Label9">
+           <property name="toolTip">
+            <string/>
+           </property>
+           <property name="text">
+            <string>X</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QDoubleSpinBox" name="sBSkyCenter1">
+           <property name="toolTip">
+            <string>Center position of sky image</string>
+           </property>
+           <property name="suffix">
+            <string> px</string>
+           </property>
+           <property name="minimum">
+            <double>-1.000000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>1.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="2">
+          <widget class="QLabel" name="Label3">
+           <property name="toolTip">
+            <string/>
+           </property>
+           <property name="text">
+            <string>Pitch</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="2">
+          <widget class="QLabel" name="Label5">
+           <property name="toolTip">
+            <string/>
+           </property>
+           <property name="text">
+            <string>Y</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="Label7">
+           <property name="toolTip">
+            <string/>
+           </property>
+           <property name="text">
+            <string>Plot Center</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="4">
+          <widget class="QLabel" name="Label4">
+           <property name="toolTip">
+            <string/>
+           </property>
+           <property name="text">
+            <string>Yaw</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="3">
+          <widget class="QDoubleSpinBox" name="sBSkyCenter2">
+           <property name="toolTip">
+            <string>Center position of sky image</string>
+           </property>
+           <property name="suffix">
+            <string> px</string>
+           </property>
+           <property name="minimum">
+            <double>-1.000000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>1.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="3">
+          <widget class="QDoubleSpinBox" name="sBSkyFOV2">
+           <property name="toolTip">
+            <string>Rotation of image along pitch direction</string>
+           </property>
+           <property name="suffix">
+            <string>°</string>
+           </property>
+           <property name="minimum">
+            <double>-180.000000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>180.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="5">
+          <widget class="QDoubleSpinBox" name="sBSkyFOV3">
+           <property name="toolTip">
+            <string>Rotation of image along yaw direction</string>
+           </property>
+           <property name="suffix">
+            <string>°</string>
+           </property>
+           <property name="minimum">
+            <double>-180.000000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>180.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="5">
+          <widget class="QDoubleSpinBox" name="sBSkyScale">
+           <property name="toolTip">
+            <string>Sky image scaling factor</string>
+           </property>
+           <property name="suffix">
+            <string/>
+           </property>
+           <property name="minimum">
+            <double>-1.000000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>1.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="4">
+          <widget class="QLabel" name="Label10">
+           <property name="toolTip">
+            <string/>
+           </property>
+           <property name="text">
+            <string>Scale</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </widget>
       </item>
-      <item row="1" column="3">
-       <widget class="QDoubleSpinBox" name="sBSkyCenter2">
-        <property name="toolTip">
-         <string/>
-        </property>
-        <property name="minimum">
-         <double>-1.000000000000000</double>
-        </property>
-        <property name="maximum">
-         <double>1.000000000000000</double>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="2">
-       <widget class="QLabel" name="Label3">
-        <property name="toolTip">
-         <string/>
-        </property>
-        <property name="text">
-         <string>Pitch</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="3">
-       <widget class="QDoubleSpinBox" name="sBSkyFOV2">
-        <property name="toolTip">
-         <string/>
-        </property>
-        <property name="minimum">
-         <double>-180.000000000000000</double>
-        </property>
-        <property name="maximum">
-         <double>180.000000000000000</double>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="4">
-       <widget class="QLabel" name="Label4">
-        <property name="toolTip">
-         <string/>
-        </property>
-        <property name="text">
-         <string>Yaw</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="5">
-       <widget class="QDoubleSpinBox" name="sBSkyScale">
-        <property name="toolTip">
-         <string/>
-        </property>
-        <property name="minimum">
-         <double>-1.000000000000000</double>
-        </property>
-        <property name="maximum">
-         <double>1.000000000000000</double>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="5">
-       <widget class="QDoubleSpinBox" name="sBSkyFOV3">
-        <property name="toolTip">
-         <string/>
-        </property>
-        <property name="minimum">
-         <double>-180.000000000000000</double>
-        </property>
-        <property name="maximum">
-         <double>180.000000000000000</double>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="0" colspan="6">
+      <item row="4" column="0">
        <widget class="QWidget" name="widget_3" native="true">
         <layout class="QGridLayout" name="gridLayout_3">
          <property name="leftMargin">
@@ -458,23 +588,10 @@
          <property name="bottomMargin">
           <number>0</number>
          </property>
-         <item row="0" column="0">
-          <widget class="QCheckBox" name="cBSkyDestCorrection">
-           <property name="toolTip">
-            <string/>
-           </property>
-           <property name="text">
-            <string>Pixels from Center - Elevation</string>
-           </property>
-           <property name="checked">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
          <item row="1" column="0">
           <widget class="QCheckBox" name="cBSkyElevationMask">
            <property name="toolTip">
-            <string/>
+            <string>Enable elevation mask</string>
            </property>
            <property name="text">
             <string>Elevation Mask</string>
@@ -492,12 +609,15 @@
            <property name="text">
             <string>Resample</string>
            </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
           </widget>
          </item>
          <item row="1" column="2">
           <widget class="QComboBox" name="cBSkyResample">
            <property name="toolTip">
-            <string/>
+            <string>Choose between &quot;No&quot; and &quot;Bilinear&quot; resampling of the sky image</string>
            </property>
            <item>
             <property name="text">
@@ -523,6 +643,9 @@
          </item>
          <item row="1" column="4">
           <widget class="QDoubleSpinBox" name="sBSkyBinThres1">
+           <property name="toolTip">
+            <string>Binarize threshold for brightness</string>
+           </property>
            <property name="maximum">
             <double>1.000000000000000</double>
            </property>
@@ -530,22 +653,15 @@
          </item>
          <item row="1" column="5">
           <widget class="QDoubleSpinBox" name="sBSkyBinThres2">
+           <property name="toolTip">
+            <string>Binarize threshold for color distance</string>
+           </property>
            <property name="maximum">
             <double>1.000000000000000</double>
            </property>
           </widget>
          </item>
         </layout>
-       </widget>
-      </item>
-      <item row="0" column="4" colspan="2">
-       <widget class="QLabel" name="Label10">
-        <property name="toolTip">
-         <string/>
-        </property>
-        <property name="text">
-         <string>Plot Radius (pixels)</string>
-        </property>
        </widget>
       </item>
      </layout>
@@ -575,7 +691,7 @@
       <item>
        <widget class="QPushButton" name="btnSave">
         <property name="toolTip">
-         <string/>
+         <string>Save sky image tag</string>
         </property>
         <property name="text">
          <string>&amp;Save Tag</string>
@@ -585,7 +701,7 @@
       <item>
        <widget class="QPushButton" name="btnLoad">
         <property name="toolTip">
-         <string/>
+         <string>Load sky image tag</string>
         </property>
         <property name="text">
          <string>&amp;Load Tag...</string>
@@ -595,7 +711,7 @@
       <item>
        <widget class="QPushButton" name="btnGenMask">
         <property name="toolTip">
-         <string/>
+         <string>Generate elevation mask from sky image</string>
         </property>
         <property name="text">
          <string>&amp;Gen Mask</string>
@@ -605,7 +721,7 @@
       <item>
        <widget class="QPushButton" name="btnUpdate">
         <property name="toolTip">
-         <string/>
+         <string>Update image</string>
         </property>
         <property name="text">
          <string>&amp;Update</string>
@@ -628,25 +744,7 @@
   </layout>
  </widget>
  <tabstops>
-  <tabstop>sBSkySize1</tabstop>
-  <tabstop>sBSkySize2</tabstop>
   <tabstop>cBSkyFlip</tabstop>
-  <tabstop>sBSkyCenter1</tabstop>
-  <tabstop>sBSkyCenter2</tabstop>
-  <tabstop>sBSkyScale</tabstop>
-  <tabstop>sBSkyFOV1</tabstop>
-  <tabstop>sBSkyFOV2</tabstop>
-  <tabstop>sBSkyFOV3</tabstop>
-  <tabstop>sBSkyDest1</tabstop>
-  <tabstop>sBSkyDest2</tabstop>
-  <tabstop>sBSkyDest3</tabstop>
-  <tabstop>sBSkyDest4</tabstop>
-  <tabstop>sBSkyDest5</tabstop>
-  <tabstop>sBSkyDest6</tabstop>
-  <tabstop>sBSkyDest7</tabstop>
-  <tabstop>sBSkyDest8</tabstop>
-  <tabstop>sBSkyDest9</tabstop>
-  <tabstop>cBSkyDestCorrection</tabstop>
   <tabstop>cBSkyElevationMask</tabstop>
   <tabstop>cBSkyResample</tabstop>
   <tabstop>cBSkyBinarize</tabstop>

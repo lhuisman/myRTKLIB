@@ -29,7 +29,7 @@ void Plot::showMessage(const QString &msg)
 {
     lblMessage1->setText(msg);
     lblMessage1->adjustSize();
-    Panel21->updateGeometry();
+    wgStatus->updateGeometry();
 }
 // execute command ----------------------------------------------------------
 int Plot::execCmd(const QString &cmd, const QStringList &opt)
@@ -41,7 +41,7 @@ void Plot::timeSpan(gtime_t *ts, gtime_t *te, double *tint)
 {
     gtime_t t0 = { 0, 0 };
 
-    trace(3, "TimeSpan\n");
+    trace(3, "timeSpan\n");
 
     *ts = *te = t0; *tint = 0.0;
     if (timeEnabled[0]) *ts = timeStart;
@@ -54,47 +54,43 @@ double Plot::timePosition(gtime_t time)
     double tow;
     int week;
 
-    if (timeLabel <= 1)             // www/ssss or gpst
+    if (timeFormat <= 1)             // www/ssss or gpst
         tow = time2gpst(time, &week);
-    else if (timeLabel == 2)        // utc
+    else if (timeFormat == 2)        // utc
         tow = time2gpst(gpst2utc(time), &week);
     else                            // jst
         tow = time2gpst(timeadd(gpst2utc(time), 9 * 3600.0), &week);
     return tow + (week - week) * 86400.0 * 7;
 }
 // show legand in status-bar ------------------------------------------------
-void Plot::showLegend(QString msgs[])
+void Plot::showLegend(const QStringList &msgs)
 {
-    QLabel *ql[] = { lblQL1, lblQL2, lblQL3, lblQL4, lblQL5, lblQL6, lblQL7 };
-    int i, sel = !btnSolution1->isChecked() && btnSolution2->isChecked() ? 1 : 0;
+    QLabel *ql[] = {lblQL1, lblQL2, lblQL3, lblQL4, lblQL5, lblQL6, lblQL7};
+    int sel = !btnSolution1->isChecked() && btnSolution2->isChecked() ? 1 : 0;
 
-    trace(3, "ShowLegend\n");
+    trace(3, "showLegend\n");
 
-    for (i = 0; i < 7; i++) {
-        if (!msgs || msgs[i].isEmpty()) {
-            ql[i]->setText("");
-            ql[i]->adjustSize();
-        } else {
-            ql[i]->setText(msgs[i]);
-            ql[i]->adjustSize();
-            ql[i]->setStyleSheet(QString("QLabel {color: %1;}").arg(color2String(mColor[sel][i + 1])));
-        }
+    for (int i = 0; (i < 7) & (i < msgs.count()); i++) {
+        ql[i]->setText(msgs[i]);
+        ql[i]->adjustSize();
+        ql[i]->setStyleSheet(QString("QLabel {color: %1;}").arg(color2String(markerColor[sel][i + 1])));
     }
-    Panel21->updateGeometry();
+    wgStatus->updateGeometry();
 }
 // get current cursor position ----------------------------------------------
 int Plot::getCurrentPosition(double *rr)
 {
     sol_t *data;
-    int i, sel = !btnSolution1->isChecked() && btnSolution2->isChecked() ? 1 : 0;
+    int sel = !btnSolution1->isChecked() && btnSolution2->isChecked() ? 1 : 0;
 
-    trace(3, "GetCurrentPos\n");
+    trace(3, "getCurrentPosition\n");
 
     if (PLOT_OBS <= plotType && plotType <= PLOT_DOP) return 0;
     if (!(data = getsol(solutionData + sel, solutionIndex[sel]))) return 0;
     if (data->type) return 0;
 
-    for (i = 0; i < 3; i++) rr[i] = data->rr[i];
+    for (int i = 0; i < 3; i++)
+        rr[i] = data->rr[i];
 
     return 1;
 }
@@ -104,19 +100,21 @@ int Plot::getCenterPosition(double *rr)
     double xc, yc, opos[3], pos[3], enu[3] = { 0 }, dr[3];
     int i, j;
 
-    trace(3, "GetCenterPos\n");
+    trace(3, "getCenterPosition\n");
 
     if (PLOT_OBS <= plotType && plotType <= PLOT_DOP && plotType != PLOT_TRK) return 0;
-    if (norm(oPosition, 3) <= 0.0) return 0;
-
-    graphT->getCenter(xc, yc);
-    ecef2pos(oPosition, opos);
+    if (norm(originPosition, 3) <= 0.0) return 0;
+    
+    graphTrack->getCenter(xc, yc);
+    ecef2pos(originPosition, opos);
     enu[0] = xc;
     enu[1] = yc;
 
+    // iteratively approach center position
     for (i = 0; i < 6; i++) {
         enu2ecef(opos, enu, dr);
-        for (j = 0; j < 3; j++) rr[j] = oPosition[j] + dr[j];
+        for (j = 0; j < 3; j++)
+            rr[j] = originPosition[j] + dr[j];
         ecef2pos(rr, pos);
         enu[2] -= pos[2];
     }
@@ -132,7 +130,7 @@ TIMEPOS *Plot::solutionToPosition(solbuf_t *sol, int index, int qflag, int type)
     double tint, xyz[3], xyzs[4];
     int i;
 
-    trace(3, "SolToPos: n=%d\n", sol->n);
+    trace(3, "solutionToPosition: n=%d\n", sol->n);
 
     pos = new TIMEPOS(index < 0 ? sol->n : 3, 1);
 
@@ -181,7 +179,7 @@ TIMEPOS *Plot::solutionToNsat(solbuf_t *sol, int index, int qflag)
     sol_t *data;
     int i;
 
-    trace(3, "SolToNsat: n=%d\n", sol->n);
+    trace(3, "solutionToNsat: n=%d\n", sol->n);
 
     ns = new TIMEPOS(index < 0 ? sol->n : 3, 1);
 
@@ -203,16 +201,18 @@ TIMEPOS *Plot::solutionToNsat(solbuf_t *sol, int index, int qflag)
 void Plot::positionToXyz(gtime_t time, const double *rr, int type,
             double *xyz)
 {
-    double opos[3], pos[3], r[3], enu[3];
+    double opos[3], pos[3], r[3], enu[3], timeDiff;
     int i;
 
-    trace(4, "PosToXyz:\n");
+    trace(4, "positionToXyz:\n");
 
     if (type == 0) { // xyz
+        if (time.time == 0.0 || originEpoch.time == 0.0) timeDiff = 0;
+        else timeDiff = timediff(time, originEpoch);
+
         for (i = 0; i < 3; i++) {
-            opos[i] = oPosition[i];
-            if (time.time == 0.0 || oEpoch.time == 0.0) continue;
-            opos[i] += oVelocity[i] * timediff(time, oEpoch);
+            opos[i] = originPosition[i];
+            opos[i] += originVelocity[i] * timeDiff;
         }
         for (i = 0; i < 3; i++) r[i] = rr[i] - opos[i];
         ecef2pos(opos, pos);
@@ -232,7 +232,7 @@ void Plot::covarianceToXyz(const double *rr, const float *qr, int type,
 {
     double pos[3], P[9], Q[9];
 
-    trace(4, "CovToXyz:\n");
+    trace(4, "covarianceToXyz:\n");
 
     if (type == 0) { // xyz
         ecef2pos(rr, pos);
@@ -261,7 +261,7 @@ void Plot::calcStats(const double *x, int n,
     double sum = 0.0, sumsq = 0.0;
     int i;
 
-    trace(3, "CalcStats: n=%d\n", n);
+    trace(3, "calcStats: n=%d\n", n);
 
     if (n <= 0) {
         ave = std = rms = 0.0;
@@ -281,62 +281,62 @@ void Plot::calcStats(const double *x, int n,
 QColor Plot::sysColor(int sat)
 {
     switch (satsys(sat, NULL)) {
-    case SYS_GPS: return mColor[0][1];
-    case SYS_GLO: return mColor[0][2];
-    case SYS_GAL: return mColor[0][3];
-    case SYS_QZS: return mColor[0][4];
-    case SYS_CMP: return mColor[0][5];
-    case SYS_IRN: return mColor[0][6];
-    case SYS_SBS: return mColor[0][0];
+    case SYS_GPS: return markerColor[0][1];
+    case SYS_GLO: return markerColor[0][2];
+    case SYS_GAL: return markerColor[0][3];
+    case SYS_QZS: return markerColor[0][4];
+    case SYS_CMP: return markerColor[0][5];
+    case SYS_IRN: return markerColor[0][6];
+    case SYS_SBS: return markerColor[0][0];
     }
-    return mColor[0][0];
+    return markerColor[0][0];
 }
 // get observation data color -----------------------------------------------
 QColor Plot::observationColor(const obsd_t *obs, double az, double el)
 {
     QColor color;
-    QString text = cBObservationType->currentText();
     QString obstype;
     int i, n, freq;
     bool ok;
 
-    trace(4, "ObsColor\n");
+    trace(4, "observationColor\n");
 
     if (!satelliteSelection[obs->sat - 1]) return Qt::black;
 
     if (plotType == PLOT_SNR || plotType == PLOT_SNRE) {
-        text = cBObservationType2->currentText();
-    }
-    obstype=text;
-    if (simObservation) {
+        obstype = cBObservationType2->currentText();
+    } else
+        obstype = cBObservationType->currentText();
+
+    if (simulatedObservation) {
         color = sysColor(obs->sat);
-    } else if (obstype=="ALL") {
-        for (i=n=0;i<NFREQ&&n<5;i++) {
-            if (obs->L[i]!=0.0||obs->P[i]!=0.0) n++;
+    } else if (obstype == "ALL") {
+        for (i = n = 0; i < NFREQ && n < 5; i++) {
+            if (obs->L[i] != 0.0 || obs->P[i] != 0.0) n++;
         }
-        if (n==0) {
+        if (n == 0) {
             return Qt::black;
         }
-        color=mColor[0][6-n];
-    } else if ((freq=obstype.mid(1).toInt(&ok)) && ok) {
-        if (obs->L[freq-1]==0.0&&obs->P[freq-1]==0.0) {
+        color = markerColor[0][3 - n + (n > 2 ? 5 : 0)];
+    } else if ((freq = obstype.mid(1).toInt(&ok)) && ok) {
+        if (obs->L[freq-1] == 0.0 && obs->P[freq-1] == 0.0) {
             return Qt::black;
         }
-        color=snrColor(obs->SNR[freq-1]*SNR_UNIT);
+        color = snrColor(obs->SNR[freq-1] * SNR_UNIT);
     } else {
         for (i = 0; i < NFREQ + NEXOBS; i++) {
             if (!strcmp(code2obs(obs->code[i]), qPrintable(obstype))) break;
         }
-        if (i>=NFREQ+NEXOBS) {
+        if (i >= NFREQ+NEXOBS) {
             return Qt::black;
         }
-        if (obs->L[i]==0.0&&obs->P[i]==0.0) {
+        if (obs->L[i] == 0.0 && obs->P[i] == 0.0) {
             return Qt::black;
         }
-        color = snrColor(obs->SNR[i] * 0.25);
+        color = snrColor(obs->SNR[i] * SNR_UNIT);
     }
-    if (el < elevationMask * D2R || (elevationMaskP && el < elevationMaskData[static_cast<int>(az * R2D + 0.5)]))
-        return hideLowSatellites ? Qt::black : mColor[0][0];
+    if (el < elevationMask * D2R || (elevationMaskEnabled && el < elevationMaskData[static_cast<int>(az * R2D + 0.5)]))
+        return hideLowSatellites ? Qt::black : markerColor[0][0];
     return color;
 }
 // get observation data color -----------------------------------------------
@@ -347,14 +347,14 @@ QColor Plot::snrColor(double snr)
     double a;
     int i;
 
-    if (snr < 25.0) return mColor[0][7];
-    if (snr < 27.5) return mColor[0][5];
-    if (snr > 47.5) return mColor[0][1];
+    if (snr < 25.0) return markerColor[0][7];
+    if (snr < 27.5) return markerColor[0][5];
+    if (snr > 47.5) return markerColor[0][1];
     a = (snr - 27.5) / 5.0;
     i = static_cast<int>(a);
     a -= i;
-    c1 = mColor[0][4 - i];
-    c2 = mColor[0][5 - i];
+    c1 = markerColor[0][4 - i];
+    c2 = markerColor[0][5 - i];   
     r1 = static_cast<uint32_t>(a * c1.red() + (1.0 - a) * c2.red()) & 0xFF;
     g1 = static_cast<uint32_t>(a * c1.green() + (1.0 - a) * c2.green()) & 0xFF;
     b1 = static_cast<uint32_t>(a * c1.blue() + (1.0 - a) * c2.blue()) & 0xFF;
@@ -370,11 +370,11 @@ QColor Plot::mpColor(double mp)
     double a;
     int i;
 
-    colors[4] = mColor[0][5];       /*      mp> 0.6 */
-    colors[3] = mColor[0][4];       /*  0.6>mp> 0.2 */
-    colors[2] = mColor[0][3];       /*  0.2>mp>-0.2 */
-    colors[1] = mColor[0][2];       /* -0.2>mp>-0.6 */
-    colors[0] = mColor[0][1];       /* -0.6>mp      */
+    colors[4] = markerColor[0][5];       /*      mp> 0.6 */
+    colors[3] = markerColor[0][4];       /*  0.6>mp> 0.2 */
+    colors[2] = markerColor[0][3];       /*  0.2>mp>-0.2 */
+    colors[1] = markerColor[0][2];       /* -0.2>mp>-0.6 */
+    colors[0] = markerColor[0][1];       /* -0.6>mp      */
 
     if (mp >= 0.6) return colors[4];
     if (mp <= -0.6) return colors[0];
@@ -395,28 +395,28 @@ int Plot::searchPosition(int x, int y)
     sol_t *data;
     QPoint p(x, y);
     double xp, yp, xs, ys, r, xyz[3];
-    int i, sel = !btnSolution1->isChecked() && btnSolution2->isChecked() ? 1 : 0;
+    int sel = !btnSolution1->isChecked() && btnSolution2->isChecked() ? 1 : 0;
 
-    trace(3, "SearchPos: x=%d y=%d\n", x, y);
+    trace(3, "searchPosition: x=%d y=%d\n", x, y);
 
     if (!btnShowTrack->isChecked() || (!btnSolution1->isChecked() && !btnSolution2->isChecked())) return -1;
-
-    graphT->toPos(lblDisplay->mapFromGlobal(p), xp, yp);
-    graphT->getScale(xs, ys);
+    
+    graphTrack->toPos(lblDisplay->mapFromGlobal(p), xp, yp);
+    graphTrack->getScale(xs, ys);
     r = (markSize / 2 + 2) * xs;
 
-    for (i = 0; (data = getsol(solutionData + sel, i)) != NULL; i++) {
+    for (int i = 0; (data = getsol(solutionData + sel, i)) != NULL; i++) {
         if (cBQFlag->currentIndex() && data->stat != cBQFlag->currentIndex()) continue;
 
         positionToXyz(data->time, data->rr, data->type, xyz);
-        if (xyz[2]<-RE_WGS84) continue;
+        if (xyz[2] < -RE_WGS84) continue;
 
         if (SQR(xp - xyz[0]) + SQR(yp - xyz[1]) <= SQR(r)) return i;
     }
     return -1;
 }
 // generate time-string -----------------------------------------------------
-void Plot::timeStream(gtime_t time, int n, int tsys, QString &str)
+void Plot::timeString(gtime_t time, int n, int tsys, QString &str)
 {
     struct tm *t;
     QString tstr;
@@ -427,20 +427,20 @@ void Plot::timeStream(gtime_t time, int n, int tsys, QString &str)
 
     Q_UNUSED(tsys);
 
-    if (timeLabel == 0) { // www/ssss
+    if (timeFormat == 0) { // www/ssss
         tow = time2gpst(time, &week);
-        tstr = QString("%1/%2").arg(week, 4).arg(tow, (n > 0 ? 6 : 5) + n, 'f', n);
-    } else if (timeLabel == 1) { // gpst
+        tstr = QString("%1/%2s").arg(week, 4).arg(tow, (n > 0 ? 6 : 5) + n, 'f', n);
+    } else if (timeFormat == 1) { // gpst
         time2str(time, temp, n);
         tstr = temp;
         label = " GPST";
-    } else if (timeLabel == 2) { // utc
+    } else if (timeFormat == 2) { // utc
         time2str(gpst2utc(time), temp, n);
         tstr = temp;
         label = " UTC";
     } else { // lt
         time = gpst2utc(time);
-        if (!(t = localtime(&time.time)))tstr = "2000/01/01 00:00:00.0";
+        if (!(t = localtime(&time.time))) tstr = "2000/01/01 00:00:00.0";  // TODO: use Qt to convert it local time convention
         else tstr = QString("%1/%2/%3 %4:%5:%6.%7").arg(t->tm_year + 1900, 4, 10, QChar('0'))
                          .arg(t->tm_mon + 1, 2, 10, QChar('0')).arg(t->tm_mday, 2, 10, QChar('0')).arg(t->tm_hour, 2, 10, QChar('0')).arg(t->tm_min, 2, 10, QChar('0'))
                          .arg(t->tm_sec, 2, 10, QChar('0')).arg(static_cast<int>(time.sec * pow(10.0, n)), n, 10);
@@ -455,14 +455,14 @@ QString Plot::latLonString(const double *pos, int ndec)
     double dms1[3], dms2[3];
 
     if (latLonFormat == 0) {
-        s = QStringLiteral("%1%2%3 %4%5%6").arg(fabs(pos[0] * R2D), ndec + 4, 'f', ndec).arg(degreeChar).arg(pos[0] < 0.0 ? "S" : "N")
-            .arg(fabs(pos[1] * R2D), ndec + 5, 'f', ndec).arg(degreeChar).arg(pos[1] < 0.0 ? "W" : "E");
+        s = QStringLiteral("%1%2%3, %4%5%6").arg(fabs(pos[0] * R2D), ndec + 4, 'f', ndec).arg(degreeChar).arg(pos[0] < 0.0 ? tr("S") : tr("N"))
+                .arg(fabs(pos[1] * R2D), ndec + 5, 'f', ndec).arg(degreeChar).arg(pos[1] < 0.0 ? tr("W") : tr("E"));
     } else {
         deg2dms(pos[0] * R2D, dms1, ndec - 5);
         deg2dms(pos[1] * R2D, dms2, ndec - 5);
-        s = QStringLiteral("%1%2 %3' %4\" %5 %6%7 %8' %9\" %10")
-            .arg(fabs(dms1[0]), 3, 'f', 0).arg(degreeChar).arg(dms1[1], 2, 'f', 0, QChar('0')).arg(dms1[2], ndec - 2, 'f', ndec - 5, QChar('0')).arg(pos[0] < 0.0 ? "S" : "N")
-            .arg(fabs(dms2[0]), 4, 'f', 0).arg(degreeChar).arg(dms2[1], 2, 'f', 0, QChar('0')).arg(dms2[2], ndec - 2, 'f', ndec - 5, QChar('0')).arg(pos[1] < 0.0 ? "W" : "E");
+        s = QStringLiteral("%1%2 %3' %4\" %5, %6%7 %8' %9\" %10")
+                .arg(fabs(dms1[0]), 3, 'f', 0).arg(degreeChar).arg(dms1[1], 2, 'f', 0, QChar('0')).arg(dms1[2], ndec - 2, 'f', ndec - 5, QChar('0')).arg(pos[0] < 0.0 ? tr("S") : tr("N"))
+                .arg(fabs(dms2[0]), 4, 'f', 0).arg(degreeChar).arg(dms2[1], 2, 'f', 0, QChar('0')).arg(dms2[2], ndec - 2, 'f', ndec - 5, QChar('0')).arg(pos[1] < 0.0 ? tr("W") : tr("E"));
     }
     return s;
 }

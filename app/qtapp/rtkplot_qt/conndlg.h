@@ -20,7 +20,7 @@ protected:
     void showEvent(QShowEvent*);
 
 public slots:
-    void btnOkClick();
+    void btnOkClicked();
     void btnOption1Clicked();
     void btnOption2Clicked();
     void btnCommand1Clicked();
@@ -39,7 +39,7 @@ public:
     int stream1, stream2, format1, format2, commandEnable1[2], commandEnable2[2];
     int timeFormat, degFormat, timeoutTime, reconnectTime;
     QString path, paths1[4], paths2[4];
-    QString TcpHistory[MAXHIST];
+    QString tcpHistory[MAXHIST];
     QString commands1[2], commands2[2], fieldSeparator;
 
     explicit ConnectDialog(QWidget *parent=NULL);

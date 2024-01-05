@@ -19,18 +19,17 @@ protected:
     void showEvent(QShowEvent*);
 
 public slots:
-    void BtnOkClick();
-    void TimeStartFClick();
-    void TimeEndFClick();
-    void TimeIntFClick();
+    void btnOkClicked();
+    void btnTimeStartClicked();
+    void btnTimeEndClicked();
 
 private:
-    void UpdateEnable(void);
+    void updateEnable(void);
 
 public:
-    int TimeEna[3], TimeVal[3];
-    gtime_t TimeStart, TimeEnd;
-	double TimeInt;
+    int timeEnabled[3], timeValid[3];
+    gtime_t timeStart, timeEnd;
+    double timeInterval;
 
     explicit SpanDialog(QWidget* parent);
 };

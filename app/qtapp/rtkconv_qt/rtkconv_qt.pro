@@ -59,6 +59,7 @@ FORMS    += \
     ../appcmn_qt/freqdlg.ui
 
 RESOURCES += \
-    rtkconv_qt.qrc
+    ../appcmn_qt/appcmn_qt.qrc \
+    ../icon/resources.qrc
 
 RC_FILE = rtkconv_qt.rc

@@ -15,15 +15,10 @@ protected:
     void showEvent(QShowEvent*);
 
 public slots:
-    void btnCloseClicked();
-    void btnUpdateClicked();
     void btnSaveClicked();
-    void skyResampleChanged();
     void btnLoadClicked();
     void btnGenMaskClicked();
-    void skyElevationMaskClicked();
     void skyDestCorrectionClicked();
-    void skyFlipClicked();
     void skyBinarizeClicked();
     void updateEnable(void);
 

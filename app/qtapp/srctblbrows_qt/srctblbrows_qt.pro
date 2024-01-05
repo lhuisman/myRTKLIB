@@ -52,8 +52,8 @@ FORMS    += \
     ../appcmn_qt/viewer.ui \
     ../appcmn_qt/vieweropt.ui
 
-RESOURCES +=  \
-    srctblbrows_qt.qrc \
-    ../appcmn_qt/appcmn_qt.qrc
+RESOURCES += \
+    ../appcmn_qt/appcmn_qt.qrc \
+    ../icon/resources.qrc
 
 RC_FILE = srctblbrows_qt.rc

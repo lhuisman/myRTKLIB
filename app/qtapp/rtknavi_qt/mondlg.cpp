@@ -334,10 +334,10 @@ void MonitorDialog::setRtk()
     tWConsole->setRowCount(54+NFREQ*2);
     tWConsole->setHorizontalHeaderLabels(header);
 
-    for (int i = 0; i < tWConsole->columnCount() & i < 2; i++)
+    for (int i = 0; (i < tWConsole->columnCount()) && (i < 2); i++)
         tWConsole->setColumnWidth(i, width[i] * fontScale / 96);
 }
-//---------------------------------------------------------------------------
+//--------------------------------------------------------)-------------------
 void MonitorDialog::showRtk()
 {
 	rtk_t rtk;
@@ -391,7 +391,7 @@ void MonitorDialog::showRtk()
         time2str(rtksvr.nav.peph[ne - 1].time, s2, 0);
         time2str(rtksvr.ftime[2], s3, 0);
 	}
-    strncpy(file, rtksvr.files[2], 1024);
+    strncpy(file, rtksvr.files[2], 1023);
 
 	rtksvrunlock(&rtksvr); // unlock
 
@@ -1286,7 +1286,7 @@ void MonitorDialog::setIonUtc()
 
     tWConsole->setColumnCount(2);
     tWConsole->setRowCount(1);
-    for (i = 0; i < tWConsole->columnCount() & i < 2; i++)
+    for (i = 0; (i < tWConsole->columnCount()) && (i < 2); i++)
         tWConsole->setColumnWidth(i, width[i] * fontScale / 96);
     tWConsole->setHorizontalHeaderLabels(header);
 }
@@ -1454,7 +1454,7 @@ void MonitorDialog::showStream()
         tWConsole->setItem(i, j++, new QTableWidgetItem(QString::number(stream[i].inr)));
         tWConsole->setItem(i, j++, new QTableWidgetItem(QString::number(stream[i].outb)));
         tWConsole->setItem(i, j++, new QTableWidgetItem(QString::number(stream[i].outr)));
-        strncpy(path, stream[i].path, 1024);
+        strncpy(path, stream[i].path, 1023);
         char *pp = path;
         if ((p = strchr(path, '@'))) {
             for (q = p - 1; q >= path; q--) if (*q == ':') break;

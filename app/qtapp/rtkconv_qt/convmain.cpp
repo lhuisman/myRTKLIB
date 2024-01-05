@@ -425,10 +425,14 @@ void MainWindow::btnTimeStopClicked()
 // callback on button-input-file --------------------------------------------
 void MainWindow::btnInputFileClicked()
 {
-    inputFile->setCurrentText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("Input RTCM, RCV RAW or RINEX File"), QString(),
-                                             tr("All (*.*);;RTCM 2 (*.rtcm2);;RTCM 3 (*.rtcm3);;NovtAtel (*.gps);;ublox (*.ubx);;SuperStart II (*.log);;"
-                                            "Hemisphere (*.bin);;Javad (*.jps);;RINEX OBS (*.obs *.*O);Septentrio (*.sbf)"))));
-    setOutputFiles(inputFile->currentText());
+    QString filename = QFileDialog::getOpenFileName(this, tr("Input RTCM, RCV RAW or RINEX File"), inputFile->currentText(),
+                                                    tr("All (*.*);;RTCM 2 (*.rtcm2);;RTCM 3 (*.rtcm3);;NovtAtel (*.gps);;ublox (*.ubx);;SuperStart II (*.log);;"
+                                                       "Hemisphere (*.bin);;Javad (*.jps);;RINEX OBS (*.obs *.*O);Septentrio (*.sbf)"));
+
+    if (!filename.isEmpty()) {
+        inputFile->setCurrentText(QDir::toNativeSeparators(filename));
+        setOutputFiles(inputFile->currentText());
+    }
 }
 // callback on output-directory change --------------------------------------
 void MainWindow::outputDirectoryChanged()
@@ -452,27 +456,32 @@ void MainWindow::btnOutputFile1Clicked()
 {
     QString selectedFilter = tr("RINEX OBS (*.obs *.*O)");
 
-    outputFile1->setText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("Output RINEX OBS File"), QString(),
-                                        tr("All (*.*);;RINEX OBS (*.obs *.*O);;RINEX NAV (*.nav *.*N *.*P);;RINEX GNAV (*.gnav *.*G);;RINEX HNAV (*.hnav *.*H);;"
-                                           "RINEX QNAV (*.qnav *.*Q);;RINEX LNAV (*.lnav *.*L);;RINEX CNAV (*.cnav *.*C);;RINEX INAV (*.inav *.*I);;"
-                                           "SBAS Log (*.sbs);;LEX Log (*.lex)"), &selectedFilter)));
+    QString filename = QFileDialog::getOpenFileName(this, tr("Output RINEX OBS File"), outputFile1->text(),
+                                                    tr("All (*.*);;RINEX OBS (*.obs *.*O);;RINEX NAV (*.nav *.*N *.*P);;RINEX GNAV (*.gnav *.*G);;RINEX HNAV (*.hnav *.*H);;"
+                                                       "RINEX QNAV (*.qnav *.*Q);;RINEX LNAV (*.lnav *.*L);;RINEX CNAV (*.cnav *.*C);;RINEX INAV (*.inav *.*I);;"
+                                                       "SBAS Log (*.sbs);;LEX Log (*.lex)"), &selectedFilter);
+
+    if (!filename.isEmpty())
+        outputFile1->setText(QDir::toNativeSeparators(filename));
 }
 // callback on button-output-file-2 -----------------------------------------
 void MainWindow::btnOutputFile2Clicked()
 {
     QString selectedFilter = tr("RINEX NAV (*.nav *.*N *.*P)");
-
-    outputFile2->setText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("Output RINEX NAV File"), QString(),
+    QString filename = QFileDialog::getOpenFileName(this, tr("Output RINEX NAV File"), outputFile2->text(),
                                         tr("All (*.*);;RINEX OBS (*.obs *.*O);;RINEX NAV (*.nav *.*N *.*P);;RINEX GNAV (*.gnav *.*G);;RINEX HNAV (*.hnav *.*H);;"
                                            "RINEX QNAV (*.qnav *.*Q);;RINEX LNAV (*.lnav *.*L);;RINEX CNAV (*.cnav *.*C);;RINEX INAV (*.inav *.*I);;"
-                                           "SBAS Log (*.sbs);;LEX Log (*.lex)"), &selectedFilter)));
+                                           "SBAS Log (*.sbs);;LEX Log (*.lex)"), &selectedFilter);
+
+    if (!filename.isEmpty())
+        outputFile2->setText(QDir::toNativeSeparators(filename));
 }
 // callback on button-output-file-3 -----------------------------------------
 void MainWindow::btnOutputFile3Clicked()
 {
     QString selectedFilter = tr("RINEX GNAV (*.gnav *.*G)");
 
-    outputFile3->setText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("Output RINEX GNAV File"), QString(),
+    outputFile3->setText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("Output RINEX GNAV File"), outputFile3->text(),
                                         tr("All (*.*);;RINEX OBS (*.obs *.*O);;RINEX NAV (*.nav *.*N *.*P);;RINEX GNAV (*.gnav *.*G);;RINEX HNAV (*.hnav *.*H);;"
                                            "RINEX QNAV (*.qnav *.*Q);;RINEX LNAV (*.lnav *.*L);;RINEX CNAV (*.cnav *.*C);;RINEX INAV (*.inav *.*I);;"
                                            "SBAS Log (*.sbs);;LEX Log (*.lex)"), &selectedFilter)));
@@ -482,7 +491,7 @@ void MainWindow::btnOutputFile4Clicked()
 {
     QString selectedFilter = tr("RINEX HNAV (*.hnav *.*H)");
 
-    outputFile4->setText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("Output RINEX HNAV File"), QString(),
+    outputFile4->setText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("Output RINEX HNAV File"), outputFile4->text(),
                                         tr("All (*.*);;RINEX OBS (*.obs *.*O);;RINEX NAV (*.nav *.*N *.*P);;RINEX GNAV (*.gnav *.*G);;RINEX HNAV (*.hnav *.*H);;"
                                            "RINEX QNAV (*.qnav *.*Q);;RINEX LNAV (*.lnav *.*L);;RINEX CNAV (*.cnav *.*C);;RINEX INAV (*.inav *.*I);;"
                                            "SBAS Log (*.sbs);;LEX Log (*.lex)"), &selectedFilter)));
@@ -492,7 +501,7 @@ void MainWindow::btnOutputFile5Clicked()
 {
     QString selectedFilter = tr("RINEX QNAV (*.qnav *.*Q)");
 
-    outputFile5->setText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("Output RINEX QNAV File"), QString(),
+    outputFile5->setText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("Output RINEX QNAV File"), outputFile5->text(),
                                         tr("All (*.*);;RINEX OBS (*.obs *.*O);;RINEX NAV (*.nav *.*N *.*P);;RINEX GNAV (*.gnav *.*G);;RINEX HNAV (*.hnav *.*H);;"
                                            "RINEX QNAV (*.qnav *.*Q);;RINEX LNAV (*.lnav *.*L);;RINEX CNAV (*.cnav *.*C);;RINEX INAV (*.inav *.*I);;"
                                            "SBAS Log (*.sbs);;LEX Log (*.lex)"), &selectedFilter)));
@@ -502,7 +511,7 @@ void MainWindow::btnOutputFile6Clicked()
 {
     QString selectedFilter = tr("RINEX LNAV (*.lnav *.*L)");
 
-    outputFile6->setText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("Output RINEX LNAV File"), QString(),
+    outputFile6->setText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("Output RINEX LNAV File"), outputFile6->text(),
                                         tr("All (*.*);;RINEX OBS (*.obs *.*O);;RINEX NAV (*.nav *.*N *.*P);;RINEX GNAV (*.gnav *.*G);;RINEX HNAV (*.hnav *.*H);;"
                                            "RINEX QNAV (*.qnav *.*Q);;RINEX LNAV (*.lnav *.*L);;RINEX CNAV (*.cnav *.*C);;RINEX INAV (*.inav *.*I);;"
                                            "SBAS Log (*.sbs);;LEX Log (*.lex)"), &selectedFilter)));
@@ -512,7 +521,7 @@ void MainWindow::btnOutputFile7Clicked()
 {
     QString selectedFilter = tr("RINEX CNAV (*.cnav *.*C)");
 
-    outputFile7->setText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("Output SRINEX CNAVFile"), QString(),
+    outputFile7->setText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("Output SRINEX CNAVFile"), outputFile7->text(),
                                         tr("All (*.*);;RINEX OBS (*.obs *.*O);;RINEX NAV (*.nav *.*N *.*P);;RINEX GNAV (*.gnav *.*G);;RINEX HNAV (*.hnav *.*H);;"
                                            "RINEX QNAV (*.qnav *.*Q);;RINEX LNAV (*.lnav *.*L);;RINEX CNAV (*.cnav *.*C);;RINEX INAV (*.inav *.*I);;"
                                            "SBAS Log (*.sbs);;LEX Log (*.lex)"), &selectedFilter)));
@@ -522,7 +531,7 @@ void MainWindow::btnOutputFile8Clicked()
 {
     QString selectedFilter = tr("RINEX INAV (*.inav *.*I)");
 
-    outputFile7->setText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("Output SBAS/LEX Log File"), QString(),
+    outputFile8->setText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("Output SBAS/LEX Log File"), outputFile8->text(),
                                         tr("All (*.*);;RINEX OBS (*.obs *.*O);;RINEX NAV (*.nav *.*N *.*P);;RINEX GNAV (*.gnav *.*G);;RINEX HNAV (*.hnav *.*H);;"
                                            "RINEX QNAV (*.qnav *.*Q);;RINEX LNAV (*.lnav *.*L);;RINEX CNAV (*.cnav *.*C);;RINEX INAV (*.inav *.*I);;"
                                            "SBAS Log (*.sbs);;LEX Log (*.lex)"), &selectedFilter)));
@@ -532,7 +541,7 @@ void MainWindow::btnOutputFile9Clicked()
 {
     QString selectedFilter = tr("SBAS Log (*.sbs)");
 
-    outputFile7->setText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("Output SBAS/LEX Log File"), QString(),
+    outputFile9->setText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("Output SBAS/LEX Log File"), outputFile9->text(),
                                         tr("All (*.*);;RINEX OBS (*.obs *.*O);;RINEX NAV (*.nav *.*N *.*P);;RINEX GNAV (*.gnav *.*G);;RINEX HNAV (*.hnav *.*H);;"
                                            "RINEX QNAV (*.qnav *.*Q);;RINEX LNAV (*.lnav *.*L);;RINEX CNAV (*.cnav *.*C);;RINEX INAV (*.inav *.*I);;"
                                            "SBAS Log (*.sbs);;LEX Log (*.lex)"), &selectedFilter)));
@@ -768,7 +777,7 @@ void MainWindow::convertFile(void)
     conversionThread = new ConversionThread(this);
 
     // recognize input file format
-    strncpy(conversionThread->ifile, qPrintable(inputFile_Text), 1024);
+    strncpy(conversionThread->ifile, qPrintable(inputFile_Text), 1023);
     QFileInfo fi(inputFile_Text);
     if (cBFormat->currentIndex() == 0) { // auto
         if (fi.completeSuffix() == "rtcm2") {
@@ -791,7 +800,7 @@ void MainWindow::convertFile(void)
             conversionThread->format = STRFMT_BINEX;
         } else if (fi.completeSuffix() == "rt17") {
             conversionThread->format = STRFMT_RT17;
-        } else if (fi.completeSuffix() == "sfb") {
+        } else if (fi.completeSuffix() == "sbf") {
             conversionThread->format = STRFMT_SEPT;
         } else if (fi.completeSuffix().toLower() == "obs") {
             conversionThread->format = STRFMT_RINEX;
@@ -854,15 +863,15 @@ void MainWindow::convertFile(void)
         if (startDialog->result() != QDialog::Accepted) return;
         conversionThread->rnxopt.trtcm = startDialog->time;
     }
-    if (outputFile1->isEnabled() && outputFileEnable1->isChecked()) strncpy(conversionThread->ofile[0], qPrintable(outputFile1_Text), 1024);
-    if (outputFile2->isEnabled() && outputFileEnable2->isChecked()) strncpy(conversionThread->ofile[1], qPrintable(outputFile2_Text), 1024);
-    if (outputFile3->isEnabled() && outputFileEnable3->isChecked()) strncpy(conversionThread->ofile[2], qPrintable(outputFile3_Text), 1024);
-    if (outputFile4->isEnabled() && outputFileEnable4->isChecked()) strncpy(conversionThread->ofile[3], qPrintable(outputFile4_Text), 1024);
-    if (outputFile5->isEnabled() && outputFileEnable5->isChecked()) strncpy(conversionThread->ofile[4], qPrintable(outputFile5_Text), 1024);
-    if (outputFile6->isEnabled() && outputFileEnable6->isChecked()) strncpy(conversionThread->ofile[5], qPrintable(outputFile6_Text), 1024);
-    if (outputFile7->isEnabled() && outputFileEnable7->isChecked()) strncpy(conversionThread->ofile[6], qPrintable(outputFile7_Text), 1024);
-    if (outputFile8->isEnabled() && outputFileEnable8->isChecked()) strncpy(conversionThread->ofile[7], qPrintable(outputFile8_Text), 1024);
-    if (outputFile9->isEnabled() && outputFileEnable9->isChecked()) strncpy(conversionThread->ofile[8], qPrintable(outputFile9_Text), 1024);
+    if (outputFile1->isEnabled() && outputFileEnable1->isChecked()) strncpy(conversionThread->ofile[0], qPrintable(outputFile1_Text), 1023);
+    if (outputFile2->isEnabled() && outputFileEnable2->isChecked()) strncpy(conversionThread->ofile[1], qPrintable(outputFile2_Text), 1023);
+    if (outputFile3->isEnabled() && outputFileEnable3->isChecked()) strncpy(conversionThread->ofile[2], qPrintable(outputFile3_Text), 1023);
+    if (outputFile4->isEnabled() && outputFileEnable4->isChecked()) strncpy(conversionThread->ofile[3], qPrintable(outputFile4_Text), 1023);
+    if (outputFile5->isEnabled() && outputFileEnable5->isChecked()) strncpy(conversionThread->ofile[4], qPrintable(outputFile5_Text), 1023);
+    if (outputFile6->isEnabled() && outputFileEnable6->isChecked()) strncpy(conversionThread->ofile[5], qPrintable(outputFile6_Text), 1023);
+    if (outputFile7->isEnabled() && outputFileEnable7->isChecked()) strncpy(conversionThread->ofile[6], qPrintable(outputFile7_Text), 1023);
+    if (outputFile8->isEnabled() && outputFileEnable8->isChecked()) strncpy(conversionThread->ofile[7], qPrintable(outputFile8_Text), 1023);
+    if (outputFile9->isEnabled() && outputFileEnable9->isChecked()) strncpy(conversionThread->ofile[8], qPrintable(outputFile9_Text), 1023);
 
     // check overwrite output file
     for (i = 0; i < 9; i++) {
@@ -887,7 +896,7 @@ void MainWindow::convertFile(void)
     conversionThread->rnxopt.obstype = observationType;
     conversionThread->rnxopt.freqtype = frequencyType;
     for (i = 0; i < 2; i++) sprintf(conversionThread->rnxopt.comment[i], "%.63s", qPrintable(comment[i]));
-    for (i = 0; i < 7; i++) strncpy(conversionThread->rnxopt.mask[i], qPrintable(codeMask[i]), 64);
+    for (i = 0; i < 7; i++) strncpy(conversionThread->rnxopt.mask[i], qPrintable(codeMask[i]), 63);
     conversionThread->rnxopt.autopos = autoPosition;
     conversionThread->rnxopt.phshift = phaseShift;
     conversionThread->rnxopt.halfcyc = halfCycle;

@@ -31,36 +31,50 @@ PlotOptDialog::PlotOptDialog(QWidget *parent)
     fileCompleter->setModel(fileModel);
     lETLEFile->setCompleter(fileCompleter);
     lETLESatelliteFile->setCompleter(fileCompleter);
+    lEShapeFile->setCompleter(fileCompleter);
 
-    connect(btnCancel, SIGNAL(clicked(bool)), this, SLOT(reject()));
-    connect(btnColor1, SIGNAL(clicked(bool)), this, SLOT(btnColor1Clicked()));
-    connect(btnColor2, SIGNAL(clicked(bool)), this, SLOT(btnColor2Clicked()));
-    connect(btnColor3, SIGNAL(clicked(bool)), this, SLOT(btnColor3Clicked()));
-    connect(btnColor4, SIGNAL(clicked(bool)), this, SLOT(btnColor4Clicked()));
-    connect(btnFont, SIGNAL(clicked(bool)), this, SLOT(btnFontClicked()));
-    connect(btnOK, SIGNAL(clicked(bool)), this, SLOT(btnOKClicked()));
-    connect(btnReferencePosition, SIGNAL(clicked(bool)), this, SLOT(btnReferencePositionClicked()));
-    connect(btnTLEFile, SIGNAL(clicked(bool)), this, SLOT(btnTLEFileClicked()));
-    connect(btnTLESatelliteFile, SIGNAL(clicked(bool)), this, SLOT(btnTLESatelliteFileClicked()));
-    connect(btnTLESatelliteView, SIGNAL(clicked(bool)), this, SLOT(btnTLESatelliteViewClicked()));
-    connect(btnTLEView, SIGNAL(clicked(bool)), this, SLOT(btnTLEViewClicked()));
-    connect(btnShapeFile, SIGNAL(clicked(bool)), this, SLOT(btnShapeFileClicked()));
-    connect(cBOrigin, SIGNAL(currentIndexChanged(int)), this, SLOT(originChanged()));
-    connect(cBAutoScale, SIGNAL(currentIndexChanged(int)), this, SLOT(autoScaleChanged()));
-    connect(cBReceiverPosition, SIGNAL(currentIndexChanged(int)), this, SLOT(receiverPositionChanged()));
-    connect(lblMColor1, SIGNAL(clicked(bool)), this, SLOT(mColorClicked()));
-    connect(lblMColor2, SIGNAL(clicked(bool)), this, SLOT(mColorClicked()));
-    connect(lblMColor3, SIGNAL(clicked(bool)), this, SLOT(mColorClicked()));
-    connect(lblMColor4, SIGNAL(clicked(bool)), this, SLOT(mColorClicked()));
-    connect(lblMColor5, SIGNAL(clicked(bool)), this, SLOT(mColorClicked()));
-    connect(lblMColor6, SIGNAL(clicked(bool)), this, SLOT(mColorClicked()));
-    connect(lblMColor7, SIGNAL(clicked(bool)), this, SLOT(mColorClicked()));
-    connect(lblMColor8, SIGNAL(clicked(bool)), this, SLOT(mColorClicked()));
-    connect(lblMColor9, SIGNAL(clicked(bool)), this, SLOT(mColorClicked()));
-    connect(lblMColor10, SIGNAL(clicked(bool)), this, SLOT(mColorClicked()));
-    connect(lblMColor11, SIGNAL(clicked(bool)), this, SLOT(mColorClicked()));
-    connect(lblMColor12, SIGNAL(clicked(bool)), this, SLOT(mColorClicked()));
-    connect(cBTimeSync, SIGNAL(clicked(bool)), this, SLOT(timeSyncClicked()));
+    QAction * acTLEFileOpen = lETLEFile->addAction(QIcon(":/buttons/folder"), QLineEdit::TrailingPosition);
+    acTLEFileOpen->setToolTip(tr("Select TLE file"));
+    QAction * acTLEFileView = lETLEFile->addAction(QIcon(":/buttons/doc"), QLineEdit::TrailingPosition);
+    acTLEFileView->setToolTip(tr("View TLE file"));
+
+    QAction * acTLESatelliteFileOpen = lETLESatelliteFile->addAction(QIcon(":/buttons/folder"), QLineEdit::TrailingPosition);
+    acTLESatelliteFileOpen->setToolTip(tr("Select TLE satellite file"));
+    QAction * acTLESatelliteFileView = lETLESatelliteFile->addAction(QIcon(":/buttons/doc"), QLineEdit::TrailingPosition);
+    acTLESatelliteFileView->setToolTip(tr("View TLE satellite file"));
+
+    QAction * acShapeFileOpen = lEShapeFile->addAction(QIcon(":/buttons/folder"), QLineEdit::TrailingPosition);
+    acShapeFileOpen->setToolTip(tr("Select shape file"));
+
+    connect(btnCancel, &QPushButton::clicked, this, &PlotOptDialog::reject);
+    connect(btnColor1, &QPushButton::clicked, this, &PlotOptDialog::color1Select);
+    connect(btnColor2, &QPushButton::clicked, this, &PlotOptDialog::color2Select);
+    connect(btnColor3, &QPushButton::clicked, this, &PlotOptDialog::color3Select);
+    connect(btnColor4, &QPushButton::clicked, this, &PlotOptDialog::color4Select);
+    connect(btnFont, &QPushButton::clicked, this, &PlotOptDialog::fontSelect);
+    connect(btnOK, &QPushButton::clicked, this, &PlotOptDialog::btnOKClicked);
+    connect(btnReferencePosition, &QPushButton::clicked, this, &PlotOptDialog::referencePositionSelect);
+    connect(acTLEFileOpen, &QAction::triggered, this, &PlotOptDialog::tleFileOpen);
+    connect(acTLEFileView, &QAction::triggered, this, &PlotOptDialog::tleFileView);
+    connect(acTLESatelliteFileOpen, &QAction::triggered, this, &PlotOptDialog::tleSatelliteFileOpen);
+    connect(acTLESatelliteFileView, &QAction::triggered, this, &PlotOptDialog::tleSatelliteFileView);
+    connect(acShapeFileOpen, &QAction::triggered, this, &PlotOptDialog::shapeFileOpen);
+    connect(cBOrigin, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &PlotOptDialog::updateEnable);
+    connect(cBAutoScale, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &PlotOptDialog::updateEnable);
+    connect(cBReceiverPosition, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &PlotOptDialog::updateEnable);
+    connect(tBMColor1, &QToolButton::clicked, this, &PlotOptDialog::markerColorSelect);
+    connect(tBMColor2, &QToolButton::clicked, this, &PlotOptDialog::markerColorSelect);
+    connect(tBMColor3, &QToolButton::clicked, this, &PlotOptDialog::markerColorSelect);
+    connect(tBMColor4, &QToolButton::clicked, this, &PlotOptDialog::markerColorSelect);
+    connect(tBMColor5, &QToolButton::clicked, this, &PlotOptDialog::markerColorSelect);
+    connect(tBMColor6, &QToolButton::clicked, this, &PlotOptDialog::markerColorSelect);
+    connect(tBMColor7, &QToolButton::clicked, this, &PlotOptDialog::markerColorSelect);
+    connect(tBMColor8, &QToolButton::clicked, this, &PlotOptDialog::markerColorSelect);
+    connect(tBMColor9, &QToolButton::clicked, this, &PlotOptDialog::markerColorSelect);
+    connect(tBMColor10, &QToolButton::clicked, this, &PlotOptDialog::markerColorSelect);
+    connect(tBMColor11, &QToolButton::clicked, this, &PlotOptDialog::markerColorSelect);
+    connect(tBMColor12, &QToolButton::clicked, this, &PlotOptDialog::markerColorSelect);
+    connect(cBTimeSync, &QCheckBox::clicked, this, &PlotOptDialog::updateEnable);
 }
 //---------------------------------------------------------------------------
 void PlotOptDialog::showEvent(QShowEvent *event)
@@ -69,7 +83,7 @@ void PlotOptDialog::showEvent(QShowEvent *event)
 
     if (event->spontaneous()) return;
 
-    cBTimeLabel->setCurrentIndex(plot->timeLabel);
+    cBTimeFormat->setCurrentIndex(plot->timeFormat);
     cBLatLonFormat->setCurrentIndex(plot->latLonFormat);
     cBAutoScale->setCurrentIndex(plot->autoScale);
     cBShowStats->setCurrentIndex(plot->showStats);
@@ -89,29 +103,28 @@ void PlotOptDialog::showEvent(QShowEvent *event)
 
     for (int i = 0; i < 8; i++)
         for (int j = 0; j < 2; j++)
-            mColor[j][i] = plot->mColor[j][i];
+            markerColor[j][i] = plot->markerColor[j][i];
 
     for (int i = 0; i < 4; i++)
         cColor[i] = plot->cColor[i];
 
-    lblMColor1->setStyleSheet(QString("background-color: %1;").arg(color2String(plot->mColor[0][1])));
-    lblMColor2->setStyleSheet(QString("background-color: %1;").arg(color2String(plot->mColor[0][2])));
-    lblMColor3->setStyleSheet(QString("background-color: %1;").arg(color2String(plot->mColor[0][3])));
-    lblMColor4->setStyleSheet(QString("background-color: %1;").arg(color2String(plot->mColor[0][4])));
-    lblMColor5->setStyleSheet(QString("background-color: %1;").arg(color2String(plot->mColor[0][5])));
-    lblMColor6->setStyleSheet(QString("background-color: %1;").arg(color2String(plot->mColor[0][6])));
-    lblMColor7->setStyleSheet(QString("background-color: %1;").arg(color2String(plot->mColor[1][1])));
-    lblMColor8->setStyleSheet(QString("background-color: %1;").arg(color2String(plot->mColor[1][2])));
-    lblMColor9->setStyleSheet(QString("background-color: %1;").arg(color2String(plot->mColor[1][3])));
-    lblMColor10->setStyleSheet(QString("background-color: %1;").arg(color2String(plot->mColor[1][4])));
-    lblMColor11->setStyleSheet(QString("background-color: %1;").arg(color2String(plot->mColor[1][5])));
-    lblMColor12->setStyleSheet(QString("background-color: %1;").arg(color2String(plot->mColor[1][6])));
+    tBMColor1->setStyleSheet(QString("background-color: %1;").arg(color2String(plot->markerColor[0][1])));
+    tBMColor2->setStyleSheet(QString("background-color: %1;").arg(color2String(plot->markerColor[0][2])));
+    tBMColor3->setStyleSheet(QString("background-color: %1;").arg(color2String(plot->markerColor[0][3])));
+    tBMColor4->setStyleSheet(QString("background-color: %1;").arg(color2String(plot->markerColor[0][4])));
+    tBMColor5->setStyleSheet(QString("background-color: %1;").arg(color2String(plot->markerColor[0][5])));
+    tBMColor6->setStyleSheet(QString("background-color: %1;").arg(color2String(plot->markerColor[0][6])));
+    tBMColor7->setStyleSheet(QString("background-color: %1;").arg(color2String(plot->markerColor[1][1])));
+    tBMColor8->setStyleSheet(QString("background-color: %1;").arg(color2String(plot->markerColor[1][2])));
+    tBMColor9->setStyleSheet(QString("background-color: %1;").arg(color2String(plot->markerColor[1][3])));
+    tBMColor10->setStyleSheet(QString("background-color: %1;").arg(color2String(plot->markerColor[1][4])));
+    tBMColor11->setStyleSheet(QString("background-color: %1;").arg(color2String(plot->markerColor[1][5])));
+    tBMColor12->setStyleSheet(QString("background-color: %1;").arg(color2String(plot->markerColor[1][6])));
     lblColor1->setStyleSheet(QString("QLabel {background-color: %1;}").arg(color2String(plot->cColor[0])));
     lblColor2->setStyleSheet(QString("QLabel {background-color: %1;}").arg(color2String(plot->cColor[1])));
     lblColor3->setStyleSheet(QString("QLabel {background-color: %1;}").arg(color2String(plot->cColor[2])));
     lblColor4->setStyleSheet(QString("QLabel {background-color: %1;}").arg(color2String(plot->cColor[3])));
 
-    //FontOpt = plot->Font;
     fontOption.setFamily(plot->fontName);
     fontOption.setPixelSize(plot->fontSize);
     updateFont();
@@ -134,7 +147,7 @@ void PlotOptDialog::showEvent(QShowEvent *event)
     cBAnimationCycle->setCurrentText(QString::number(plot->animationCycle));
     sBRefreshCycle->setValue(plot->refreshCycle);
     cBHideLowSatellites->setCurrentIndex(plot->hideLowSatellites);
-    cBElevationMask->setCurrentIndex(plot->elevationMaskP);
+    cBElevationMask->setCurrentText(QString::number(plot->elevationMask));
     lEExcludedSatellites->setText(plot->excludedSatellites);
     sBBufferSize->setValue(plot->rtBufferSize);
     cBTimeSync->setChecked(plot->timeSyncOut);
@@ -144,20 +157,24 @@ void PlotOptDialog::showEvent(QShowEvent *event)
     lETLEFile->setText(plot->tleFile);
     lETLESatelliteFile->setText(plot->tleSatelliteFile);
 
-    for (int i=0;i<cBYRange->count();i++) {
+    for (int i = 0; i < cBYRange->count(); i++) {
             double range;
             bool ok;
             QString unit;
 
-            QString s=cBYRange->itemText(i);
+            QString s = cBYRange->itemText(i);
             QStringList tokens = s.split(' ');
+
             if (tokens.length() != 2) continue;
+
             range = tokens.at(0).toInt(&ok);
-            unit = tokens.at(1);
             if (!ok) continue;
-            if (unit == "cm") range*=0.01;
-            else if (unit == "km") range*=1000.0;
-            if (range==plot->yRange) {
+
+            unit = tokens.at(1);
+            if (unit == "cm") range *= 0.01;
+            else if (unit == "km") range *= 1000.0;
+
+            if (range == plot->yRange) {
                 cBYRange->setCurrentIndex(i);
                 break;
             }
@@ -168,13 +185,9 @@ void PlotOptDialog::showEvent(QShowEvent *event)
 //---------------------------------------------------------------------------
 void PlotOptDialog::btnOKClicked()
 {
-    QString s;
-    double range;
-    bool ok;
-    QString unit;
     int marks[] = { 1, 2, 3, 4, 5, 10, 15, 20 };
 
-    plot->timeLabel = cBTimeLabel->currentIndex();
+    plot->timeFormat = cBTimeFormat->currentIndex();
     plot->latLonFormat = cBLatLonFormat->currentIndex();
     plot->autoScale = cBAutoScale->currentIndex();
     plot->showStats = cBShowStats->currentIndex();
@@ -192,7 +205,7 @@ void PlotOptDialog::btnOKClicked()
 
     for (int i = 0; i < 8; i++)
         for (int j = 0; j < 2; j++)
-            plot->mColor[j][i] = mColor[j][i];
+            plot->markerColor[j][i] = markerColor[j][i];
 
     for (int i = 0; i < 4; i++)
         plot->cColor[i] = cColor[i];
@@ -220,7 +233,7 @@ void PlotOptDialog::btnOKClicked()
     plot->animationCycle = cBAnimationCycle->currentText().toInt();
     plot->refreshCycle = sBRefreshCycle->value();
     plot->hideLowSatellites = cBHideLowSatellites->currentIndex();
-    plot->elevationMaskP = cBElevationMask->currentIndex();
+    plot->elevationMaskEnabled = cBElevationMask->currentIndex();
     plot->rtBufferSize = sBBufferSize->value();
     plot->timeSyncOut = cBTimeSync->isChecked();
     plot->timeSyncPort = sBTimeSync->value();
@@ -230,14 +243,15 @@ void PlotOptDialog::btnOKClicked()
     plot->tleFile = lETLEFile->text();
     plot->tleSatelliteFile = lETLESatelliteFile->text();
 
-    s=cBYRange->currentText();
-    QStringList tokens = s.split(' ');
+    QStringList tokens = cBYRange->currentText().split(' ');
     if (tokens.length() == 2) {
-        range = tokens.at(0).toInt(&ok);
-        unit = tokens.at(1);
+        bool ok;
+        int range = tokens.at(0).toInt(&ok);
+        QString unit = tokens.at(1);
+
         if (ok) {
-            if (unit == "cm") range*=0.01;
-            else if (unit == "km") range*=1000.0;
+            if (unit == "cm") range *= 0.01;
+            else if (unit == "km") range *= 1000.0;
             plot->yRange=range;
         }
     }
@@ -245,36 +259,38 @@ void PlotOptDialog::btnOKClicked()
     accept();
 }
 //---------------------------------------------------------------------------
-void PlotOptDialog::mColorClicked()
+void PlotOptDialog::markerColorSelect()
 {
     QToolButton *button = dynamic_cast<QToolButton *>(QObject::sender());
 
     if (!button) return;
 
     QColorDialog dialog(this);
-    QColor *current = &mColor[0][1];
+    QColor *current;
 
-    if (button == lblMColor1) current = &mColor[0][1];
-    if (button == lblMColor2) current = &mColor[0][2];
-    if (button == lblMColor3) current = &mColor[0][3];
-    if (button == lblMColor4) current = &mColor[0][4];
-    if (button == lblMColor5) current = &mColor[0][5];
-    if (button == lblMColor6) current = &mColor[0][6];
-    if (button == lblMColor7) current = &mColor[1][1];
-    if (button == lblMColor8) current = &mColor[1][2];
-    if (button == lblMColor9) current = &mColor[1][3];
-    if (button == lblMColor10) current = &mColor[1][4];
-    if (button == lblMColor11) current = &mColor[1][5];
-    if (button == lblMColor12) current = &mColor[1][6];
+    if (button == tBMColor1) current = &markerColor[0][1];
+    else if (button == tBMColor2) current = &markerColor[0][2];
+    else if (button == tBMColor3) current = &markerColor[0][3];
+    else if (button == tBMColor4) current = &markerColor[0][4];
+    else if (button == tBMColor5) current = &markerColor[0][5];
+    else if (button == tBMColor6) current = &markerColor[0][6];
+    else if (button == tBMColor7) current = &markerColor[1][1];
+    else if (button == tBMColor8) current = &markerColor[1][2];
+    else if (button == tBMColor9) current = &markerColor[1][3];
+    else if (button == tBMColor10) current = &markerColor[1][4];
+    else if (button == tBMColor11) current = &markerColor[1][5];
+    else if (button == tBMColor12) current = &markerColor[1][6];
+    else return;
     dialog.setCurrentColor(*current);
 
     dialog.exec();
     if (dialog.result() != QDialog::Accepted) return;
+
     button->setStyleSheet(QString("background-color: %1").arg(color2String(dialog.currentColor())));
     *current = dialog.currentColor();
 }
 //---------------------------------------------------------------------------
-void PlotOptDialog::btnColor1Clicked()
+void PlotOptDialog::color1Select()
 {
     QColorDialog dialog(this);
 
@@ -285,7 +301,7 @@ void PlotOptDialog::btnColor1Clicked()
     cColor[0] = dialog.currentColor();
 }
 //---------------------------------------------------------------------------
-void PlotOptDialog::btnColor2Clicked()
+void PlotOptDialog::color2Select()
 {
     QColorDialog dialog(this);
 
@@ -296,7 +312,7 @@ void PlotOptDialog::btnColor2Clicked()
     cColor[1] = dialog.currentColor();
 }
 //---------------------------------------------------------------------------
-void PlotOptDialog::btnColor3Clicked()
+void PlotOptDialog::color3Select()
 {
     QColorDialog dialog(this);
 
@@ -307,7 +323,7 @@ void PlotOptDialog::btnColor3Clicked()
     cColor[2] = dialog.currentColor();
 }
 //---------------------------------------------------------------------------
-void PlotOptDialog::btnColor4Clicked()
+void PlotOptDialog::color4Select()
 {
     QColorDialog dialog(this);
 
@@ -318,7 +334,7 @@ void PlotOptDialog::btnColor4Clicked()
     cColor[3] = dialog.currentColor();
 }
 //---------------------------------------------------------------------------
-void PlotOptDialog::btnFontClicked()
+void PlotOptDialog::fontSelect()
 {
     QFontDialog dialog(this);
 
@@ -327,48 +343,41 @@ void PlotOptDialog::btnFontClicked()
 
     if (dialog.result() != QDialog::Accepted) return;
     fontOption = dialog.currentFont();
+
     updateFont();
 }
 //---------------------------------------------------------------------------
-void PlotOptDialog::btnShapeFileClicked()
+void PlotOptDialog::shapeFileOpen()
 {
-    lEShapeFile->setText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("Open"))));
+    lEShapeFile->setText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("Open"), lEShapeFile->text())));
 }
 //---------------------------------------------------------------------------
-void PlotOptDialog::btnTLEFileClicked()
+void PlotOptDialog::tleFileOpen()
 {
-    lETLEFile->setText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("Open"), QString(), tr("Text Files (*.txt);;Position Files (*.pos *.snx);;All (*.*)"))));
+    lETLEFile->setText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("Open"), lETLEFile->text(), tr("Text Files (*.txt);;Position Files (*.pos *.snx);;All (*.*)"))));
 }
 //---------------------------------------------------------------------------
-void PlotOptDialog::btnTLESatelliteFileClicked()
+void PlotOptDialog::tleSatelliteFileOpen()
 {
-    lETLESatelliteFile->setText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("Open"), QString(), tr("Text Files (*.txt);;Position Files (*.pos *.snx);;All (*.*)"))));
+    lETLESatelliteFile->setText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("Open"), lETLESatelliteFile->text(), tr("Text Files (*.txt);;Position Files (*.pos *.snx);;All (*.*)"))));
 }
 //---------------------------------------------------------------------------
-void PlotOptDialog::btnReferencePositionClicked()
+void PlotOptDialog::referencePositionSelect()
 {
     refDialog->roverPosition[0] = sBReferencePosition1->value();
     refDialog->roverPosition[1] = sBReferencePosition2->value();
     refDialog->roverPosition[2] = sBReferencePosition3->value();
+
     refDialog->move(pos().x() + size().width() / 2 - refDialog->size().width() / 2,
             pos().y() + size().height() / 2 - refDialog->size().height() / 2);
-    refDialog->options=1;
-    refDialog->exec();
 
+    refDialog->options = 1;
+    refDialog->exec();
     if (refDialog->result() != QDialog::Accepted) return;
+
     sBReferencePosition1->setValue(refDialog->position[0]);
     sBReferencePosition2->setValue(refDialog->position[1]);
     sBReferencePosition3->setValue(refDialog->position[2]);
-}
-//---------------------------------------------------------------------------
-void PlotOptDialog::autoScaleChanged()
-{
-    updateEnable();
-}
-//---------------------------------------------------------------------------
-void PlotOptDialog::originChanged()
-{
-    updateEnable();
 }
 //---------------------------------------------------------------------------
 void PlotOptDialog::updateFont(void)
@@ -387,12 +396,7 @@ void PlotOptDialog::updateEnable(void)
     sBTimeSync->setEnabled(cBTimeSync->isChecked());
 }
 //---------------------------------------------------------------------------
-void PlotOptDialog::receiverPositionChanged()
-{
-    updateEnable();
-}
-//---------------------------------------------------------------------------
-void PlotOptDialog::btnTLEViewClicked()
+void PlotOptDialog::tleFileView()
 {
     TextViewer *viewer;
     QString file = lETLEFile->text();
@@ -404,7 +408,7 @@ void PlotOptDialog::btnTLEViewClicked()
     viewer->read(file);
 }
 //---------------------------------------------------------------------------
-void PlotOptDialog::btnTLESatelliteViewClicked()
+void PlotOptDialog::tleSatelliteFileView()
 {
     TextViewer *viewer;
     QString file = lETLESatelliteFile->text();
@@ -414,10 +418,5 @@ void PlotOptDialog::btnTLESatelliteViewClicked()
     viewer->setWindowTitle(file);
     viewer->show();
     viewer->read(file);
-}
-//---------------------------------------------------------------------------
-void PlotOptDialog::timeSyncClicked()
-{
-    updateEnable();
 }
 //---------------------------------------------------------------------------

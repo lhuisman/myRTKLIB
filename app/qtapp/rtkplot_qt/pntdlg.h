@@ -17,8 +17,6 @@ protected:
 public slots:
     void btnDeleteClicked();
     void btnAddClicked();
-    void btnUpdateClicked();
-    void pntListSetEditText();
     void pntListClicked();
     void pntListDblClicked(QTableWidgetItem *w);
 

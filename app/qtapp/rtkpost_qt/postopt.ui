@@ -63,7 +63,7 @@
       <string/>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="TabSheet1">
       <property name="toolTip">
@@ -1935,7 +1935,7 @@
              <string/>
             </property>
             <property name="text">
-             <string>Code/Carrier-Phase Error Ratio L1/L2L5</string>
+             <string>Code/Carrier-Phase Error Ratio L1/L2/L5</string>
             </property>
            </widget>
           </item>
@@ -1971,7 +1971,7 @@
              <string/>
             </property>
             <property name="text">
-             <string>Carrier-Phase Error a+b/sinEl</string>
+             <string>Carrier-Phase Error a+b / sinEl</string>
             </property>
            </widget>
           </item>

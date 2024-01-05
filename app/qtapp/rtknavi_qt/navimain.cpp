@@ -441,7 +441,7 @@ void MainWindow::showRtkPlot()
     }
 
     opts << QString(" -p tcpcli://localhost:%1 -t \"%2 %3\"").arg(monitorPortOpen)
-          .arg(windowTitle()).arg(": RTKPLOT QT");
+          .arg(windowTitle()).arg(": RTKPlot Qt");
 
     if (!execCommand(cmd1, opts, 1) && !execCommand(cmd2, opts, 1) && !execCommand(cmd3, opts, 1))
         QMessageBox::critical(this, tr("Error"), tr("error: rtkplot execution"));
@@ -2080,7 +2080,7 @@ void MainWindow::drawTrack(QPainter &c, int id, QPaintDevice *plot)
     }
 
     // draw scale
-    graph->getPosition(p1, p2);
+    graph->getExtent(p1, p2);
     graph->getTick(xt, yt);
     graph->getScale(sx, sy);
     p2.rx() -= 35;
@@ -2323,7 +2323,7 @@ void MainWindow::loadNavigation(nav_t *nav)
     for (i = 0; i < 2 * MAXSAT; i++) {
         if ((str = settings.value(QString("navi/eph_%1").arg(i, 2)).toString()).isEmpty()) continue;
         nav->eph[i] = eph0;
-        strncpy(buff, qPrintable(str), 2048);
+        strncpy(buff, qPrintable(str), 2047);
         if (!(p = strchr(buff, ','))) continue;
         *p = '\0';
         if (!(nav->eph[i].sat = satid2no(buff))) continue;

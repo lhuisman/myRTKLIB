@@ -767,7 +767,7 @@ void OptDialog::saveOptions(const QString &file)
     prcopt.tropopt = cBTroposphereOption->currentIndex();
     prcopt.sateph = cBSatelliteEphemeris->currentIndex();
     if (lEExcludedSatellites->text() != "") {
-        strncpy(buff, qPrintable(ExSats_Text), 1024);
+        strncpy(buff, qPrintable(ExSats_Text), 1023);
         for (p = strtok(buff, " "); p; p = strtok(NULL, " ")) {
             if (*p == '+') {
                 ex = 2; p++;
@@ -827,7 +827,7 @@ void OptDialog::saveOptions(const QString &file)
     solopt.times = cBTimeFormat->currentIndex() == 0 ? 0 : cBTimeFormat->currentIndex() - 1;
     solopt.timeu = sBTimeDecimal->value();
     solopt.degf = cBLatLonFormat->currentIndex();
-    strncpy(solopt.sep, qPrintable(FieldSep_Text), 64);
+    strncpy(solopt.sep, qPrintable(FieldSep_Text), 63);
     solopt.outhead = cBOutputHeader->currentIndex();
     solopt.outopt = cBOutputOptions->currentIndex();
     prcopt.outsingle = cBOutputSingle->currentIndex();
@@ -854,8 +854,8 @@ void OptDialog::saveOptions(const QString &file)
     prcopt.prn[3] = sBProcessNoise4->value();
     prcopt.prn[4] = sBProcessNoise5->value();
 
-    if (cBRoverAntennaPcv->isChecked()) strncpy(prcopt.anttype[0], qPrintable(RovAnt_Text), 64);
-    if (cBReferenceAntennaPcv->isChecked()) strncpy(prcopt.anttype[1], qPrintable(RefAnt_Text), 64);
+    if (cBRoverAntennaPcv->isChecked()) strncpy(prcopt.anttype[0], qPrintable(RovAnt_Text), 63);
+    if (cBReferenceAntennaPcv->isChecked()) strncpy(prcopt.anttype[1], qPrintable(RefAnt_Text), 63);
     prcopt.antdel[0][0] = sBRoverAntennaE->value();
     prcopt.antdel[0][1] = sBRoverAntennaN->value();
     prcopt.antdel[0][2] = sBRoverAntennaU->value();
@@ -870,18 +870,18 @@ void OptDialog::saveOptions(const QString &file)
     if (prcopt.rovpos == 0) getPosition(cBRoverPositionType->currentIndex(), editu, prcopt.ru);
     if (prcopt.refpos == 0) getPosition(cBReferencePositionType->currentIndex(), editr, prcopt.rb);
 
-    strncpy(prcopt.rnxopt[0], qPrintable(RnxOpts1_Text), 256);
-    strncpy(prcopt.rnxopt[1], qPrintable(RnxOpts2_Text), 256);
-    strncpy(prcopt.pppopt, qPrintable(PPPOpts_Text), 256);
+    strncpy(prcopt.rnxopt[0], qPrintable(RnxOpts1_Text), 255);
+    strncpy(prcopt.rnxopt[1], qPrintable(RnxOpts2_Text), 255);
+    strncpy(prcopt.pppopt, qPrintable(PPPOpts_Text), 255);
 
-    strncpy(filopt.satantp, qPrintable(SatPcvFile_Text), 1024);
-    strncpy(filopt.rcvantp, qPrintable(AntPcvFile_Text), 1024);
-    strncpy(filopt.stapos, qPrintable(lEStationPositionFile_Text), 1024);
-    strncpy(filopt.geoid, qPrintable(GeoidDataFile_Text), 1024);
-    strncpy(filopt.eop, qPrintable(EOPFile_Text), 1024);
-    strncpy(filopt.dcb, qPrintable(DCBFile_Text), 1024);
-    strncpy(filopt.blq, qPrintable(BLQFile_Text), 1024);
-    strncpy(filopt.iono, qPrintable(IonoFile_Text), 1024);
+    strncpy(filopt.satantp, qPrintable(SatPcvFile_Text), 1023);
+    strncpy(filopt.rcvantp, qPrintable(AntPcvFile_Text), 1023);
+    strncpy(filopt.stapos, qPrintable(lEStationPositionFile_Text), 1023);
+    strncpy(filopt.geoid, qPrintable(GeoidDataFile_Text), 1023);
+    strncpy(filopt.eop, qPrintable(EOPFile_Text), 1023);
+    strncpy(filopt.dcb, qPrintable(DCBFile_Text), 1023);
+    strncpy(filopt.blq, qPrintable(BLQFile_Text), 1023);
+    strncpy(filopt.iono, qPrintable(IonoFile_Text), 1023);
 
     time2str(utc2gpst(timeget()), s, 0);
     sprintf(comment, "rtkpost_qt options (%s, v.%s %s)", s, VER_RTKLIB, PATCH_LEVEL);

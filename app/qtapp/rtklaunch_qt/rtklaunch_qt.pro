@@ -25,8 +25,7 @@ FORMS    += \
     launchoptdlg.ui
 
 RESOURCES += \
-    rtklaunch_qt.qrc
-
-RC_FILE = rtklaunch_qt.rc
+    ../appcmn_qt/appcmn_qt.qrc \
+    ../icon/resources.qrc
 
 CONFIG += c++11

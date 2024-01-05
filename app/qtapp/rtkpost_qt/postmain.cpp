@@ -138,7 +138,7 @@ ProcessingThread::~ProcessingThread()
 }
 void ProcessingThread::addInput(const QString & file) {
     if (file != "") {
-        strncpy(infile[n++], qPrintable(file), 1024);
+        strncpy(infile[n++], qPrintable(file), 1023);
     }
 }
 void ProcessingThread::run()
@@ -831,7 +831,7 @@ void MainForm::execProcessing()
     if (InputFile6_Text != "") {
         processingThread->addInput(InputFile6_Text);
     }
-    strncpy(processingThread->outfile, qPrintable(OutputFile_Text), 1024);
+    strncpy(processingThread->outfile, qPrintable(OutputFile_Text), 1023);
 
     // confirm overwrite
     if (!cBTimeStart->isChecked() || !cBTimeEnd->isChecked()) {
@@ -957,19 +957,19 @@ int MainForm::getOption(prcopt_t &prcopt, solopt_t &solopt, filopt_t &filopt)
     else prcopt.refpos = referencePositionType - 2;
 
     if (roverAntennaPcv) {
-        strncpy(prcopt.anttype[0], qPrintable(roverAntenna), 64);
+        strncpy(prcopt.anttype[0], qPrintable(roverAntenna), 63);
         prcopt.antdel[0][0] = roverAntennaE;
         prcopt.antdel[0][1] = roverAntennaN;
         prcopt.antdel[0][2] = roverAntennaU;
     }
     if (referenceAntennaPcv) {
-        strncpy(prcopt.anttype[1], qPrintable(referenceAntenna), 64);
+        strncpy(prcopt.anttype[1], qPrintable(referenceAntenna), 63);
         prcopt.antdel[1][0] = referenceAntennaE;
         prcopt.antdel[1][1] = referenceAntennaN;
         prcopt.antdel[1][2] = referenceAntennaU;
     }
     if (excludedSatellites != "") { // excluded satellites
-        strncpy(buff, qPrintable(excludedSatellites), 1024);
+        strncpy(buff, qPrintable(excludedSatellites), 1023);
         for (p = strtok(buff, " "); p ; p = strtok(NULL, " ")) {
             if (*p == '+') {ex = 2; p++;} else ex = 1;
             if (!(sat = satid2no(p))) continue;
@@ -977,9 +977,9 @@ int MainForm::getOption(prcopt_t &prcopt, solopt_t &solopt, filopt_t &filopt)
         }
     }
 
-    strncpy(prcopt.rnxopt[0], qPrintable(rnxOptions1), 256);
-    strncpy(prcopt.rnxopt[1], qPrintable(rnxOptions2), 256);
-    strncpy(prcopt.pppopt, qPrintable(pppOptions), 256);
+    strncpy(prcopt.rnxopt[0], qPrintable(rnxOptions1), 255);
+    strncpy(prcopt.rnxopt[1], qPrintable(rnxOptions2), 255);
+    strncpy(prcopt.pppopt, qPrintable(pppOptions), 255);
 
     // solution options
     solopt.posf = solutionFormat;
@@ -997,18 +997,18 @@ int MainForm::getOption(prcopt_t &prcopt, solopt_t &solopt, filopt_t &filopt)
     solopt.solstatic = solutionStatic;
     solopt.sstat = debugStatus;
     solopt.trace = debugTrace;
-    strncpy(solopt.sep, fieldSeperator != "" ? qPrintable(fieldSeperator) : " ", 64);
-    strncpy(solopt.prog, qPrintable(QString("%1 ver.%2 %3").arg(PRGNAME).arg(VER_RTKLIB).arg(PATCH_LEVEL)), 64);
+    strncpy(solopt.sep, fieldSeperator != "" ? qPrintable(fieldSeperator) : " ", 63);
+    strncpy(solopt.prog, qPrintable(QString("%1 ver.%2 %3").arg(PRGNAME).arg(VER_RTKLIB).arg(PATCH_LEVEL)), 63);
 
     // file options
-    strncpy(filopt.satantp, qPrintable(satellitePcvFile), 1024);
-    strncpy(filopt.rcvantp, qPrintable(antennaPcvFile), 1024);
-    strncpy(filopt.stapos, qPrintable(stationPositionFile), 1024);
-    strncpy(filopt.geoid, qPrintable(geoidDataFile), 1024);
-    strncpy(filopt.iono, qPrintable(ionosphereFile), 1024);
-    strncpy(filopt.eop, qPrintable(eopFile), 1024);
-    strncpy(filopt.dcb, qPrintable(dcbFile), 1024);
-    strncpy(filopt.blq, qPrintable(blqFile), 1024);
+    strncpy(filopt.satantp, qPrintable(satellitePcvFile), 1023);
+    strncpy(filopt.rcvantp, qPrintable(antennaPcvFile), 1023);
+    strncpy(filopt.stapos, qPrintable(stationPositionFile), 1023);
+    strncpy(filopt.geoid, qPrintable(geoidDataFile), 1023);
+    strncpy(filopt.iono, qPrintable(ionosphereFile), 1023);
+    strncpy(filopt.eop, qPrintable(eopFile), 1023);
+    strncpy(filopt.dcb, qPrintable(dcbFile), 1023);
+    strncpy(filopt.blq, qPrintable(blqFile), 1023);
 
     return 1;
 }
@@ -1046,15 +1046,15 @@ QString MainForm::filePath(const QString &file)
     while ((p = roverList.indexOf("\n", p)) != -1){
         if ((p < roverList.length()) && (roverList.at(p) != '#')) break;
     }
-    if (p != -1) strncpy(rov, qPrintable(roverList.mid(p)), 256);
-    else strncpy(rov, qPrintable(roverList), 256);
+    if (p != -1) strncpy(rov, qPrintable(roverList.mid(p)), 255);
+    else strncpy(rov, qPrintable(roverList), 255);
 
     p = 0;
     while ((p = baseList.indexOf("\n", p)) != -1){
         if ((p < baseList.length()) && (baseList.at(p) != '#')) break;
     }
-    if (p != -1) strncpy(base, qPrintable(baseList.mid(p)), 256);
-    else strncpy(base, qPrintable(roverList), 256);
+    if (p != -1) strncpy(base, qPrintable(baseList.mid(p)), 255);
+    else strncpy(base, qPrintable(roverList), 255);
 
     reppath(qPrintable(file), path, ts, rov, base);
 

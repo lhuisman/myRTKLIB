@@ -22,8 +22,8 @@ FileSelDialog::FileSelDialog(QWidget *parent)
     dirModel->setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
 
 #ifdef FLOATING_DIRSELECTOR
-    DirSelector = new QTreeView(0);
-    DirSelector->setWindowFlags(Qt::Window | Qt::X11BypassWindowManagerHint | Qt::FramelessWindowHint);
+    directorySelector = new QTreeView(0);
+    directorySelector->setWindowFlags(Qt::Window | Qt::X11BypassWindowManagerHint | Qt::FramelessWindowHint);
 #else
     directorySelector = new QTreeView(this);
 #endif
@@ -36,12 +36,12 @@ FileSelDialog::FileSelDialog(QWidget *parent)
     fileModel->setNameFilterDisables(false);
     lVFileList->setModel(fileModel);
 
-    connect(cBDriveSelect, SIGNAL(currentIndexChanged(int)), this, SLOT(driveSelectionChanged()));
-    connect(directorySelector, SIGNAL(clicked(QModelIndex)), this, SLOT(directroySelectChanged(QModelIndex)));
-    connect(directorySelector, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(directorySelectSelected(QModelIndex)));
-    connect(btnDirectorySelect, SIGNAL(clicked(bool)), this, SLOT(btnDirectorySelectClicked()));
-    connect(lVFileList, SIGNAL(clicked(QModelIndex)), this, SLOT(fileListClicked(QModelIndex)));
-    connect(cBFilter, SIGNAL(currentIndexChanged(int)), this, SLOT(filterClicked()));
+    connect(cBDriveSelect, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &FileSelDialog::driveSelectionChanged);
+    connect(directorySelector, &QTreeView::clicked, this, &FileSelDialog::directroySelectChanged);
+    connect(directorySelector, &QTreeView::doubleClicked, this, &FileSelDialog::directorySelectSelected);
+    connect(btnDirectorySelect, &QPushButton::clicked, this, &FileSelDialog::btnDirectorySelectClicked);
+    connect(lVFileList, &QListView::clicked, this, &FileSelDialog::fileListClicked);
+    connect(cBFilter, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &FileSelDialog::filterClicked);
 }
 //---------------------------------------------------------------------------
 FileSelDialog::~FileSelDialog()
@@ -55,14 +55,14 @@ void FileSelDialog::showEvent(QShowEvent *event)
 
     QFileInfoList drives = QDir::drives();
     if (drives.size() > 1 && drives.at(0).filePath() != "/") {
-        Panel1->setVisible(true);
+        wgDrivePanel->setVisible(true);
         cBDriveSelect->clear();
 
         foreach(const QFileInfo &drive, drives) {
             cBDriveSelect->addItem(drive.filePath());
         }
     } else {
-        Panel1->setVisible(false); // do not show drive selection on unix
+        wgDrivePanel->setVisible(false); // do not show drive selection on unix
     }
     if (directory == "") directory = drives.at(0).filePath();
 
@@ -85,9 +85,9 @@ void FileSelDialog::driveSelectionChanged()
 void FileSelDialog::btnDirectorySelectClicked()
 {
 #ifdef FLOATING_DIRSELECTOR
-    QPoint pos = Panel5->mapToGlobal(BtnDirSel->pos());
-    pos.rx() += BtnDirSel->width() - DirSelector->width();
-    pos.ry() += BtnDirSel->height();
+    QPoint pos = Panel5->mapToGlobal(btnDirectorySelect->pos());
+    pos.rx() += btnDirectorySelect->width() - directorySelector->width();
+    pos.ry() += btnDirectorySelect->height();
 
     DirSelector->move(pos);
 #endif

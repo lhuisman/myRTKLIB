@@ -47,7 +47,7 @@ FORMS    += \
     ../appcmn_qt/timedlg.ui
 
 RESOURCES += \
-    rtkget_qt.qrc
-
+    ../appcmn_qt/appcmn_qt.qrc \
+    ../icon/resources.qrc
 
 RC_FILE = rtkget_qt.rc

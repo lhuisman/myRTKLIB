@@ -513,13 +513,13 @@ void MainForm::serverStart(void)
     }
 
     streamTypes[0] = itype[type[0]->currentIndex()];
-    strncpy(pths[0], qPrintable(paths[0][type[0]->currentIndex()]), 1024);
-    strncpy(logs[0], type[0]->currentIndex()>5 || !pathEnabled[0]?"":qPrintable(pathLog[0]), 1024);
+    strncpy(pths[0], qPrintable(paths[0][type[0]->currentIndex()]), 1023);
+    strncpy(logs[0], type[0]->currentIndex()>5 || !pathEnabled[0]?"":qPrintable(pathLog[0]), 1023);
 
     for (int i = 1; i < MAXSTR; i++) {
         streamTypes[i] = otype[type[i]->currentIndex()];
-        strncpy(pths[i], !type[i]->currentIndex() ? "" : qPrintable(paths[i][type[i]->currentIndex() - 1]), 1024);
-        strncpy(logs[i], !pathEnabled[i] ? "" : qPrintable(pathLog[i]), 1024);
+        strncpy(pths[i], !type[i]->currentIndex() ? "" : qPrintable(paths[i][type[i]->currentIndex() - 1]), 1023);
+        strncpy(logs[i], !pathEnabled[i] ? "" : qPrintable(pathLog[i]), 1023);
     }
 
     // get start and period commands
@@ -528,14 +528,14 @@ void MainForm::serverStart(void)
         if (streamTypes[i] == STR_SERIAL) {
             cmds[i] = new char[1024];
             cmds_periodic[i] = new char[1024];
-            if (commandsEnabled[i][0]) strncpy(cmds[i], qPrintable(commands[i][0]), 1024);
-            if (commandsEnabled[i][2]) strncpy(cmds_periodic[i], qPrintable(commands[i][2]), 1024);
+            if (commandsEnabled[i][0]) strncpy(cmds[i], qPrintable(commands[i][0]), 1023);
+            if (commandsEnabled[i][2]) strncpy(cmds_periodic[i], qPrintable(commands[i][2]), 1023);
         }
         else if (streamTypes[i] == STR_TCPCLI || streamTypes[i] == STR_NTRIPCLI) {
             cmds[i] = new char[1024];
             cmds_periodic[i] = new char[1024];
-            if (commandsEnabledTcp[i][0]) strncpy(cmds[i], qPrintable(commandsTcp[i][0]), 1024);
-            if (commandsEnabledTcp[i][2]) strncpy(cmds_periodic[i], qPrintable(commandsTcp[i][2]), 1024);
+            if (commandsEnabledTcp[i][0]) strncpy(cmds[i], qPrintable(commandsTcp[i][0]), 1023);
+            if (commandsEnabledTcp[i][2]) strncpy(cmds_periodic[i], qPrintable(commandsTcp[i][2]), 1023);
         }
     }
 
@@ -550,7 +550,7 @@ void MainForm::serverStart(void)
     // check for file overwrite
     for (int i = 1; i < MAXSTR; i++) { // for each out stream
         if (streamTypes[i] != STR_FILE) continue;
-        strncpy(filepath, pths[i], 1024);
+        strncpy(filepath, pths[i], 1023);
         if (strstr(filepath, "::A")) continue;
         if ((p = strstr(filepath, "::"))) *p = '\0';
         if (!QFile::exists(filepath)) continue;
@@ -558,7 +558,7 @@ void MainForm::serverStart(void)
     }
     for (int i = 0; i < MAXSTR; i++) { // for each log stream
         if (!*logs[i]) continue;
-        strncpy(filepath, logs[i], 1024);
+        strncpy(filepath, logs[i], 1023);
         if (strstr(filepath, "::A")) continue;
         if ((p  =strstr(filepath, "::"))) *p = '\0';
         if (!QFile::exists(filepath)) continue;
@@ -577,16 +577,16 @@ void MainForm::serverStart(void)
         QStringList tokens = antennaType.split(',');
         if (tokens.size() >= 3)
         {
-            strncpy(conv[i]->out.sta.antdes, qPrintable(tokens.at(0)), 64);
-            strncpy(conv[i]->out.sta.antsno, qPrintable(tokens.at(1)), 64);
+            strncpy(conv[i]->out.sta.antdes, qPrintable(tokens.at(0)), 63);
+            strncpy(conv[i]->out.sta.antsno, qPrintable(tokens.at(1)), 63);
             conv[i]->out.sta.antsetup = atoi(qPrintable(tokens.at(2)));
         }
         tokens = receiverType.split(',');
         if (tokens.size() >= 3)
         {
-            strncpy(conv[i]->out.sta.rectype, qPrintable(tokens.at(0)), 64);
-            strncpy(conv[i]->out.sta.recver, qPrintable(tokens.at(1)), 64);
-            strncpy(conv[i]->out.sta.recsno, qPrintable(tokens.at(2)), 64);
+            strncpy(conv[i]->out.sta.rectype, qPrintable(tokens.at(0)), 63);
+            strncpy(conv[i]->out.sta.recver, qPrintable(tokens.at(1)), 63);
+            strncpy(conv[i]->out.sta.recsno, qPrintable(tokens.at(2)), 63);
         }
         matcpy(conv[i]->out.sta.pos, antennaPosition, 3, 1);
         matcpy(conv[i]->out.sta.del, antennaOffsets, 3, 1);
@@ -636,10 +636,10 @@ void MainForm::serverStop(void)
         cmds[i] = NULL;
         if (strs[i] == STR_SERIAL) {
             cmds[i] = new char[1024];
-            if (commandsEnabled[i][1]) strncpy(cmds[i], qPrintable(commands[i][1]), 1024);
+            if (commandsEnabled[i][1]) strncpy(cmds[i], qPrintable(commands[i][1]), 1023);
         } else if (strs[i] == STR_TCPCLI || strs[i] == STR_NTRIPCLI) {
             cmds[i] = new char[1024];
-            if (commandsEnabledTcp[i][1]) strncpy(cmds[i], qPrintable(commandsTcp[i][1]), 1024);
+            if (commandsEnabledTcp[i][1]) strncpy(cmds[i], qPrintable(commandsTcp[i][1]), 1023);
         }
     }
     strsvrstop(&strsvr, cmds);

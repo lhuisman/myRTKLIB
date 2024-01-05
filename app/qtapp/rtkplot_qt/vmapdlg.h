@@ -16,7 +16,6 @@ public slots:
     void btnColorClicked();
     void btnApplyClicked();
     void visibilityClicked();
-    void layerClicked();
     void btnUpClicked();
     void btnDownClicked();
 

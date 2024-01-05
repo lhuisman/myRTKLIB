@@ -101,7 +101,7 @@ void ConvDialog::btnConvertClicked()
 
     if (cBTimeInterval->isChecked()) tint = sBTimeInterval->value();
 
-    strncpy(file, qPrintable(InputFile_Text), 1024);
+    strncpy(file, qPrintable(InputFile_Text), 1023);
 
     if (rBFormatKML->isChecked()) {
         if (cBCompress->isChecked()) {

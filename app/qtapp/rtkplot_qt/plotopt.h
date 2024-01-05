@@ -19,27 +19,23 @@ protected:
 
 public slots:
     void btnOKClicked();
-    void btnColor1Clicked();
-    void btnColor2Clicked();
-    void btnColor3Clicked();
-    void btnColor4Clicked();
-    void btnReferencePositionClicked();
-    void originChanged();
-    void autoScaleChanged();
-    void mColorClicked();
-    void btnFontClicked();
-    void receiverPositionChanged();
-    void btnTLEFileClicked();
-    void btnShapeFileClicked();
-    void btnTLESatelliteFileClicked();
-    void btnTLEViewClicked();
-    void btnTLESatelliteViewClicked();
-    void timeSyncClicked();
+    void color1Select();
+    void color2Select();
+    void color3Select();
+    void color4Select();
+    void referencePositionSelect();
+    void markerColorSelect();
+    void fontSelect();
+    void tleFileOpen();
+    void shapeFileOpen();
+    void tleSatelliteFileOpen();
+    void tleFileView();
+    void tleSatelliteFileView();
 
 private:
     void updateFont(void);
     void updateEnable(void);
-    QColor mColor[2][8]; // {{mark1 0-7},{mark2 0-7}}
+    QColor markerColor[2][8]; // {{mark1 0-7},{mark2 0-7}}
     QColor cColor[4];    // {background,grid,text,line}
     QFont fontOption;
 

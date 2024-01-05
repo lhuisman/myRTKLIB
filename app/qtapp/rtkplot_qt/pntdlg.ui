@@ -107,7 +107,7 @@
       <item>
        <widget class="QPushButton" name="btnAdd">
         <property name="toolTip">
-         <string/>
+         <string>Add current map center point to list</string>
         </property>
         <property name="text">
          <string>&amp;Add</string>
@@ -117,7 +117,7 @@
       <item>
        <widget class="QPushButton" name="btnDelete">
         <property name="toolTip">
-         <string/>
+         <string>Delete selected point</string>
         </property>
         <property name="text">
          <string>&amp;Delete</string>
@@ -126,6 +126,9 @@
       </item>
       <item>
        <widget class="QPushButton" name="btnUpdate">
+        <property name="toolTip">
+         <string>Save point list</string>
+        </property>
         <property name="text">
          <string>Update</string>
         </property>

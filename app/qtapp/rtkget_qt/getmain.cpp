@@ -305,7 +305,7 @@ void MainForm::btnTestClicked()
     processingThread->dateFormat = dateFormat;
 
     if (cBLocalDirectory->isChecked())
-        strncpy(processingThread->dir, qPrintable(cBDirectory->currentText()), 1024);
+        strncpy(processingThread->dir, qPrintable(cBDirectory->currentText()), 1023);
 
     panelEnable(0);
 
@@ -377,7 +377,7 @@ void MainForm::btnDownloadClicked()
     if (holdList) processingThread->opts |= DLOPT_HOLDLST;
 
     if (cBLocalDirectory->isChecked())
-        strncpy(processingThread->dir, qPrintable(cBDirectory->currentText()), 1024);
+        strncpy(processingThread->dir, qPrintable(cBDirectory->currentText()), 1023);
     abortf = 0;
     panelEnable(0);
     btnDownload->setEnabled(true);
@@ -758,7 +758,8 @@ int MainForm::selectUrl(url_t *urls)
     for (i = 0; i < dataListWidget->count() && nurl < MAX_URL_SEL; i++) {
         if (!dataListWidget->item(i)->isSelected()) continue;
         str = dataListWidget->item(i)->text();
-        strncpy(types[nurl++], qPrintable(str), MAX_URL_SEL);
+        types[nurl++] = new char[str.length()];
+        strncpy(types[nurl++], qPrintable(str), str.length());
     }
     if (urlFile == "") file = URL_FILE;
 
