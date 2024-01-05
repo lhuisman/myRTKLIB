@@ -121,7 +121,8 @@ MainForm::MainForm(QWidget *parent)
     connect(actMenuViewStr, &QAction::triggered, this, &MainForm::menuViewStrClicked);
     connect(actMenuAbout, &QAction::triggered, this, &MainForm::menuAboutClicked);
     connect(loadTimer, &QTimer::timeout, this, &MainForm::loadTimerExpired);
-    connect(tWTableStr, &QTableWidget::cellClicked, this, &MainForm::Table0SelectCell);
+    connect(tWTableStr, &QTableWidget::cellClicked, this, &MainForm::streamTableCellClicked);
+    connect(tWTableCas, &QTableWidget::cellDoubleClicked, this, &MainForm::casterTableCellDblClicked);
 
     btnMap->setEnabled(false);
 #ifdef QWEBENGINE
@@ -261,7 +262,7 @@ void MainForm::menuOpenClicked()
     addressCaster = cBAddress->currentText();
 
     showTable();
-    showMsg(tr("source table loaded"));
+    showMsg(tr("Source table loaded"));
 }
 //---------------------------------------------------------------------------
 void MainForm::menuSaveClicked()
@@ -273,7 +274,7 @@ void MainForm::menuSaveClicked()
 
     file.write(sourceTable.toLatin1());
 
-    showMsg(tr("source table saved"));
+    showMsg(tr("Source table saved"));
 }
 //---------------------------------------------------------------------------
 void MainForm::menuUpdateCasterClicked()
@@ -365,7 +366,7 @@ void MainForm::btnMapClicked()
     mapView->show();
 }
 //---------------------------------------------------------------------------
-void MainForm::Table0SelectCell(int ARow, int ACol)
+void MainForm::streamTableCellClicked(int ARow, int ACol)
 {
     Q_UNUSED(ACol);
     QString title;
@@ -375,6 +376,18 @@ void MainForm::Table0SelectCell(int ARow, int ACol)
         mapView->highlightMark(ARow);
         mapView->setWindowTitle(QString(tr("NTRIP Data Stream Map: %1/%2")).arg(cBAddress->currentText()).arg(title));
 	}
+}
+//---------------------------------------------------------------------------
+void MainForm::casterTableCellDblClicked(int ARow, int ACol)
+{
+    Q_UNUSED(ACol);
+
+    if (0 <= ARow && ARow < tWTableCas->rowCount()) {
+        QString address = tWTableCas->item(ARow, 1)->text();
+        QString port = tWTableCas->item(ARow, 2)->text();
+        cBAddress->setCurrentText(QString("%1:%2").arg(address).arg(port));
+        getTable();
+    }
 }
 //---------------------------------------------------------------------------
 void MainForm::btnListClicked()

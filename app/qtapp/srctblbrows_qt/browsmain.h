@@ -38,7 +38,8 @@ public slots:
     void menuAboutClicked();
     void btnMapClicked();
     void loadTimerExpired();
-    void Table0SelectCell(int ARow, int ACol);
+    void streamTableCellClicked(int ARow, int ACol);
+    void casterTableCellDblClicked(int ARow, int ACol);
     void btnStatsionClicked();
     void updateCaster();
     void updateTable();

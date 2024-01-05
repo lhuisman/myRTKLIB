@@ -59,7 +59,7 @@
          <string>Go to Center</string>
         </property>
         <property name="icon">
-         <iconset resource="../srctblbrows_qt/srctblbrows_qt.qrc">
+         <iconset resource="../icon/resources.qrc">
           <normaloff>:/buttons/trackc</normaloff>:/buttons/trackc</iconset>
         </property>
         <property name="flat">
@@ -73,7 +73,7 @@
          <string>Zoom out</string>
         </property>
         <property name="icon">
-         <iconset resource="../srctblbrows_qt/srctblbrows_qt.qrc">
+         <iconset resource="../icon/resources.qrc">
           <normaloff>:/buttons/shrink</normaloff>:/buttons/shrink</iconset>
         </property>
         <property name="flat">
@@ -87,7 +87,7 @@
          <string>Zoom in</string>
         </property>
         <property name="icon">
-         <iconset resource="../srctblbrows_qt/srctblbrows_qt.qrc">
+         <iconset resource="../icon/resources.qrc">
           <normaloff>:/buttons/expand</normaloff>:/buttons/expand</iconset>
         </property>
         <property name="flat">
@@ -164,7 +164,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="../srctblbrows_qt/srctblbrows_qt.qrc"/>
+  <include location="../icon/resources.qrc"/>
  </resources>
  <connections/>
 </ui>

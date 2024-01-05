@@ -74,7 +74,7 @@
          <string>Reload</string>
         </property>
         <property name="icon">
-         <iconset resource="../rtkconv_qt/rtkconv_qt.qrc">
+         <iconset resource="../icon/resources.qrc">
           <normaloff>:/buttons/reload</normaloff>:/buttons/reload</iconset>
         </property>
        </widget>
@@ -98,7 +98,7 @@
          <string>&amp;Option...</string>
         </property>
         <property name="icon">
-         <iconset resource="../rtkconv_qt/rtkconv_qt.qrc">
+         <iconset resource="../icon/resources.qrc">
           <normaloff>:/buttons/tool</normaloff>:/buttons/tool</iconset>
         </property>
        </widget>
@@ -128,7 +128,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="../rtkconv_qt/rtkconv_qt.qrc"/>
+  <include location="../icon/resources.qrc"/>
  </resources>
  <connections/>
 </ui>
