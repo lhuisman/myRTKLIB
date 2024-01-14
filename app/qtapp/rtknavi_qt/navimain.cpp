@@ -63,7 +63,7 @@ MainWindow *mainForm;
 
 //---------------------------------------------------------------------------
 
-#define PRGNAME     "RTKNAVI-QT"           // program name
+#define PRGNAME     "RTKNavi-Qt"           // program name
 #define TRACEFILE   "rtknavi_%Y%m%d%h%M.trace" // debug trace file
 #define STATFILE    "rtknavi_%Y%m%d%h%M.stat"  // solution status file
 #define MINSNR      10                  // minimum snr
@@ -110,7 +110,8 @@ static void degtodms(double deg, double *dms)
     double sgn = 1.0;
 
     if (deg < 0.0) {
-        deg = -deg; sgn = -1.0;
+        deg = -deg;
+        sgn = -1.0;
     }
     dms[0] = floor(deg);
     dms[1] = floor((deg - dms[0]) * 60.0);
@@ -143,7 +144,10 @@ MainWindow::MainWindow(QWidget *parent)
         commandEnabled[i][0] = commandEnabled[i][1] = commandEnabled[i][2] = 0;
 
     timeSystem = solutionType = 0;
-    for (int i = 0; i < 4; i++) { plotType[i] = frequencyType[i] = baselineMode[i] = trackType[i] = 0; trackScale[i] = 5;};
+    for (int i = 0; i < 4; i++) {
+        plotType[i] = frequencyType[i] = baselineMode[i] = trackType[i] = 0;
+        trackScale[i] = 5;
+    };
     solutionsCurrent = solutionsStart = solutionsEnd = numSatellites[0] = numSatellites[1] = 0;
     nMapPoint = 0;
     monitorPortOpen = 0;
@@ -155,7 +159,8 @@ MainWindow::MainWindow(QWidget *parent)
     for (int i = 0; i < 2; i++) for (int j = 0; j < MAXSAT; j++) {
             satellites[i][j] = validSatellites[i][j] = 0;
             satellitesAzimuth[i][j] = satellitesElevation[i][j] = 0.0;
-            for (int k = 0; k < NFREQ; k++) satellitesSNR[i][j][k] = 0;
+            for (int k = 0; k < NFREQ; k++)
+                satellitesSNR[i][j][k] = 0;
         }
     processingOptions = prcopt_default;
     solutionOptions = solopt_default;
@@ -163,7 +168,7 @@ MainWindow::MainWindow(QWidget *parent)
     rtksvrinit(&rtksvr);
     strinit(&monistr);
 
-    setWindowTitle(QString(tr("%1 ver. %2")).arg(PRGNAME).arg(VER_RTKLIB));
+    setWindowTitle(QString(tr("%1 ver. %2 %3")).arg(PRGNAME).arg(VER_RTKLIB).arg(PATCH_LEVEL));
     setWindowIcon(QIcon(":/icons/rtknavi_Icon.ico"));
 
     panelStacking = panelMode = 0;
@@ -201,62 +206,62 @@ MainWindow::~MainWindow()
 // callback on form create --------------------------------------------------
 void MainWindow::showEvent(QShowEvent *event)
 {
-    int taskTray=0;
+    int inTaskTray = 0;
     if (event->spontaneous()) return;
 
     trace(3, "showEvent\n");
 
     updatePlot();
 
-    trayMenu->addAction(tr("Main Window..."), this, &MainWindow::menuExpandClicked);
+    trayMenu->addAction(tr("Main Window..."), this, &MainWindow::expandFromTray);
     trayMenu->addAction(tr("Monitor..."), this, &MainWindow::showMonitorDialog);
     trayMenu->addAction(tr("Plot..."), this, &MainWindow::showRtkPlot);
     trayMenu->addSeparator();
-    menuStartAction = trayMenu->addAction(tr("Start"), this, &MainWindow::startClicked);
-    menuStopAction = trayMenu->addAction(tr("Stop"), this, &MainWindow::stopClicked);
+    menuStartAction = trayMenu->addAction(tr("Start"), this, &MainWindow::startServer);
+    menuStopAction = trayMenu->addAction(tr("Stop"), this, &MainWindow::stopServer);
     trayMenu->addSeparator();
-    menuExitAction = trayMenu->addAction(tr("Exit"), this, &MainWindow::exitClicked);
+    menuExitAction = trayMenu->addAction(tr("Exit"), this, &MainWindow::exit);
 
     systemTray->setContextMenu(trayMenu);
 
     btnStop->setVisible(false);
 
-    connect(systemTray, &QSystemTrayIcon::activated, this, &MainWindow::trayIconClicked);
+    connect(systemTray, &QSystemTrayIcon::activated, this, &MainWindow::maximizeFromTray);
 
-    connect(btnExit, &QPushButton::clicked, this, &MainWindow::exitClicked);
-    connect(btnStart, &QPushButton::clicked, this, &MainWindow::startClicked);
-    connect(btnStop, &QPushButton::clicked, this, &MainWindow::stopClicked);
-    connect(btnAbout, &QPushButton::clicked, this, &MainWindow::btnAboutClicked);
-    connect(btnFrequencyType1, &QPushButton::clicked, this, &MainWindow::btnFrequencyType1Clicked);
-    connect(btnFrequencyType2, &QPushButton::clicked, this, &MainWindow::btnFrequencyType2Clicked);
-    connect(btnFrequencyType3, &QPushButton::clicked, this, &MainWindow::btnFrequencyType3Clicked);
-    connect(btnFrequencyType4, &QPushButton::clicked, this, &MainWindow::btnFrequencyType4Clicked);
-    connect(btnExpand1, &QPushButton::clicked, this, &MainWindow::btnExpand1Clicked);
-    connect(btnShrink1, &QPushButton::clicked, this, &MainWindow::btnShrink1Clicked);
-    connect(btnExpand2, &QPushButton::clicked, this, &MainWindow::btnExpand2Clicked);
-    connect(btnShrink2, &QPushButton::clicked, this, &MainWindow::btnShrink2Clicked);
-    connect(btnExpand3, &QPushButton::clicked, this, &MainWindow::btnExpand3Clicked);
-    connect(btnShrink3, &QPushButton::clicked, this, &MainWindow::btnShrink3Clicked);
-    connect(btnExpand4, &QPushButton::clicked, this, &MainWindow::btnExpand4Clicked);
-    connect(btnShrink4, &QPushButton::clicked, this, &MainWindow::btnShrink4Clicked);
-    connect(btnInputStream, &QPushButton::clicked, this, &MainWindow::btnInputStreamClicked);
-    connect(btnLogStream, &QPushButton::clicked, this, &MainWindow::btnLogStreamClicked);
+    connect(btnExit, &QPushButton::clicked, this, &MainWindow::exit);
+    connect(btnStart, &QPushButton::clicked, this, &MainWindow::startServer);
+    connect(btnStop, &QPushButton::clicked, this, &MainWindow::stopServer);
+    connect(btnAbout, &QPushButton::clicked, this, &MainWindow::showAboutDialog);
+    connect(btnFrequencyType1, &QPushButton::clicked, this, &MainWindow::changeFrequencyType1);
+    connect(btnFrequencyType2, &QPushButton::clicked, this, &MainWindow::changeFrequencyType2);
+    connect(btnFrequencyType3, &QPushButton::clicked, this, &MainWindow::changeFrequencyType3);
+    connect(btnFrequencyType4, &QPushButton::clicked, this, &MainWindow::changeFrequencyType4);
+    connect(btnExpand1, &QPushButton::clicked, this, &MainWindow::expandPlot1);
+    connect(btnShrink1, &QPushButton::clicked, this, &MainWindow::shrinkPlot1);
+    connect(btnExpand2, &QPushButton::clicked, this, &MainWindow::expandPlot2);
+    connect(btnShrink2, &QPushButton::clicked, this, &MainWindow::shrinkPlot2);
+    connect(btnExpand3, &QPushButton::clicked, this, &MainWindow::expandPlot3);
+    connect(btnShrink3, &QPushButton::clicked, this, &MainWindow::shrinkPlot3);
+    connect(btnExpand4, &QPushButton::clicked, this, &MainWindow::expandPlot4);
+    connect(btnShrink4, &QPushButton::clicked, this, &MainWindow::shrinkPlot4);
+    connect(btnInputStream, &QPushButton::clicked, this, &MainWindow::showInputStreamDialog);
+    connect(btnLogStream, &QPushButton::clicked, this, &MainWindow::showLogStreamDialog);
     connect(btnMonitor, &QPushButton::clicked, this, &MainWindow::showMonitorDialog);
-    connect(btnOptions, &QPushButton::clicked, this, &MainWindow::btnOptionsClicked);
-    connect(btnOutputStream, &QPushButton::clicked, this, &MainWindow::btnOutputStreamClicked);
-    connect(btnPanel, &QPushButton::clicked, this, &MainWindow::btnPanelClicked);
+    connect(btnOptions, &QPushButton::clicked, this, &MainWindow::showOptionsDialog);
+    connect(btnOutputStream, &QPushButton::clicked, this, &MainWindow::showOutputStreamDialog);
+    connect(btnPanel, &QPushButton::clicked, this, &MainWindow::changePanelMode);
     connect(btnPlot, &QPushButton::clicked, this, &MainWindow::showRtkPlot);
-    connect(btnPlotType1, &QPushButton::clicked, this, &MainWindow::btnPlotType1Clicked);
-    connect(btnPlotType2, &QPushButton::clicked, this, &MainWindow::btnPlotType2Clicked);
-    connect(btnPlotType3, &QPushButton::clicked, this, &MainWindow::btnPlotType3Clicked);
-    connect(btnPlotType4, &QPushButton::clicked, this, &MainWindow::btnPlotType4Clicked);
+    connect(btnPlotType1, &QPushButton::clicked, this, &MainWindow::changePlotType1);
+    connect(btnPlotType2, &QPushButton::clicked, this, &MainWindow::changePlotType2);
+    connect(btnPlotType3, &QPushButton::clicked, this, &MainWindow::changePlotType3);
+    connect(btnPlotType4, &QPushButton::clicked, this, &MainWindow::changePlotType4);
     connect(btnSave, &QPushButton::clicked, this, &MainWindow::btnSaveClicked);
-    connect(btnSolutionType, &QPushButton::clicked, this, &MainWindow::btnSolutionTypeClicked);
-    connect(btnSolutionType2, &QPushButton::clicked, this, &MainWindow::btnSolutionTypeClicked);
-    connect(btnTaskTray, &QPushButton::clicked, this, &MainWindow::btnTaskTrayClicked);
-    connect(btnTimeSys, &QPushButton::clicked, this, &MainWindow::btnTimeSystemClicked);
+    connect(btnSolutionType, &QPushButton::clicked, this, &MainWindow::changeSolutionType);
+    connect(btnSolutionType2, &QPushButton::clicked, this, &MainWindow::changeSolutionType);
+    connect(btnTaskTray, &QPushButton::clicked, this, &MainWindow::minimizeToTray);
+    connect(btnTimeSys, &QPushButton::clicked, this, &MainWindow::changeTimeSystem);
     connect(btnMark, &QPushButton::clicked, this, &MainWindow::btnMarkClicked);
-    connect(sBSolution, &QScrollBar::valueChanged, this, &MainWindow::sBSolutionChanged);
+    connect(sBSolution, &QScrollBar::valueChanged, this, &MainWindow::changeSolutionIndex);
     connect(&updateTimer, &QTimer::timeout, this, &MainWindow::updateTimerTriggered);
 
     updateTimer.setInterval(100);
@@ -298,9 +303,9 @@ void MainWindow::showEvent(QShowEvent *event)
         iniFile = parser.value(iniFileOption);
 
     if (parser.isSet(autoOption)) autoRun = 1;
-    if (parser.isSet(trayOption)) taskTray = 1;
+    if (parser.isSet(trayOption)) inTaskTray = 1;
 
-    if (taskTray) {
+    if (inTaskTray) {
         setVisible(false);
         systemTray->setVisible(true);
     }
@@ -309,7 +314,7 @@ void MainWindow::showEvent(QShowEvent *event)
     loadNavigation(&rtksvr.nav);
     openMonitorPort(monitorPort);
 
-    updatePanel();
+    updatePanels();
     updateTimeSystem();
     updateSolutionType();
     updateFont();
@@ -336,7 +341,7 @@ void MainWindow::closeEvent(QCloseEvent *)
     saveNavigation(&rtksvr.nav);
 }
 // update panel -------------------------------------------------------------
-void MainWindow::updatePanel()
+void MainWindow::updatePanels()
 {
     // panel modes
     // 0: solution big; 1 panel
@@ -349,39 +354,38 @@ void MainWindow::updatePanel()
     // 7: solution small; 4 panels
 
     if (panelMode <= 3) {
-        panel21->setVisible(true);
-        panelSolution ->setVisible(false);
+        panelSolution->setVisible(true);
+        panelSolutionStatus ->setVisible(false);
     }
     else {
-        panel21->setVisible(false);
-        panelSolution ->setVisible(true);
+        panelSolution->setVisible(false);
+        panelSolutionStatus ->setVisible(true);
     }
 
     if (panelMode == 0 || panelMode == 4) {
-        panel22->setVisible(true);
-        panel23->setVisible(false);
-        panel24->setVisible(false);
-        panel25->setVisible(false);
+        panelDisplay1->setVisible(true);
+        panelDisplay2->setVisible(false);
+        panelDisplay3->setVisible(false);
+        panelDisplay4->setVisible(false);
     }
     else if (panelMode == 1 || panelMode == 5) {
-        panel22->setVisible(true);
-        panel23->setVisible(true);
-        panel24->setVisible(false);
-        panel25->setVisible(false);
+        panelDisplay1->setVisible(true);
+        panelDisplay2->setVisible(true);
+        panelDisplay3->setVisible(false);
+        panelDisplay4->setVisible(false);
     }
     else if (panelMode == 2 || panelMode == 6) {
-        panel22->setVisible(true);
-        panel23->setVisible(true);
-        panel24->setVisible(true);
-        panel25->setVisible(false);
+        panelDisplay1->setVisible(true);
+        panelDisplay2->setVisible(true);
+        panelDisplay3->setVisible(true);
+        panelDisplay4->setVisible(false);
     }
     else {
-        panel22->setVisible(true);
-        panel23->setVisible(true);
-        panel24->setVisible(true);
-        panel25->setVisible(true);
+        panelDisplay1->setVisible(true);
+        panelDisplay2->setVisible(true);
+        panelDisplay3->setVisible(true);
+        panelDisplay4->setVisible(true);
     }
-
 
     if (panelStacking == 0) { // horizontal
         splitter->setOrientation(Qt::Horizontal);
@@ -407,33 +411,33 @@ void MainWindow::updateEnable()
     btnShrink4->setVisible(plotType[3] == 6);
 }
 // callback on button-exit --------------------------------------------------
-void MainWindow::exitClicked()
+void MainWindow::exit()
 {
-    trace(3, "btnExitClicked\n");
+    trace(3, "exit\n");
 
     close();
 }
 // callback on button-start -------------------------------------------------
-void MainWindow::startClicked()
+void MainWindow::startServer()
 {
-    trace(3, "btnStartClicked\n");
+    trace(3, "startServer\n");
 
     serverStart();
 }
 // callback on button-stop --------------------------------------------------
-void MainWindow::stopClicked()
+void MainWindow::stopServer()
 {
-    trace(3, "btnStopClicked\n");
+    trace(3, "stopServer\n");
 
     serverStop();
 }
 // callback on button-plot --------------------------------------------------
 void MainWindow::showRtkPlot()
 {
-    QString cmd1 = "rtkplot_qt", cmd2 = "..\\..\\..\\bin\\rtkplot_qt", cmd3 = "..\\rtkplot_qt\\rtkplot_qt";
+    QString cmd[] = {"rtkplot_qt", "..\\..\\..\\bin\\rtkplot_qt", "..\\rtkplot_qt\\rtkplot_qt"};
     QStringList opts;
 
-    trace(3, "btnPlotClicked\n");
+    trace(3, "showRtkPlot\n");
 
     if (monitorPortOpen <= 0) {
         QMessageBox::critical(this, tr("Error"), tr("Monitor port not open"));
@@ -443,37 +447,37 @@ void MainWindow::showRtkPlot()
     opts << QString(" -p tcpcli://localhost:%1 -t \"%2 %3\"").arg(monitorPortOpen)
           .arg(windowTitle()).arg(": RTKPlot Qt");
 
-    if (!execCommand(cmd1, opts, 1) && !execCommand(cmd2, opts, 1) && !execCommand(cmd3, opts, 1))
-        QMessageBox::critical(this, tr("Error"), tr("error: rtkplot execution"));
+    if (!execCommand(cmd[0], opts, 1) && !execCommand(cmd[1], opts, 1) && !execCommand(cmd[2], opts, 1))
+        QMessageBox::critical(this, tr("Error"), tr("Error: rtkplot could not be executed"));
 }
 // callback on button-options -----------------------------------------------
-void MainWindow::btnOptionsClicked()
+void MainWindow::showOptionsDialog()
 {
     int i, monitorPortChanged = 0;
 
-    trace(3, "btnOptionsClicked\n");
+    trace(3, "showOptionsDialog\n");
 
     optDialog->processOptions = processingOptions;
     optDialog->solutionOption = solutionOptions;
-    optDialog->debugStatusF = debugStatusLevel;
-    optDialog->debugTraceF = debugTraceLevel;
+    optDialog->debugStatus = debugStatusLevel;
+    optDialog->debugTrace = debugTraceLevel;
     optDialog->baselineC = baselineEnabled;
     optDialog->baseline[0] = baseline[0];
     optDialog->baseline[1] = baseline[1];
 
-    optDialog->roverPositionTypeF = roverPositionTypeF;
-    optDialog->referencePositionTypeF = referencePositionTypeF;
-    optDialog->roverAntennaPcvF = roverAntennaPcvF;
-    optDialog->referenceAntennaPcvF = referenceAntennaPcvF;
-    optDialog->roverAntennaF = roverAntennaF;
-    optDialog->referenceAntennaF = referenceAntennaF;
+    optDialog->roverPositionType = roverPositionType;
+    optDialog->referencePositionType = referencePositionType;
+    optDialog->roverAntennaPcv = roverAntennaPcv;
+    optDialog->referenceAntennaPcv = referenceAntennaPcv;
+    optDialog->roverAntenna = roverAntenna;
+    optDialog->referenceAntenna = referenceAntenna;
 
-    optDialog->satellitePcvFileF = satellitePcvFileF;
-    optDialog->antennaPcvFileF = antennaPcvFileF;
-    optDialog->stationPositionFileF = stationPositionFileF;
-    optDialog->geoidDataFileF = geoidDataFileF;
-    optDialog->dcbFileF = dcbFile;
-    optDialog->eopFileF = eopFileF;
+    optDialog->satellitePcvFile = satellitePcvFile;
+    optDialog->antennaPcvFile = antennaPcvFile;
+    optDialog->stationPositionFile = stationPositionFile;
+    optDialog->geoidDataFile = geoidDataFile;
+    optDialog->dcbFile = dcbFile;
+    optDialog->eopFile = eopFile;
     optDialog->localDirectory = localDirectory;
 
     optDialog->serverCycle = serverCycle;
@@ -495,7 +499,7 @@ void MainWindow::btnOptionsClicked()
     positionFont = optDialog->positionFont;
 
     updateFont();
-    updatePanel();
+    updatePanels();
 
     for (i = 0; i < 3; i++) {
         optDialog->roverAntennaDelta[i] = roverAntennaDelta[i];
@@ -509,25 +513,25 @@ void MainWindow::btnOptionsClicked()
 
     processingOptions = optDialog->processOptions;
     solutionOptions = optDialog->solutionOption;
-    debugStatusLevel = optDialog->debugStatusF;
-    debugTraceLevel = optDialog->debugTraceF;
+    debugStatusLevel = optDialog->debugStatus;
+    debugTraceLevel = optDialog->debugTrace;
     baselineEnabled = optDialog->baselineC;
     baseline[0] = optDialog->baseline[0];
     baseline[1] = optDialog->baseline[1];
 
-    roverPositionTypeF = optDialog->roverPositionTypeF;
-    referencePositionTypeF = optDialog->referencePositionTypeF;
-    roverAntennaPcvF = optDialog->roverAntennaPcvF;
-    referenceAntennaPcvF = optDialog->referenceAntennaPcvF;
-    roverAntennaF = optDialog->roverAntennaF;
-    referenceAntennaF = optDialog->referenceAntennaF;
+    roverPositionType = optDialog->roverPositionType;
+    referencePositionType = optDialog->referencePositionType;
+    roverAntennaPcv = optDialog->roverAntennaPcv;
+    referenceAntennaPcv = optDialog->referenceAntennaPcv;
+    roverAntenna = optDialog->roverAntenna;
+    referenceAntenna = optDialog->referenceAntenna;
 
-    satellitePcvFileF = optDialog->satellitePcvFileF;
-    antennaPcvFileF = optDialog->antennaPcvFileF;
-    stationPositionFileF = optDialog->stationPositionFileF;
-    geoidDataFileF = optDialog->geoidDataFileF;
-    dcbFile = optDialog->dcbFileF;
-    eopFileF = optDialog->eopFileF;
+    satellitePcvFile = optDialog->satellitePcvFile;
+    antennaPcvFile = optDialog->antennaPcvFile;
+    stationPositionFile = optDialog->stationPositionFile;
+    geoidDataFile = optDialog->geoidDataFile;
+    dcbFile = optDialog->dcbFile;
+    eopFile = optDialog->eopFile;
     localDirectory = optDialog->localDirectory;
 
     serverCycle = optDialog->serverCycle;
@@ -563,7 +567,7 @@ void MainWindow::btnOptionsClicked()
     panelFont = optDialog->panelFont;
 
     updateFont();
-    updatePanel();
+    updatePanels();
 
     if (!monitorPortChanged) return;
 
@@ -577,71 +581,75 @@ void MainWindow::btnOptionsClicked()
     openMonitorPort(monitorPort);
 }
 // callback on button-input-streams -----------------------------------------
-void MainWindow::btnInputStreamClicked()
+void MainWindow::showInputStreamDialog()
 {
     int i, j;
 
-    trace(3, "btnInputStreamClicked\n");
+    trace(3, "showInputStreamDialog\n");
 
     for (i = 0; i < 3; i++) {
-        inputStrDialog->streamEnabled[i] = streamEnabled[i];
-        inputStrDialog->stream[i] = streamType[i];
-        inputStrDialog->format[i] = inputFormat[i];
-        inputStrDialog->receiverOptions[i] = receiverOptions[i];
+        inputStrDialog->setStreamEnabled(i, streamEnabled[i]);
+        inputStrDialog->setStreamType(i, streamType[i]);
+        inputStrDialog->setStreamFormat(i, inputFormat[i]);
+        inputStrDialog->setReceiverOptions(i, receiverOptions[i]);
 
-        /* Paths[0]:serial,[1]:tcp,[2]:file,[3]:ftp */
+        /* Paths -> [0]:serial,[1]:tcp,[2]:file,[3]:ftp */
         for (j = 0; j < 4; j++) inputStrDialog->paths[i][j] = paths[i][j];
     }
-    for (i = 0; i < 3; i++) for (j = 0; j < 3; j++) {
+    for (i = 0; i < 3; i++)
+        for (j = 0; j < 3; j++) {
             inputStrDialog->commandEnable[i][j] = commandEnabled[i][j];
             inputStrDialog->commands[i][j] = commands[i][j];
             inputStrDialog->commandEnableTcp[i][j] = commandEnableTcp[i][j];
             inputStrDialog->commandsTcp[i][j] = commandsTcp[i][j];
         }
     for (i = 0; i < 10; i++) {
-        inputStrDialog->history[i] = history[i];
+        inputStrDialog->setHistory(i, history[i]);
     }
-    inputStrDialog->nmeaReq = NmeaReq;
-    inputStrDialog->timeTag = inputTimeTag;
-    inputStrDialog->timeSpeed = inputTimeSpeed;
-    inputStrDialog->timeStart = inputTimeStart;
-    inputStrDialog->time64Bit = inputTime64Bit;
-    inputStrDialog->nmeaPosition[0] = nmeaPosition[0];
-    inputStrDialog->nmeaPosition[1] = nmeaPosition[1];
-    inputStrDialog->nmeaPosition[2] = nmeaPosition[2];
-    inputStrDialog->resetCommand = resetCommand;
-    inputStrDialog->maxBaseLine = maxBaseLine;
+    inputStrDialog->setNmeaRequestType(nmeaRequestType);
+    inputStrDialog->setTimeTagEnabled(inputTimeTag);
+    inputStrDialog->setTimeSpeed(inputTimeSpeed);
+    inputStrDialog->setTimeStart(inputTimeStart);
+    inputStrDialog->setTimeTag64bit(inputTimeTag64bit);
+    inputStrDialog->setNMeaPosition(0, nmeaPosition[0]);
+    inputStrDialog->setNMeaPosition(1, nmeaPosition[1]);
+    inputStrDialog->setNMeaPosition(2, nmeaPosition[2]);
+    inputStrDialog->setResetCommand(resetCommand);
+    inputStrDialog->setMaxBaseLine(maxBaseLine);
+    inputStrDialog->setStationPositionFile(stationPositionFile);
 
     inputStrDialog->exec();
 
     if (inputStrDialog->result() != QDialog::Accepted) return;
 
     for (i = 0; i < 3; i++) {
-        streamEnabled[i] = inputStrDialog->streamEnabled[i];
-        streamType[i] = inputStrDialog->stream[i];
-        inputFormat [i] = inputStrDialog->format[i];
-        receiverOptions [i] = inputStrDialog->receiverOptions[i];
-        for (j = 0; j < 4; j++) paths[i][j] = inputStrDialog->paths[i][j];
+        streamEnabled[i] = inputStrDialog->getStreamEnabled(i);
+        streamType[i] = inputStrDialog->getStreamType(i);
+        inputFormat [i] = inputStrDialog->getStreamFormat(i);
+        receiverOptions [i] = inputStrDialog->getReceiverOptions(i);
+        for (j = 0; j < 4; j++)
+            paths[i][j] = inputStrDialog->paths[i][j];
     }
-    for (i = 0; i < 3; i++) for (j = 0; j < 3; j++) {
+    for (i = 0; i < 3; i++)
+        for (j = 0; j < 3; j++) {
             commandEnabled[i][j] = inputStrDialog->commandEnable[i][j];
             commands[i][j] = inputStrDialog->commands[i][j];
             commandEnableTcp[i][j] = inputStrDialog->commandEnableTcp[i][j];
             commandsTcp[i][j] = inputStrDialog->commandsTcp[i][j];
         }
     for (i = 0; i < 10; i++) {
-        history[i] = inputStrDialog->history[i];
+        history[i] = inputStrDialog->getHistory(i);
     }
-    NmeaReq = inputStrDialog->nmeaReq;
-    inputTimeTag = inputStrDialog->timeTag;
-    inputTimeSpeed = inputStrDialog->timeSpeed;
-    inputTimeStart = inputStrDialog->timeStart;
-    inputTime64Bit = inputStrDialog->time64Bit;
-    nmeaPosition[0] = inputStrDialog->nmeaPosition[0];
-    nmeaPosition[1] = inputStrDialog->nmeaPosition[1];
-    nmeaPosition[2] = inputStrDialog->nmeaPosition[2];
-    resetCommand = inputStrDialog->resetCommand;
-    maxBaseLine = inputStrDialog->maxBaseLine;
+    nmeaRequestType = inputStrDialog->getNmeaRequestType();
+    inputTimeTag = inputStrDialog->getTimeTagEnabled();
+    inputTimeSpeed = inputStrDialog->getTimeSpeed();
+    inputTimeStart = inputStrDialog->getTimeStart();
+    inputTimeTag64bit = inputStrDialog->getTimeTag64bit();
+    nmeaPosition[0] = inputStrDialog->getNMeaPosition(0);
+    nmeaPosition[1] = inputStrDialog->getNMeaPosition(1);
+    nmeaPosition[2] = inputStrDialog->getNMeaPosition(2);
+    resetCommand = inputStrDialog->getResetCommand();
+    maxBaseLine = inputStrDialog->getMaxBaseLine();
 }
 // confirm overwrite --------------------------------------------------------
 int MainWindow::confirmOverwrite(const QString &path)
@@ -672,19 +680,20 @@ int MainWindow::confirmOverwrite(const QString &path)
     return QMessageBox::question(this, tr("File exists"), buff1) == QMessageBox::Yes;
 }
 // callback on button-output-streams ----------------------------------------
-void MainWindow::btnOutputStreamClicked()
+void MainWindow::showOutputStreamDialog()
 {
     int otype[] = {STR_SERIAL, STR_TCPCLI, STR_TCPSVR, STR_NTRIPSVR, STR_NTRIPCAS, STR_FILE};
     int i, j, str, update[2] = { 0 };
     QString path;
 
-    trace(3, "btnOutputStreamClicked\n");
+    trace(3, "showOutputStreamDialog\n");
 
     for (i = 3; i < 5; i++) {
         outputStrDialog->streamEnabled[i - 3] = streamEnabled[i];
         outputStrDialog->stream[i - 3] = streamType[i];
         outputStrDialog->format[i - 3] = inputFormat[i];
-        for (j = 0; j < 4; j++) outputStrDialog->paths[i - 3][j] = paths[i][j];
+        for (j = 0; j < 4; j++)
+            outputStrDialog->paths[i - 3][j] = paths[i][j];
     }
     for (i = 0; i < 10; i++) {
         outputStrDialog->history[i] = history[i];
@@ -708,7 +717,8 @@ void MainWindow::btnOutputStreamClicked()
         streamEnabled[i] = outputStrDialog->streamEnabled[i - 3];
         streamType[i] = outputStrDialog->stream[i - 3];
         inputFormat[i] = outputStrDialog->format[i - 3];
-        for (j = 0; j < 4; j++) paths[i][j] = outputStrDialog->paths[i - 3][j];
+        for (j = 0; j < 4; j++)
+            paths[i][j] = outputStrDialog->paths[i - 3][j];
     }
     for (i = 0; i < 10; i++) {
         history[i] = outputStrDialog->history[i];
@@ -740,18 +750,19 @@ void MainWindow::btnOutputStreamClicked()
     }
 }
 // callback on button-log-streams -------------------------------------------
-void MainWindow::btnLogStreamClicked()
+void MainWindow::showLogStreamDialog()
 {
     int otype[] = {STR_SERIAL, STR_TCPCLI, STR_TCPSVR, STR_NTRIPSVR, STR_NTRIPCAS, STR_FILE};
     int i, j, str, update[3] = {0};
     QString path;
 
-    trace(3, "btnLogStreamClicked\n");
+    trace(3, "showLogStreamDialog\n");
 
     for (i = 5; i < 8; i++) {
         logStrDialog->streamEnabled[i - 5] = streamEnabled[i];
         logStrDialog->stream [i - 5] = streamType [i];
-        for (j = 0; j < 4; j++) logStrDialog->paths[i - 5][j] = paths[i][j];
+        for (j = 0; j < 4; j++)
+            logStrDialog->paths[i - 5][j] = paths[i][j];
     }
     for (i = 0; i < 10; i++) {
         logStrDialog->history[i] = history[i];
@@ -776,7 +787,8 @@ void MainWindow::btnLogStreamClicked()
         streamEnabled[i] = logStrDialog->streamEnabled[i - 5];
         streamType[i] = logStrDialog->stream[i - 5];
 
-        for (j = 0; j < 4; j++) paths[i][j] = logStrDialog->paths[i - 5][j];
+        for (j = 0; j < 4; j++)
+            paths[i][j] = logStrDialog->paths[i - 5][j];
     }
     for (i = 0; i < 10; i++) {
         history[i] = logStrDialog->history[i];
@@ -808,33 +820,33 @@ void MainWindow::btnLogStreamClicked()
     }
 }
 // callback on button-solution-show -----------------------------------------
-void MainWindow::btnPanelClicked()
+void MainWindow::changePanelMode()
 {
-    trace(3, "btnPanelClicked\n");
+    trace(3, "changePanelMode\n");
 
     if (++panelMode > MAXPANELMODE) panelMode = 0;
-    updatePanel();
+    updatePanels();
 }
 // callback on button-plot-type-1 -------------------------------------------
-void MainWindow::btnTimeSystemClicked()
+void MainWindow::changeTimeSystem()
 {
-    trace(3, "btnTimeSystemClicked\n");
+    trace(3, "changeTimeSystem\n");
 
     if (++timeSystem > 3) timeSystem = 0;
     updateTimeSystem();
 }
 // callback on button-solution-type -----------------------------------------
-void MainWindow::btnSolutionTypeClicked()
+void MainWindow::changeSolutionType()
 {
-    trace(3, "btnSolutionTypeClicked\n");
+    trace(3, "changeSolutionType\n");
 
     if (++solutionType > 4) solutionType = 0;
     updateSolutionType();
 }
 // callback on button-plottype-1 --------------------------------------------
-void MainWindow::btnPlotType1Clicked()
+void MainWindow::changePlotType1()
 {
-    trace(3, "btnPlotType1Clicked\n");
+    trace(3, "changePlotType1\n");
 
     if (++plotType[0] > 6) plotType[0] = 0;
 
@@ -843,9 +855,9 @@ void MainWindow::btnPlotType1Clicked()
     updateEnable();
 }
 // callback on button-plottype-2 --------------------------------------------
-void MainWindow::btnPlotType2Clicked()
+void MainWindow::changePlotType2()
 {
-    trace(3, "btnPlotType2Clicked\n");
+    trace(3, "changePlotType2\n");
 
     if (++plotType[1] > 6) plotType[1] = 0;
 
@@ -854,9 +866,9 @@ void MainWindow::btnPlotType2Clicked()
     updateEnable();
 }
 //---------------------------------------------------------------------------
-void MainWindow::btnPlotType3Clicked()
+void MainWindow::changePlotType3()
 {
-    trace(3,"btnPlotType3Clicked\n");
+    trace(3, "changePlotType3\n");
 
     if (++plotType[2] > 6) plotType[2] = 0;
 
@@ -865,9 +877,9 @@ void MainWindow::btnPlotType3Clicked()
     updateEnable();
 }
 //---------------------------------------------------------------------------
-void MainWindow::btnPlotType4Clicked()
+void MainWindow::changePlotType4()
 {
-    trace(3,"btnPlotType4Clicked\n");
+    trace(3, "changePlotType4\n");
 
     if (++plotType[3] > 6) plotType[3] = 0;
 
@@ -876,8 +888,10 @@ void MainWindow::btnPlotType4Clicked()
     updateEnable();
 }
 //---------------------------------------------------------------------------
-void MainWindow::btnFrequencyTypeChanged(int i)
-    {
+void MainWindow::changeFrequencyType(int i)
+{
+    trace(3, "changeFrequencyType\n");
+
     if (plotType[i] == 6) {
         if (++trackType[i] > 1) trackType[i] = 0;
         updatePlot();
@@ -890,35 +904,35 @@ void MainWindow::btnFrequencyTypeChanged(int i)
     }
 }
 // callback on button frequency-type-1 --------------------------------------
-void MainWindow::btnFrequencyType1Clicked()
+void MainWindow::changeFrequencyType1()
 {
-    trace(3, "btnFrequencyType1Clicked\n");
+    trace(3, "changeFrequencyType1\n");
 
-    btnFrequencyTypeChanged(0);
+    changeFrequencyType(0);
 }
 // callback on button frequency-type-2 --------------------------------------
-void MainWindow::btnFrequencyType2Clicked()
+void MainWindow::changeFrequencyType2()
 {
-    trace(3, "btnFrequencyType2Clicked\n");
+    trace(3, "changeFrequencyType2\n");
 
-    btnFrequencyTypeChanged(1);
+    changeFrequencyType(1);
 }
 //---------------------------------------------------------------------------
-void MainWindow::btnFrequencyType3Clicked()
+void MainWindow::changeFrequencyType3()
 {
-    trace(3,"btnFrequencyType3Clicked\n");
+    trace(3,"changeFrequencyType3\n");
 
-    btnFrequencyTypeChanged(2);
+    changeFrequencyType(2);
 }
 //---------------------------------------------------------------------------
-void MainWindow::btnFrequencyType4Clicked()
+void MainWindow::changeFrequencyType4()
 {
-    trace(3,"btnFrequencyType4Clicked\n");
+    trace(3,"changeFrequencyType\n");
 
-    btnFrequencyTypeChanged(3);
+    changeFrequencyType(3);
 }
 // callback on button expand-1 ----------------------------------------------
-void MainWindow::btnExpand1Clicked()
+void MainWindow::expandPlot1()
 {
     if (trackScale[0] <= 0) return;
     trackScale[0]--;
@@ -926,7 +940,7 @@ void MainWindow::btnExpand1Clicked()
     updatePlot();
 }
 // callback on button shrink-1 ----------------------------------------------
-void MainWindow::btnShrink1Clicked()
+void MainWindow::shrinkPlot1()
 {
     if (trackScale[0] >= MAXTRKSCALE) return;
     trackScale[0]++;
@@ -934,7 +948,7 @@ void MainWindow::btnShrink1Clicked()
     updatePlot();
 }
 // callback on button expand-2 ----------------------------------------------
-void MainWindow::btnExpand2Clicked()
+void MainWindow::expandPlot2()
 {
     if (trackScale[1] <= 0) return;
     trackScale[1]--;
@@ -942,7 +956,7 @@ void MainWindow::btnExpand2Clicked()
     updatePlot();
 }
 // callback on button shrink-2 ----------------------------------------------
-void MainWindow::btnShrink2Clicked()
+void MainWindow::shrinkPlot2()
 {
     if (trackScale[1] >= MAXTRKSCALE) return;
     trackScale[1]++;
@@ -950,7 +964,7 @@ void MainWindow::btnShrink2Clicked()
     updatePlot();
 }
 // callback on button expand-3 ----------------------------------------------
-void MainWindow::btnExpand3Clicked()
+void MainWindow::expandPlot3()
 {
     if (trackScale[2] <= 0) return;
     trackScale[2]--;
@@ -958,7 +972,7 @@ void MainWindow::btnExpand3Clicked()
     updatePlot();
 }
 // callback on button shrink-3 ----------------------------------------------
-void MainWindow::btnShrink3Clicked()
+void MainWindow::shrinkPlot3()
 {
     if (trackScale[2] >= MAXTRKSCALE) return;
     trackScale[2]++;
@@ -966,7 +980,8 @@ void MainWindow::btnShrink3Clicked()
     updatePlot();
 }
 // callback on button expand-4 ----------------------------------------------
-void MainWindow::btnExpand4Clicked()
+void MainWindow::expandPlot4
+    ()
 {
     if (trackScale[3] <= 0) return;
     trackScale[3]--;
@@ -974,7 +989,7 @@ void MainWindow::btnExpand4Clicked()
     updatePlot();
 }
 // callback on button shrink-4 ----------------------------------------------
-void MainWindow::btnShrink4Clicked()
+void MainWindow::shrinkPlot4()
 {
     if (trackScale[3] >= MAXTRKSCALE) return;
     trackScale[3]++;
@@ -984,15 +999,15 @@ void MainWindow::btnShrink4Clicked()
 // callback on button-rtk-monitor -------------------------------------------
 void MainWindow::showMonitorDialog()
 {
-    trace(3, "btnMonitorDialogClicked\n");
+    trace(3, "showMonitorDialog\n");
 
     monitor->setWindowTitle(windowTitle() + ": RTK Monitor");
     monitor->show();
 }
 // callback on scroll-solution change ---------------------------------------
-void MainWindow::sBSolutionChanged()
+void MainWindow::changeSolutionIndex()
 {
-    trace(3, "sBSolutionChanged\n");
+    trace(3, "changeSolutionIndex\n");
 
     solutionsCurrent = solutionsStart + sBSolution->value();
     if (solutionsCurrent >= solutionBufferSize) solutionsCurrent -= solutionBufferSize;  // wrap around
@@ -1009,39 +1024,36 @@ void MainWindow::btnSaveClicked()
     saveLogs();
 }
 // callback on button-about -------------------------------------------------
-void MainWindow::btnAboutClicked()
+void MainWindow::showAboutDialog()
 {
-    QString prog = PRGNAME;
+    trace(3, "showAboutDialog\n");
 
-    trace(3, "btnAboutClicked\n");
+    aboutDialog = new AboutDialog(this, QPixmap(":/icons/rtknavi"), PRGNAME);
 
-    aboutDialog = new AboutDialog(this);
-    aboutDialog->aboutString = prog;
-    aboutDialog->iconIndex = 5;
     aboutDialog->exec();
 
     delete aboutDialog;
 }
 // callback on button-tasktray ----------------------------------------------
-void MainWindow::btnTaskTrayClicked()
+void MainWindow::minimizeToTray()
 {
-    trace(3, "btnTaskTrayClicked\n");
+    trace(3, "minimizeToTray\n");
 
     setVisible(false);
     systemTray->setToolTip(windowTitle());
     systemTray->setVisible(true);
 }
 // callback on button-tasktray ----------------------------------------------
-void MainWindow::trayIconClicked(QSystemTrayIcon::ActivationReason reason)
+void MainWindow::maximizeFromTray(QSystemTrayIcon::ActivationReason reason)
 {
-    trace(3, "trayIconClicked\n");
+    trace(3, "maximizeFromTray\n");
     if (reason != QSystemTrayIcon::DoubleClick) return;
 
     setVisible(true);
     systemTray->setVisible(false);
 }
 // callback on menu-expand --------------------------------------------------
-void MainWindow::menuExpandClicked()
+void MainWindow::expandFromTray()
 {
     trace(3, "menuExpandClicked\n");
 
@@ -1056,12 +1068,12 @@ void MainWindow::serverStart()
     int itype[] = {
         STR_SERIAL, STR_TCPCLI, STR_TCPSVR, STR_NTRIPCLI, STR_FILE, STR_FTP, STR_HTTP
     };
-    int otype[]={
+    int otype[] = {
         STR_SERIAL, STR_TCPCLI, STR_TCPSVR, STR_NTRIPSVR, STR_NTRIPCAS, STR_FILE
     };
-    int i, strs[MAXSTRRTK] = {0}, sat, ex, stropt[8] = {0};
+    int i, strs[MAXSTRRTK] = {0}, satId, ex, stropt[8] = {0};
     char *serverPaths[8], *cmds[3] = {0}, *cmds_periodic[3] = {0}, *rcvopts[3] = {0};
-    char buff[1024], *p, errmsg[20148];
+    char errmsg[20148];
     gtime_t time = timeget();
     pcvs_t pcvr, pcvs;
     pcv_t *pcv, pcv0;
@@ -1079,7 +1091,7 @@ void MainWindow::serverStart()
         tracelevel(debugTraceLevel);
     }
 
-    if (roverPositionTypeF <= 2) { // LLH,XYZ
+    if (roverPositionType <= 2) { // LLH,XYZ
         processingOptions.rovpos = POSOPT_POS;
         processingOptions.ru[0] = roverPosition[0];
         processingOptions.ru[1] = roverPosition[1];
@@ -1089,12 +1101,12 @@ void MainWindow::serverStart()
         for (i = 0; i < 3; i++) processingOptions.ru[i] = 0.0;
     }
 
-    if (referencePositionTypeF <= 2) { // LLH,XYZ
+    if (referencePositionType <= 2) { // LLH,XYZ
         processingOptions.refpos = POSOPT_POS;
         processingOptions.rb[0] = referencePosition[0];
         processingOptions.rb[1] = referencePosition[1];
         processingOptions.rb[2] = referencePosition[2];
-    } else if (referencePositionTypeF == 3) { // RTCM/Raw position
+    } else if (referencePositionType == 3) { // RTCM/Raw position
         processingOptions.refpos = POSOPT_RTCM;
         for (i = 0; i < 3; i++) processingOptions.rb[i] = 0.0;
     } else { // average of single position
@@ -1104,43 +1116,48 @@ void MainWindow::serverStart()
 
     for (i = 0; i < MAXSAT; i++)
         processingOptions.exsats[i] = 0;
-    if (excludedSatellites != "") { // excluded satellites
-        strncpy(buff, qPrintable(excludedSatellites), 1023);
-        for (p = strtok(buff, " "); p; p = strtok(NULL, " ")) {
-            if (*p == '+') {
-                ex = 2; p++;
-            } else {
+
+    if (!excludedSatellites.isEmpty()) { // excluded satellites
+        QStringList ex_sats = excludedSatellites.split(" ");
+        for (QString sat: ex_sats)
+        {
+            if ((sat.length()>1) && (sat.at(0) == '+'))
+            {
+                sat = sat.mid(1); // remove '+'
                 ex = 1;
+            } else {
+                ex = 0;
             }
-            if (!(sat = satid2no(p))) continue;
-            processingOptions.exsats[sat - 1] = (unsigned char)ex;
+            if (!(satId = satid2no(qPrintable(sat)))) continue;
+            processingOptions.exsats[satId - 1] = ex;
         }
     }
+
     processingOptions.pcvr[0] = processingOptions.pcvr[1] = pcv0; // initialize antenna PCV
-    if ((roverAntennaPcvF || referenceAntennaPcvF) && !readpcv(qPrintable(antennaPcvFileF), &pcvr)) {
-        lblMessage->setText(QString(tr("Antenna file read error %1")).arg(antennaPcvFileF));
+    if ((roverAntennaPcv || referenceAntennaPcv) && !readpcv(qPrintable(antennaPcvFile), &pcvr)) {
+        lblMessage->setText(QString(tr("Antenna file read error %1")).arg(antennaPcvFile));
         return;
     }
-    if (roverAntennaPcvF) {
-        if ((pcv = searchpcv(0, qPrintable(roverAntennaF), time, &pcvr)))
+    if (roverAntennaPcv) {
+        if ((pcv = searchpcv(0, qPrintable(roverAntenna), time, &pcvr)))
             processingOptions.pcvr[0] = *pcv;
         else
-            lblMessage->setText(QString(tr("No rover antenna PCV: \"%1\"")).arg(qPrintable(roverAntennaF)));
+            lblMessage->setText(QString(tr("No rover antenna PCV: \"%1\"")).arg(qPrintable(roverAntenna)));
         for (i = 0; i < 3; i++) processingOptions.antdel[0][i] = roverAntennaDelta[i];
     }
-    if (referenceAntennaPcvF) {
-        if ((pcv = searchpcv(0, qPrintable(referenceAntennaF), time, &pcvr)))
+    if (referenceAntennaPcv) {
+        if ((pcv = searchpcv(0, qPrintable(referenceAntenna), time, &pcvr)))
             processingOptions.pcvr[1] = *pcv;
         else
-            lblMessage->setText(QString(tr("No reference station antenna PCV: \"%1\"")).arg(qPrintable(referenceAntennaF)));
+            lblMessage->setText(QString(tr("No reference station antenna PCV: \"%1\"")).arg(qPrintable(referenceAntenna)));
         for (i = 0; i < 3; i++) processingOptions.antdel[1][i] = referenceAntennaDelta[i];
     }
-    if (roverAntennaPcvF || referenceAntennaPcvF)
+    if (roverAntennaPcv || referenceAntennaPcv)
         free(pcvr.pcv);
 
     if (processingOptions.sateph == EPHOPT_PREC || processingOptions.sateph == EPHOPT_SSRCOM) {
-        if (!readpcv(qPrintable(satellitePcvFileF), &pcvs)) {
-            lblMessage->setText(QString(tr("Satellite antenna file read error: %1")).arg(satellitePcvFileF));
+        if (!readpcv(qPrintable(satellitePcvFile), &pcvs)) {
+            lblMessage->setText(QString(tr("Satellite antenna file read error: %1")).arg(satellitePcvFile));
             return;
         }
         for (i = 0; i < MAXSAT; i++) {
@@ -1202,8 +1219,8 @@ void MainWindow::serverStart()
 
     if (debugStatusLevel > 0)
         rtkopenstat(STATFILE, debugStatusLevel);
-    if (solutionOptions.geoid > 0 && geoidDataFileF != "")
-        opengeoid(solutionOptions.geoid, qPrintable(geoidDataFileF));
+    if (solutionOptions.geoid > 0 && geoidDataFile != "")
+        opengeoid(solutionOptions.geoid, qPrintable(geoidDataFile));
     if (dcbFile != "")
         readdcb(qPrintable(dcbFile), &rtksvr.nav, NULL);
     for (i = 0; i < 2; i++) {
@@ -1221,7 +1238,7 @@ void MainWindow::serverStart()
 
     // start rtk server
     if (!rtksvrstart(&rtksvr, serverCycle, serverBufferSize, strs, serverPaths, inputFormat, NavSelect,
-                     cmds, cmds_periodic, rcvopts, nmeaCycle, NmeaReq, nmeapos,
+                     cmds, cmds_periodic, rcvopts, nmeaCycle, nmeaRequestType, nmeapos,
                      &processingOptions, solopt, &monistr, errmsg)) {
 
         trace(2,"rtksvrstart error %s\n",errmsg);
@@ -1317,7 +1334,7 @@ void MainWindow::serverStop()
 
     if (debugTraceLevel > 0) traceclose();
     if (debugStatusLevel > 0) rtkclosestat();
-    if (solutionOptions.geoid > 0 && geoidDataFileF != "") closegeoid();
+    if (solutionOptions.geoid > 0 && !geoidDataFile.isEmpty()) closegeoid();
 }
 // callback on interval timer -----------------------------------------------
 void MainWindow::updateTimerTriggered()
@@ -1584,9 +1601,9 @@ void MainWindow::updatePosition()
     lblIndicatorQ->setToolTip(lblIndicatorSolution->toolTip());
     lblSolutionS->setText(lblSolution->text());
     lblSolutionS->setStyleSheet(lblSolution->styleSheet());
-    lblSolutionQ->setText(ext + " " + label[0]->text() + " " + label[3]->text() + " " +
-              label[1]->text() + " " + label[4]->text() + " " +
-              label[2]->text() + " " + label[5]->text() + s[8]);
+    lblSolutionQ->setText(QString("%1 %2 %3 %4 %5 %6 %7%8").arg(ext).arg(label[0]->text()).arg(label[3]->text())
+                              .arg(label[1]->text()).arg(label[4]->text())
+                              .arg(label[2]->text()).arg(label[5]->text()).arg(s[8]));
 }
 // update stream status indicators ------------------------------------------
 void MainWindow::updateStream()
@@ -1623,15 +1640,15 @@ void MainWindow::drawSolutionPlot(QLabel *plot, int type, int freq)
     font.setPixelSize(8);
     c.setFont(font);
 
-    if (plot==lblDisplay1) id=0;
-    else if (plot==lblDisplay2) id=1;
-    else if (plot==lblDisplay3) id=2;
-    else id=3;
+    if (plot == lblDisplay1) id = 0;
+    else if (plot == lblDisplay2) id = 1;
+    else if (plot == lblDisplay3) id = 2;
+    else id = 3;
 
     int w = buffer.size().width() - 2;
     int h = buffer.height() - 2;
     int i, j, x, sat[2][MAXSAT], ns[2], snr[2][MAXSAT][NFREQ], vsat[2][MAXSAT];
-    int *snr0[MAXSAT], *snr1[MAXSAT], topMargin = panelFont.pixelSize()*3/2;;
+    int *snr0[MAXSAT], *snr1[MAXSAT], topMargin = QFontMetrics(panelFont).height()*3/2;;
     double az[2][MAXSAT], el[2][MAXSAT], rr[3], pos[3];
 
     trace(4, "drawSolutionPlot\n");
@@ -1735,16 +1752,16 @@ void MainWindow::drawSolutionPlot(QLabel *plot, int type, int freq)
 // update solution plot ------------------------------------------------------
 void MainWindow::updatePlot()
 {
-    if (panel22->isVisible()) {
+    if (panelDisplay1->isVisible()) {
         drawSolutionPlot(lblDisplay1, plotType[0], frequencyType[0]);
     }
-    if (panel23->isVisible()) {
+    if (panelDisplay2->isVisible()) {
         drawSolutionPlot(lblDisplay2, plotType[1], frequencyType[1]);
     }
-    if (panel24->isVisible()) {
+    if (panelDisplay3->isVisible()) {
         drawSolutionPlot(lblDisplay3, plotType[2], frequencyType[2]);
     }
-    if (panel25->isVisible()) {
+    if (panelDisplay4->isVisible()) {
         drawSolutionPlot(lblDisplay4, plotType[3], frequencyType[3]);
     }
 }
@@ -1856,7 +1873,7 @@ void MainWindow::drawSnr(QPainter &c, int w, int h, int x0, int y0,
 }
 // draw satellites in skyplot -----------------------------------------------
 void MainWindow::drawSatellites(QPainter &c, int w, int h, int x0, int y0,
-             int index, int freq)
+                                int index, int freq)
 {
     static const QColor color_sys[] = {
         Qt::green, ColorOrange, ColorFuchsia, Qt::blue, Qt::red, Qt::darkCyan, Qt::gray
@@ -2018,7 +2035,7 @@ void MainWindow::drawTrack(QPainter &c, int id, QPaintDevice *plot)
     double *x, *y, xt, yt, sx, sy, ref[3], pos[3], dr[3], enu[3];
     int i, j, currentPointNo, numPoints = 0, type, scl;
 
-    trace(3, "DrawTrk\n");
+    trace(3, "drawTrack\n");
 
     type = id == 0 ? trackType[0] : trackType[1];
     scl = id == 0 ? trackScale[0] : trackScale[1];
@@ -2214,7 +2231,7 @@ void MainWindow::initSolutionBuffer()
     double ep[] = { 2000, 1, 1, 0, 0, 0 };
     int i, j;
 
-    trace(3, "InitSolBuff\n");
+    trace(3, "initSolutionBuffer\n");
 
     delete [] timeStamps;
     delete [] solutionStatus;
@@ -2281,7 +2298,7 @@ void MainWindow::saveLogs()
     if (solutionOptions.outhead) {
         QString data;
 
-        data = QString(tr("%% program   : %1 ver.%2\n")).arg(PRGNAME).arg(VER_RTKLIB);
+        data = QString(tr("%% program : %1 ver.%2 %3\n")).arg(PRGNAME).arg(VER_RTKLIB).arg(PATCH_LEVEL);
         str << data;
         if (processingOptions.mode == PMODE_DGPS || processingOptions.mode == PMODE_KINEMA ||
             processingOptions.mode == PMODE_STATIC) {
@@ -2447,7 +2464,7 @@ void MainWindow::loadOptions()
     QString s;
     int i, j, no, strno[] = { 0, 1, 6, 2, 3, 4, 5, 7 };
 
-    trace(3, "LoadOpt\n");
+    trace(3, "loadOptions\n");
 
     for (i = 0; i < 8; i++) {
         no = strno[i];
@@ -2489,6 +2506,19 @@ void MainWindow::loadOptions()
     processingOptions.modear = settings.value("prcopt/modear", 1).toInt();
     processingOptions.glomodear = settings.value("prcopt/glomodear", 0).toInt();
     processingOptions.bdsmodear = settings.value("prcopt/bdsmodear", 0).toInt();
+    processingOptions.thresar[0] = settings.value("prcopt/thresar0", 100.0).toDouble();
+    processingOptions.thresar[1] = settings.value("prcopt/thresar1", 100.0).toDouble();
+    processingOptions.thresar[2] = settings.value("prcopt/thresar2", 100.0).toDouble();
+    processingOptions.thresar[5] = settings.value("prcopt/thresar5", 100.0).toDouble();
+    processingOptions.thresar[6] = settings.value("prcopt/thresar6", 100.0).toDouble();
+    processingOptions.varholdamb = settings.value("prcopt/varholdamb", 0.1).toDouble();
+    processingOptions.gainholdamb = settings.value("prcopt/gainholdamb", 0.01).toDouble();
+    processingOptions.armaxiter = settings.value("prcopt/ariter", 1).toInt();
+    processingOptions.minfixsats = settings.value("prcopt/minfixsats", 4).toInt();
+    processingOptions.minholdsats = settings.value("prcopt/minholdsats", 5).toInt();
+    processingOptions.mindropsats = settings.value("prcopt/mindropsats", 10).toInt();
+    processingOptions.codesmooth = settings.value("prcopt/codesmooth", 0).toInt();
+    processingOptions.arfilter = settings.value("prcopt/arfilter", 1).toInt();
     processingOptions.maxout = settings.value("prcopt/maxout", 5).toInt();
     processingOptions.minlock = settings.value("prcopt/minlock", 0).toInt();
     processingOptions.minfix = settings.value("prcopt/minfix", 10).toInt();
@@ -2498,10 +2528,14 @@ void MainWindow::loadOptions()
     processingOptions.niter = settings.value("prcopt/niter", 1).toInt();
     processingOptions.eratio[0] = settings.value("prcopt/eratio0", 100.0).toDouble();
     processingOptions.eratio[1] = settings.value("prcopt/eratio1", 100.0).toDouble();
+    processingOptions.eratio[2] = settings.value("prcopt/eratio5", 100.0).toDouble();
     processingOptions.err[1] = settings.value("prcopt/err1", 0.003).toDouble();
     processingOptions.err[2] = settings.value("prcopt/err2", 0.003).toDouble();
     processingOptions.err[3] = settings.value("prcopt/err3", 0.0).toDouble();
     processingOptions.err[4] = settings.value("prcopt/err4", 1.0).toDouble();
+    processingOptions.err[5] = settings.value("prcopt/err5", 1.0).toDouble();
+    processingOptions.err[6] = settings.value("prcopt/err6", 1.0).toDouble();
+    processingOptions.err[7] = settings.value("prcopt/err7", 1.0).toDouble();
     processingOptions.prn[0] = settings.value("prcopt/prn0", 1E-4).toDouble();
     processingOptions.prn[1] = settings.value("prcopt/prn1", 1E-3).toDouble();
     processingOptions.prn[2] = settings.value("prcopt/prn2", 1E-4).toDouble();
@@ -2525,7 +2559,7 @@ void MainWindow::loadOptions()
     processingOptions.posopt[4] = settings.value("prcopt/posopt5", 0).toInt();
     processingOptions.posopt[5] = settings.value("prcopt/posopt6", 0).toInt();
     processingOptions.maxaveep = settings.value("prcopt/maxaveep", 3600).toInt();
-    processingOptions.initrst = settings.value("prcopt/initrst", 1).toInt();
+    processingOptions.initrst = settings.value("prcopt/initrst", 1).toInt();   
 
     baselineEnabled = settings.value("prcopt/baselinec", 0).toInt();
     baseline[0] = settings.value("prcopt/baseline1", 0.0).toDouble();
@@ -2550,18 +2584,18 @@ void MainWindow::loadOptions()
     debugStatusLevel = settings.value("setting/debugstatus", 0).toInt();
     debugTraceLevel = settings.value("setting/debugtrace", 0).toInt();
 
-    roverPositionTypeF = settings.value("setting/rovpostype", 0).toInt();
-    referencePositionTypeF = settings.value("setting/refpostype", 0).toInt();
-    roverAntennaPcvF = settings.value("setting/rovantpcv", 0).toInt();
-    referenceAntennaPcvF = settings.value("setting/refantpcv", 0).toInt();
-    roverAntennaF = settings.value("setting/rovant", "").toString();
-    referenceAntennaF = settings.value("setting/refant", "").toString();
-    satellitePcvFileF = settings.value("setting/satpcvfile", "").toString();
-    antennaPcvFileF = settings.value("setting/antpcvfile", "").toString();
-    stationPositionFileF = settings.value("setting/staposfile", "").toString();
-    geoidDataFileF = settings.value("setting/geoiddatafile", "").toString();
+    roverPositionType = settings.value("setting/rovpostype", 0).toInt();
+    referencePositionType = settings.value("setting/refpostype", 0).toInt();
+    roverAntennaPcv = settings.value("setting/rovantpcv", 0).toInt();
+    referenceAntennaPcv = settings.value("setting/refantpcv", 0).toInt();
+    roverAntenna = settings.value("setting/rovant", "").toString();
+    referenceAntenna = settings.value("setting/refant", "").toString();
+    satellitePcvFile = settings.value("setting/satpcvfile", "").toString();
+    antennaPcvFile = settings.value("setting/antpcvfile", "").toString();
+    stationPositionFile = settings.value("setting/staposfile", "").toString();
+    geoidDataFile = settings.value("setting/geoiddatafile", "").toString();
     dcbFile = settings.value("setting/dcbfile", "").toString();
-    eopFileF = settings.value("setting/eopfile", "").toString();
+    eopFile = settings.value("setting/eopfile", "").toString();
     localDirectory = settings.value("setting/localdirectory", "C:\\Temp").toString();
 
     serverCycle = settings.value("setting/svrcycle", 10).toInt();
@@ -2576,11 +2610,11 @@ void MainWindow::loadOptions()
     dgpsCorrection = settings.value("setting/dgpscorr", 0).toInt();
     sbasCorrection = settings.value("setting/sbascorr", 0).toInt();
 
-    NmeaReq = settings.value("setting/nmeareq", 0).toInt();
+    nmeaRequestType = settings.value("setting/nmeareq", 0).toInt();
     inputTimeTag = settings.value("setting/intimetag", 0).toInt();
     inputTimeSpeed = settings.value("setting/intimespeed", "x1").toString();
     inputTimeStart = settings.value("setting/intimestart", "0").toString();
-    inputTime64Bit = settings.value("setting/intime64bit", "0").toInt();
+    inputTimeTag64bit = settings.value("setting/intime64bit", "0").toInt();
     outputTimeTag = settings.value("setting/outtimetag", 0).toInt();
     outputAppend = settings.value("setting/outappend", 0).toInt();
     outputSwapInterval = settings.value("setting/outswapinterval", "").toString();
@@ -2626,8 +2660,8 @@ void MainWindow::loadOptions()
     for (i = 0; i < 3; i++) {
         roverAntennaDelta[i] = settings.value(QString("setting/rovantdel_%1").arg(i), 0.0).toDouble();
         referenceAntennaDelta[i] = settings.value(QString("setting/refantdel_%1").arg(i), 0.0).toDouble();
-        roverPosition   [i] = settings.value(QString("setting/rovpos_%1").arg(i), 0.0).toDouble();
-        referencePosition   [i] = settings.value(QString("setting/refpos_%1").arg(i), 0.0).toDouble();
+        roverPosition[i] = settings.value(QString("setting/rovpos_%1").arg(i), 0.0).toDouble();
+        referencePosition[i] = settings.value(QString("setting/refpos_%1").arg(i), 0.0).toDouble();
     }
     for (i = 0; i < 10; i++)
         history[i] = settings.value(QString("tcpopt/history%1").arg(i), "").toString();
@@ -2654,7 +2688,7 @@ void MainWindow::loadOptions()
     TextViewer::font.setFamily(settings.value("viewer/fontname", "Courier New").toString());
     TextViewer::font.setPointSize(settings.value("viewer/fontsize", 9).toInt());
 
-    updatePanel();
+    updatePanels();
 
     splitter->restoreState(settings.value("window/splitpos").toByteArray());
 
@@ -2706,6 +2740,18 @@ void MainWindow::saveOptions()
     settings.setValue("prcopt/modear", processingOptions.modear);
     settings.setValue("prcopt/glomodear", processingOptions.glomodear);
     settings.setValue("prcopt/bdsmodear", processingOptions.bdsmodear);
+    settings.setValue("prcopt/thresar0", processingOptions.thresar[0]);
+    settings.setValue("prcopt/thresar1", processingOptions.thresar[1]);
+    settings.setValue("prcopt/thresar2", processingOptions.thresar[2]);
+    settings.setValue("prcopt/thresar5", processingOptions.thresar[5]);
+    settings.setValue("prcopt/thresar6", processingOptions.thresar[6]);
+    settings.setValue("prcopt/varholdamb", processingOptions.varholdamb);
+    settings.setValue("prcopt/gainholdamb", processingOptions.gainholdamb);
+    settings.setValue("prcopt/minfixsats", processingOptions.minfixsats);
+    settings.setValue("prcopt/minholdsats", processingOptions.minholdsats);
+    settings.setValue("prcopt/mindropsats", processingOptions.mindropsats);
+    settings.setValue("prcopt/codesmooth", processingOptions.codesmooth);
+    settings.setValue("prcopt/arfilter", processingOptions.arfilter);
     settings.setValue("prcopt/maxout", processingOptions.maxout);
     settings.setValue("prcopt/minlock", processingOptions.minlock);
     settings.setValue("prcopt/minfix", processingOptions.minfix);
@@ -2715,10 +2761,14 @@ void MainWindow::saveOptions()
     settings.setValue("prcopt/niter", processingOptions.niter);
     settings.setValue("prcopt/eratio0", processingOptions.eratio[0]);
     settings.setValue("prcopt/eratio1", processingOptions.eratio[1]);
+    settings.setValue("prcopt/eratio5", processingOptions.eratio[2]);
     settings.setValue("prcopt/err1", processingOptions.err[1]);
     settings.setValue("prcopt/err2", processingOptions.err[2]);
     settings.setValue("prcopt/err3", processingOptions.err[3]);
     settings.setValue("prcopt/err4", processingOptions.err[4]);
+    settings.setValue("prcopt/err5", processingOptions.err[5]);
+    settings.setValue("prcopt/err6", processingOptions.err[6]);
+    settings.setValue("prcopt/err7", processingOptions.err[7]);
     settings.setValue("prcopt/prn0", processingOptions.prn[0]);
     settings.setValue("prcopt/prn1", processingOptions.prn[1]);
     settings.setValue("prcopt/prn2", processingOptions.prn[2]);
@@ -2767,18 +2817,18 @@ void MainWindow::saveOptions()
     settings.setValue("setting/debugstatus", debugStatusLevel);
     settings.setValue("setting/debugtrace", debugTraceLevel);
 
-    settings.setValue("setting/rovpostype", roverPositionTypeF);
-    settings.setValue("setting/refpostype", referencePositionTypeF);
-    settings.setValue("setting/rovantpcv", roverAntennaPcvF);
-    settings.setValue("setting/refantpcv", referenceAntennaPcvF);
-    settings.setValue("setting/rovant", roverAntennaF);
-    settings.setValue("setting/refant", referenceAntennaF);
-    settings.setValue("setting/satpcvfile", satellitePcvFileF);
-    settings.setValue("setting/antpcvfile", antennaPcvFileF);
-    settings.setValue("setting/staposfile", stationPositionFileF);
-    settings.setValue("setting/geoiddatafile", geoidDataFileF);
+    settings.setValue("setting/rovpostype", roverPositionType);
+    settings.setValue("setting/refpostype", referencePositionType);
+    settings.setValue("setting/rovantpcv", roverAntennaPcv);
+    settings.setValue("setting/refantpcv", referenceAntennaPcv);
+    settings.setValue("setting/rovant", roverAntenna);
+    settings.setValue("setting/refant", referenceAntenna);
+    settings.setValue("setting/satpcvfile", satellitePcvFile);
+    settings.setValue("setting/antpcvfile", antennaPcvFile);
+    settings.setValue("setting/staposfile", stationPositionFile);
+    settings.setValue("setting/geoiddatafile", geoidDataFile);
     settings.setValue("setting/dcbfile", dcbFile);
-    settings.setValue("setting/eopfile", eopFileF);
+    settings.setValue("setting/eopfile", eopFile);
     settings.setValue("setting/localdirectory", localDirectory);
 
     settings.setValue("setting/svrcycle", serverCycle);
@@ -2793,11 +2843,11 @@ void MainWindow::saveOptions()
     settings.setValue("setting/dgpscorr", dgpsCorrection);
     settings.setValue("setting/sbascorr", sbasCorrection);
 
-    settings.setValue("setting/nmeareq", NmeaReq);
+    settings.setValue("setting/nmeareq", nmeaRequestType);
     settings.setValue("setting/intimetag", inputTimeTag);
     settings.setValue("setting/intimespeed", inputTimeSpeed);
     settings.setValue("setting/intimestart", inputTimeStart);
-    settings.setValue("setting/intime64bit", inputTime64Bit);
+    settings.setValue("setting/intime64bit", inputTimeTag64bit);
     settings.setValue("setting/outtimetag", outputTimeTag);
     settings.setValue("setting/outappend", outputAppend);
     settings.setValue("setting/outswapinterval", outputSwapInterval);
@@ -2881,15 +2931,16 @@ void MainWindow::btnMarkClicked()
 {
     QMarkDialog *markDialog = new QMarkDialog(this);
 
-    markDialog->positionMode = rtksvr.rtk.opt.mode;
-    markDialog->name = markerName;
-    markDialog->comment = markerComment;
+    markDialog->setPositionMode(rtksvr.rtk.opt.mode);
+    markDialog->setName(markerName);
+    markDialog->setComment(markerComment);
+    markDialog->setStationPositionFile(optDialog->stationPositionFile);
 
     if (markDialog->exec() != QDialog::Accepted) return;
 
-    rtksvr.rtk.opt.mode = markDialog->positionMode;
-    markerName = markDialog->name;
-    markerComment = markDialog->comment;
+    rtksvr.rtk.opt.mode = markDialog->getPositionMode();
+    markerName = markDialog->getName();
+    markerComment = markDialog->getComment();
 
     delete markDialog;
     

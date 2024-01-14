@@ -23,22 +23,22 @@ protected:
     TcpOptDialog *tcpOptDialog;
 
 public slots:
-    void btnOkClicked();
-    void btnStream1Clicked();
-    void btnStream2Clicked();
-    void btnStream3Clicked();
-    void btnFile1Clicked();
-    void btnFile2Clicked();
-    void btnKeyClicked();
-    void btnFile3Clicked();
+    void saveClose();
+    void showStreamOptions1();
+    void showStreamOptions2();
+    void showStreamOptions3();
+    void selectFile1();
+    void selectFile2();
+    void showKeyDialog();
+    void selectFile3();
     void updateEnable();
 
 private:
     QString getFilePath(const QString &path);
     QString setFilePath(const QString &path);
 
-    void serialOptions(int index, int opt);
-    void tcpOptions(int index, int opt);
+    void showSerialOptions(int index, int opt);
+    void showTcpOptions(int index, int opt);
 
 public:
     int streamEnabled[3], stream[3], logTimeTag, logAppend;

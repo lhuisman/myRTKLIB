@@ -30,7 +30,7 @@ public slots:
     void solutionStreamChanged();
 
 private:
-    int typeF, consoleFormat, inputStream, solutionStream, fontScale, observationMode;
+    int consoleFormat, inputStream, solutionStream, fontScale;
     QStringList consoleBuffer;
     QStringList header;
 	rtcm_t rtcm;
@@ -75,11 +75,13 @@ private:
     void showRtcmSsr();
     void showReferenceStation();
 
-    void addConsole(const unsigned char *msg, int n, int mode);
+    void addConsole(const unsigned char *msg, int n, int mode, bool newline);
 
 public:
     explicit MonitorDialog(QWidget* parent);
     ~MonitorDialog();
+
+    int getDisplayType();
 };
 //---------------------------------------------------------------------------
 #endif

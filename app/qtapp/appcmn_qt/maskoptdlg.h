@@ -12,16 +12,15 @@
 class MaskOptDialog : public QDialog, private Ui::MaskOptDialog
 {
     Q_OBJECT
-protected:
-    void  showEvent(QShowEvent*);
 
 public slots:
-    void  btnOkClicked();
     void  updateEnable(void);
 
 public:
-    snrmask_t mask;
-    explicit MaskOptDialog(QWidget* parent);
+    explicit MaskOptDialog(QWidget* parent = nullptr);
+
+    snrmask_t getSnrMask();
+    void setSnrMask(snrmask_t);
 };
 //---------------------------------------------------------------------------
 #endif

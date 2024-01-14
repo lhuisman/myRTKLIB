@@ -5,29 +5,22 @@
 #include "rtklib.h"
 
 //---------------------------------------------------------------------------
-AboutDialog::AboutDialog(QWidget *parent)
+AboutDialog::AboutDialog(QWidget *parent, QPixmap icon, QString labelText)
     : QDialog(parent)
 {
     setupUi(this);
+    this->icon = icon.scaled(128, 128);
+    aboutString = labelText;
+
+    connect(btnOkay, &QPushButton::clicked, this, &AboutDialog::accept);
 }
 
 void AboutDialog::showEvent(QShowEvent *event)
 {
     if (event->spontaneous()) return;
 
-    QPixmap icon[] = { QPixmap(":/icons/rtk1"),
-                       QPixmap(":/icons/rtk2"),
-                       QPixmap(":/icons/rtk3"),
-                       QPixmap(":/icons/rtk4"),
-                       QPixmap(":/icons/rtk5"),
-                       QPixmap(":/icons/rtk6"),
-                       QPixmap(":/icons/rtk7") };
-
-    if ((iconIndex > 0) && (iconIndex < 7)) wgIcon->setPixmap(icon[iconIndex - 1]);
-
+    lbIcon->setPixmap(icon);
     lbAbout->setText(aboutString);
     lbVersion->setText(tr("with RTKLIB ver.%1 %2").arg(VER_RTKLIB).arg(PATCH_LEVEL));
-    lbCopyright->setText(COPYRIGHT_RTKLIB);
-
-    connect(pbOkay, &QPushButton::clicked, this, &AboutDialog::accept);
+    lbCopyright->setText(QString("%1\nQt Version\n2016-2024 Jens Reimann").arg(COPYRIGHT_RTKLIB));
 }

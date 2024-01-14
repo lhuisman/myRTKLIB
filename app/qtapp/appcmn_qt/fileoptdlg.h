@@ -13,20 +13,23 @@ class FileOptDialog : public QDialog, private Ui::FileOptDialog
     Q_OBJECT
 
 protected:
-    void showEvent(QShowEvent*);
-
     KeyDialog *keyDialog;
 
+    int options, pathEnabled;
 public slots:
-    void btnFilePathClicked();
-    void btnOkClicked();
-    void btnKeyClicked();
+    void filePathSelect();
+    void keyDialogShow();
     void updateEnable();
 
 public:
-    int options, pathEnabled;
-    QString path;
-    explicit FileOptDialog(QWidget* parent);
+    explicit FileOptDialog(QWidget* parent, int options = 0, int pathEnabled = 0);
+
+    void setPath(QString path);
+    QString getPath();
+    void setOptions(int);
+    int getOptions() {return options;}
+    void setPathEnabled(int);
+    int getPathEnabled() {return pathEnabled;}
 };
 //---------------------------------------------------------------------------
 #endif

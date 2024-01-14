@@ -16,9 +16,11 @@ class StrMonDialog : public QDialog, private Ui::StrMonDialog
 {
     Q_OBJECT
 public slots:
-    void btnClearClicked();
-    void btnDownClicked();
-    void selectFormatChanged();
+    void clearConsole();
+    void scrollDown();
+    void changeFormat();
+
+protected:
 
 private:
     QStringList consoleBuffer;
@@ -28,9 +30,10 @@ private:
     void addConsole(unsigned char *msg, int len, int mode, bool newline);
 
 public:
-    int streamFormat;
     explicit StrMonDialog(QWidget *parent);
     void addMessage(unsigned char *buff, int n);
+
+    int getStreamFormat();
 };
 //---------------------------------------------------------------------------
 #endif

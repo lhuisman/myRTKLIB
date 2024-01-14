@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>471</width>
-    <height>276</height>
+    <width>466</width>
+    <height>294</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,76 +17,13 @@
    <string/>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="5" column="0">
-    <widget class="QRadioButton" name="rBGo">
+   <item row="1" column="0" colspan="4">
+    <widget class="QComboBox" name="cBMarkerName">
      <property name="toolTip">
       <string/>
      </property>
-     <property name="text">
-      <string>&amp;GO (Kinematic)</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="1">
-    <widget class="QRadioButton" name="rBStop">
-     <property name="toolTip">
-      <string/>
-     </property>
-     <property name="text">
-      <string>STOP (Stati&amp;c)</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="Label2">
-     <property name="toolTip">
-      <string/>
-     </property>
-     <property name="text">
-      <string>Comment</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0" colspan="2">
-    <widget class="QLabel" name="lblPositionMode">
-     <property name="toolTip">
-      <string/>
-     </property>
-     <property name="text">
-      <string>Switch Positioning Mode</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0">
-    <widget class="QCheckBox" name="cBMarkerNameC">
-     <property name="toolTip">
-      <string/>
-     </property>
-     <property name="text">
-      <string>Marker Name</string>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="0" colspan="2">
-    <widget class="QLabel" name="lblPosition">
-     <property name="text">
-      <string>Lat/Lon/Height (deg/m)</string>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="1">
-    <widget class="QDoubleSpinBox" name="sBLongitude">
-     <property name="suffix">
-      <string>°</string>
-     </property>
-     <property name="decimals">
-      <number>9</number>
-     </property>
-     <property name="minimum">
-      <double>-90.000000000000000</double>
-     </property>
-     <property name="maximum">
-      <double>90.000000000000000</double>
+     <property name="editable">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
@@ -106,10 +43,31 @@
      </property>
     </widget>
    </item>
-   <item row="5" column="2">
-    <widget class="QRadioButton" name="rBFix">
+   <item row="6" column="0" colspan="2">
+    <widget class="QLabel" name="lblPosition">
      <property name="text">
-      <string>FIX (Fixed)</string>
+      <string>Latitutde / Longitude / Height</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="2">
+    <widget class="QPushButton" name="btnKeyDlg">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="icon">
+      <iconset resource="../icon/resources.qrc">
+       <normaloff>:/buttons/key</normaloff>:/buttons/key</iconset>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0" colspan="4">
+    <widget class="QLineEdit" name="lEMarkerComment">
+     <property name="toolTip">
+      <string/>
      </property>
     </widget>
    </item>
@@ -136,64 +94,87 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="2">
-    <widget class="QPushButton" name="btnKeyDlg">
+   <item row="2" column="0">
+    <widget class="QLabel" name="lblComment">
      <property name="text">
-      <string>?</string>
+      <string>Comment</string>
      </property>
-     <property name="flat">
-      <bool>true</bool>
+    </widget>
+   </item>
+   <item row="8" column="0" colspan="4">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="1">
+    <widget class="QDoubleSpinBox" name="sBLongitude">
+     <property name="suffix">
+      <string>°</string>
+     </property>
+     <property name="decimals">
+      <number>9</number>
+     </property>
+     <property name="minimum">
+      <double>-90.000000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>90.000000000000000</double>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QCheckBox" name="cBMarkerNameC">
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="text">
+      <string>Marker Name</string>
      </property>
     </widget>
    </item>
    <item row="0" column="3">
-    <widget class="QLabel" name="Label1">
+    <widget class="QLabel" name="lblMarker">
      <property name="text">
       <string>%r=001</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="0" colspan="4">
-    <widget class="QComboBox" name="cBMarkerName">
-     <property name="toolTip">
-      <string/>
+   <item row="4" column="0" colspan="4">
+    <widget class="QGroupBox" name="gBPositionMode">
+     <property name="title">
+      <string>Position Mode</string>
      </property>
-     <property name="editable">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0" colspan="4">
-    <widget class="QLineEdit" name="lEMarkerComment">
-     <property name="toolTip">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="3">
-    <widget class="QPushButton" name="btnCancel">
-     <property name="toolTip">
-      <string/>
-     </property>
-     <property name="text">
-      <string>&amp;Cancel</string>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="2">
-    <widget class="QPushButton" name="btnOk">
-     <property name="toolTip">
-      <string/>
-     </property>
-     <property name="text">
-      <string>&amp;OK</string>
-     </property>
-     <property name="autoDefault">
-      <bool>true</bool>
-     </property>
-     <property name="default">
-      <bool>true</bool>
-     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QRadioButton" name="rBGo">
+        <property name="toolTip">
+         <string/>
+        </property>
+        <property name="text">
+         <string>&amp;GO (Kinematic)</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="rBStop">
+        <property name="toolTip">
+         <string/>
+        </property>
+        <property name="text">
+         <string>STOP (Stati&amp;c)</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="rBFix">
+        <property name="text">
+         <string>FIX (Fixed)</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
   </layout>
@@ -203,6 +184,8 @@
   <tabstop>cBMarkerName</tabstop>
   <tabstop>lEMarkerComment</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../icon/resources.qrc"/>
+ </resources>
  <connections/>
 </ui>

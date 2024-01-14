@@ -16,7 +16,7 @@
 #define NMONITEM	17
 
 
-static const int sys_tbl[]={
+static const int sys_tbl[] = {
         SYS_ALL, SYS_GPS, SYS_GLO, SYS_GAL, SYS_QZS, SYS_CMP, SYS_IRN, SYS_SBS
 };
 
@@ -35,9 +35,8 @@ MonitorDialog::MonitorDialog(QWidget *parent)
 
     fontScale = physicalDpiX() * 2;
 
-    observationMode = 0;
     consoleFormat = -1;
-    inputStream=solutionStream=0;
+    inputStream = solutionStream = 0;
 
     for (i = 0; i <= MAXRCVFMT; i++) cBSelectFormat->addItem(formatstrs[i]);
 
@@ -45,7 +44,7 @@ MonitorDialog::MonitorDialog(QWidget *parent)
     init_raw(&raw, -1);
 
     connect(btnClear, &QPushButton::clicked, this, &MonitorDialog::btnClearClicked);
-    connect(btnClose, &QPushButton::clicked, this, &MonitorDialog::accept);
+    connect(buttonBox, &QDialogButtonBox::rejected, this, &MonitorDialog::accept);
     connect(btnDown, &QPushButton::clicked, this, &MonitorDialog::btnDownClicked);
     connect(cBType, &QComboBox::currentIndexChanged, this, &MonitorDialog::displayTypeChanged);
     connect(cBSelectFormat, &QComboBox::currentIndexChanged, this, &MonitorDialog::consoleFormatChanged);
@@ -53,8 +52,6 @@ MonitorDialog::MonitorDialog(QWidget *parent)
     connect(cBSelectInputStream, &QComboBox::currentIndexChanged, this, &MonitorDialog::inputStreamChanged);
     connect(cBSelectSolutionStream, &QComboBox::currentIndexChanged, this, &MonitorDialog::solutionStreamChanged);
     connect(&updateTimer, &QTimer::timeout, this, &MonitorDialog::updateTimerTriggered);
-
-    typeF = cBType->currentIndex();
 
     updateTimer.start(1000);
 }
@@ -86,10 +83,7 @@ void MonitorDialog::closeEvent(QCloseEvent *event)
 //---------------------------------------------------------------------------
 void MonitorDialog::displayTypeChanged()
 {
-	int index;
-
-    typeF = cBType->currentIndex();
-    index = typeF - NMONITEM;
+    int index = getDisplayType() - NMONITEM;
 
     if (0 <= index) {
 		rtksvrlock(&rtksvr);
@@ -104,9 +98,15 @@ void MonitorDialog::displayTypeChanged()
     tWConsole->clear();
 }
 //---------------------------------------------------------------------------
+int MonitorDialog::getDisplayType()
+{
+    return cBType->currentIndex();
+}
+
+//---------------------------------------------------------------------------
 void MonitorDialog::consoleFormatChanged()
 {
-    addConsole((uint8_t *)"\n", 1, 1);
+    addConsole((uint8_t *)"\n", 1, 1, false);
 
     if (consoleFormat >= 3 && consoleFormat < 17)
         free_raw(&raw);
@@ -134,7 +134,7 @@ void MonitorDialog::updateTimerTriggered()
 {
     if (!isVisible()) return;
 
-	switch (typeF) {
+    switch (getDisplayType()) {
         case  0: showRtk(); break;
         case  1: showObservations(); break;
         case  2: showNavigations(); break;
@@ -159,7 +159,7 @@ void MonitorDialog::clearTable()
 {
     int console = 0;
 
-	switch (typeF) {
+    switch (getDisplayType()) {
         case  0: setRtk(); break;
         case  1: setObservations(); break;
         case  2: break;
@@ -181,19 +181,20 @@ void MonitorDialog::clearTable()
             break;
 	}
     tWConsole->setVisible(true);
-    Panel2->setVisible(console);
+    panelControl->setVisible(console);
     btnPause->setVisible(console != 0);
     btnDown->setVisible(console != 0);
     btnClear->setVisible(console != 0);
 
-    cBSelectObservation->setVisible(typeF == 1);
-    cBSelectNavigationSystems->setVisible(typeF == 1 || typeF == 5);
-    cBSelectSingleNavigationSystem->setVisible(typeF == 2 || typeF == 14);
-    cBSelectSatellites->setVisible(typeF == 2 || typeF == 5);
-    cBSelectInputStream->setVisible(typeF == 12 || typeF == 14 || typeF == 15 || typeF == 16);
-    cBSelectSolutionStream->setVisible(typeF == 17);
-    cBSelectFormat->setVisible(typeF == 16);
-    cBSelectEphemeris->setVisible(typeF == 2);
+    int displayType = getDisplayType();
+    cBSelectObservation->setVisible(displayType == 1);
+    cBSelectNavigationSystems->setVisible(displayType == 1 || displayType == 5);
+    cBSelectSingleNavigationSystem->setVisible(displayType == 2 || displayType == 14);
+    cBSelectSatellites->setVisible(displayType == 2 || displayType == 5);
+    cBSelectInputStream->setVisible(displayType == 12 || displayType == 14 || displayType == 15 || displayType == 16);
+    cBSelectSolutionStream->setVisible(displayType == 17);
+    cBSelectFormat->setVisible(displayType == 16);
+    cBSelectEphemeris->setVisible(displayType == 2);
 }
 //---------------------------------------------------------------------------
 void MonitorDialog::showBuffers()
@@ -201,17 +202,19 @@ void MonitorDialog::showBuffers()
     unsigned char *msg = 0;
     int i, len;
 
-    if (typeF < 16) return;
+    int displayType = getDisplayType();
+
+    if (displayType < 16) return;
 
 	rtksvrlock(&rtksvr);
 
-    if (typeF == 16) { // input buffer
+    if (displayType == 16) { // input buffer
         len = rtksvr.npb[inputStream];
         if (len > 0 && (msg = (uint8_t *)malloc(size_t(len)))) {
             memcpy(msg, rtksvr.pbuf[inputStream], size_t(len));
             rtksvr.npb[inputStream] = 0;
 		}
-    } else if (typeF == 17) { // solution buffer
+    } else if (displayType == 17) { // solution buffer
         len = rtksvr.nsb[solutionStream];
         if (len > 0 && (msg = (uint8_t*)malloc(size_t(len)))) {
             memcpy(msg, rtksvr.sbuf[solutionStream], size_t(len));
@@ -230,17 +233,16 @@ void MonitorDialog::showBuffers()
 
     rtcm.outtype = raw.outtype = 1;
 
-    if (typeF >=17) {
-        addConsole(msg, len, 1);
+    if (displayType >= 17) {
+        addConsole(msg, len, 1, false);
     }
     else if (consoleFormat < 2) {
-        addConsole(msg, len, consoleFormat);
+        addConsole(msg, len, consoleFormat, false);
     } else if (consoleFormat == 2) {
         for (i = 0; i < len; i++) {
             input_rtcm2(&rtcm, msg[i]);
 			if (rtcm.msgtype[0]) {
-                QString buff = QString::fromLatin1(rtcm.msgtype, -1) + "\n";
-                addConsole((uint8_t*)qPrintable(buff), buff.size(), 1);
+                addConsole((uint8_t*)rtcm.msgtype, strlen(rtcm.msgtype), 1, true);
                 rtcm.msgtype[0] = '\0';
 			}
         }
@@ -248,8 +250,7 @@ void MonitorDialog::showBuffers()
         for (i = 0; i < len; i++) {
             input_rtcm3(&rtcm, msg[i]);
 			if (rtcm.msgtype[0]) {
-                QString buff = QString::fromLatin1(rtcm.msgtype, -1) + "\n";
-                addConsole((uint8_t*)qPrintable(buff), buff.size(), 1);
+                addConsole((uint8_t*)rtcm.msgtype, strlen(rtcm.msgtype), 1, true);
                 rtcm.msgtype[0] = '\0';
 			}
         }
@@ -257,8 +258,7 @@ void MonitorDialog::showBuffers()
         for (i = 0; i < len; i++) {
             input_raw(&raw, consoleFormat - 2, msg[i]);
 			if (raw.msgtype[0]) {
-                QString buff=QString::fromLatin1(raw.msgtype, -1) + "\n";
-                addConsole((uint8_t*)qPrintable(buff), buff.size(), 1);
+                addConsole((uint8_t*)raw.msgtype, strlen(raw.msgtype), 1, true);
                 raw.msgtype[0] = '\0';
 			}
         }
@@ -266,7 +266,7 @@ void MonitorDialog::showBuffers()
 	free(msg);
 }
 //---------------------------------------------------------------------------
-void MonitorDialog::addConsole(const uint8_t *msg, int n, int mode)
+void MonitorDialog::addConsole(const uint8_t *msg, int n, int mode, bool newline)
 {
     char buff[MAXLEN + 16], *p = buff;
 
@@ -293,17 +293,23 @@ void MonitorDialog::addConsole(const uint8_t *msg, int n, int mode)
             consoleBuffer[consoleBuffer.count() - 1] = buff;
             consoleBuffer.append("");
             *(p = buff) = 0;
-            if (consoleBuffer.count() >= MAXLINE) consoleBuffer.removeFirst();
+            while (consoleBuffer.count() >= MAXLINE) consoleBuffer.removeFirst();
         }
     }
+    // store last (incomplete) line
     consoleBuffer[consoleBuffer.count() - 1] = buff;
 
+    // write consoleBuffer to table widget
     tWConsole->setColumnCount(1);
     tWConsole->setRowCount(consoleBuffer.size());
     for (int i = 0; i < consoleBuffer.size(); i++)
         tWConsole->setItem(i, 0, new QTableWidgetItem(consoleBuffer.at(i)));
 
-    if (btnDown->isChecked()) tWConsole->verticalScrollBar()->setValue(tWConsole->verticalScrollBar()->maximum());
+    if (btnDown->isChecked())
+        tWConsole->verticalScrollBar()->setValue(tWConsole->verticalScrollBar()->maximum());
+
+    if (newline)
+        consoleBuffer.append("");
 }
 //---------------------------------------------------------------------------
 void MonitorDialog::btnClearClicked()
@@ -320,7 +326,6 @@ void MonitorDialog::btnDownClicked()
 //---------------------------------------------------------------------------
 void MonitorDialog::observationModeChanged()
 {
-    observationMode = cBSelectObservation->currentIndex();
     setObservations();
     showObservations();
 }
@@ -331,7 +336,7 @@ void MonitorDialog::setRtk()
     int width[] = {220, 380};
 
     tWConsole->setColumnCount(2);
-    tWConsole->setRowCount(54+NFREQ*2);
+    tWConsole->setRowCount(54 + NFREQ*2);
     tWConsole->setHorizontalHeaderLabels(header);
 
     for (int i = 0; (i < tWConsole->columnCount()) && (i < 2); i++)
@@ -549,7 +554,10 @@ void MonitorDialog::showRtk()
     tWConsole->setItem(i, 0, new QTableWidgetItem(tr("Pos X/Y/Z Single (m) Rover")));
     tWConsole->setItem(i++, 1, new QTableWidgetItem(QString("%1, %2, %3").arg(rtk.sol.rr[0], 0, 'f', 3).arg(rtk.sol.rr[1], 0, 'f', 3).arg(rtk.sol.rr[2], 0, 'f', 3)));
 
-    if (norm(rtk.sol.rr, 3) > 0.0) ecef2pos(rtk.sol.rr, pos); else pos[0] = pos[1] = pos[2] = 0.0;
+    if (norm(rtk.sol.rr, 3) > 0.0)
+        ecef2pos(rtk.sol.rr, pos);
+    else
+        pos[0] = pos[1] = pos[2] = 0.0;
     tWConsole->setItem(i, 0, new QTableWidgetItem(tr("Lat/Lon/Height Single (deg,m) Rover")));
     tWConsole->setItem(i++, 1, new QTableWidgetItem(QString("%1, %2, %3").arg(pos[0] * R2D, 0, 'f', 8).arg(pos[1] * R2D, 0, 'f', 8).arg(pos[2], 0, 'f', 3)));
 
@@ -576,7 +584,10 @@ void MonitorDialog::showRtk()
     tWConsole->setItem(i, 0, new QTableWidgetItem(tr("Pos X/Y/Z (m) Base Station")));
     tWConsole->setItem(i++, 1, new QTableWidgetItem(QString("%1, %2, %3").arg(rtk.rb[0], 0, 'f', 3).arg(rtk.rb[1], 0, 'f', 3).arg(rtk.rb[2], 0, 'f', 3)));
 
-    if (norm(rtk.rb, 3) > 0.0) ecef2pos(rtk.rb, pos); else pos[0] = pos[1] = pos[2] = 0.0;
+    if (norm(rtk.rb, 3) > 0.0)
+        ecef2pos(rtk.rb, pos);
+    else
+        pos[0] = pos[1] = pos[2] = 0.0;
     tWConsole->setItem(i, 0, new QTableWidgetItem(tr("Lat/Lon/Height (deg,m) Base Station")));
     tWConsole->setItem(i++, 1, new QTableWidgetItem(QString("%1, %2, %3").arg(pos[0] * R2D, 0, 'f', 8).arg(pos[1] * R2D, 0, 'f', 8).arg(pos[2], 0, 'f', 3)));
 
@@ -585,11 +596,12 @@ void MonitorDialog::showRtk()
     tWConsole->setItem(i++, 1, new QTableWidgetItem(QString("%1, %2, %3").arg(vel[0], 0, 'f', 3).arg(vel[1], 0, 'f', 3).arg(vel[2], 0, 'f', 3)));
 
     if (norm(rtk.rb,3)>0.0) {
-        for (k=0;k<3;k++) rr[k]=rtk.sol.rr[k]-rtk.rb[k];
+        for (k = 0; k < 3; k++)
+            rr[k] = rtk.sol.rr[k] - rtk.rb[k];
         ecef2enu(pos,rr,enu);
     }
     tWConsole->setItem(i, 0, new QTableWidgetItem(tr("Baseline Length/E/N/U (m) Rover-Base Station")));
-    tWConsole->setItem(i++, 1, new QTableWidgetItem(QString("%1, %2, %3, %4").arg(norm(rr,3),0,'f',3).arg(enu[0],0,'f',3).arg(enu[1],0,'f',3).arg(enu[2],0,'f',3)));
+    tWConsole->setItem(i++, 1, new QTableWidgetItem(QString("%1, %2, %3, %4").arg(norm(rr, 3), 0, 'f', 3).arg(enu[0], 0, 'f', 3).arg(enu[1], 0, 'f', 3).arg(enu[2], 0, 'f', 3)));
 
     tWConsole->setItem(i, 0, new QTableWidgetItem(tr("# of Averaging Single Pos Base Station")));
     tWConsole->setItem(i++, 1, new QTableWidgetItem(QString("%1").arg(nave)));
@@ -597,8 +609,8 @@ void MonitorDialog::showRtk()
     tWConsole->setItem(i, 0, new QTableWidgetItem(tr("Antenna Type Rover")));
     tWConsole->setItem(i++, 1, new QTableWidgetItem(rtk.opt.pcvr[0].type));
 
-    for (j=0;j<NFREQ;j++) {
-        off=rtk.opt.pcvr[0].off[j];
+    for (j = 0; j < NFREQ; j++) {
+        off = rtk.opt.pcvr[0].off[j];
         tWConsole->setItem(i, 0, new QTableWidgetItem(tr("Antenna Phase Center L%1 E/N/U (m) Rover").arg(j+1)));
         tWConsole->setItem(i++, 1, new QTableWidgetItem(QString("%1, %2, %3").arg(off[0], 0, 'f', 3).arg(off[1], 0, 'f', 3).arg(off[2], 0, 'f', 3)));
     }
@@ -610,8 +622,8 @@ void MonitorDialog::showRtk()
     tWConsole->setItem(i, 0, new QTableWidgetItem(tr("Antenna Type Base Station")));
     tWConsole->setItem(i++, 1, new QTableWidgetItem(rtk.opt.pcvr[1].type));
 
-    for (j=0;j<NFREQ;j++) {
-        off=rtk.opt.pcvr[1].off[0];
+    for (j = 0; j < NFREQ; j++) {
+        off = rtk.opt.pcvr[1].off[0];
         tWConsole->setItem(i, 0, new QTableWidgetItem(tr("Antenna Phase Center L%1 E/N/U (m) Base Station").arg(j+1)));
         tWConsole->setItem(i++, 1, new QTableWidgetItem(QString("%1, %2, %3").arg(off[0], 0, 'f', 3).arg(off[1], 0, 'f', 3).arg(off[2], 0, 'f', 3)));
     }
@@ -920,7 +932,7 @@ void MonitorDialog::setObservations()
 {
     const QString label[] = {tr("Trcv (GPST)"), tr("SAT"), tr("STR")};
     int i, j = 0, width[] = {135, 25, 25};
-    int nex = observationMode ? NEXOBS : 0;
+    int nex = cBSelectObservation->currentIndex() ? NEXOBS : 0;
 
     tWConsole->setColumnCount(3 + (NFREQ + nex) * 6);
     tWConsole->setRowCount(0);
@@ -961,7 +973,7 @@ void MonitorDialog::showObservations()
 {
     obsd_t obs[MAXOBS * 2];
     char tstr[64], id[32], *code;
-    int i, k, n = 0, nex = observationMode ? NEXOBS : 0, sys = sys_tbl[cBSelectNavigationSystems->currentIndex()];
+    int i, k, n = 0, nex = cBSelectObservation->currentIndex() ? NEXOBS : 0, sys = sys_tbl[cBSelectNavigationSystems->currentIndex()];
 
 	rtksvrlock(&rtksvr);
     for (i = 0; i < rtksvr.obs[0][0].n && n < MAXOBS * 2; i++) {
@@ -992,7 +1004,7 @@ void MonitorDialog::showObservations()
             else tWConsole->setItem(i + 1, j++, new QTableWidgetItem("-"));
         }
         for (k = 0; k < NFREQ + nex; k++) {
-            if (obs[i].SNR[k]) tWConsole->setItem(i + 1, j++, new QTableWidgetItem(QString::number(obs[i].SNR[k]*SNR_UNIT, 'f', 1)));
+            if (obs[i].SNR[k]) tWConsole->setItem(i + 1, j++, new QTableWidgetItem(QString::number(obs[i].SNR[k] * SNR_UNIT, 'f', 1)));
             else tWConsole->setItem(i + 1, j++, new QTableWidgetItem("-"));
         }
         for (k = 0; k < NFREQ + nex; k++)
@@ -1177,14 +1189,17 @@ void MonitorDialog::showGlonassNavigations()
         tWConsole->setItem(n, j++, new QTableWidgetItem(id));
         tWConsole->setItem(n, j++, new QTableWidgetItem(QString::number(prn)));
         tWConsole->setItem(n, j++, new QTableWidgetItem(valid ? tr("OK") : tr("-")));
-        if (geph[i].iode < 0) s = "-"; else s = QString::number(geph[i].iode);
+        if (geph[i].iode < 0) s = "-";
+        else s = QString::number(geph[i].iode);
         tWConsole->setItem(n, j++, new QTableWidgetItem(s));
         tWConsole->setItem(n, j++, new QTableWidgetItem(QString::number(geph[i].frq)));
         tWConsole->setItem(n, j++, new QTableWidgetItem(QString::number(geph[i].svh, 16)));
         tWConsole->setItem(n, j++, new QTableWidgetItem(QString::number(geph[i].age)));
-        if (geph[i].toe.time != 0) time2str(geph[i].toe, tstr, 0); else strcpy(tstr, "-");
+        if (geph[i].toe.time != 0) time2str(geph[i].toe, tstr, 0);
+        else strcpy(tstr, "-");
         tWConsole->setItem(n, j++, new QTableWidgetItem(tstr));
-        if (geph[i].tof.time != 0) time2str(geph[i].tof, tstr, 0); else strcpy(tstr, "-");
+        if (geph[i].tof.time != 0) time2str(geph[i].tof, tstr, 0);
+        else strcpy(tstr, "-");
         tWConsole->setItem(n, j++, new QTableWidgetItem(tstr));
         tWConsole->setItem(n, j++, new QTableWidgetItem(QString::number(geph[i].pos[0], 'f', 2)));
         tWConsole->setItem(n, j++, new QTableWidgetItem(QString::number(geph[i].pos[1], 'f', 2)));
@@ -1530,7 +1545,8 @@ void MonitorDialog::showSbsMessages()
         tWConsole->setItem(i, j++, new QTableWidgetItem(QString::number(type)));
         for (k = 0; k < 29; k++) s += QString::number(msg[i].msg[k], 16);
         tWConsole->setItem(i, j++, new QTableWidgetItem(s));
-        for (k = 0; id[k] >= 0; k++) if (type == id[k]) break;
+        for (k = 0; id[k] >= 0; k++)
+            if (type == id[k]) break;
         tWConsole->setItem(i, j++, new QTableWidgetItem(id[k] < 0 ? "?" : content[k]));
 	}
 }
@@ -1672,7 +1688,7 @@ void MonitorDialog::showSbsFast()
 
     lblInformation->setText("");
     tWConsole->setRowCount(sbssat.nsat <= 0 ? 1 : sbssat.nsat);
-    //lblInformation->setText(QString(tr("IODP:%1  System Latency:%2 s")).arg(sbssat.iodp).arg(sbssat.tlat));
+    lblInformation->setText(QString(tr("IODP:%1  System Latency:%2 s")).arg(sbssat.iodp).arg(sbssat.tlat));
     tWConsole->setHorizontalHeaderLabels(header);
 
     for (i = 0; i < sbssat.nsat; i++) {
@@ -1732,8 +1748,8 @@ void MonitorDialog::showRtcm()
         if (rtcm.nmsg3[j] == 0) continue;
         mstr2 += QString("%1%2(%3)").arg(mstr2.isEmpty() ? "" : ",").arg(j + 1000).arg(rtcm.nmsg3[j]);
 	}
-    for (j=300;j<399;j++) {
-        if (rtcm.nmsg3[j]==0) continue;
+    for (j = 300; j < 399; j++) {
+        if (rtcm.nmsg3[j] == 0) continue;
         mstr2+=QString("%1%2(%3)").arg(mstr2.isEmpty()?"":",").arg(j+3770).arg(rtcm.nmsg3[j]);
     }
     if (rtcm.nmsg3[0] > 0)
@@ -1829,7 +1845,8 @@ void MonitorDialog::showRtcmDgps()
         tWConsole->setItem(i, j++, new QTableWidgetItem(QString::number(dgps[i].rrc, 'f', 4)));
         tWConsole->setItem(i, j++, new QTableWidgetItem(QString::number(dgps[i].iod)));
         tWConsole->setItem(i, j++, new QTableWidgetItem(QString::number(dgps[i].udre)));
-        if (dgps[i].t0.time) time2str(dgps[i].t0, tstr, 0); else strcpy(tstr, "-");
+        if (dgps[i].t0.time) time2str(dgps[i].t0, tstr, 0);
+        else strcpy(tstr, "-");
         tWConsole->setItem(i, j++, new QTableWidgetItem(tstr));
 	}
 }

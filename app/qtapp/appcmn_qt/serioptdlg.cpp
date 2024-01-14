@@ -12,27 +12,31 @@
 #include <QSerialPortInfo>
 
 //---------------------------------------------------------------------------
-SerialOptDialog::SerialOptDialog(QWidget *parent)
+SerialOptDialog::SerialOptDialog(QWidget *parent, int options)
     : QDialog(parent)
 {
     setupUi(this);
-    options = 0;
 
     cmdOptDialog = new CmdOptDialog(this);
 
-    connect(btnOk, &QPushButton::clicked, this, &SerialOptDialog::btnOkClicked);
-    connect(btnCancel, &QPushButton::clicked, this, &SerialOptDialog::reject);
+    connect(buttonBox, &QDialogButtonBox::accepted, this, &SerialOptDialog::accept);
+    connect(buttonBox, &QDialogButtonBox::rejected, this, &SerialOptDialog::reject);
     connect(cBOutputTcpPort, &QCheckBox::clicked, this, &SerialOptDialog::updateEnable);
 
+    updatePortList();
+
     updateEnable();
+    setOptions(options);
 }
 //---------------------------------------------------------------------------
-void SerialOptDialog::showEvent(QShowEvent *event)
+void SerialOptDialog::setOptions(int options)
 {
-    if (event->spontaneous()) return;
-
-	updatePortList();
-
+    cBOutputTcpPort->setEnabled(options);
+    cBTcpPort->setEnabled(options);
+}
+//---------------------------------------------------------------------------
+void SerialOptDialog::setPath(QString path)
+{
     QStringList tokens = path.split(':');
 
     cBPort->setCurrentIndex(cBPort->findText(tokens.first()));
@@ -54,9 +58,6 @@ void SerialOptDialog::showEvent(QShowEvent *event)
 
     QStringList tokens2 = tokens.at(5).split('#');
 
-    cBOutputTcpPort->setEnabled(options);
-    cBTcpPort->setEnabled(options);
-
     bool okay;
     if (tokens2.size() == 2) {
         int port = tokens2.at(1).toInt(&okay);
@@ -69,13 +70,13 @@ void SerialOptDialog::showEvent(QShowEvent *event)
         cBOutputTcpPort->setChecked(false);
         cBTcpPort->setValue(-1);
     }
-    updateEnable();
 }
 //---------------------------------------------------------------------------
-void SerialOptDialog::btnOkClicked()
+QString SerialOptDialog::getPath()
 {
     const char *parity[] = {"n", "e", "o"}, *fctr[] = {"off", "rts", "xon"};
-    QString Port_Text = cBPort->currentText(), BitRate_Text = cBBitRate->currentText();
+    QString Port_Text = cBPort->currentText(), BitRate_Text = cBBitRate->currentText().split(" ").first();
+    QString path;
 
     path = QString("%1:%2:%3:%4:%5:%6").arg(Port_Text).arg(BitRate_Text)
            .arg(cBByteSize->currentIndex() ? 8 : 7).arg(parity[cBParity->currentIndex()])
@@ -84,7 +85,7 @@ void SerialOptDialog::btnOkClicked()
     if (cBOutputTcpPort->isChecked())
         path += QString("#%1").arg(cBTcpPort->value());
 
-    accept();
+    return path;
 }
 //---------------------------------------------------------------------------
 void SerialOptDialog::updatePortList(void)

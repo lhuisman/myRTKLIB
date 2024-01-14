@@ -62,17 +62,9 @@
 #include "aboutdlg.h"
 #include "viewer.h"
 
-#define PRGNAME     "RTKPOST-QT"
+#define PRGNAME     "RTKPost-Qt"
 #define MAXHIST     20
-#ifdef Q_OS_WIN
-#define GOOGLE_EARTH "C:\\Program Files\\Google\\Google Earth Pro\\client\\googleearth.exe"
-#endif
-#ifdef Q_OS_LINUX
-#define GOOGLE_EARTH "google-earth"
-#endif
-#ifndef GOOGLE_EARTH
-#define GOOGLE_EARTH ""
-#endif
+
 
 // global variables ---------------------------------------------------------
 static gtime_t tstart_ = {0, 0};         // time start for progress-bar
@@ -124,28 +116,33 @@ ProcessingThread::ProcessingThread(QObject *parent) : QThread(parent)
     te.time = te.sec = 0;
     ti = tu = 0;
     rov = base = QString();
-    for (int i = 0; i < 6; i++) {infile[i] = new char[1024]; infile[i][0] = '\0';};
+    for (int i = 0; i < 6; i++)
+    {
+        infile[i] = new char[1024];
+        infile[i][0] = '\0';
+    };
     outfile[0] = '\0';
 
     memset(&prcopt, 0, sizeof(prcopt_t));
     memset(&solopt, 0, sizeof(solopt_t));
     memset(&filopt, 0, sizeof(filopt_t));
+
+    connect(this, &QThread::finished, this, &QObject::deleteLater);
 }
 ProcessingThread::~ProcessingThread()
 {
     for (int i = 0; i < 6; i++) delete[] infile[i];
-    rov = base = QString();
 }
 void ProcessingThread::addInput(const QString & file) {
-    if (file != "") {
+    if (!file.isEmpty()) {
         strncpy(infile[n++], qPrintable(file), 1023);
     }
 }
 void ProcessingThread::run()
 {
     if ((stat = postpos(ts, te, ti, tu, &prcopt, &solopt, &filopt, infile, n, outfile,
-                        qPrintable(rov), qPrintable(base)))==1) {
-        showmsg("aborted");
+                        qPrintable(rov), qPrintable(base))) == 1) {
+        showmsg("Aborted");
     };
     emit done(stat);
 }
@@ -171,6 +168,7 @@ MainForm::MainForm(QWidget *parent)
     mainForm=  this;
 
     setWindowIcon(QIcon(":/icons/rktpost_Icon.ico"));
+    setWindowTitle(QString("%1 ver.%2 %3").arg(PRGNAME).arg(VER_RTKLIB).arg(PATCH_LEVEL));
     setlocale(LC_NUMERIC, "C");
     int i;
 
@@ -204,6 +202,7 @@ MainForm::MainForm(QWidget *parent)
     convDialog = new ConvDialog(this);
     textViewer = new TextViewer(this);
 
+    // setup completers
     QCompleter *fileCompleter = new QCompleter(this);
     QFileSystemModel *fileModel = new QFileSystemModel(fileCompleter);
     fileModel->setRootPath("");
@@ -223,36 +222,35 @@ MainForm::MainForm(QWidget *parent)
     dirCompleter->setModel(dirModel);
     lEOutputDirectory->setCompleter(dirCompleter);
 
-    btnAbort->setVisible(false);
-
-    connect(btnPlot, &QPushButton::clicked, this, &MainForm::btnPlotClicked);
-    connect(btnView, &QPushButton::clicked, this, &MainForm::btnViewClicked);
-    connect(btnToKML, &QPushButton::clicked, this, &MainForm::btnToKMLClicked);
-    connect(btnOption, &QPushButton::clicked, this, &MainForm::btnOptionClicked);
-    connect(btnExec, &QPushButton::clicked, this, &MainForm::btnExecClicked);
-    connect(btnAbort, &QPushButton::clicked, this, &MainForm::btnAbortClicked);
+    // connect signals
+    connect(btnPlot, &QPushButton::clicked, this, &MainForm::callRtkPlot);
+    connect(btnView, &QPushButton::clicked, this, &MainForm::viewOutputFile);
+    connect(btnToKML, &QPushButton::clicked, this, &MainForm::convertToKML);
+    connect(btnOption, &QPushButton::clicked, this, &MainForm::showOptionsDialog);
+    connect(btnExec, &QPushButton::clicked, this, &MainForm::postProcess);
+    connect(btnAbort, &QPushButton::clicked, this, &MainForm::abortProcessing);
     connect(btnExit, &QPushButton::clicked, this, &MainForm::close);
-    connect(btnAbout, &QPushButton::clicked, this, &MainForm::btnAboutClicked);
-    connect(btnTimeStart, &QPushButton::clicked, this, &MainForm::btnTimeStartClicked);
-    connect(btnTimeStop, &QPushButton::clicked, this, &MainForm::btnTimeStopClicked);
-    connect(btnInputFile1, &QPushButton::clicked, this, &MainForm::btnInputFile1Clicked);
-    connect(btnInputFile2, &QPushButton::clicked, this, &MainForm::btnInputFile2Clicked);
-    connect(btnInputFile3, &QPushButton::clicked, this, &MainForm::btnInputFile3Clicked);
-    connect(btnInputFile4, &QPushButton::clicked, this, &MainForm::btnInputFile4Clicked);
-    connect(btnInputFile5, &QPushButton::clicked, this, &MainForm::btnInputFile5Clicked);
-    connect(btnInputFile6, &QPushButton::clicked, this, &MainForm::btnInputFile6Clicked);
-    connect(btnOutputFile, &QPushButton::clicked, this, &MainForm::btnOutputFileClicked);
-    connect(btnInputView1, &QPushButton::clicked, this, &MainForm::btnInputView1Clicked);
-    connect(btnInputView2, &QPushButton::clicked, this, &MainForm::btnInputView2Clicked);
-    connect(btnInputView3, &QPushButton::clicked, this, &MainForm::btnInputView3Clicked);
-    connect(btnInputView4, &QPushButton::clicked, this, &MainForm::btnInputView4Clicked);
-    connect(btnInputView5, &QPushButton::clicked, this, &MainForm::btnInputView5Clicked);
-    connect(btnInputView6, &QPushButton::clicked, this, &MainForm::btnInputView6Clicked);
-    connect(btnOutputView1, &QPushButton::clicked, this, &MainForm::btnOutputView1Clicked);
-    connect(btnOutputView2, &QPushButton::clicked, this, &MainForm::btnOutputView2Clicked);
-    connect(btnInputPlot1, &QPushButton::clicked, this, &MainForm::btnInputPlot1Clicked);
-    connect(btnInputPlot2, &QPushButton::clicked, this, &MainForm::btnInputPlot2Clicked);
-    connect(btnKeyword, &QPushButton::clicked, this, &MainForm::btnKeywordClicked);
+    connect(btnAbout, &QPushButton::clicked, this, &MainForm::showAboutDialog);
+    connect(btnTimeStart, &QPushButton::clicked, this, &MainForm::showStartTimeDialog);
+    connect(btnTimeStop, &QPushButton::clicked, this, &MainForm::showStopTimeDialog);
+    connect(btnInputFile1, &QPushButton::clicked, this, &MainForm::selectInputFile1);
+    connect(btnInputFile2, &QPushButton::clicked, this, &MainForm::selectInputFile2);
+    connect(btnInputFile3, &QPushButton::clicked, this, &MainForm::selectInputFile3);
+    connect(btnInputFile4, &QPushButton::clicked, this, &MainForm::selectInputFile4);
+    connect(btnInputFile5, &QPushButton::clicked, this, &MainForm::selectInputFile5);
+    connect(btnInputFile6, &QPushButton::clicked, this, &MainForm::selectInputFile6);
+    connect(btnOutputFile, &QPushButton::clicked, this, &MainForm::selectOutputFile);
+    connect(btnInputView1, &QPushButton::clicked, this, &MainForm::viewInputFile1);
+    connect(btnInputView2, &QPushButton::clicked, this, &MainForm::viewInputFile2);
+    connect(btnInputView3, &QPushButton::clicked, this, &MainForm::viewInputFile3);
+    connect(btnInputView4, &QPushButton::clicked, this, &MainForm::viewInputFile4);
+    connect(btnInputView5, &QPushButton::clicked, this, &MainForm::viewInputFile5);
+    connect(btnInputView6, &QPushButton::clicked, this, &MainForm::viewInputFile6);
+    connect(btnOutputViewStat, &QPushButton::clicked, this, &MainForm::viewOutputFileStat);
+    connect(btnOutputViewTrace, &QPushButton::clicked, this, &MainForm::viewOutputFileTrace);
+    connect(btnInputPlot1, &QPushButton::clicked, this, &MainForm::plotInputFile1);
+    connect(btnInputPlot2, &QPushButton::clicked, this, &MainForm::plotInputFile2);
+    connect(btnKeyword, &QPushButton::clicked, this, &MainForm::showKeyDialog);
     connect(cBTimeStart, &QCheckBox::clicked, this, &MainForm::updateEnable);
     connect(cBTimeEnd, &QCheckBox::clicked, this, &MainForm::updateEnable);
     connect(cBTimeIntervalF, &QCheckBox::clicked, this, &MainForm::updateEnable);
@@ -260,9 +258,9 @@ MainForm::MainForm(QWidget *parent)
     connect(cBInputFile1, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &MainForm::setOutputFile);
     connect(cBOutputDirectoryEnable, &QCheckBox::clicked, this, &MainForm::outputDirectoryEnableClicked);
     connect(lEOutputDirectory, &QLineEdit::editingFinished, this, &MainForm::setOutputFile);
-    connect(btnOutputDirectory, &QPushButton::clicked, this, &MainForm::btnOutputDirectoryClicked);
+    connect(btnOutputDirectory, &QPushButton::clicked, this, &MainForm::selectOutputDirectory);
 
-    setWindowTitle(QString("%1 ver.%2 %3").arg(PRGNAME).arg(VER_RTKLIB).arg(PATCH_LEVEL));
+    btnAbort->setVisible(false);
 }
 // callback on form show ----------------------------------------------------
 void MainForm::showEvent(QShowEvent* event)
@@ -273,7 +271,7 @@ void MainForm::showEvent(QShowEvent* event)
     int inputflag = 0;
 
     QCommandLineParser parser;
-    parser.setApplicationDescription("RTK post");
+    parser.setApplicationDescription("RTK Post-Processing Tool Qt");
     parser.addHelpOption();
     parser.addVersionOption();
     parser.setSingleDashWordOptionMode(QCommandLineParser::ParseAsLongOptions);
@@ -336,7 +334,7 @@ void MainForm::showEvent(QShowEvent* event)
     parser.process(*QApplication::instance());
 
     if (parser.isSet(iniFileOption)) {
-        iniFile=parser.value(iniFileOption);
+        iniFile = parser.value(iniFileOption);
     }
 
     loadOptions();
@@ -373,11 +371,11 @@ void MainForm::showEvent(QShowEvent* event)
     }
     if (parser.isSet(timeIntervalOption)) {
         cBTimeIntervalF->setChecked(true);
-        cBTimeInterval->setCurrentText(parser.value(timeIntervalOption));
+        cBTimeInterval->setCurrentText(QString("%1 s").arg(parser.value(timeIntervalOption)));
     }
     if (parser.isSet(timeUnitOption)) {
         cBTimeUnitF->setChecked(true);
-        lETimeUnit->setText(parser.value(timeUnitOption));
+        sBTimeUnit->setValue(parser.value(timeUnitOption).toDouble());
     }
 
     if (inputflag) setOutputFile();
@@ -408,7 +406,7 @@ void  MainForm::dropEvent(QDropEvent *event)
 
     QString file = QDir::toNativeSeparators(event->mimeData()->text());
 
-    top = Panel1->pos().y() + Panel4->pos().y();
+    top = panelMain->pos().y() + panelFiles->pos().y();
     if (point.y() <= top + cBInputFile1->pos().y() + cBInputFile1->height()) {
         cBInputFile1->setCurrentText(file);
         setOutputFile();
@@ -430,74 +428,73 @@ void  MainForm::dropEvent(QDropEvent *event)
     }
 }
 // callback on button-plot --------------------------------------------------
-void MainForm::btnPlotClicked()
+void MainForm::callRtkPlot()
 {
     QString OutputFile_Text = cBOutputFile->currentText();
     QString file = filePath(OutputFile_Text);
-    QString cmd1 = "rtkplot_qt", cmd2 = "../rtkplot_qt/rtkplot_qt", cmd3 = "../../../bin/rtkplot_qt";
+    QString cmd[] = {"rtkplot_qt", "../rtkplot_qt/rtkplot_qt", "../../../bin/rtkplot_qt"};
     QStringList opts;
 
     opts += file;
 
-    if (!execCommand(cmd1, opts, 1) && !execCommand(cmd2, opts, 1) && !execCommand(cmd3, opts, 1)) {
-        showMessage("error : rtkplot_qt execution");
+    if (!execCommand(cmd[0], opts, 1) && !execCommand(cmd[1], opts, 1) && !execCommand(cmd[2], opts, 1)) {
+        showMessage("Error : rtkplot_qt execution failed");
     }
 }
 // callback on button-view --------------------------------------------------
-void MainForm::btnViewClicked()
+void MainForm::viewOutputFile()
 {
-    QString OutputFile_Text = cBOutputFile->currentText();
-    viewFile(filePath(OutputFile_Text));
+    viewFile(filePath(cBOutputFile->currentText()));
 }
 // callback on button-to-kml ------------------------------------------------
-void MainForm::btnToKMLClicked()
+void MainForm::convertToKML()
 {
-    QString OutputFile_Text = cBOutputFile->currentText();
-    convDialog->setInput(filePath(OutputFile_Text));
+    convDialog->setInput(filePath(cBOutputFile->currentText()));
     convDialog->exec();
-
 }
 // callback on button-options -----------------------------------------------
-void MainForm::btnOptionClicked()
+void MainForm::showOptionsDialog()
 {
-    int format = solutionFormat;
+    int format_old = solutionFormat;
+
     optDialog->exec();
     if (optDialog->result() != QDialog::Accepted) return;
-    if ((format == SOLF_NMEA) != (solutionFormat == SOLF_NMEA)) {
+
+    if ((format_old == SOLF_NMEA) != (solutionFormat == SOLF_NMEA)) {
         setOutputFile();
     }
     updateEnable();
 }
 // callback on button-execute -----------------------------------------------
-void MainForm::btnExecClicked()
+void MainForm::postProcess()
 {
-    QString OutputFile_Text = cBOutputFile->currentText();
+    QString outputFile = cBOutputFile->currentText();
     abortFlag = false;
 
-    if (cBInputFile1->currentText() == "") {
-        showmsg("error : no rinex obs file (rover)");
+    if (cBInputFile1->currentText().isEmpty()) {
+        showMessage(tr("Error: No rinex observation file (rover)"));
         return;
     }
     if (cBInputFile2->currentText() == "" && PMODE_DGPS <= positionMode && positionMode <= PMODE_FIXED) {
-        showmsg("error : no rinex obs file (base station)");
+        showMessage(tr("Error: No rinex observation file (base station)"));
         return;
     }
     if (cBOutputFile->currentText() == "") {
-        showmsg("error : no output file");
+        showMessage(tr("Error: No output file"));
         return;
     }
-    QFileInfo f = QFileInfo(OutputFile_Text);
-    if (f.suffix().contains(".obs",Qt::CaseInsensitive)||
-        f.suffix().contains(".rnx",Qt::CaseInsensitive)||
-        f.suffix().contains(".nav",Qt::CaseInsensitive)||
-        f.suffix().contains(".gnav",Qt::CaseInsensitive)||
-        f.suffix().contains(".gz",Qt::CaseInsensitive)||
-        f.suffix().contains(".Z",Qt::CaseInsensitive)||
+    QFileInfo f = QFileInfo(outputFile);
+    if (f.suffix().contains(".obs", Qt::CaseInsensitive) ||
+        f.suffix().contains(".rnx", Qt::CaseInsensitive) ||
+        f.suffix().contains(".nav", Qt::CaseInsensitive) ||
+        f.suffix().contains(".gnav", Qt::CaseInsensitive) ||
+        f.suffix().contains(".gz", Qt::CaseInsensitive) ||
+        f.suffix().contains(".Z", Qt::CaseInsensitive) ||
         f.suffix().contains(QRegularExpression(R"(\.\d\d[ondg])", QRegularExpression::CaseInsensitiveOption))) {
-        showmsg("error : invalid extension of output file (%s)", qPrintable(OutputFile_Text));
-        return;
+        showMessage(tr("Error: Invalid extension of output file (%1)").arg(outputFile));
+            return;
     }
-    showmsg("");
+    showMessage("");
 
     btnAbort ->setVisible(true);
     btnExec->setVisible(false);
@@ -506,7 +503,7 @@ void MainForm::btnExecClicked()
     btnToKML->setEnabled(false);
     btnPlot->setEnabled(false);
     btnOption->setEnabled(false);
-    Panel1->setEnabled(false);
+    panelMain->setEnabled(false);
 
     execProcessing();
 }
@@ -527,7 +524,7 @@ void MainForm::processingFinished(int stat)
     }
 
     if (lblMessage->text().contains("processing")) {
-        showmsg("done");
+        showMessage(tr("Done"));
     }
     btnAbort ->setVisible(false);
     btnExec->setVisible(true);
@@ -537,146 +534,132 @@ void MainForm::processingFinished(int stat)
     btnToKML->setEnabled(true);
     btnPlot->setEnabled(true);
     btnOption->setEnabled(true);
-    Panel1->setEnabled(true);
-
-    delete processingThread;
+    panelMain->setEnabled(true);
 }
 // callback on button-abort -------------------------------------------------
-void MainForm::btnAbortClicked()
+void MainForm::abortProcessing()
 {
     abortFlag = true;
-    showmsg("aborted");
+    showMessage(tr("Aborted"));
 }
 // callback on button-about -------------------------------------------------
-void MainForm::btnAboutClicked()
+void MainForm::showAboutDialog()
 {
-    QString prog = PRGNAME;
-    AboutDialog *aboutDialog = new AboutDialog(this);
+    AboutDialog *aboutDialog = new AboutDialog(this, QPixmap(":/icons/rtkpost"), PRGNAME);
 
-    aboutDialog->aboutString = prog;
-    aboutDialog->iconIndex = 1;
     aboutDialog->exec();
 
     delete aboutDialog;
 }
 // callback on button-time-1 ------------------------------------------------
-void MainForm::btnTimeStartClicked()
+void MainForm::showStartTimeDialog()
 {
     TimeDialog *timeDialog = new TimeDialog(this);
-    timeDialog->time = getTimeStart();
+    timeDialog->setTime(getTimeStart());
     timeDialog->exec();
 
     delete timeDialog;
 }
 // callback on button-time-2 ------------------------------------------------
-void MainForm::btnTimeStopClicked()
+void MainForm::showStopTimeDialog()
 {
     TimeDialog *timeDialog = new TimeDialog(this);
 
-    timeDialog->time = getTimeStop();
+    timeDialog->setTime(getTimeStop());
     timeDialog->exec();
 
     delete timeDialog;
 }
 // callback on button-inputfile-1 -------------------------------------------
-void MainForm::btnInputFile1Clicked()
+void MainForm::selectInputFile1()
 {
     cBInputFile1->setCurrentText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("RINEX OBS (Rover) File"), cBInputFile1->currentText(), tr("All (*.*);;RINEX OBS (*.rnx *.obs *.*O *.*D)"))));
     setOutputFile();
 }
 // callback on button-inputfile-2 ------------------------------------------
-void MainForm::btnInputFile2Clicked()
+void MainForm::selectInputFile2()
 {
     cBInputFile2->setCurrentText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("RINEX OBS (Base Station) File"), cBInputFile2->currentText(), tr("All (*.*);;RINEX OBS (*.rnx *.obs *.*O *.*D)"))));
 }
 // callback on button-inputfile-3 -------------------------------------------
-void MainForm::btnInputFile3Clicked()
+void MainForm::selectInputFile3()
 {
     cBInputFile3->setCurrentText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("RINEX NAV/CLK,SP3,Bias-SINEX,IONEX or SBAS/EMS File"), cBInputFile3->currentText(), tr("All (*.*);;RINEX NAV (*.rnx *.*nav *.*N *.*P *.*G *.*H *.*Q)"))));
 }
 // callback on button-inputfile-4 -------------------------------------------
-void MainForm::btnInputFile4Clicked()
+void MainForm::selectInputFile4()
 {
     cBInputFile4->setCurrentText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("RINEX NAV/CLK,SP3,Bias-SINEX,IONEX or SBAS/EMS File"), cBInputFile4->currentText(), tr("All (*.*);;Precise Ephemeris/Clock/Biases (*.SP3 *.sp3 *.eph* *.CLK *.clk* *.BIA)"))));
 }
 // callback on button-inputfile-5 -------------------------------------------
-void MainForm::btnInputFile5Clicked()
+void MainForm::selectInputFile5()
 {
     cBInputFile5->setCurrentText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("RINEX NAV/CLK,SP3,Bias-SINEX,IONEX or SBAS/EMS File"), cBInputFile5->currentText(), tr("All (*.*);;Precise Ephemeris/Clock/Biases (*.SP3 *.sp3 *.eph* *.CLK *.clk* *.BIA)"))));
 }
 // callback on button-inputfile-6 -------------------------------------------
-void MainForm::btnInputFile6Clicked()
+void MainForm::selectInputFile6()
 {
     cBInputFile6->setCurrentText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("RINEX NAV/CLK,SP3,Bias-SINEX,IONEX or SBAS/EMS File"), cBInputFile6->currentText(), tr("All (*.*);;Bias-SINEX (*.BIA *.BSX),IONEX (*.*i *.ionex),SBAS (*.sbs *.ems)"))));
 }
 // callback on button-outputfile --------------------------------------------
-void MainForm::btnOutputFileClicked()
+void MainForm::selectOutputFile()
 {
     cBOutputFile->setCurrentText(QDir::toNativeSeparators(QFileDialog::getSaveFileName(this, tr("Output File"), cBOutputFile->currentText(), tr("All (*.*);;Position Files (*.pos)"))));
 }
 // callback on button-inputview-1 -------------------------------------------
-void MainForm::btnInputView1Clicked()
+void MainForm::viewInputFile1()
 {
-    QString InputFile1_Text = cBInputFile1->currentText();
-    viewFile(filePath(InputFile1_Text));
+    viewFile(filePath(cBInputFile1->currentText()));
 }
 // callback on button-inputview-2 -------------------------------------------
-void MainForm::btnInputView2Clicked()
+void MainForm::viewInputFile2()
 {
-    QString InputFile2_Text = cBInputFile2->currentText();
-    viewFile(filePath(InputFile2_Text));
+    viewFile(filePath(cBInputFile2->currentText()));
 }
 // callback on button-inputview-3 -------------------------------------------
-void MainForm::btnInputView3Clicked()
+void MainForm::viewInputFile3()
 {
-    QString InputFile1_Text = cBInputFile1->currentText();
-    QString InputFile3_Text = cBInputFile3->currentText();
-    QString file = filePath(InputFile3_Text);
+    QString filename = filePath(cBInputFile3->currentText());
     QString f;
 
-    if (file == "") {
-        file = filePath(InputFile1_Text);
-        if (!obsToNav(file, f)) return;
-        file = f;
+    if (filename.isEmpty()) {
+        filename = filePath(cBInputFile1->currentText());
+        if (!obsToNav(filename, f)) return;
+        filename = f;
     }
-    viewFile(file);
+    viewFile(filename);
 }
 // callback on button-inputview-4 -------------------------------------------
-void MainForm::btnInputView4Clicked()
+void MainForm::viewInputFile4()
 {
-    QString InputFile4_Text = cBInputFile4->currentText();
-    viewFile(filePath(InputFile4_Text));
+    viewFile(filePath(cBInputFile4->currentText()));
 }
 // callback on button-inputview-5 -------------------------------------------
-void MainForm::btnInputView5Clicked()
+void MainForm::viewInputFile5()
 {
-    QString InputFile5_Text = cBInputFile5->currentText();
-    viewFile(filePath(InputFile5_Text));
+    viewFile(filePath(cBInputFile5->currentText()));
 }
 // callback on button-inputview-6 -------------------------------------------
-void MainForm::btnInputView6Clicked()
+void MainForm::viewInputFile6()
 {
-    QString InputFile6_Text = cBInputFile6->currentText();
-    viewFile(filePath(InputFile6_Text));
+    viewFile(filePath(cBInputFile6->currentText()));
 }
 // callback on button-outputview-1 ------------------------------------------
-void MainForm::btnOutputView1Clicked()
+void MainForm::viewOutputFileStat()
 {
-    QString OutputFile_Text = cBOutputFile->currentText();
-    QString file = filePath(OutputFile_Text) + ".stat";
+    QString file = filePath(cBOutputFile->currentText()) + ".stat";
     if (!QFile::exists(file)) return;
     viewFile(file);
 }
 // callback on button-outputview-2 ------------------------------------------
-void MainForm::btnOutputView2Clicked()
+void MainForm::viewOutputFileTrace()
 {
-    QString OutputFile_Text=cBOutputFile->currentText();
-    QString file=filePath(OutputFile_Text)+".trace";
+    QString file=filePath(cBOutputFile->currentText())+".trace";
     if (!QFile::exists(file)) return;
     viewFile(file);
 }
 // callback on button-inputplot-1 -------------------------------------------
-void MainForm::btnInputPlot1Clicked()
+void MainForm::plotInputFile1()
 {
     QString InputFile1_Text = cBInputFile1->currentText();
     QString InputFile2_Text = cBInputFile2->currentText();
@@ -685,7 +668,7 @@ void MainForm::btnInputPlot1Clicked()
     QString InputFile5_Text = cBInputFile5->currentText();
     QString InputFile6_Text = cBInputFile6->currentText();
     QString files[6];
-    QString cmd1 = "rtkplot_qt", cmd2= "../rtkplot_qt/rtkplot_qt", cmd3 = "../../../bin/rtkplot_qt";
+    QString cmd[] = {"rtkplot_qt", "../rtkplot_qt/rtkplot_qt", "../../../bin/rtkplot_qt"};
     QStringList opts;
     QString navfile;
 
@@ -696,17 +679,17 @@ void MainForm::btnInputPlot1Clicked()
     files[4] = filePath(InputFile5_Text);
     files[5] = filePath(InputFile6_Text);
 
-    if (files[2] == "") {
+    if (files[2].isEmpty()) {
         if (obsToNav(files[0], navfile)) files[2] = navfile;
     }
     opts << "-r" << files[0] << files[2] << files[3] << files[4] << files[5];
 
-    if (!execCommand(cmd1, opts,1) && !execCommand(cmd2, opts,1) && !execCommand(cmd3, opts,1)) {
-        showMessage("error : rtkplot_qt execution");
+    if (!execCommand(cmd[0], opts, 1) && !execCommand(cmd[1], opts, 1) && !execCommand(cmd[2], opts, 1)) {
+        showMessage(tr("Error: rtkplot_qt execution failed"));
     }
 }
 // callback on button-inputplot-2 -------------------------------------------
-void MainForm::btnInputPlot2Clicked()
+void MainForm::plotInputFile2()
 {
     QString InputFile1_Text = cBInputFile1->currentText();
     QString InputFile2_Text = cBInputFile2->currentText();
@@ -715,7 +698,7 @@ void MainForm::btnInputPlot2Clicked()
     QString InputFile5_Text = cBInputFile5->currentText();
     QString InputFile6_Text = cBInputFile6->currentText();
     QString files[6];
-    QString cmd1 = "rtkplot_qt", cmd2= "../rtkplot_qt/rtkplot_qt", cmd3 = "../../../bin/rtkplot_qt";
+    QString cmd[] = {"rtkplot_qt", "../rtkplot_qt/rtkplot_qt", "../../../bin/rtkplot_qt"};
     QStringList opts;
     QString navfile;
 
@@ -726,25 +709,25 @@ void MainForm::btnInputPlot2Clicked()
     files[4] = filePath(InputFile5_Text);
     files[5] = filePath(InputFile6_Text);
 
-    if (files[2] == "") {
+    if (files[2].isEmpty()) {
         if (obsToNav(files[0], navfile)) files[2]=navfile;
     }
     opts << "-r" << files[1] << files[2] << files[3] << files[4] << files[5];
 
-    if (!execCommand(cmd1, opts,1) && !execCommand(cmd2, opts,1) && !execCommand(cmd3, opts,1)) {
-        showMessage("error : rtkplot_qt execution");
+    if (!execCommand(cmd[0], opts, 1) && !execCommand(cmd[1], opts, 1) && !execCommand(cmd[2], opts, 1)) {
+        showMessage(tr("Error: rtkplot_qt execution failed"));
     }
 }
 // callback on button-output-directory --------------------------------------
-void MainForm::btnOutputDirectoryClicked()
+void MainForm::selectOutputDirectory()
 {
     lEOutputDirectory->setText(QDir::toNativeSeparators(QFileDialog::getExistingDirectory(this, tr("Output Directory"), lEOutputDirectory->text())));
 }
 // callback on button keyword -----------------------------------------------
-void MainForm::btnKeywordClicked()
+void MainForm::showKeyDialog()
 {
     KeyDialog *keyDialog = new KeyDialog(this);
-    keyDialog->flag = 2;
+    keyDialog->setFlag(2);
     keyDialog->exec();
 
     delete keyDialog;
@@ -758,21 +741,19 @@ void MainForm::outputDirectoryEnableClicked()
 // set output file path -----------------------------------------------------
 void MainForm::setOutputFile()
 {
-    QString InputFile1_Text = cBInputFile1->currentText();
-    QString OutDir_Text = lEOutputDirectory->text();
     QString ofile, ifile;
 
-    if (cBInputFile1->currentText() == "") return;
+    if (cBInputFile1->currentText().isEmpty()) return;
 
-    if (cBOutputFile->currentText() == "") {
-      ifile = InputFile1_Text;
+    if (cBOutputFile->currentText().isEmpty()) { // generate output name from input file name
+      ifile = cBInputFile1->currentText();
       if (cBOutputDirectoryEnable->isChecked()) {
           QFileInfo f(ifile);
-          ofile = OutDir_Text + "/" + f.baseName();
+          ofile = QDir(lEOutputDirectory->text()).filePath(f.baseName());
       }
       else {
           QFileInfo f(ifile);
-          ofile = f.absolutePath() + "/" + f.baseName();
+          ofile = f.absoluteDir().filePath(f.baseName());
       }
       ofile += solutionFormat == SOLF_NMEA ? ".nmea" : ".pos";
       ofile.replace('*', '0');
@@ -786,10 +767,13 @@ void MainForm::setOutputFile()
 // execute post-processing --------------------------------------------------
 void MainForm::execProcessing()
 {
-    QString InputFile1_Text = cBInputFile1->currentText(), InputFile2_Text = cBInputFile2->currentText();
-    QString InputFile3_Text = cBInputFile3->currentText(), InputFile4_Text = cBInputFile4->currentText();
-    QString InputFile5_Text = cBInputFile5->currentText(), InputFile6_Text = cBInputFile6->currentText();
-    QString OutputFile_Text = cBOutputFile->currentText();
+    QString inputFile1 = cBInputFile1->currentText();
+    QString inputFile2 = cBInputFile2->currentText();
+    QString inputFile3 = cBInputFile3->currentText();
+    QString inputFile4 = cBInputFile4->currentText();
+    QString inputFile5 = cBInputFile5->currentText();
+    QString inputFile6 = cBInputFile6->currentText();
+    QString outputFile = cBOutputFile->currentText();
     QString temp;
 
     processingThread = new ProcessingThread(this);
@@ -797,46 +781,49 @@ void MainForm::execProcessing()
     // get processing options
     if (cBTimeStart->isChecked()) processingThread->ts = getTimeStart();
     if (cBTimeEnd->isChecked()) processingThread->te = getTimeStop();
-    if (cBTimeIntervalF ->isChecked()) processingThread->ti = cBTimeInterval->currentText().toDouble();
-    if (cBTimeUnitF->isChecked()) processingThread->tu = lETimeUnit->text().toDouble() * 3600.0;
+    if (cBTimeIntervalF ->isChecked()) processingThread->ti = cBTimeInterval->currentText().split(" ").first().toDouble();
+    if (cBTimeUnitF->isChecked()) processingThread->tu = sBTimeUnit->value() * 3600.0;
 
     processingThread->prcopt = prcopt_default;
     if (!getOption(processingThread->prcopt, processingThread->solopt, processingThread->filopt)) {
         processingFinished(0);
+
+        delete processingThread;
         return;
     }
 
     // set input/output files
-    processingThread->addInput(InputFile1_Text);
+    processingThread->addInput(inputFile1);
 
     if (PMODE_DGPS <= processingThread->prcopt.mode && processingThread->prcopt.mode <= PMODE_FIXED) {
-        processingThread->addInput(InputFile2_Text);
+        processingThread->addInput(inputFile2);
     }
-    if (InputFile3_Text != "") {
-        processingThread->addInput(InputFile3_Text);
-    }
-    else if (!obsToNav(InputFile1_Text, temp)) {
-        showmsg("error: no navigation data");
+
+    if (!inputFile3.isEmpty()) {
+        processingThread->addInput(inputFile3);
+    } else if (!obsToNav(inputFile1, temp)) {
+        showMessage(tr("Error: No navigation data"));
         processingFinished(0);
+        delete processingThread;
         return;
     } else
         processingThread->addInput(temp);
 
-    if (InputFile4_Text != "") {
-        processingThread->addInput(InputFile4_Text);
+    if (!inputFile4.isEmpty()) {
+        processingThread->addInput(inputFile4);
     }
-    if (InputFile5_Text != "") {
-        processingThread->addInput(InputFile5_Text);
+    if (!inputFile5.isEmpty()) {
+        processingThread->addInput(inputFile5);
     }
-    if (InputFile6_Text != "") {
-        processingThread->addInput(InputFile6_Text);
+    if (!inputFile6.isEmpty()) {
+        processingThread->addInput(inputFile6);
     }
-    strncpy(processingThread->outfile, qPrintable(OutputFile_Text), 1023);
+    strncpy(processingThread->outfile, qPrintable(outputFile), 1023);
 
     // confirm overwrite
     if (!cBTimeStart->isChecked() || !cBTimeEnd->isChecked()) {
         if (QFileInfo::exists(processingThread->outfile)) {
-            if (QMessageBox::question(this, tr("Overwrite"), QString(tr("Overwrite existing file %1.")).arg(processingThread->outfile)) != QMessageBox::Yes) {
+            if (QMessageBox::question(this, tr("Overwrite"), tr("Overwrite existing file %1.").arg(processingThread->outfile)) != QMessageBox::Yes) {
                 processingFinished(0);
                 return;
             }
@@ -849,22 +836,19 @@ void MainForm::execProcessing()
 
     pBProgress->setValue(0);
     pBProgress->setVisible(true);
-    showmsg("reading...");
+    showMessage(tr("Reading..."));
 
     setCursor(Qt::WaitCursor);
 
-    // post processing positioning
     connect(processingThread, &ProcessingThread::done, this, &MainForm::processingFinished);
 
+    // post processing positioning
     processingThread->start();
-
-    return;
 }
 // get processing and solution options --------------------------------------
 int MainForm::getOption(prcopt_t &prcopt, solopt_t &solopt, filopt_t &filopt)
 {
-    char buff[1024],*p;
-    int sat,ex;
+    int satId, ex;
 
     // processing options
     prcopt.mode = positionMode;
@@ -945,16 +929,16 @@ int MainForm::getOption(prcopt_t &prcopt, solopt_t &solopt, filopt_t &filopt)
     }
     else if (roverPositionType <= 2) {
         for (int i = 0; i < 3; i++) prcopt.ru[i] = roverPosition[i];
-    }
-    else prcopt.rovpos = roverPositionType - 2; /* 1:single,2:posfile,3:rinex */
+    } else
+        prcopt.rovpos = roverPositionType - 2; /* 1:single, 2:posfile, 3:rinex */
 
     if (positionMode == PMODE_SINGLE || positionMode == PMODE_MOVEB) {
         for (int i = 0; i < 3; i++) prcopt.rb[i] = 0.0;
     }
     else if (referencePositionType<=2) {
         for (int i = 0; i < 3; i++) prcopt.rb[i] = referencePosition[i];
-    }
-    else prcopt.refpos = referencePositionType - 2;
+    } else
+        prcopt.refpos = referencePositionType - 2;
 
     if (roverAntennaPcv) {
         strncpy(prcopt.anttype[0], qPrintable(roverAntenna), 63);
@@ -968,12 +952,19 @@ int MainForm::getOption(prcopt_t &prcopt, solopt_t &solopt, filopt_t &filopt)
         prcopt.antdel[1][1] = referenceAntennaN;
         prcopt.antdel[1][2] = referenceAntennaU;
     }
-    if (excludedSatellites != "") { // excluded satellites
-        strncpy(buff, qPrintable(excludedSatellites), 1023);
-        for (p = strtok(buff, " "); p ; p = strtok(NULL, " ")) {
-            if (*p == '+') {ex = 2; p++;} else ex = 1;
-            if (!(sat = satid2no(p))) continue;
-            prcopt.exsats[sat - 1] = ex;
+    if (!excludedSatellites.isEmpty()) { // excluded satellites
+        QStringList ex_sats = excludedSatellites.split(" ");
+        for (QString sat: ex_sats)
+        {
+            if ((sat.length()>1) && (sat.at(0) == '+'))
+            {
+                sat = sat.mid(1); // remove '+'
+                ex = 1;
+            } else {
+                ex = 0;
+            }
+            if (!(satId = satid2no(qPrintable(sat)))) continue;
+            prcopt.exsats[satId - 1] = ex;
         }
     }
 
@@ -997,7 +988,7 @@ int MainForm::getOption(prcopt_t &prcopt, solopt_t &solopt, filopt_t &filopt)
     solopt.solstatic = solutionStatic;
     solopt.sstat = debugStatus;
     solopt.trace = debugTrace;
-    strncpy(solopt.sep, fieldSeperator != "" ? qPrintable(fieldSeperator) : " ", 63);
+    strncpy(solopt.sep, fieldSeperator.isEmpty() ? " " : qPrintable(fieldSeperator), 63);
     strncpy(solopt.prog, qPrintable(QString("%1 ver.%2 %3").arg(PRGNAME).arg(VER_RTKLIB).arg(PATCH_LEVEL)), 63);
 
     // file options
@@ -1020,25 +1011,33 @@ int MainForm::obsToNav(const QString &obsfile, QString &navfile)
     navfile = f.canonicalPath() + f.completeBaseName();
     QString suffix = f.suffix();
 
-    if (suffix == "") return 0;
-    if ((suffix.length() == 3) && (suffix.at(2).toLower() == 'o')) suffix[2] = '*';
-    else if ((suffix.length() == 3) && (suffix.at(2).toLower() == 'd')) suffix[2] = '*';
-    else if (suffix.toLower() == "obs") suffix = "*nav";
+    if (suffix.isEmpty()) return 0;
+
+    if ((suffix.length() == 3) && (suffix.at(2).toLower() == 'o'))
+        suffix[2] = '*';
+    else if ((suffix.length() == 3) && (suffix.at(2).toLower() == 'd'))
+        suffix[2] = '*';
+    else if (suffix.toLower() == "obs")
+        suffix = "*nav";
     else if (((p = suffix.indexOf("gz")) != -1) || (( p = suffix.indexOf('Z')) != -1)) {
         if (p < 1) return 0;
-        if (suffix.at(p - 1).toLower() == 'o') suffix[p - 1] = '*';
-        else if (suffix.at(p - 1).toLower() == 'd') suffix[p - 1] = '*';
+
+        if (suffix.at(p - 1).toLower() == 'o')
+            suffix[p - 1] = '*';
+        else if (suffix.at(p - 1).toLower() == 'd')
+            suffix[p - 1] = '*';
         else return 0;
-    }
-    else return 0;
+    } else
+        return 0;
     return 1;
 }
 // replace file path with keywords ------------------------------------------
 QString MainForm::filePath(const QString &file)
 {
-    gtime_t ts = {0,0};
+    gtime_t ts = {0, 0};
     int p;
-    char rov[256] = "", base[256] = "", path[1024];
+    QString rover, base;
+    char path[1024];
 
     if (cBTimeStart->isChecked()) ts = getTimeStart();
 
@@ -1046,17 +1045,21 @@ QString MainForm::filePath(const QString &file)
     while ((p = roverList.indexOf("\n", p)) != -1){
         if ((p < roverList.length()) && (roverList.at(p) != '#')) break;
     }
-    if (p != -1) strncpy(rov, qPrintable(roverList.mid(p)), 255);
-    else strncpy(rov, qPrintable(roverList), 255);
+    if (p != -1)
+        rover = roverList.mid(p);
+    else
+        rover = roverList;
 
     p = 0;
     while ((p = baseList.indexOf("\n", p)) != -1){
         if ((p < baseList.length()) && (baseList.at(p) != '#')) break;
     }
-    if (p != -1) strncpy(base, qPrintable(baseList.mid(p)), 255);
-    else strncpy(base, qPrintable(roverList), 255);
+    if (p != -1)
+        base = baseList.mid(p);
+    else
+        base = baseList;
 
-    reppath(qPrintable(file), path, ts, rov, base);
+    reppath(qPrintable(file), path, ts, qPrintable(rover), qPrintable(base));
 
     return QString(path);
 }
@@ -1104,7 +1107,7 @@ void MainForm::viewFile(const QString &file)
     char tmpfile[1024];
     int cstat;
 
-    if (file == "") return;
+    if (file.isEmpty()) return;
     cstat = rtk_uncompress(qPrintable(file), tmpfile);
     f = !cstat ? file : tmpfile;
 
@@ -1125,7 +1128,7 @@ gtime_t MainForm::getTimeStart()
 
     gtime_t t;
     t.time = time.toSecsSinceEpoch();
-    t.sec = time.time().msec()/1000;
+    t.sec = time.time().msec() / 1000;
 
     return t;
 }
@@ -1135,7 +1138,8 @@ gtime_t MainForm::getTimeStop()
     QDateTime time(dtDateTimeStop->dateTime());
 
     gtime_t t;
-    t.time=time.toSecsSinceEpoch();t.sec=time.time().msec()/1000;
+    t.time = time.toSecsSinceEpoch();
+    t.sec = time.time().msec() / 1000;
 
     return t;
 }
@@ -1143,14 +1147,14 @@ gtime_t MainForm::getTimeStop()
 void MainForm::setTimeStart(gtime_t time)
 {
     QDateTime t = QDateTime::fromSecsSinceEpoch(time.time);
-    t = t.addMSecs(time.sec*1000);
+    t = t.addMSecs(time.sec * 1000);
     dtDateTimeStart->setDateTime(t);
 }
 // set time to time-2 -------------------------------------------------------
 void MainForm::setTimeStop(gtime_t time)
 {
     QDateTime t = QDateTime::fromSecsSinceEpoch(time.time);
-    t = t.addMSecs(time.sec*1000);
+    t = t.addMSecs(time.sec * 1000);
     dtDateTimeStop->setDateTime(t);
 }
 // update enable/disable of widgets -----------------------------------------
@@ -1163,25 +1167,23 @@ void MainForm::updateEnable()
     btnInputFile2->setEnabled(moder);
     btnInputPlot2->setEnabled(moder);
     btnInputView2->setEnabled(moder);
-    btnOutputView1->setEnabled(debugStatus > 0);
-    btnOutputView2->setEnabled(debugTrace > 0);
-    lblInputFile3->setEnabled(moder);
+    btnOutputViewStat->setEnabled(debugStatus > 0);
+    btnOutputViewTrace->setEnabled(debugTrace > 0);
+    lblInputFile2->setEnabled(moder);
     dtDateTimeStart->setEnabled(cBTimeStart->isChecked());
     btnTimeStart->setEnabled(cBTimeStart->isChecked());
     dtDateTimeStop->setEnabled(cBTimeEnd->isChecked());
     btnTimeStop->setEnabled(cBTimeEnd->isChecked());
     cBTimeInterval->setEnabled(cBTimeIntervalF->isChecked());
-    lblTimeInterval->setEnabled(cBTimeIntervalF ->isChecked());
     cBTimeUnitF->setEnabled(cBTimeStart->isChecked() && cBTimeEnd->isChecked());
-    lETimeUnit->setEnabled(cBTimeUnitF->isEnabled() && cBTimeUnitF->isChecked());
-    lblTimeUnit ->setEnabled(cBTimeUnitF->isEnabled() && cBTimeUnitF->isChecked());
+    sBTimeUnit->setEnabled(cBTimeUnitF->isEnabled() && cBTimeUnitF->isChecked());
     lEOutputDirectory->setEnabled(cBOutputDirectoryEnable->isChecked());
     btnOutputDirectory->setEnabled(cBOutputDirectoryEnable->isChecked());
 }
 // load options from ini file -----------------------------------------------
 void MainForm::loadOptions()
 {
-    QSettings ini(iniFile,QSettings::IniFormat);
+    QSettings ini(iniFile, QSettings::IniFormat);
 
     cBTimeStart->setChecked(ini.value("set/timestart", 0).toBool());
     cBTimeEnd->setChecked(ini.value("set/timeend", 0).toBool());
@@ -1190,9 +1192,9 @@ void MainForm::loadOptions()
     dtDateTimeStop->setDate(ini.value ("set/timey2", QDate(2000, 01, 01)).toDate());
     dtDateTimeStop->setTime(ini.value ("set/timeh2",  QTime(0, 0, 0)).toTime());
     cBTimeIntervalF ->setChecked(ini.value("set/timeintf", 0).toBool());
-    cBTimeInterval->setCurrentIndex(ini.value ("set/timeint", 0).toInt());
+    cBTimeInterval->setCurrentText(QString("%1 s").arg(ini.value ("set/timeint", "0").toString()));
     cBTimeUnitF->setChecked(ini.value("set/timeunitf", 0).toBool());
-    lETimeUnit->setText(ini.value ("set/timeunit", "24").toString());
+    sBTimeUnit->setValue(ini.value("set/timeunit", "24").toDouble());
     cBInputFile1->setCurrentText(ini.value ("set/inputfile1", "").toString());
     cBInputFile2->setCurrentText(ini.value ("set/inputfile2", "").toString());
     cBInputFile3->setCurrentText(ini.value ("set/inputfile3", "").toString());
@@ -1203,13 +1205,13 @@ void MainForm::loadOptions()
     lEOutputDirectory->setText(ini.value ("set/outputdir", "").toString());
     cBOutputFile->setCurrentText(ini.value ("set/outputfile", "").toString());
 
-    readList(cBInputFile1,&ini,"hist/inputfile1");
-    readList(cBInputFile2,&ini,"hist/inputfile2");
-    readList(cBInputFile3,&ini,"hist/inputfile3");
-    readList(cBInputFile4,&ini,"hist/inputfile4");
-    readList(cBInputFile5,&ini,"hist/inputfile5");
-    readList(cBInputFile6,&ini,"hist/inputfile6");
-    readList(cBOutputFile,&ini,"hist/outputfile");
+    readList(cBInputFile1, &ini,"hist/inputfile1");
+    readList(cBInputFile2, &ini,"hist/inputfile2");
+    readList(cBInputFile3, &ini,"hist/inputfile3");
+    readList(cBInputFile4, &ini,"hist/inputfile4");
+    readList(cBInputFile5, &ini,"hist/inputfile5");
+    readList(cBInputFile6, &ini,"hist/inputfile6");
+    readList(cBOutputFile, &ini,"hist/outputfile");
 
     positionMode = ini.value("opt/posmode", 2).toInt();
     frequencies = ini.value("opt/freq", 1).toInt();
@@ -1240,9 +1242,9 @@ void MainForm::loadOptions()
     ambiguityResolutionGPS = ini.value("opt/ambres", 3).toInt();
     ambiguityResolutionGLO = ini.value("opt/gloambres", 3).toInt();
     ambiguityResolutionBDS = ini.value("opt/bdsambres", 0).toInt();
-    validThresAR  = ini.value("opt/validthresar", 3.0).toDouble();
-    maxPositionVarAR  = ini.value("opt/maxposvarar", 0.1).toDouble();
-    glonassHwBias  = ini.value("opt/glohwbias", 0).toDouble();
+    validThresAR = ini.value("opt/validthresar", 3.0).toDouble();
+    maxPositionVarAR = ini.value("opt/maxposvarar", 0.1).toDouble();
+    glonassHwBias = ini.value("opt/glohwbias", 0).toDouble();
     thresAR3 = ini.value("opt/thresar3", 1e-9).toDouble();
     thresAR4 = ini.value("opt/thresar4", 1e-5).toDouble();
     validThresARMin = ini.value("opt/validthresarmin", 3.0).toDouble();
@@ -1254,7 +1256,7 @@ void MainForm::loadOptions()
     outputCntResetAmbiguity = ini.value("opt/outcntresetbias", 2).toInt();
     slipThreshold = ini.value("opt/slipthres",   0.05).toDouble();
     dopplerThreshold = ini.value("opt/dopthres",   0.0).toDouble();
-    maxAgeDiff  = ini.value("opt/maxagediff", 30.0).toDouble();
+    maxAgeDiff = ini.value("opt/maxagediff", 30.0).toDouble();
     rejectPhase = ini.value("opt/rejectthres", 5.0).toDouble();
     varHoldAmb = ini.value("opt/varholdmb", 0.1).toDouble();
     gainHoldAmb = ini.value("opt/gainholdamb", 0.01).toDouble();
@@ -1265,9 +1267,9 @@ void MainForm::loadOptions()
     minHoldSats = ini.value("opt/minholdsats", 5).toInt();
     minDropSats = ini.value("opt/mindropsats", 10).toInt();
     ARFilter = ini.value("opt/arfilter", 1).toInt();
-    codeSmooth = ini.value("opt/codesmooth",     0).toInt();
-    baseLine[0] = ini.value("opt/baselinelen",  0.0).toDouble();
-    baseLine[1] = ini.value("opt/baselinesig",  0.0).toDouble();
+    codeSmooth = ini.value("opt/codesmooth", 0).toInt();
+    baseLine[0] = ini.value("opt/baselinelen", 0.0).toDouble();
+    baseLine[1] = ini.value("opt/baselinesig", 0.0).toDouble();
     baseLineConstrain = ini.value("opt/baselineconst",  0).toInt();
 
     solutionFormat = ini.value("opt/solformat", 0).toInt();
@@ -1296,7 +1298,7 @@ void MainForm::loadOptions()
     measurementError5 = ini.value("opt/measerr5", 1.000).toDouble();
     measurementError6 = ini.value("opt/measerr6", 52.000).toDouble();
     measurementError7 = ini.value("opt/measerr7", 0.000).toDouble();
-    measurementError8 = ini.value("opt/measerr8",  0.000).toDouble();
+    measurementError8 = ini.value("opt/measerr8", 0.000).toDouble();
     satelliteClockStability = ini.value("opt/satclkstab", 5E-12).toDouble();
     processNoise1 = ini.value("opt/prnoise1", 1E-4).toDouble();
     processNoise2 = ini.value("opt/prnoise2", 1E-3).toDouble();
@@ -1339,14 +1341,13 @@ void MainForm::loadOptions()
     sbasCorrection4 = ini.value("opt/sbascorr4", 0).toInt();
     sbasCorrectionFile = ini.value("opt/sbascorrfile", "").toString();
     PrecEphFile = ini.value("opt/precephfile", "").toString();
-    satellitePcvFile = ini.value("opt/satpcvfile",  "").toString();
+    satellitePcvFile = ini.value("opt/satpcvfile", "").toString();
     stationPositionFile = ini.value("opt/staposfile", "").toString();
     geoidDataFile = ini.value("opt/geoiddatafile", "").toString();
     ionosphereFile = ini.value("opt/ionofile", "").toString();
     eopFile = ini.value("opt/eopfile", "").toString();
     dcbFile = ini.value("opt/dcbfile", "").toString();
     blqFile = ini.value("opt/blqfile", "").toString();
-    googleEarthFile = ini.value("opt/googleearthfile", GOOGLE_EARTH).toString();
 
     roverList = "";
     for (int i = 0; i < 10; i++) {
@@ -1356,36 +1357,21 @@ void MainForm::loadOptions()
     for (int i = 0; i < 10; i++) {
         baseList += ini.value(QString("opt/baselist%1").arg(i + 1), "").toString();
     }
-    roverList.replace("@@","\n");
-    baseList.replace("@@","\n");
-
-    convDialog->cBTimeSpan->setChecked(ini.value("conv/timespan", 0).toInt());
-    convDialog->cBTimeInterval->setChecked(ini.value("conv/timeintf", 0).toInt());
-    convDialog->dateTimeStart->setDate(ini.value("conv/timey1", QDate(2000, 1, 1)).toDate());
-    convDialog->dateTimeStart->setTime(ini.value("conv/timeh1", QTime(0, 0, 0)).toTime());
-    convDialog->dateTimeStop->setDate(ini.value("conv/timey2", QDate(2000, 1, 1)).toDate());
-    convDialog->dateTimeStop->setTime(ini.value("conv/timeh2", QTime(0, 0, 0)).toTime());
-    convDialog->sBTimeInterval->setValue(ini.value ("conv/timeint", 0.0).toDouble());
-    convDialog->cBTrackColor->setCurrentIndex(ini.value("conv/trackcolor", 5).toInt());
-    convDialog->cBPointColor->setCurrentIndex(ini.value("conv/pointcolor", 5).toInt());
-    convDialog->cBOutputAltitude->setCurrentIndex(ini.value("conv/outputalt", 0).toInt());
-    convDialog->cBOutputTime->setCurrentIndex(ini.value("conv/outputtime",0).toInt());
-    convDialog->cBAddOffset->setChecked(ini.value("conv/addoffset", 0).toInt());
-    convDialog->sBOffset1->setValue(ini.value("conv/offset1", 0).toDouble());
-    convDialog->sBOffset2->setValue(ini.value("conv/offset2", 0).toDouble());
-    convDialog->sBOffset3->setValue(ini.value("conv/offset3", 0).toDouble());
-    convDialog->cBCompress->setChecked(ini.value("conv/compress", 0).toInt());
-    convDialog->rBFormatKML->setChecked(ini.value("conv/format", 0).toInt());
+    roverList.replace("@@", "\n");
+    baseList.replace("@@", "\n");
 
     textViewer->colorText = ini.value("viewer/color1", QColor(Qt::black)).value<QColor>();
     textViewer->colorBackground = ini.value("viewer/color2", QColor(Qt::white)).value<QColor>();
     textViewer->font.setFamily(ini.value ("viewer/fontname", "Courier New").toString());
     textViewer->font.setPointSize(ini.value("viewer/fontsize", 9).toInt());
+
+    convDialog->loadOptions(ini);
+
 }
 // save options to ini file -------------------------------------------------
 void MainForm::saveOptions()
 {
-    QSettings ini(iniFile,QSettings::IniFormat);
+    QSettings ini(iniFile, QSettings::IniFormat);
 
     ini.setValue("set/timestart", cBTimeStart->isChecked() ? 1 : 0);
     ini.setValue("set/timeend", cBTimeEnd->isChecked()? 1 : 0);
@@ -1394,9 +1380,9 @@ void MainForm::saveOptions()
     ini.setValue("set/timey2", dtDateTimeStop->date());
     ini.setValue("set/timeh2", dtDateTimeStop->time());
     ini.setValue("set/timeintf", cBTimeIntervalF->isChecked() ? 1 : 0);
-    ini.setValue("set/timeint", cBTimeInterval->currentText());
+    ini.setValue("set/timeint", cBTimeInterval->currentText().split(" ").first());
     ini.setValue("set/timeunitf", cBTimeUnitF->isChecked() ? 1 : 0);
-    ini.setValue("set/timeunit", lETimeUnit->text());
+    ini.setValue("set/timeunit", sBTimeUnit->value());
     ini.setValue("set/inputfile1", cBInputFile1->currentText());
     ini.setValue("set/inputfile2", cBInputFile2->currentText());
     ini.setValue("set/inputfile3", cBInputFile3->currentText());
@@ -1506,7 +1492,7 @@ void MainForm::saveOptions()
     ini.setValue("opt/prnoise2", processNoise2);
     ini.setValue("opt/prnoise3", processNoise3);
     ini.setValue("opt/prnoise4", processNoise4);
-    ini.setValue("opt/prnoise5",  processNoise5);
+    ini.setValue("opt/prnoise5", processNoise5);
 
     ini.setValue("opt/rovpostype", roverPositionType);
     ini.setValue("opt/refpostype", referencePositionType);
@@ -1550,7 +1536,6 @@ void MainForm::saveOptions()
     ini.setValue("opt/eopfile", eopFile);
     ini.setValue("opt/dcbfile", dcbFile);
     ini.setValue("opt/blqfile", blqFile);
-    ini.setValue("opt/googleearthfile", googleEarthFile);
 
     roverList.replace("\n", "@@");
     for (int i = 0; i < 10; i++) {
@@ -1562,28 +1547,12 @@ void MainForm::saveOptions()
         ini.setValue(QString("opt/baselist%1").arg(i + 1), baseList.mid(i*2000, 2000));
     }
 
-    ini.setValue ("conv/timespan", convDialog->cBTimeSpan->isChecked());
-    ini.setValue ("conv/timey1", convDialog->dateTimeStart->date());
-    ini.setValue ("conv/timeh1", convDialog->dateTimeStart->time());
-    ini.setValue ("conv/timey2", convDialog->dateTimeStop->date());
-    ini.setValue ("conv/timeh2", convDialog->dateTimeStop->time());
-    ini.setValue ("conv/timeintf", convDialog->cBTimeInterval->isChecked());
-    ini.setValue ("conv/timeint", convDialog->sBTimeInterval->text());
-    ini.setValue ("conv/trackcolor", convDialog->cBTrackColor->currentIndex());
-    ini.setValue ("conv/pointcolor", convDialog->cBPointColor->currentIndex());
-    ini.setValue ("conv/outputalt", convDialog->cBOutputAltitude->currentIndex());
-    ini.setValue ("conv/outputtime", convDialog->cBOutputTime->currentIndex());
-    ini.setValue ("conv/addoffset", convDialog->cBAddOffset ->isChecked());
-    ini.setValue ("conv/offset1", convDialog->sBOffset1->text());
-    ini.setValue ("conv/offset2", convDialog->sBOffset2->text());
-    ini.setValue ("conv/offset3", convDialog->sBOffset3->text());
-    ini.setValue ("conv/compress", convDialog->cBCompress->isChecked());
-    ini.setValue ("conv/format", convDialog->rBFormatKML->isChecked());
-
     ini.setValue ("viewer/color1", textViewer->colorText);
     ini.setValue ("viewer/color2", textViewer->colorBackground);
     ini.setValue ("viewer/fontname", textViewer->font.family());
     ini.setValue ("viewer/fontsize", textViewer->font.pointSize());
+
+    convDialog->saveOptions(ini);
 }
 //---------------------------------------------------------------------------
 

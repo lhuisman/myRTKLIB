@@ -16,8 +16,8 @@ protected:
      void showEvent(QShowEvent*);
 
 public slots:
-    void btnOkClicked();
-    void btnNotesClicked();
+    void saveClose();
+    void showNotes();
 public:
     QString mapStrings[6][3];
     QString apiKey;

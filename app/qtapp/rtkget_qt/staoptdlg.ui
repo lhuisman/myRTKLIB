@@ -13,18 +13,12 @@
   <property name="windowTitle">
    <string>Stations</string>
   </property>
-  <property name="toolTip">
-   <string/>
-  </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QListWidget" name="stationListWidget"/>
    </item>
    <item>
     <widget class="QWidget" name="panel1" native="true">
-     <property name="toolTip">
-      <string/>
-     </property>
      <property name="text" stdset="0">
       <string/>
      </property>
@@ -62,28 +56,9 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="btnOk">
-        <property name="toolTip">
-         <string/>
-        </property>
-        <property name="text">
-         <string>&amp;OK</string>
-        </property>
-        <property name="autoDefault">
-         <bool>true</bool>
-        </property>
-        <property name="default">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="btnCancel">
-        <property name="toolTip">
-         <string/>
-        </property>
-        <property name="text">
-         <string>&amp;Cancel</string>
+       <widget class="QDialogButtonBox" name="buttonBox">
+        <property name="standardButtons">
+         <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
         </property>
        </widget>
       </item>

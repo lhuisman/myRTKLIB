@@ -13,9 +13,6 @@
   <property name="windowTitle">
    <string>Serial/TCP Commands</string>
   </property>
-  <property name="toolTip">
-   <string/>
-  </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QCheckBox" name="cBOpenCommands">

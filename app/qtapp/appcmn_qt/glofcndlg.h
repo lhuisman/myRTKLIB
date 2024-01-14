@@ -14,20 +14,20 @@ class GloFcnDialog : public QDialog, private Ui::GloFcnDialog
     Q_OBJECT
 
 public slots:
-    void btnOkClicked();
-    void btnReadClicked();
-    void btnClearClicked();
+    void readRinex();
+    void clearFrequencies();
     void updateEnable(void);
+
 private:
     QSpinBox * getFcn(int prn);
-
-protected:
-    void showEvent(QShowEvent*);
 
 public:
     GloFcnDialog(QWidget *parent);
 
-    int enableGloFcn, gloFcn[27];
+    int getGloFcnEnable();
+    void setGloFcnEnable(int enable);
+    int getGloFcn(int i);
+    void setGloFcn(int i, int fcn);
 };
 
 //---------------------------------------------------------------------------

@@ -25,14 +25,14 @@ ConvOptDialog::ConvOptDialog(QWidget *parent)
     if (cmp <= 0) cBNavSys6->setEnabled(false);
     if (irn <= 0) cBNavSys7->setEnabled(false);
 
-    connect(btnCancel, &QPushButton::clicked, this, &ConvOptDialog::reject);
-    connect(btnOk, &QPushButton::clicked, this, &ConvOptDialog::btnOkClicked);
-    connect(btnMask, &QPushButton::clicked, this, &ConvOptDialog::btnMaskClicked);
+    connect(buttonBox, &QDialogButtonBox::accepted, this, &ConvOptDialog::saveClose);
+    connect(buttonBox, &QDialogButtonBox::rejected, this, &ConvOptDialog::reject);
+    connect(btnMask, &QPushButton::clicked, this, &ConvOptDialog::showMaskDialog);
     connect(cBAutoPosition, &QCheckBox::clicked, this, &ConvOptDialog::updateEnable);
     connect(cBRinexFilename, &QCheckBox::clicked, this, &ConvOptDialog::updateEnable);
     connect(cBRinexVersion, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &ConvOptDialog::updateEnable);
-    connect(btnFcn, &QPushButton::clicked, this, &ConvOptDialog::btnFcnClicked);
-    connect(btnFrequencies, &QPushButton::clicked, this, &ConvOptDialog::btnFreqClicked);
+    connect(btnFcn, &QPushButton::clicked, this, &ConvOptDialog::showFcnDialog);
+    connect(btnFrequencies, &QPushButton::clicked, this, &ConvOptDialog::showFrequencyDialog);
 }
 //---------------------------------------------------------------------------
 void ConvOptDialog::showEvent(QShowEvent *event)
@@ -71,9 +71,9 @@ void ConvOptDialog::showEvent(QShowEvent *event)
     cBOutputIonoCorr->setChecked(mainWindow->outputIonoCorr);
     cBOutputTimeCorr->setChecked(mainWindow->outputTimeCorr);
     cBOutputLeapSecs->setChecked(mainWindow->outputLeapSeconds);
-    gloFcnDialog->enableGloFcn = mainWindow->enableGlonassFrequency;
+    gloFcnDialog->setGloFcnEnable(mainWindow->enableGlonassFrequency);
     for (int i = 0; i < 27; i++) {
-        gloFcnDialog->gloFcn[i] = mainWindow->glonassFrequency[i];
+        gloFcnDialog->setGloFcn(i, mainWindow->glonassFrequency[i]);
     }
 
     cBNavSys1->setChecked(mainWindow->navSys & SYS_GPS);
@@ -101,7 +101,7 @@ void ConvOptDialog::showEvent(QShowEvent *event)
     updateEnable();
 }
 //---------------------------------------------------------------------------
-void ConvOptDialog::btnOkClicked()
+void ConvOptDialog::saveClose()
 {
     mainWindow->rinexVersion = cBRinexVersion->currentIndex();
     mainWindow->rinexFile = cBRinexFilename->isChecked();
@@ -135,9 +135,9 @@ void ConvOptDialog::btnOkClicked()
     mainWindow->outputIonoCorr = cBOutputIonoCorr->isChecked();
     mainWindow->outputTimeCorr = cBOutputTimeCorr->isChecked();
     mainWindow->outputLeapSeconds = cBOutputLeapSecs->isChecked();
-    mainWindow->enableGlonassFrequency=gloFcnDialog->enableGloFcn;
+    mainWindow->enableGlonassFrequency = gloFcnDialog->getGloFcnEnable();
     for (int i = 0; i < 27; i++) {
-        mainWindow->glonassFrequency[i] = gloFcnDialog->gloFcn[i];
+        mainWindow->glonassFrequency[i] = gloFcnDialog->getGloFcn(i);
     }
 
     int navsys = 0, obstype = 0, freqtype = 0;
@@ -172,35 +172,39 @@ void ConvOptDialog::btnOkClicked()
     accept();
 }
 //---------------------------------------------------------------------------
-void ConvOptDialog::btnFreqClicked()
+void ConvOptDialog::showFrequencyDialog()
 {
     freqDialog->exec();
 }
 //---------------------------------------------------------------------------
-void ConvOptDialog::btnMaskClicked()
+void ConvOptDialog::showMaskDialog()
 {
-    codeOptDialog->navSystem = 0;
-    codeOptDialog->frequencyType = 0;
+    int navSystem = 0;
+    int frequencyType = 0;
     
-    if (cBNavSys1->isChecked()) codeOptDialog->navSystem |= SYS_GPS;
-    if (cBNavSys2->isChecked()) codeOptDialog->navSystem |= SYS_GLO;
-    if (cBNavSys3->isChecked()) codeOptDialog->navSystem |= SYS_GAL;
-    if (cBNavSys4->isChecked()) codeOptDialog->navSystem |= SYS_QZS;
-    if (cBNavSys5->isChecked()) codeOptDialog->navSystem |= SYS_SBS;
-    if (cBNavSys6->isChecked()) codeOptDialog->navSystem |= SYS_CMP;
-    if (cBNavSys7->isChecked()) codeOptDialog->navSystem |= SYS_IRN;
+    if (cBNavSys1->isChecked()) navSystem |= SYS_GPS;
+    if (cBNavSys2->isChecked()) navSystem |= SYS_GLO;
+    if (cBNavSys3->isChecked()) navSystem |= SYS_GAL;
+    if (cBNavSys4->isChecked()) navSystem |= SYS_QZS;
+    if (cBNavSys5->isChecked()) navSystem |= SYS_SBS;
+    if (cBNavSys6->isChecked()) navSystem |= SYS_CMP;
+    if (cBNavSys7->isChecked()) navSystem |= SYS_IRN;
     
-    if (cBFreq1->isChecked()) codeOptDialog->frequencyType |= FREQTYPE_L1;
-    if (cBFreq2->isChecked()) codeOptDialog->frequencyType |= FREQTYPE_L2;
-    if (cBFreq3->isChecked()) codeOptDialog->frequencyType |= FREQTYPE_L3;
-    if (cBFreq4->isChecked()) codeOptDialog->frequencyType |= FREQTYPE_L4;
-    if (cBFreq5->isChecked()) codeOptDialog->frequencyType |= FREQTYPE_L5;
+    codeOptDialog->setNavSystem(navSystem);
 
-    for (int i = 0; i < 7; i++) codeOptDialog->codeMask[i] = codeMask[i];
+    if (cBFreq1->isChecked()) frequencyType |= FREQTYPE_L1;
+    if (cBFreq2->isChecked()) frequencyType |= FREQTYPE_L2;
+    if (cBFreq3->isChecked()) frequencyType |= FREQTYPE_L3;
+    if (cBFreq4->isChecked()) frequencyType |= FREQTYPE_L4;
+    if (cBFreq5->isChecked()) frequencyType |= FREQTYPE_L5;
+
+    codeOptDialog->setFrequencyType(frequencyType);
+
+    for (int i = 0; i < 7; i++) codeOptDialog->setCodeMask(i, codeMask[i]);
 
     codeOptDialog->show();
 
-    for (int i = 0; i < 7; i++) codeMask[i] = codeOptDialog->codeMask[i];
+    for (int i = 0; i < 7; i++) codeMask[i] = codeOptDialog->getCodeMask(i);
 }
 //---------------------------------------------------------------------------
 void ConvOptDialog::updateEnable(void)
@@ -221,7 +225,7 @@ void ConvOptDialog::updateEnable(void)
     cBPhaseShift->setEnabled(cBRinexVersion->currentIndex() >=4 );
 }
 //---------------------------------------------------------------------------
-void ConvOptDialog::btnFcnClicked()
+void ConvOptDialog::showFcnDialog()
 {
     gloFcnDialog->exec();
 }

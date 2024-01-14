@@ -16,10 +16,10 @@ CmdOptDialog::CmdOptDialog(QWidget *parent)
 
     commandsEnabled[0] = commandsEnabled[1] = 1;
 
-    connect(btnOk, &QPushButton::clicked, this, &CmdOptDialog::btnOkClicked);
+    connect(btnOk, &QPushButton::clicked, this, &CmdOptDialog::saveClose);
     connect(btnCancel, &QPushButton::clicked, this, &CmdOptDialog::reject);
-    connect(btnLoad, &QPushButton::clicked, this, &CmdOptDialog::btnLoadClicked);
-    connect(btnSave, &QPushButton::clicked, this, &CmdOptDialog::btnSaveClicked);
+    connect(btnLoad, &QPushButton::clicked, this, &CmdOptDialog::load);
+    connect(btnSave, &QPushButton::clicked, this, &CmdOptDialog::save);
     connect(cBCloseCommands, &QPushButton::clicked, this, &CmdOptDialog::updateEnable);
     connect(cBOpenCommands, &QPushButton::clicked, this, &CmdOptDialog::updateEnable);
     connect(cBPeriodicCommands, &QPushButton::clicked, this, &CmdOptDialog::updateEnable);
@@ -44,7 +44,7 @@ void CmdOptDialog::showEvent(QShowEvent *event)
 	updateEnable();
 }
 //---------------------------------------------------------------------------
-void CmdOptDialog::btnOkClicked()
+void CmdOptDialog::saveClose()
 {
     commands[0] = tEOpenCommands->toPlainText();
     commands[1] = tECloseCommands->toPlainText();
@@ -56,7 +56,7 @@ void CmdOptDialog::btnOkClicked()
     accept();
 }
 //---------------------------------------------------------------------------
-void CmdOptDialog::btnLoadClicked()
+void CmdOptDialog::load()
 {
     QString OpenDialog_FileName;
     QPlainTextEdit *cmd[] = {tEOpenCommands, tECloseCommands, tEPeriodicCommands};
@@ -82,7 +82,7 @@ void CmdOptDialog::btnLoadClicked()
     }
 }
 //---------------------------------------------------------------------------
-void CmdOptDialog::btnSaveClicked()
+void CmdOptDialog::save()
 {
     QString SaveDialog_FileName;
     QByteArray OpenCmd_Text = tEOpenCommands->toPlainText().toLatin1();

@@ -11,13 +11,14 @@ class QShowEvent;
 class LaunchOptDialog : public QDialog, private Ui::LaunchOptDialog
 {
     Q_OBJECT
-public slots:
-    void btnOkClicked();
 
-protected:
-    void showEvent(QShowEvent *);
 public:
     LaunchOptDialog(QWidget* parent);
+
+    void setMinimize(int minimized);
+    int getMinimize();
+    void setOption(int option);
+    int getOption();
 };
 //---------------------------------------------------------------------------
 #endif

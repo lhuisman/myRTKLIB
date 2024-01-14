@@ -3,7 +3,7 @@
 
 #include "rtklib.h"
 #include "convdlg.h"
-//---------------------------------------------------------------------------
+
 //---------------------------------------------------------------------------
 ConvDialog::ConvDialog(QWidget *parent)
     : QDialog(parent)
@@ -14,9 +14,9 @@ ConvDialog::ConvDialog(QWidget *parent)
         cBInputFormat->addItem(formatstrs[i]);
     cBInputFormat->setCurrentIndex(0);
 
-    connect(btnOk, &QPushButton::clicked, this, &ConvDialog::btnOkClicked);
-    connect(btnCancel, &QPushButton::clicked, this, &ConvDialog::reject);
-    connect(cBConversion, &QPushButton::clicked, this, &ConvDialog::updateEnable);
+    connect(buttonBox, &QDialogButtonBox::accepted, this, &ConvDialog::saveClose);
+    connect(buttonBox, &QDialogButtonBox::rejected, this, &ConvDialog::reject);
+    connect(cBConversion, &QCheckBox::toggled, this, &ConvDialog::updateEnable);
 }
 //---------------------------------------------------------------------------
 void ConvDialog::showEvent(QShowEvent *event)
@@ -32,7 +32,7 @@ void ConvDialog::showEvent(QShowEvent *event)
     updateEnable();
 }
 //---------------------------------------------------------------------------
-void ConvDialog::btnOkClicked()
+void ConvDialog::saveClose()
 {
     conversionEnabled = cBConversion->isChecked();
     conversionInputFormat = cBInputFormat->currentIndex();

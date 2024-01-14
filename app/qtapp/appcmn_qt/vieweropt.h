@@ -12,18 +12,22 @@ class ViewerOptDialog : public QDialog, private Ui::ViewerOptDialog
     Q_OBJECT
 
 public slots:
-    void btnColorTextClicked();
-    void btnColorBackgroundClicked();
-    void btnFontClicked();
+    void selectTextColor();
+    void selectBackgroundColor();
+    void selectFont();
 
 protected:
-    void showEvent(QShowEvent*);
-
+    QFont font;
+    QColor colorText, colorBackground;
 public:
     explicit ViewerOptDialog(QWidget* parent);
 
-    QFont font;
-    QColor colorText, colorBackground;
+    QFont getFont() {return font;}
+    void setFont(const QFont &font);
+    const QColor& getTextColor() {return colorText;}
+    void setTextColor(const QColor &);
+    const QColor& getBackgroundColor() {return colorBackground;}
+    void setBackgroundColor(const QColor &);
 };
 //---------------------------------------------------------------------------
 #endif

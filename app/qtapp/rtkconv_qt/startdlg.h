@@ -14,17 +14,19 @@ class StartDialog : public QDialog, private Ui::StartDialog
     Q_OBJECT
 
 protected:
-    void showEvent(QShowEvent*);
-
-public slots:
-    void btnOkClicked();
-    void btnFileTimeClicked();
-
-public:
-    gtime_t time;
     QString filename;
 
-    explicit StartDialog(QWidget *parent=NULL);
+public slots:
+    void setTimeFromFile();
+
+public:
+
+    explicit StartDialog(QWidget *parent = nullptr);
+
+    gtime_t getTime();
+    void setTime(gtime_t);
+    QString getFileName() {return filename;}
+    void setFileName(QString filename);
 };
 //---------------------------------------------------------------------------
 #endif

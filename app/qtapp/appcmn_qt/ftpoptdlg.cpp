@@ -9,32 +9,38 @@
 #include "keydlg.h"
 
 //---------------------------------------------------------------------------
-FtpOptDialog::FtpOptDialog(QWidget *parent)
+FtpOptDialog::FtpOptDialog(QWidget *parent, int options)
     : QDialog(parent)
 {
     setupUi(this);
 
     keyDlg = new KeyDialog(this);
 
-    connect(btnOk, &QPushButton::clicked, this, &FtpOptDialog::btnOkClicked);
-    connect(btnKey, &QPushButton::clicked, this, &FtpOptDialog::btnKeyClicked);
-    connect(btnCancel, &QPushButton::clicked, this, &FtpOptDialog::reject);
+    connect(buttonBox, &QDialogButtonBox::accepted, this, &FtpOptDialog::saveClose);
+    connect(btnKey, &QPushButton::clicked, this, &FtpOptDialog::showKeyDialog);
+    connect(buttonBox, &QDialogButtonBox::rejected, this, &FtpOptDialog::reject);
 
-    options = 0;
 
     cBPathOffset->setValidator(new QIntValidator(this));
     cBInterval->setValidator(new QIntValidator(this));
     cBOffset->setValidator(new QIntValidator(this));
+
+    setOptions(options);
 }
 //---------------------------------------------------------------------------
-void FtpOptDialog::showEvent(QShowEvent *event)
+void FtpOptDialog::setOptions(int options)
 {
     QString cap[] = { tr("FTP Option"), tr("HTTP Option") };
-    int topts[4] = { 0, 3600, 0, 0 };
-
-    if (event->spontaneous()) return;
+    this->options = options;
 
     setWindowTitle(cap[options]);
+
+    updateEnable();
+}
+//---------------------------------------------------------------------------
+void FtpOptDialog::setPath(QString path)
+{
+    int topts[4] = { 0, 3600, 0, 0 };
 
     QStringList tokens = path.split("::");
     if (tokens.size() > 1) {
@@ -56,21 +62,21 @@ void FtpOptDialog::showEvent(QShowEvent *event)
     cBAddress->setCurrentIndex(0);
     lEUser->setText(url.userName());
     lEPassword->setText(url.password());
-    cBPathOffset->insertItem(0, QString::number(topts[0] / 3600.0, 'g', 2)); cBPathOffset->setCurrentIndex(0);
-    cBInterval->insertItem(0, QString::number(topts[1] / 3600.0, 'g', 2)); cBInterval->setCurrentIndex(0);
-    cBOffset->insertItem(0, QString::number(topts[2] / 3600.0, 'g', 2)); cBOffset->setCurrentIndex(0);
+    cBPathOffset->insertItem(0, QString("%1 h").arg(topts[0] / 3600.0, 0, 'g', 2)); cBPathOffset->setCurrentIndex(0);
+    cBInterval->insertItem(0, QString("%1 h").arg(topts[1] / 3600.0, 0, 'g', 2)); cBInterval->setCurrentIndex(0);
+    cBOffset->insertItem(0, QString("%1 h").arg(topts[2] / 3600.0, 0, 'g', 2)); cBOffset->setCurrentIndex(0);
     sBRetryInterval->setValue(topts[3]);
-	updateEnable();
 }
 //---------------------------------------------------------------------------
-void FtpOptDialog::btnOkClicked()
+QString FtpOptDialog::getPath()
 {
-    QString pathOffset_Text = cBPathOffset->currentText();
-    QString interval_Text = cBInterval->currentText();
-    QString offset_Text = cBOffset->currentText();
-    QString user_Text = lEUser->text(), password_Text = lEPassword->text();
-    QString address_Text = cBAddress->currentText(), s;
-	int topts[4];
+    QString pathOffset_Text = cBPathOffset->currentText().split(" ").first();
+    QString interval_Text = cBInterval->currentText().split(" ").first();
+    QString offset_Text = cBOffset->currentText().split(" ").first();
+    QString user_Text = lEUser->text();
+    QString password_Text = lEPassword->text();
+    QString address_Text = cBAddress->currentText();
+    int topts[4];
     bool ok;
 
     topts[0] = pathOffset_Text.toInt(&ok) * 3600.0;
@@ -78,16 +84,19 @@ void FtpOptDialog::btnOkClicked()
     topts[2] = offset_Text.toInt(&ok) * 3600.0;
     topts[3] = sBRetryInterval->value();
 
-    path = QString("%1:%2@%3::T=%4,%5,%6,%7").arg(user_Text)
+    return QString("%1:%2@%3::T=%4,%5,%6,%7").arg(user_Text)
            .arg(password_Text).arg(address_Text)
            .arg(topts[0]).arg(topts[1]).arg(topts[2]).arg(topts[3]);
-
+}
+//---------------------------------------------------------------------------
+void FtpOptDialog::saveClose()
+{
     addHistory(cBAddress, history);
 
     accept();
 }
 //---------------------------------------------------------------------------
-void FtpOptDialog::btnKeyClicked()
+void FtpOptDialog::showKeyDialog()
 {
     keyDlg->exec();
 }

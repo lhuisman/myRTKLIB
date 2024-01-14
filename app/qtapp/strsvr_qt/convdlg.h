@@ -13,7 +13,7 @@ class ConvDialog : public QDialog, private Ui::ConvDialog
     Q_OBJECT
 
 public slots:
-    void btnOkClicked();
+    void saveClose();
     void updateEnable(void);
 
 protected:

@@ -13,9 +13,9 @@ class SvrOptDialog : public QDialog, public Ui::SvrOptDialog
 
 public slots:
     void btnOkClicked();
-    void btnPosClicked();
-    void btnLocalDirClicked();
-    void btnLogFileClicked();
+    void positionSelect();
+    void localDirectorySelect();
+    void logFileSelect();
 
 protected:
     void showEvent(QShowEvent*);

@@ -22,12 +22,24 @@ SvrOptDialog::SvrOptDialog(QWidget *parent)
     dirCompleter->setModel(dirModel);
     lELocalDir->setCompleter(dirCompleter);
 
+    QCompleter *fileCompleter = new QCompleter(this);
+    QFileSystemModel *fileModel = new QFileSystemModel(fileCompleter);
+    fileModel->setRootPath("");
+    fileCompleter->setModel(fileModel);
+    lELogFile->setCompleter(fileCompleter);
+
+    QAction *acLogFile = lELogFile->addAction(QIcon(":/buttons/folder"), QLineEdit::TrailingPosition);
+    acLogFile->setToolTip(tr("Select log file"));
+
+    QAction *acLocalDir = lELocalDir->addAction(QIcon(":/buttons/folder"), QLineEdit::TrailingPosition);
+    acLocalDir->setToolTip(tr("Select local directory"));
+
     connect(btnOk, &QPushButton::clicked, this, &SvrOptDialog::btnOkClicked);
     connect(btnCancel, &QPushButton::clicked, this, &SvrOptDialog::reject);
-    connect(btnPosition, &QPushButton::clicked, this, &SvrOptDialog::btnPosClicked);
-    connect(btnLogFile, &QPushButton::clicked, this, &SvrOptDialog::btnLogFileClicked);
+    connect(btnPosition, &QPushButton::clicked, this, &SvrOptDialog::positionSelect);
+    connect(acLogFile, &QAction::triggered, this, &SvrOptDialog::logFileSelect);
     connect(cBNmeaReq, &QPushButton::clicked, this, &SvrOptDialog::updateEnable);
-    connect(btnLocalDir, &QPushButton::clicked, this, &SvrOptDialog::btnLocalDirClicked);
+    connect(acLocalDir, &QAction::triggered, this, &SvrOptDialog::localDirectorySelect);
     connect(cBStationId, &QPushButton::clicked, this, &SvrOptDialog::updateEnable);
 
 }
@@ -110,30 +122,27 @@ void SvrOptDialog::btnOkClicked()
     accept();
 }
 //---------------------------------------------------------------------------
-void SvrOptDialog::btnPosClicked()
+void SvrOptDialog::positionSelect()
 {
-    RefDialog *refDialog = new RefDialog(this);
+    RefDialog *refDialog = new RefDialog(this, 1);
     
-    refDialog->roverPosition[0] = sBAntennaPos1->value();
-    refDialog->roverPosition[1] = sBAntennaPos2->value();
-    refDialog->roverPosition[2] = sBAntennaPos3->value();
+    refDialog->setRoverPosition(sBAntennaPos1->value(), sBAntennaPos2->value(), sBAntennaPos3->value());
     refDialog->btnLoad->setEnabled(true);
     refDialog->stationPositionFile = stationPositionFile;
-    refDialog->options = 1;
 
     refDialog->exec();
     if (refDialog->result() != QDialog::Accepted) return;
 
-    sBAntennaPos1->setValue(refDialog->position[0]);
-    sBAntennaPos2->setValue(refDialog->position[1]);
-    sBAntennaPos3->setValue(refDialog->position[2]);
+    sBAntennaPos1->setValue(refDialog->getPosition()[0]);
+    sBAntennaPos2->setValue(refDialog->getPosition()[1]);
+    sBAntennaPos3->setValue(refDialog->getPosition()[2]);
     stationPositionFile = refDialog->stationPositionFile;
     logFile = lELogFile->text();
 
     delete refDialog;
 }
 //---------------------------------------------------------------------------
-void SvrOptDialog::btnLocalDirClicked()
+void SvrOptDialog::localDirectorySelect()
 {
     QString dir = lELocalDir->text();
 
@@ -163,7 +172,7 @@ void SvrOptDialog::updateEnable(void)
     lblReceiverInfo->setEnabled(lEReceiverInfo->isEnabled());
 }
 //---------------------------------------------------------------------------
-void SvrOptDialog::btnLogFileClicked()
+void SvrOptDialog::logFileSelect()
 {
     lELogFile->setText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("Log File"), lELogFile->text(), tr("All (*.*)"))));
 }

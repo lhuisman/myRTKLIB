@@ -22,17 +22,17 @@ protected:
     void closeEvent(QCloseEvent *);
 
 public slots:
-    void btnPlotClicked();
-    void btnConvClicked();
-    void btnStrClicked();
-    void btnPostClicked();
-    void btnNtripClicked();
-    void btnNaviClicked();
-    void btnGetClicked();
-    void btnTrayClicked();
-    void btnOptionClicked();
+    void launchRTKPlot();
+    void launchRTKConv();
+    void launchStrSvr();
+    void launchRTKPost();
+    void launchSrcTblBrows();
+    void launchRTKNavi();
+    void launchRTKGet();
+    void moveToTray();
+    void showOptions();
     void trayIconActivated(QSystemTrayIcon::ActivationReason);
-    void menuExpandClicked();
+    void expandWindow();
 
 private:
     QString iniFile;

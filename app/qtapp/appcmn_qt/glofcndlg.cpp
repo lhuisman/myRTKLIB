@@ -10,52 +10,17 @@
 GloFcnDialog::GloFcnDialog(QWidget* parent) : QDialog(parent)
 {
     setupUi(this);
-    enableGloFcn = 0;
 
-    for (int i = 0; i < 27; i++) {
-        gloFcn[i] = 0;
-	}
-
-    connect(btnCancel, &QPushButton::clicked, this, &GloFcnDialog::reject);
-    connect(btnOk, &QPushButton::clicked, this, &GloFcnDialog::btnOkClicked);
-    connect(btnClear, &QPushButton::clicked, this, &GloFcnDialog::btnClearClicked);
-    connect(btnRead, &QPushButton::clicked, this, &GloFcnDialog::btnReadClicked);
+    connect(buttonBox, &QDialogButtonBox::accepted, this, &GloFcnDialog::accept);
+    connect(buttonBox, &QDialogButtonBox::rejected, this, &GloFcnDialog::reject);
+    connect(btnClear, &QPushButton::clicked, this, &GloFcnDialog::clearFrequencies);
+    connect(btnRead, &QPushButton::clicked, this, &GloFcnDialog::readRinex);
     connect(cBEnableFcn, &QCheckBox::stateChanged, this, &GloFcnDialog::updateEnable);
-}
-//---------------------------------------------------------------------------
 
-void GloFcnDialog::showEvent(QShowEvent*)
-{
-    QString text;
-    
-    cBEnableFcn->setChecked(enableGloFcn);
-
-    for (int i = 0; i < 27; i++) {
-        if (gloFcn[i])
-            getFcn(i + 1)->setValue(gloFcn[i] - 8);
-        else
-            getFcn(i + 1)->setValue(getFcn(i + 1)->minimum());
-	}
     updateEnable();
 }
 //---------------------------------------------------------------------------
-void GloFcnDialog::btnOkClicked()
-{
-	int no;
-    
-    enableGloFcn = cBEnableFcn->isChecked();
-	
-    for (int i = 0; i < 27; i++) {
-        no = getFcn(i + 1)->value();
-        if (no >= -7 && no <= 6) {
-            gloFcn[i] = no + 8;
-		}
-        else gloFcn[i] = 0; // GLONASS FCN+8 (0:none)
-	}
-    accept();
-}
-//---------------------------------------------------------------------------
-void GloFcnDialog::btnReadClicked()
+void GloFcnDialog::readRinex()
 {
     QString filename, text;
     nav_t nav;
@@ -74,10 +39,10 @@ void GloFcnDialog::btnReadClicked()
     freenav(&nav, 0xFF);
 }
 //---------------------------------------------------------------------------
-void GloFcnDialog::btnClearClicked()
+void GloFcnDialog::clearFrequencies()
 {
-	for (int i=0;i<27;i++) {
-        getFcn(i+1)->setValue(getFcn(i + 1)->minimum());
+    for (int i = 0; i < 27; i++) {
+        getFcn(i + 1)->setValue(getFcn(i + 1)->minimum());
 	}
 }
 //---------------------------------------------------------------------------
@@ -103,4 +68,31 @@ QSpinBox * GloFcnDialog::getFcn(int prn)
     return fcn[prn - 1];
 }
 //---------------------------------------------------------------------------
+int GloFcnDialog::getGloFcnEnable()
+{
+    return cBEnableFcn->isChecked();
+}
+//---------------------------------------------------------------------------
+void GloFcnDialog::setGloFcnEnable(int enable)
+{
+    cBEnableFcn->setChecked(enable);
 
+}
+//---------------------------------------------------------------------------
+int GloFcnDialog::getGloFcn(int i)
+{
+    int no = getFcn(i + 1)->value();
+    if (no >= -7 && no <= 6) {
+        return no + 8;
+    }
+    else return 0; // GLONASS FCN+8 (0:none)
+}
+//---------------------------------------------------------------------------
+void GloFcnDialog::setGloFcn(int i, int fcn)
+{
+    if (fcn)
+        getFcn(i + 1)->setValue(fcn - 8);
+    else
+        getFcn(i + 1)->setValue(getFcn(i + 1)->minimum());
+}
+//---------------------------------------------------------------------------

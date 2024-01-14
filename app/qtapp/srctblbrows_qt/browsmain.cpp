@@ -18,6 +18,7 @@
 #include "mapview.h"
 #include "browsmain.h"
 #include "staoptdlg.h"
+#include "mntpoptdlg.h"
 //---------------------------------------------------------------------------
 
 #define PRGNAME                 "NTRIP Browser Qt"
@@ -88,7 +89,7 @@ MainForm::MainForm(QWidget *parent)
     QCoreApplication::setApplicationName(PRGNAME);
     QCoreApplication::setApplicationVersion(PRGVERSION);
 
-    setWindowIcon(QIcon(":/icons/srctblbrows_Icon"));
+    setWindowIcon(QIcon(":/icons/srctblbrows"));
 
     // retrieve config file name
     QString prg_filename = QApplication::applicationFilePath();
@@ -98,6 +99,7 @@ MainForm::MainForm(QWidget *parent)
     mapView = new MapView(this);
     staListDialog = new StaListDialog(this);
     loadTimer = new QTimer();
+    mountPointDialog = new MntpOptDialog();
 
     btnTypeCas->setDefaultAction(actMenuViewCas);
     btnTypeNet->setDefaultAction(actMenuViewNet);
@@ -122,6 +124,7 @@ MainForm::MainForm(QWidget *parent)
     connect(actMenuAbout, &QAction::triggered, this, &MainForm::menuAboutClicked);
     connect(loadTimer, &QTimer::timeout, this, &MainForm::loadTimerExpired);
     connect(tWTableStr, &QTableWidget::cellClicked, this, &MainForm::streamTableCellClicked);
+    connect(tWTableStr, &QTableWidget::cellDoubleClicked, this, &MainForm::streamTableCellDblClicked);
     connect(tWTableCas, &QTableWidget::cellDoubleClicked, this, &MainForm::casterTableCellDblClicked);
 
     btnMap->setEnabled(false);
@@ -325,10 +328,8 @@ void MainForm::menuViewSourceClicked()
 //---------------------------------------------------------------------------
 void MainForm::menuAboutClicked()
 {
-    AboutDialog *aboutDialog = new AboutDialog(this);
+    AboutDialog *aboutDialog = new AboutDialog(this, QPixmap(":/icons/srctblbrows"), PRGNAME);
 
-    aboutDialog->aboutString = PRGNAME;
-    aboutDialog->iconIndex = 7;
     aboutDialog->exec();
 
     delete aboutDialog;
@@ -377,6 +378,22 @@ void MainForm::streamTableCellClicked(int ARow, int ACol)
         mapView->setWindowTitle(QString(tr("NTRIP Data Stream Map: %1/%2")).arg(cBAddress->currentText()).arg(title));
 	}
 }
+//---------------------------------------------------------------------------
+void MainForm::streamTableCellDblClicked(int ARow, int ACol)
+{
+    Q_UNUSED(ACol);
+    if (0 <= ARow && ARow < tWTableStr->rowCount()) {
+        mountPointDialog->setMountPoint(tWTableStr->item(ARow, 1)->text());
+        QString mntpStr;
+        for (int i = 0; i < tWTableStr->columnCount(); i++)
+            mntpStr += tWTableStr->item(ARow, i)->text() + ";" ;
+
+        mountPointDialog->setMountPointString(mntpStr);
+        mountPointDialog->setOption(1);
+        mountPointDialog->show();
+    }
+}
+
 //---------------------------------------------------------------------------
 void MainForm::casterTableCellDblClicked(int ARow, int ACol)
 {

@@ -19,13 +19,12 @@ StrMonDialog::StrMonDialog(QWidget *parent)
     setupUi(this);
 
     connect(btnClose, &QPushButton::clicked, this, &StrMonDialog::accept);
-    connect(btnClear, &QPushButton::clicked, this, &StrMonDialog::btnClearClicked);
-    connect(btnDown, &QPushButton::clicked, this, &StrMonDialog::btnDownClicked);
-    connect(cBSelectFormat, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &StrMonDialog::selectFormatChanged);
+    connect(btnClear, &QPushButton::clicked, this, &StrMonDialog::clearConsole);
+    connect(btnDown, &QPushButton::clicked, this, &StrMonDialog::scrollDown);
+    connect(cBSelectFormat, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &StrMonDialog::changeFormat);
 
     consoleBuffer.clear();
     tWConsole->clear();
-    streamFormat = 0;
 
     for (int i = 0; i <= MAXRCVFMT; i++) {
         cBSelectFormat->addItem(formatstrs[i]);
@@ -33,8 +32,10 @@ StrMonDialog::StrMonDialog(QWidget *parent)
     rtcm.outtype = raw.outtype = 1;
 }
 //---------------------------------------------------------------------------
-void StrMonDialog::selectFormatChanged()
+void StrMonDialog::changeFormat()
 {
+    int streamFormat = getStreamFormat();
+
     if ((streamFormat-3 == STRFMT_RTCM2) || (streamFormat-3 == STRFMT_RTCM3)) {
         free_rtcm(&rtcm);
     }
@@ -58,6 +59,8 @@ void StrMonDialog::selectFormatChanged()
 void StrMonDialog::addMessage(unsigned char *msg, int len)
 {
     int i;
+
+    int streamFormat = getStreamFormat();
 
     if (len <= 0) return;
     else if (streamFormat - 3 == STRFMT_RTCM2) {
@@ -142,16 +145,21 @@ void StrMonDialog::addConsole(unsigned char *msg, int n, int mode, bool newline)
          consoleBuffer.append("");
 }
 //---------------------------------------------------------------------------
-void StrMonDialog::btnClearClicked()
+void StrMonDialog::clearConsole()
 {
     consoleBuffer.clear();
     tWConsole->clear();
     tWConsole->setRowCount(0);
 }
 //---------------------------------------------------------------------------
-void StrMonDialog::btnDownClicked()
+void StrMonDialog::scrollDown()
 {
     tWConsole->verticalScrollBar()->setValue(tWConsole->verticalScrollBar()->maximum());
 }
 //---------------------------------------------------------------------------
 
+int StrMonDialog::getStreamFormat()
+{
+    return cBSelectFormat->currentIndex();
+}
+//---------------------------------------------------------------------------

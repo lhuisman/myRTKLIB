@@ -13,9 +13,6 @@
   <property name="windowTitle">
    <string>Conversion Option</string>
   </property>
-  <property name="toolTip">
-   <string/>
-  </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="4" column="0" colspan="2">
     <widget class="QWidget" name="widget_2" native="true">
@@ -33,10 +30,7 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="QLabel" name="Label10">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
+       <widget class="QLabel" name="lblOptions">
         <property name="toolTip">
          <string/>
         </property>
@@ -53,28 +47,9 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="btnOk">
-        <property name="toolTip">
-         <string/>
-        </property>
-        <property name="text">
-         <string>&amp;OK</string>
-        </property>
-        <property name="autoDefault">
-         <bool>true</bool>
-        </property>
-        <property name="default">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="btnCancel">
-        <property name="toolTip">
-         <string/>
-        </property>
-        <property name="text">
-         <string>&amp;Cancel</string>
+       <widget class="QDialogButtonBox" name="buttonBox">
+        <property name="standardButtons">
+         <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
         </property>
        </widget>
       </item>
@@ -99,7 +74,7 @@
       <item>
        <widget class="QCheckBox" name="cBConversion">
         <property name="toolTip">
-         <string/>
+         <string>Enable Conversion</string>
         </property>
         <property name="text">
          <string>Conversion from</string>
@@ -117,7 +92,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QLabel" name="Label2">
+       <widget class="QLabel" name="lblTo">
         <property name="enabled">
          <bool>true</bool>
         </property>
@@ -125,7 +100,7 @@
          <string/>
         </property>
         <property name="text">
-         <string>To</string>
+         <string>to</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
@@ -153,10 +128,7 @@
     </widget>
    </item>
    <item row="2" column="0" colspan="2">
-    <widget class="QLabel" name="Label4">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
+    <widget class="QLabel" name="lblMessageTypes">
      <property name="toolTip">
       <string/>
      </property>
@@ -168,9 +140,12 @@
    <item row="3" column="0" colspan="2">
     <widget class="QLineEdit" name="lEOutputMessages">
      <property name="toolTip">
-      <string>Comma separeted list of message typ IDs with interval given in round brackets.</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Comma separeted list of message type IDs with interval given in round brackets, e.g. 1004(1),1012(1)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
+      <string>1004(1),1012(1)</string>
+     </property>
+     <property name="placeholderText">
       <string>1004(1),1012(1)</string>
      </property>
     </widget>
@@ -183,8 +158,6 @@
   <tabstop>cBOutputFormat</tabstop>
   <tabstop>lEOutputMessages</tabstop>
   <tabstop>lEOptions</tabstop>
-  <tabstop>btnOk</tabstop>
-  <tabstop>btnCancel</tabstop>
  </tabstops>
  <resources/>
  <connections/>

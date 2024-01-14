@@ -11,15 +11,16 @@
 class MntpOptDialog : public QDialog, private Ui::MntpOptDialog
 {
     Q_OBJECT
-protected:
-    void  showEvent(QShowEvent*);
-
-public slots:
-    void btnOkClicked();
 
 public:
-    QString mountPoint,mountpointString;
-    MntpOptDialog(QWidget* parent);
+    MntpOptDialog(QWidget* parent = nullptr, int option = 0);
+
+    QString getMountPoint();
+    void setMountPoint(QString mountPoint);
+    QString getMountPointString();
+    void setMountPointString(QString mountPointString);
+
+    void setOption(int option);
 };
 
 //---------------------------------------------------------------------------

@@ -130,86 +130,84 @@ void ConnectDialog::serialOption1(int opt)
 {
     SerialOptDialog dialog(this);
 
-    dialog.path = paths1[0];
-    dialog.options = opt;
+    dialog.setPath(paths1[0]);
+    dialog.setOptions(opt);
     dialog.exec();
 
     if (dialog.result() != QDialog::Accepted) return;
 
-    paths1[0] = dialog.path;
+    paths1[0] = dialog.getPath();
 }
 //---------------------------------------------------------------------------
 void ConnectDialog::serialOption2(int opt)
 {
     SerialOptDialog dialog(this);
 
-    dialog.path = paths2[0];
-    dialog.options = opt;
+    dialog.setPath(paths2[0]);
+    dialog.setOptions(opt);
     dialog.exec();
 
     if (dialog.result() != QDialog::Accepted) return;
 
-    paths2[0] = dialog.path;
+    paths2[0] = dialog.getPath();
 }
 //---------------------------------------------------------------------------
 void ConnectDialog::tcpOption1(int opt)
 {
     TcpOptDialog dialog(this);
 
-    dialog.path = paths1[1];
-    dialog.showOptions = opt;
-    for (int i = 0; i < MAXHIST; i++)
-        dialog.history [i] = tcpHistory [i];
+    dialog.setOptions(opt);
+    dialog.setHistory(tcpHistory, MAXHIST);
+    dialog.setPath(paths1[1]);
 
     dialog.exec();
     if (dialog.result() != QDialog::Accepted) return;
 
-    paths1[1] = dialog.path;
+    paths1[1] = dialog.getPath();
     for (int i = 0; i < MAXHIST; i++)
-        tcpHistory [i] = dialog.history [i];
+        tcpHistory[i] = dialog.getHistory()[i];
 }
 //---------------------------------------------------------------------------
 void ConnectDialog::tcpOption2(int opt)
 {
     TcpOptDialog dialog(this);
 
-    dialog.path = paths2[1];
-    dialog.showOptions = opt;
-    for (int i = 0; i < MAXHIST; i++)
-        dialog.history [i] = tcpHistory [i];
+    dialog.setPath(paths2[1]);
+    dialog.setOptions(opt);
+    dialog.setHistory(tcpHistory, MAXHIST);
 
     dialog.exec();
     if (dialog.result() != QDialog::Accepted) return;
 
-    paths2[1] = dialog.path;
+    paths2[1] = dialog.getPath();
     for (int i = 0; i < MAXHIST; i++)
-        tcpHistory [i] = dialog.history [i];
+        tcpHistory[i] = dialog.getHistory()[i];
 }
 //---------------------------------------------------------------------------
 void ConnectDialog::fileOption1(int opt)
 {
     FileOptDialog dialog(this);
 
-    dialog.path = paths1[2];
-    dialog.options = opt;
+    dialog.setPath(paths1[2]);
+    dialog.setOptions(opt);
 
     dialog.exec();
     if (dialog.result() != QDialog::Accepted) return;
 
-    paths1[2] = dialog.path;
+    paths1[2] = dialog.getPath();
 }
 //---------------------------------------------------------------------------
 void ConnectDialog::fileOption2(int opt)
 {
     FileOptDialog dialog(this);
 
-    dialog.path = paths2[2];
-    dialog.options = opt;
+    dialog.setPath(paths2[2]);
+    dialog.setOptions(opt);
 
     dialog.exec();
     if (dialog.result() != QDialog::Accepted) return;
 
-    paths2[2] = dialog.path;
+    paths2[2] = dialog.getPath();
 }
 //---------------------------------------------------------------------------
 void ConnectDialog::updateEnable(void)

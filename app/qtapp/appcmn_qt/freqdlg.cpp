@@ -7,7 +7,7 @@ FreqDialog::FreqDialog(QWidget* parent)
 {
     setupUi(this);
 
-    connect(btnOk, &QPushButton::clicked, this, &FreqDialog::accept);
+    connect(buttonBox, &QDialogButtonBox::accepted, this, &FreqDialog::accept);
 
 }
 //---------------------------------------------------------------------------

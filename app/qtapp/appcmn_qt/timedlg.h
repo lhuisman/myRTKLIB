@@ -15,13 +15,10 @@ class TimeDialog : public QDialog, public Ui::TimeDialog
 {
     Q_OBJECT
 
-protected:
-    void showEvent(QShowEvent *);
-
 public:
-    gtime_t time;
 
-    explicit TimeDialog(QWidget *parent);
+    explicit TimeDialog(QWidget *parent = nullptr);
+    void setTime(gtime_t time);
 };
 //---------------------------------------------------------------------------
 #endif

@@ -6,6 +6,7 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QShowEvent>
+#include <QPixmap>
 
 #include "ui_aboutdlg.h"
 
@@ -17,10 +18,10 @@ class AboutDialog : public QDialog, private Ui::AboutDlg
 protected:
     void showEvent(QShowEvent *);
 
-public:
-    int iconIndex;
+    QPixmap icon;
     QString aboutString;
+public:
 
-    explicit AboutDialog(QWidget*);
+    explicit AboutDialog(QWidget*, QPixmap icon, QString labelText);
 };
 #endif

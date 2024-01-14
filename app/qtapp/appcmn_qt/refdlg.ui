@@ -13,12 +13,21 @@
   <property name="windowTitle">
    <string>Stations</string>
   </property>
-  <property name="toolTip">
-   <string/>
-  </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QTableWidget" name="tWStationList">
+     <property name="editTriggers">
+      <set>QAbstractItemView::NoEditTriggers</set>
+     </property>
+     <property name="selectionMode">
+      <enum>QAbstractItemView::SingleSelection</enum>
+     </property>
+     <property name="selectionBehavior">
+      <enum>QAbstractItemView::SelectRows</enum>
+     </property>
+     <property name="sortingEnabled">
+      <bool>true</bool>
+     </property>
      <property name="columnCount">
       <number>2</number>
      </property>
@@ -34,12 +43,6 @@
    </item>
    <item>
     <widget class="QWidget" name="widget" native="true">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <property name="leftMargin">
        <number>0</number>
@@ -56,7 +59,7 @@
       <item>
        <widget class="QPushButton" name="btnLoad">
         <property name="toolTip">
-         <string/>
+         <string>Load stations</string>
         </property>
         <property name="text">
          <string>&amp;Load</string>
@@ -64,7 +67,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QFrame" name="frame">
+       <widget class="QFrame" name="wgFind">
         <property name="frameShape">
          <enum>QFrame::Box</enum>
         </property>
@@ -86,21 +89,18 @@
          </property>
          <item>
           <widget class="QLineEdit" name="lEFind">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
            <property name="toolTip">
             <string>Search string</string>
            </property>
-           <property name="text">
-            <string/>
+           <property name="clearButtonEnabled">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
          <item>
           <widget class="QPushButton" name="btnFind">
            <property name="toolTip">
-            <string/>
+            <string>Start search</string>
            </property>
            <property name="text">
             <string>Find</string>
@@ -111,28 +111,9 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="btnOK">
-        <property name="toolTip">
-         <string/>
-        </property>
-        <property name="text">
-         <string>&amp;OK</string>
-        </property>
-        <property name="autoDefault">
-         <bool>true</bool>
-        </property>
-        <property name="default">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="btnCancel">
-        <property name="toolTip">
-         <string/>
-        </property>
-        <property name="text">
-         <string>&amp;Cancel</string>
+       <widget class="QDialogButtonBox" name="buttonBox">
+        <property name="standardButtons">
+         <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
         </property>
        </widget>
       </item>

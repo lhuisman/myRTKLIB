@@ -6,32 +6,23 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>783</width>
+    <width>898</width>
     <height>594</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Options</string>
   </property>
-  <property name="toolTip">
-   <string/>
-  </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QTabWidget" name="tWOptions">
-     <property name="toolTip">
-      <string/>
-     </property>
      <property name="tabPosition">
       <enum>QTabWidget::North</enum>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>6</number>
      </property>
-     <widget class="QWidget" name="TabSheet1">
-      <property name="toolTip">
-       <string/>
-      </property>
+     <widget class="QWidget" name="tabSettings1">
       <attribute name="title">
        <string>Setting&amp;1</string>
       </attribute>
@@ -70,9 +61,6 @@
        </item>
        <item row="1" column="0">
         <widget class="QLabel" name="lblFrequency">
-         <property name="toolTip">
-          <string/>
-         </property>
          <property name="text">
           <string>Frequencies / Filter Type</string>
          </property>
@@ -210,9 +198,6 @@
        </item>
        <item row="0" column="0">
         <widget class="QLabel" name="lblPosMode">
-         <property name="toolTip">
-          <string/>
-         </property>
          <property name="text">
           <string>Positioning Mode</string>
          </property>
@@ -220,14 +205,23 @@
        </item>
        <item row="1" column="1">
         <widget class="QPushButton" name="btnFrequencies">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>30</width>
+           <height>30</height>
+          </size>
+         </property>
          <property name="toolTip">
           <string>Show frequency table</string>
          </property>
          <property name="text">
           <string>?</string>
-         </property>
-         <property name="flat">
-          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -240,7 +234,7 @@
           </sizepolicy>
          </property>
          <property name="title">
-          <string>Navigation Systems:</string>
+          <string>Navigation Systems</string>
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_4">
           <property name="leftMargin">
@@ -330,9 +324,6 @@
        </item>
        <item row="6" column="0" colspan="2">
         <widget class="QLabel" name="Label9">
-         <property name="toolTip">
-          <string/>
-         </property>
          <property name="text">
           <string>Troposphere Correction</string>
          </property>
@@ -563,9 +554,6 @@
        </item>
        <item row="5" column="0">
         <widget class="QLabel" name="Label8">
-         <property name="toolTip">
-          <string/>
-         </property>
          <property name="text">
           <string>Ionosphere Correction</string>
          </property>
@@ -575,6 +563,9 @@
         <widget class="QLineEdit" name="lEExcludedSatellites">
          <property name="toolTip">
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the excluded satellites for positioning. Fill in the PRN numbers of the satellites separated by spaces (option: &lt;span style=&quot; font-style:italic;&quot;&gt;pos1-exclsats&lt;/span&gt;).&lt;/p&gt;&lt;p&gt;For GLONASS, Galileo, QZSS, BeiDou and SBAS, use Rnn, Enn, Jnn, Cnn and Snn, respectively (nn: satellite PRN or slot number).&lt;/p&gt;&lt;p&gt;If ʺ+ʺ is added to the head of the satellite ID, the satellite is included for positioning even if the satellite is unhealthy.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="placeholderText">
+          <string>e.g. +E12 R02 G05</string>
          </property>
         </widget>
        </item>
@@ -605,9 +596,6 @@
        </item>
        <item row="4" column="0" colspan="2">
         <widget class="QLabel" name="Label3">
-         <property name="toolTip">
-          <string/>
-         </property>
          <property name="text">
           <string>Receiver Dynamics / Earth Tides Correction</string>
          </property>
@@ -615,9 +603,6 @@
        </item>
        <item row="3" column="0" colspan="2">
         <widget class="QLabel" name="lblElevationMask">
-         <property name="toolTip">
-          <string/>
-         </property>
          <property name="text">
           <string>Elevation Mask (°) / SNR Mask (dbHz)</string>
          </property>
@@ -635,9 +620,6 @@
        </item>
        <item row="10" column="0" colspan="2">
         <widget class="QLabel" name="Label35">
-         <property name="toolTip">
-          <string/>
-         </property>
          <property name="text">
           <string>Excluded Satellites (+PRN: Included)</string>
          </property>
@@ -645,9 +627,6 @@
        </item>
        <item row="7" column="0" colspan="2">
         <widget class="QLabel" name="Label32">
-         <property name="toolTip">
-          <string/>
-         </property>
          <property name="text">
           <string>Satellite Ephemeris / Clock</string>
          </property>
@@ -655,10 +634,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="TabSheet2">
-      <property name="toolTip">
-       <string/>
-      </property>
+     <widget class="QWidget" name="tabSettings2">
       <attribute name="title">
        <string>Setting&amp;2</string>
       </attribute>
@@ -718,9 +694,6 @@
        </item>
        <item row="2" column="0">
         <widget class="QLabel" name="LabelRatio">
-         <property name="toolTip">
-          <string/>
-         </property>
          <property name="text">
           <string>Min Ratio to Fix Ambiguity (Min/Nom/Max)</string>
          </property>
@@ -738,9 +711,6 @@
        </item>
        <item row="0" column="0">
         <widget class="QLabel" name="Label25">
-         <property name="toolTip">
-          <string/>
-         </property>
          <property name="text">
           <string>Integer Ambiguity Res (GPS/GLO/BDS)</string>
          </property>
@@ -764,11 +734,8 @@
        </item>
        <item row="7" column="0">
         <widget class="QLabel" name="LabelHold">
-         <property name="toolTip">
-          <string/>
-         </property>
          <property name="text">
-          <string>Min Fix / Elevation to Hold Amb</string>
+          <string>Min Fix / Elevation to Hold Ambiguity</string>
          </property>
         </widget>
        </item>
@@ -940,15 +907,12 @@
        <item row="21" column="0">
         <widget class="QLabel" name="label_8">
          <property name="text">
-          <string>Glonass HW Bias</string>
+          <string>Glonass Hardware Bias</string>
          </property>
         </widget>
        </item>
        <item row="11" column="0">
         <widget class="QLabel" name="Label14">
-         <property name="toolTip">
-          <string/>
-         </property>
          <property name="text">
           <string>Max Age of Diff / Outs to Reset Amb</string>
          </property>
@@ -973,9 +937,6 @@
        </item>
        <item row="13" column="0">
         <widget class="QLabel" name="Label11">
-         <property name="toolTip">
-          <string/>
-         </property>
          <property name="text">
           <string>Outlier Threshold for Code / Phase</string>
          </property>
@@ -1000,19 +961,13 @@
        </item>
        <item row="9" column="0">
         <widget class="QLabel" name="Label22">
-         <property name="toolTip">
-          <string/>
-         </property>
          <property name="text">
-          <string>Slip Threshs: Doppler / Geom-Free</string>
+          <string>Slip Threshs: Doppler / Geometry-Free</string>
          </property>
         </widget>
        </item>
        <item row="15" column="0">
         <widget class="QLabel" name="Label37">
-         <property name="toolTip">
-          <string/>
-         </property>
          <property name="text">
           <string># of Filter Iter / Sync Solution</string>
          </property>
@@ -1090,11 +1045,8 @@
        </item>
        <item row="5" column="0">
         <widget class="QLabel" name="Label13">
-         <property name="toolTip">
-          <string/>
-         </property>
          <property name="text">
-          <string>Min Lock / Elevation to Fix Amb</string>
+          <string>Min Lock / Elevation to Fix Ambiguity</string>
          </property>
         </widget>
        </item>
@@ -1131,7 +1083,7 @@
        <item row="20" column="0">
         <widget class="QLabel" name="label_7">
          <property name="text">
-          <string>Hold Amb Var / Hold Amb Gain</string>
+          <string>Hold Amb Variance / Hold Amb Gain</string>
          </property>
         </widget>
        </item>
@@ -1168,7 +1120,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="TabSheet3">
+     <widget class="QWidget" name="tabOutput">
       <property name="toolTip">
        <string/>
       </property>
@@ -1200,9 +1152,6 @@
        </item>
        <item row="4" column="0">
         <widget class="QLabel" name="lblTimeFormat">
-         <property name="toolTip">
-          <string/>
-         </property>
          <property name="text">
           <string>Time Format / # of Decimals</string>
          </property>
@@ -1234,9 +1183,6 @@
        </item>
        <item row="9" column="0">
         <widget class="QLabel" name="Label18">
-         <property name="toolTip">
-          <string/>
-         </property>
          <property name="text">
           <string>Geoid Model</string>
          </property>
@@ -1244,9 +1190,6 @@
        </item>
        <item row="5" column="0">
         <widget class="QLabel" name="lblLatLonFormat">
-         <property name="toolTip">
-          <string/>
-         </property>
          <property name="text">
           <string>Latitude Longitude Format / Field Separator</string>
          </property>
@@ -1256,9 +1199,6 @@
         <widget class="QLabel" name="Label21">
          <property name="enabled">
           <bool>false</bool>
-         </property>
-         <property name="toolTip">
-          <string/>
          </property>
          <property name="text">
           <string>Solution for Static Mode</string>
@@ -1296,9 +1236,6 @@
        </item>
        <item row="13" column="0">
         <widget class="QLabel" name="Label36">
-         <property name="toolTip">
-          <string/>
-         </property>
          <property name="text">
           <string>Output Solution Status / Output Debug Trace</string>
          </property>
@@ -1387,9 +1324,6 @@
        </item>
        <item row="8" column="0">
         <widget class="QLabel" name="Label2">
-         <property name="toolTip">
-          <string/>
-         </property>
          <property name="text">
           <string>Datum / Height</string>
          </property>
@@ -1461,9 +1395,6 @@
        </item>
        <item row="0" column="0">
         <widget class="QLabel" name="lblSolutionFormat">
-         <property name="toolTip">
-          <string/>
-         </property>
          <property name="text">
           <string>Solution Format</string>
          </property>
@@ -1501,9 +1432,6 @@
        </item>
        <item row="2" column="0">
         <widget class="QLabel" name="Label20">
-         <property name="toolTip">
-          <string/>
-         </property>
          <property name="text">
           <string>Output Header / Proc. Options / Velocity</string>
          </property>
@@ -1556,9 +1484,6 @@
        </item>
        <item row="7" column="0">
         <widget class="QLabel" name="lblFieldSeperator">
-         <property name="toolTip">
-          <string/>
-         </property>
          <property name="text">
           <string>Output Single if Sol Outage / Max Sol Std</string>
          </property>
@@ -1566,9 +1491,6 @@
        </item>
        <item row="12" column="0">
         <widget class="QLabel" name="Label17">
-         <property name="toolTip">
-          <string/>
-         </property>
          <property name="text">
           <string>NMEA Interval (s) RMC/GGA, GSA/GSV</string>
          </property>
@@ -1610,7 +1532,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="TabSheet4">
+     <widget class="QWidget" name="tabStatistics">
       <property name="toolTip">
        <string/>
       </property>
@@ -1619,255 +1541,48 @@
       </attribute>
       <layout class="QGridLayout" name="gridLayout_4">
        <item row="2" column="0">
-        <widget class="QLabel" name="Label29">
-         <property name="toolTip">
-          <string/>
+        <widget class="QWidget" name="widget_2" native="true">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
          </property>
-         <property name="text">
-          <string>Satellite Clock Stability</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="0" colspan="2">
-        <widget class="QGroupBox" name="GroupBox3">
-         <property name="toolTip">
-          <string/>
-         </property>
-         <property name="title">
-          <string>Measurement Errors (1-sigma)</string>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_8">
-          <item row="8" column="1" colspan="2">
-           <widget class="QDoubleSpinBox" name="sBMeasurementError5">
+         <layout class="QGridLayout" name="gridLayout_13">
+          <item row="0" column="0">
+           <widget class="QLabel" name="Label29">
+            <property name="text">
+             <string>Satellite Clock Stability</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="ScientificSpinBox" name="sBSatelliteClockStability">
             <property name="toolTip">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the standard deviation of Doppler errors (option: &lt;span style=&quot; font-style:italic;&quot;&gt;stats-errdoppler)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the satellite clock stability (option: &lt;span style=&quot; font-style:italic;&quot;&gt;stats-clkstab&lt;/span&gt;) &lt;/p&gt;&lt;p&gt;The value is used for interpolation of base-station observables.&lt;/p&gt;&lt;p&gt;Unit: s/s&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="suffix">
-             <string> Hz</string>
+             <string> s/s</string>
             </property>
             <property name="minimum">
-             <double>-10000.000000000000000</double>
+             <double>-1.000000000000000</double>
             </property>
             <property name="maximum">
-             <double>10000.000000000000000</double>
-            </property>
-            <property name="value">
              <double>1.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="4">
-           <widget class="QDoubleSpinBox" name="sBMeasurementErrorR5">
-            <property name="toolTip">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the ratio of standard deviations of pseudorange errors to carrier-phase errors for L5 (option: &lt;span style=&quot; font-style:italic;&quot;&gt;stats-eratio5&lt;/span&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-            <property name="decimals">
-             <number>1</number>
-            </property>
-            <property name="maximum">
-             <double>10000.000000000000000</double>
-            </property>
-            <property name="value">
-             <double>100.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="Label7">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="toolTip">
-             <string/>
-            </property>
-            <property name="text">
-             <string>Carrier-Phase Error a+b/sinEl</string>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="0">
-           <widget class="QLabel" name="Label16">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="toolTip">
-             <string/>
-            </property>
-            <property name="text">
-             <string>Carrier-Phase Error/Baseline</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="2" colspan="2">
-           <widget class="QDoubleSpinBox" name="sBMeasurementErrorR2">
-            <property name="toolTip">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the ratio of standard deviations of pseudorange errors to carrier-phase errors for L2 (option: &lt;span style=&quot; font-style:italic;&quot;&gt;stats-eratio2&lt;/span&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-            <property name="decimals">
-             <number>1</number>
-            </property>
-            <property name="maximum">
-             <double>10000.000000000000000</double>
-            </property>
-            <property name="value">
-             <double>300.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QDoubleSpinBox" name="sBMeasurementErrorR1">
-            <property name="toolTip">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the ratio of standard deviations of pseudorange errors to carrier-phase errors for L1 (option: &lt;span style=&quot; font-style:italic;&quot;&gt;stats-eratio1&lt;/span&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-            <property name="decimals">
-             <number>1</number>
-            </property>
-            <property name="maximum">
-             <double>10000.000000000000000</double>
-            </property>
-            <property name="value">
-             <double>300.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="1" colspan="4">
-           <widget class="QDoubleSpinBox" name="sBMeasurementError4">
-            <property name="toolTip">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the baseline-length dependent term of carrier-phase error standard deviation (option: &lt;span style=&quot; font-style:italic;&quot;&gt;stats-errphasebl&lt;/span&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-            <property name="suffix">
-             <string> m/100km</string>
-            </property>
-            <property name="decimals">
-             <number>3</number>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="3" colspan="2">
-           <widget class="QDoubleSpinBox" name="sBMeasurementError3">
-            <property name="toolTip">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the elevation dependent term of carrier-phase error standard deviation (option: &lt;span style=&quot; font-style:italic;&quot;&gt;stats-errphaseel&lt;/span&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-            <property name="suffix">
-             <string> m</string>
-            </property>
-            <property name="decimals">
-             <number>3</number>
-            </property>
-            <property name="maximum">
-             <double>100.000000000000000</double>
-            </property>
-            <property name="singleStep">
-             <double>0.001000000000000</double>
-            </property>
-            <property name="value">
-             <double>0.003000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="0">
-           <widget class="QLabel" name="label_3">
-            <property name="text">
-             <string>Carrier Phase Error: SNR / SNR max</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1" colspan="2">
-           <widget class="QDoubleSpinBox" name="sBMeasurementError2">
-            <property name="toolTip">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the base term of carrier-phase error standard deviation (option: &lt;span style=&quot; font-style:italic;&quot;&gt;stats-errphase&lt;/span&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-            <property name="suffix">
-             <string> m</string>
-            </property>
-            <property name="decimals">
-             <number>3</number>
-            </property>
-            <property name="maximum">
-             <double>100.000000000000000</double>
-            </property>
-            <property name="singleStep">
-             <double>0.001000000000000</double>
-            </property>
-            <property name="value">
-             <double>0.003000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="Label6">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="toolTip">
-             <string/>
-            </property>
-            <property name="text">
-             <string>Code/Carrier-Phase Error Ratio L1/L2/L5</string>
-            </property>
-           </widget>
-          </item>
-          <item row="8" column="0">
-           <widget class="QLabel" name="Label10">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="toolTip">
-             <string/>
-            </property>
-            <property name="text">
-             <string>Doppler Frequency (Hz)</string>
-            </property>
-           </widget>
-          </item>
-          <item row="7" column="0">
-           <widget class="QLabel" name="label_4">
-            <property name="text">
-             <string>Carrier Phase Error: Receiver Errors</string>
-            </property>
-           </widget>
-          </item>
-          <item row="7" column="1" colspan="2">
-           <widget class="QDoubleSpinBox" name="sBMeasurementErrorReceiver">
-            <property name="toolTip">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the receiver uncertainty dependent term of carrier-phase error standard deviation (option: &lt;span style=&quot; font-style:italic;&quot;&gt;stats-errrcv&lt;/span&gt;)&lt;/p&gt;&lt;p&gt;u-blox only!&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="1" colspan="2">
-           <widget class="QDoubleSpinBox" name="sBMeasurementErrorSNR">
-            <property name="toolTip">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the SNR dependent terms of carrier-phase error standard deviation (option: &lt;span style=&quot; font-style:italic;&quot;&gt;stats-errsnr&lt;/span&gt;)&lt;/p&gt;&lt;p&gt;e * 10^(0.1*(SNR_MAX - snr))&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="3" colspan="2">
-           <widget class="QDoubleSpinBox" name="sBMeasurementErrorSNR_Max">
-            <property name="toolTip">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the max component of the SNR dependent terms of carrier-phase error standard deviation (option: &lt;span style=&quot; font-style:italic;&quot;&gt;stats-snrmax&lt;/span&gt;)&lt;/p&gt;&lt;p&gt;e * 10^(0.1*(SNR_MAX - snr))&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-            <property name="suffix">
-             <string> dB</string>
             </property>
            </widget>
           </item>
          </layout>
         </widget>
        </item>
-       <item row="1" column="0" colspan="2">
+       <item row="1" column="0">
         <widget class="QGroupBox" name="GroupBox4">
-         <property name="toolTip">
-          <string/>
-         </property>
          <property name="title">
           <string>Process Noises (1-sigma/sqrt(s))</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_9">
           <item row="3" column="0">
            <widget class="QLabel" name="Label28">
-            <property name="toolTip">
-             <string/>
-            </property>
             <property name="text">
              <string>Zenith Tropospheric Delay</string>
             </property>
@@ -1875,9 +1590,6 @@
           </item>
           <item row="1" column="0">
            <widget class="QLabel" name="Label26">
-            <property name="toolTip">
-             <string/>
-            </property>
             <property name="text">
              <string>Carrier-Phase Bias</string>
             </property>
@@ -1885,9 +1597,6 @@
           </item>
           <item row="0" column="0">
            <widget class="QLabel" name="Label33">
-            <property name="toolTip">
-             <string/>
-            </property>
             <property name="text">
              <string>Receiver Accel Horiz/Vertical</string>
             </property>
@@ -1895,9 +1604,6 @@
           </item>
           <item row="2" column="0">
            <widget class="QLabel" name="Label27">
-            <property name="toolTip">
-             <string/>
-            </property>
             <property name="text">
              <string>Vertical Ionospheric Delay</string>
             </property>
@@ -1980,28 +1686,220 @@
          </layout>
         </widget>
        </item>
-       <item row="2" column="1">
-        <widget class="ScientificSpinBox" name="sBSatelliteClockStability">
-         <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the satellite clock stability (option: &lt;span style=&quot; font-style:italic;&quot;&gt;stats-clkstab&lt;/span&gt;) &lt;/p&gt;&lt;p&gt;The value is used for interpolation of base-station observables.&lt;/p&gt;&lt;p&gt;Unit: s/s&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       <item row="0" column="0">
+        <widget class="QGroupBox" name="GroupBox3">
+         <property name="title">
+          <string>Measurement Errors (1-sigma)</string>
          </property>
-         <property name="suffix">
-          <string> s/s</string>
-         </property>
-         <property name="minimum">
-          <double>-1.000000000000000</double>
-         </property>
-         <property name="maximum">
-          <double>1.000000000000000</double>
-         </property>
+         <layout class="QGridLayout" name="gridLayout_8">
+          <item row="8" column="1" colspan="2">
+           <widget class="QDoubleSpinBox" name="sBMeasurementError5">
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the standard deviation of Doppler errors (option: &lt;span style=&quot; font-style:italic;&quot;&gt;stats-errdoppler)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="suffix">
+             <string> Hz</string>
+            </property>
+            <property name="minimum">
+             <double>-10000.000000000000000</double>
+            </property>
+            <property name="maximum">
+             <double>10000.000000000000000</double>
+            </property>
+            <property name="value">
+             <double>1.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="4">
+           <widget class="QDoubleSpinBox" name="sBMeasurementErrorR5">
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the ratio of standard deviations of pseudorange errors to carrier-phase errors for L5 (option: &lt;span style=&quot; font-style:italic;&quot;&gt;stats-eratio5&lt;/span&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="decimals">
+             <number>1</number>
+            </property>
+            <property name="maximum">
+             <double>10000.000000000000000</double>
+            </property>
+            <property name="value">
+             <double>100.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="Label7">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="text">
+             <string>Carrier-Phase Error a+b / sin(El)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0">
+           <widget class="QLabel" name="Label16">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="text">
+             <string>Carrier-Phase Error/Baseline</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2" colspan="2">
+           <widget class="QDoubleSpinBox" name="sBMeasurementErrorR2">
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the ratio of standard deviations of pseudorange errors to carrier-phase errors for L2 (option: &lt;span style=&quot; font-style:italic;&quot;&gt;stats-eratio2&lt;/span&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="decimals">
+             <number>1</number>
+            </property>
+            <property name="maximum">
+             <double>10000.000000000000000</double>
+            </property>
+            <property name="value">
+             <double>300.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QDoubleSpinBox" name="sBMeasurementErrorR1">
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the ratio of standard deviations of pseudorange errors to carrier-phase errors for L1 (option: &lt;span style=&quot; font-style:italic;&quot;&gt;stats-eratio1&lt;/span&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="decimals">
+             <number>1</number>
+            </property>
+            <property name="maximum">
+             <double>10000.000000000000000</double>
+            </property>
+            <property name="value">
+             <double>300.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="1" colspan="4">
+           <widget class="QDoubleSpinBox" name="sBMeasurementError4">
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the baseline-length dependent term of carrier-phase error standard deviation (option: &lt;span style=&quot; font-style:italic;&quot;&gt;stats-errphasebl&lt;/span&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="suffix">
+             <string> m/10km</string>
+            </property>
+            <property name="decimals">
+             <number>3</number>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="3" colspan="2">
+           <widget class="QDoubleSpinBox" name="sBMeasurementError3">
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the elevation dependent term of carrier-phase error standard deviation (option: &lt;span style=&quot; font-style:italic;&quot;&gt;stats-errphaseel&lt;/span&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="suffix">
+             <string> m</string>
+            </property>
+            <property name="decimals">
+             <number>3</number>
+            </property>
+            <property name="maximum">
+             <double>100.000000000000000</double>
+            </property>
+            <property name="singleStep">
+             <double>0.001000000000000</double>
+            </property>
+            <property name="value">
+             <double>0.003000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="0">
+           <widget class="QLabel" name="label_3">
+            <property name="text">
+             <string>Carrier Phase Error: SNR / SNR max</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1" colspan="2">
+           <widget class="QDoubleSpinBox" name="sBMeasurementError2">
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the base term of carrier-phase error standard deviation (option: &lt;span style=&quot; font-style:italic;&quot;&gt;stats-errphase&lt;/span&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="suffix">
+             <string> m</string>
+            </property>
+            <property name="decimals">
+             <number>3</number>
+            </property>
+            <property name="maximum">
+             <double>100.000000000000000</double>
+            </property>
+            <property name="singleStep">
+             <double>0.001000000000000</double>
+            </property>
+            <property name="value">
+             <double>0.003000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="Label6">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="text">
+             <string>Code/Carrier-Phase Error Ratio L1/L2/L5</string>
+            </property>
+           </widget>
+          </item>
+          <item row="8" column="0">
+           <widget class="QLabel" name="Label10">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="text">
+             <string>Doppler Frequency</string>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="0">
+           <widget class="QLabel" name="label_4">
+            <property name="text">
+             <string>Carrier Phase Error: Receiver Errors</string>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="1" colspan="2">
+           <widget class="QDoubleSpinBox" name="sBMeasurementErrorReceiver">
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the receiver uncertainty dependent term of carrier-phase error standard deviation (option: &lt;span style=&quot; font-style:italic;&quot;&gt;stats-errrcv&lt;/span&gt;)&lt;/p&gt;&lt;p&gt;u-blox only!&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="1" colspan="2">
+           <widget class="QDoubleSpinBox" name="sBMeasurementErrorSNR">
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the SNR dependent terms of carrier-phase error standard deviation (option: &lt;span style=&quot; font-style:italic;&quot;&gt;stats-errsnr&lt;/span&gt;)&lt;/p&gt;&lt;p&gt;e * 10^(0.1*(SNR_MAX - snr))&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="3" colspan="2">
+           <widget class="QDoubleSpinBox" name="sBMeasurementErrorSNR_Max">
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the max component of the SNR dependent terms of carrier-phase error standard deviation (option: &lt;span style=&quot; font-style:italic;&quot;&gt;stats-snrmax&lt;/span&gt;)&lt;/p&gt;&lt;p&gt;e * 10^(0.1*(SNR_MAX - snr))&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="suffix">
+             <string> dB</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="TabSheet5">
-      <property name="toolTip">
-       <string/>
-      </property>
+     <widget class="QWidget" name="tabPosition">
       <attribute name="title">
        <string>&amp;Positions</string>
       </attribute>
@@ -2015,27 +1913,6 @@
           </sizepolicy>
          </property>
          <layout class="QGridLayout" name="gridLayout_12">
-          <item row="1" column="1">
-           <widget class="QPushButton" name="btnStationPositionView">
-            <property name="toolTip">
-             <string>Show station position file</string>
-            </property>
-            <property name="icon">
-             <iconset resource="rtknavi_qt.qrc">
-              <normaloff>:/buttons/doc</normaloff>:/buttons/doc</iconset>
-            </property>
-            <property name="flat">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLineEdit" name="lEStationPositionFile">
-            <property name="toolTip">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Input the station position file path to retrieve the position from the station list (option: &lt;span style=&quot; font-style:italic;&quot;&gt;file-staposfile&lt;/span&gt;). &lt;/p&gt;&lt;p&gt;The station position file is a text file which contains the multiple lines. Each line represents a record for a station. A record contains:&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;- Latitude (deg)&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;- Longitude (deg)&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;- Ellipsoidal height (m)&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;- Station ID&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;- Station name&lt;/span&gt;&lt;/p&gt;&lt;p&gt;separated by spaces. The line starting &amp;quot;%&amp;quot; is treated as the comment line. &lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;An example station position file is found at &amp;quot;data\stations.pos&amp;quot;.&lt;/p&gt;&lt;p&gt;SINEX station positions can be used as well. An sample SINEX file is found at &amp;quot;data\igs10P1565_wocov.snx&amp;quot;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="0">
            <widget class="QLabel" name="Label30">
             <property name="toolTip">
@@ -2046,13 +1923,10 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="2">
-           <widget class="QPushButton" name="btnStationPositionFile">
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="lEStationPositionFile">
             <property name="toolTip">
-             <string>Select station position file</string>
-            </property>
-            <property name="text">
-             <string>...</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Input the station position file path to retrieve the position from the station list (option: &lt;span style=&quot; font-style:italic;&quot;&gt;file-staposfile&lt;/span&gt;). &lt;/p&gt;&lt;p&gt;The station position file is a text file which contains the multiple lines. Each line represents a record for a station. A record contains:&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;- Latitude (deg)&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;- Longitude (deg)&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;- Ellipsoidal height (m)&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;- Station ID&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;- Station name&lt;/span&gt;&lt;/p&gt;&lt;p&gt;separated by spaces. The line starting &amp;quot;%&amp;quot; is treated as the comment line. &lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;An example station position file is found at &amp;quot;data\stations.pos&amp;quot;.&lt;/p&gt;&lt;p&gt;SINEX station positions can be used as well. An sample SINEX file is found at &amp;quot;data\igs10P1565_wocov.snx&amp;quot;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
            </widget>
           </item>
@@ -2061,34 +1935,30 @@
        </item>
        <item row="3" column="0">
         <widget class="QGroupBox" name="GroupRefAnt">
-         <property name="toolTip">
-          <string/>
-         </property>
          <property name="title">
           <string>Base Station</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_10">
-          <item row="2" column="0" colspan="2">
-           <widget class="QCheckBox" name="cBReferenceAntennaPcv">
+          <item row="5" column="6">
+           <widget class="QDoubleSpinBox" name="sBReferenceAntennaU">
             <property name="toolTip">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Specify base station antenna type and/or delta position&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the delta position in up direction of the rover antenna as offsets of ARP (antenna reference point) position with refer to the marker (option: &lt;span style=&quot; font-style:italic;&quot;&gt;ant2-antdelu&lt;/span&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
-            <property name="text">
-             <string>Antenna Type (*: Auto)</string>
+            <property name="suffix">
+             <string> m</string>
+            </property>
+            <property name="decimals">
+             <number>4</number>
+            </property>
+            <property name="minimum">
+             <double>-10000.000000000000000</double>
+            </property>
+            <property name="maximum">
+             <double>10000.000000000000000</double>
             </property>
            </widget>
           </item>
-          <item row="0" column="5">
-           <widget class="QCheckBox" name="cBInitRestart">
-            <property name="toolTip">
-             <string>Initialize by restart</string>
-            </property>
-            <property name="text">
-             <string>Init by Restart</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="6">
+          <item row="1" column="6">
            <widget class="QPushButton" name="btnReferencePosition">
             <property name="toolTip">
              <string>Select reference position</string>
@@ -2098,56 +1968,43 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="0">
-           <widget class="QLineEdit" name="lEReferencePosition1">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="toolTip">
-             <string/>
-            </property>
+          <item row="3" column="4">
+           <widget class="QLabel" name="lblReferenceAntennaD">
             <property name="text">
-             <string>0</string>
+             <string>Delta-E/N/U (m)</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="1" colspan="2">
-           <widget class="QLineEdit" name="lEReferencePosition2">
+          <item row="3" column="0" colspan="2">
+           <widget class="QCheckBox" name="cBReferenceAntennaPcv">
             <property name="toolTip">
-             <string>Base station position as specify by the format.</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Specify base station antenna type and/or delta position&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="text">
-             <string>0</string>
+             <string>Antenna Type (*: Auto)</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="3" colspan="4">
-           <widget class="QLineEdit" name="lEReferencePosition3">
+          <item row="5" column="4">
+           <widget class="QDoubleSpinBox" name="sBReferenceAntennaE">
             <property name="toolTip">
-             <string>Base station position as specify by the format.</string>
-            </property>
-            <property name="text">
-             <string>0</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="4">
-           <widget class="QSpinBox" name="sBMaxAveEp">
-            <property name="toolTip">
-             <string>Maximum averaging epochs</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the delta position in east direction of the rover antenna as offsets of ARP (antenna reference point) position with refer to the marker (option: &lt;span style=&quot; font-style:italic;&quot;&gt;ant2-antdele&lt;/span&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="suffix">
-             <string> epochs</string>
+             <string> m</string>
+            </property>
+            <property name="decimals">
+             <number>4</number>
+            </property>
+            <property name="minimum">
+             <double>-100000.000000000000000</double>
             </property>
             <property name="maximum">
-             <number>10000</number>
-            </property>
-            <property name="value">
-             <number>3600</number>
+             <double>1000000.000000000000000</double>
             </property>
            </widget>
           </item>
-          <item row="0" column="0">
+          <item row="1" column="0">
            <widget class="QComboBox" name="cBReferencePositionType">
             <property name="toolTip">
              <string>Select base station position format</string>
@@ -2179,33 +2036,7 @@
             </item>
            </widget>
           </item>
-          <item row="0" column="1" colspan="3">
-           <widget class="QLabel" name="lblMaxAveEp">
-            <property name="text">
-             <string>Max # Average</string>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="6">
-           <widget class="QDoubleSpinBox" name="sBReferenceAntennaU">
-            <property name="toolTip">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the delta position in up direction of the rover antenna as offsets of ARP (antenna reference point) position with refer to the marker (option: &lt;span style=&quot; font-style:italic;&quot;&gt;ant2-antdelu&lt;/span&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-            <property name="suffix">
-             <string> m</string>
-            </property>
-            <property name="decimals">
-             <number>4</number>
-            </property>
-            <property name="minimum">
-             <double>-10000.000000000000000</double>
-            </property>
-            <property name="maximum">
-             <double>10000.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="5">
+          <item row="5" column="5">
            <widget class="QDoubleSpinBox" name="sBReferenceAntennaN">
             <property name="toolTip">
              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the delta position in north direction of the rover antenna as offsets of ARP (antenna reference point) position with refer to the marker (option: &lt;span style=&quot; font-style:italic;&quot;&gt;ant2-antdeln&lt;/span&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -2224,39 +2055,89 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="4">
-           <widget class="QDoubleSpinBox" name="sBReferenceAntennaE">
-            <property name="toolTip">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the delta position in east direction of the rover antenna as offsets of ARP (antenna reference point) position with refer to the marker (option: &lt;span style=&quot; font-style:italic;&quot;&gt;ant2-antdele&lt;/span&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-            <property name="suffix">
-             <string> m</string>
-            </property>
-            <property name="decimals">
-             <number>4</number>
-            </property>
-            <property name="minimum">
-             <double>-100000.000000000000000</double>
-            </property>
-            <property name="maximum">
-             <double>1000000.000000000000000</double>
+          <item row="0" column="0">
+           <widget class="QLabel" name="lblMaxAveEp">
+            <property name="text">
+             <string>Max # Average</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="4">
-           <widget class="QLabel" name="lblReferenceAntennaD">
+          <item row="0" column="1">
+           <widget class="QSpinBox" name="sBMaxAveEp">
+            <property name="toolTip">
+             <string>Maximum averaging epochs</string>
+            </property>
+            <property name="suffix">
+             <string> epochs</string>
+            </property>
+            <property name="maximum">
+             <number>10000</number>
+            </property>
+            <property name="value">
+             <number>3600</number>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>Datum:</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="3">
+           <widget class="QCheckBox" name="cBInitRestart">
+            <property name="toolTip">
+             <string>Initialize by restart</string>
+            </property>
+            <property name="text">
+             <string>Init by Restart</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="3">
+           <widget class="QComboBox" name="cBDatumReference"/>
+          </item>
+          <item row="5" column="0" colspan="4">
+           <widget class="QComboBox" name="cBReferenceAntenna">
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select the type of the base station antenna (option: &lt;span style=&quot; font-style:italic;&quot;&gt;ant2-anttype&lt;/span&gt;).&lt;/p&gt;&lt;p&gt;To select the antenna type, set the &amp;quot;Receiver Antenna PCV File&amp;quot; path in &amp;quot;Files&amp;quot;. &lt;/p&gt;&lt;p&gt;If &amp;quot;*&amp;quot; is used, antenna type and antenna delta are recognized by the antenna information of RINEX OBS header.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="5" colspan="2">
+           <widget class="QLineEdit" name="lEReferencePosition3">
+            <property name="toolTip">
+             <string>Base station position as specify by the format.</string>
+            </property>
+            <property name="text">
+             <string>0</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="2" colspan="3">
+           <widget class="QLineEdit" name="lEReferencePosition2">
+            <property name="toolTip">
+             <string>Base station position as specify by the format.</string>
+            </property>
+            <property name="text">
+             <string>0</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" colspan="2">
+           <widget class="QLineEdit" name="lEReferencePosition1">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="toolTip">
              <string/>
             </property>
             <property name="text">
-             <string>Delta-E/N/U (m)</string>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="0" colspan="3">
-           <widget class="QComboBox" name="cBReferenceAntenna">
-            <property name="toolTip">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select the type of the base station antenna (option: &lt;span style=&quot; font-style:italic;&quot;&gt;ant2-anttype&lt;/span&gt;).&lt;/p&gt;&lt;p&gt;To select the antenna type, set the &amp;quot;Receiver Antenna PCV File&amp;quot; path in &amp;quot;Files&amp;quot;. &lt;/p&gt;&lt;p&gt;If &amp;quot;*&amp;quot; is used, antenna type and antenna delta are recognized by the antenna information of RINEX OBS header.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             <string>0</string>
             </property>
            </widget>
           </item>
@@ -2265,9 +2146,6 @@
        </item>
        <item row="1" column="0">
         <widget class="QGroupBox" name="GroupRovAnt">
-         <property name="toolTip">
-          <string/>
-         </property>
          <property name="title">
           <string>Rover</string>
          </property>
@@ -2352,9 +2230,6 @@
           </item>
           <item row="3" column="2" colspan="3">
            <widget class="QLabel" name="lblRoverAntennaD">
-            <property name="toolTip">
-             <string/>
-            </property>
             <property name="text">
              <string>Delta-E/N/U</string>
             </property>
@@ -2429,164 +2304,29 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="TabSheet7">
-      <property name="toolTip">
-       <string/>
-      </property>
+     <widget class="QWidget" name="tabFiles">
       <attribute name="title">
        <string>&amp;Files</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_6">
-       <item row="19" column="3" rowspan="2">
-        <widget class="QPushButton" name="btnOLFileView">
-         <property name="toolTip">
-          <string>Show BLQ file</string>
-         </property>
-         <property name="icon">
-          <iconset resource="rtknavi_qt.qrc">
-           <normaloff>:/buttons/doc</normaloff>:/buttons/doc</iconset>
-         </property>
-         <property name="flat">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="8" column="0" colspan="2">
-        <widget class="QLineEdit" name="lEDCBFile">
-         <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Input the file path of DCB correction for PPP in CODE format (option: &lt;span style=&quot; font-style:italic;&quot;&gt;file-dcbfile&lt;/span&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="3">
-        <widget class="QPushButton" name="btnGeoidDataFile">
-         <property name="toolTip">
-          <string>Select geoid data file</string>
-         </property>
+       <item row="21" column="0">
+        <widget class="QLabel" name="lblIonosphereFile">
          <property name="text">
-          <string>...</string>
+          <string>Ionosphere Data File</string>
          </property>
         </widget>
        </item>
-       <item row="0" column="0">
-        <widget class="QLabel" name="Label38">
-         <property name="toolTip">
-          <string/>
-         </property>
-         <property name="text">
-          <string>Satellite/Receiver Antenna PCV File ANTEX/NGS PCV</string>
-         </property>
-        </widget>
-       </item>
-       <item row="14" column="3">
-        <widget class="QPushButton" name="btnEOPFile">
-         <property name="toolTip">
-          <string>Select EOP data file</string>
-         </property>
-         <property name="text">
-          <string>...</string>
-         </property>
-        </widget>
-       </item>
-       <item row="8" column="3">
-        <widget class="QPushButton" name="btnDCBFile">
-         <property name="toolTip">
-          <string>Select DCB data file</string>
-         </property>
-         <property name="text">
-          <string>...</string>
-         </property>
-        </widget>
-       </item>
-       <item row="20" column="0">
-        <widget class="QLabel" name="Label34">
-         <property name="toolTip">
-          <string/>
-         </property>
-         <property name="text">
-          <string>Ocean Loading BLQ Format</string>
-         </property>
-        </widget>
-       </item>
-       <item row="6" column="3" rowspan="2">
-        <widget class="QPushButton" name="btnDCBView">
-         <property name="toolTip">
-          <string>Show DCB file</string>
-         </property>
-         <property name="icon">
-          <iconset resource="rtknavi_qt.qrc">
-           <normaloff>:/buttons/doc</normaloff>:/buttons/doc</iconset>
-         </property>
-         <property name="flat">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="0" colspan="2">
-        <widget class="QLineEdit" name="lEGeoidDataFile">
-         <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Input the file path of the geoid data file if selecting the external model as Geoid Model (option: &lt;span style=&quot; font-style:italic;&quot;&gt;file-geoidfile&lt;/span&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="3">
-        <widget class="QPushButton" name="btnSatellitePcvFile">
-         <property name="toolTip">
-          <string>Select satellite antenna PCV file</string>
-         </property>
-         <property name="text">
-          <string>...</string>
-         </property>
-        </widget>
-       </item>
-       <item row="13" column="0">
-        <widget class="QLabel" name="Label23">
-         <property name="toolTip">
-          <string/>
-         </property>
-         <property name="text">
-          <string>EOP Data File</string>
-         </property>
-        </widget>
-       </item>
-       <item row="21" column="0" colspan="2">
-        <widget class="QLineEdit" name="lEOLFile">
-         <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Input the file path of an OTL coefficients file (option: &lt;span style=&quot; font-style:italic;&quot;&gt;file-blqfile&lt;/span&gt;). &lt;/p&gt;&lt;p&gt;The format of the OTL coefficients file is BLQ format.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-        </widget>
-       </item>
-       <item row="14" column="0" colspan="2">
+       <item row="12" column="0" colspan="2">
         <widget class="QLineEdit" name="lEEOPFile">
          <property name="toolTip">
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Input the file path of an EOP data file (option: &lt;span style=&quot; font-style:italic;&quot;&gt;file-eopfile&lt;/span&gt;). &lt;/p&gt;&lt;p&gt;The format of the EOP data file shall be IGS ERP format version 2. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
         </widget>
        </item>
-       <item row="25" column="3">
-        <widget class="QPushButton" name="btnLocalDirectory">
-         <property name="toolTip">
-          <string>Select local directory</string>
-         </property>
+       <item row="0" column="0">
+        <widget class="QLabel" name="Label38">
          <property name="text">
-          <string>...</string>
-         </property>
-        </widget>
-       </item>
-       <item row="24" column="0">
-        <widget class="QLabel" name="Label31">
-         <property name="toolTip">
-          <string/>
-         </property>
-         <property name="text">
-          <string>FTP/HTTP Local Directory</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0" colspan="2">
-        <widget class="QLineEdit" name="lEAntennaPcvFile">
-         <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If you apply the receiver antenna phase center offset and PCV correction, input ANTEX or NGS type antenna parameters file path (option: &lt;span style=&quot; font-style:italic;&quot;&gt;file-rcvantfile&lt;/span&gt;).&lt;/p&gt;&lt;p&gt;An example of the antenna parameter file is found at &amp;quot;data\igs08.atx&amp;quot; or &amp;quot;data\ngs_abs.pcv&amp;quot;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          <string>Satellite/Receiver Antenna PCV File ANTEX/NGS PCV</string>
          </property>
         </widget>
        </item>
@@ -2597,104 +2337,38 @@
          </property>
         </widget>
        </item>
-       <item row="0" column="3">
-        <widget class="QPushButton" name="btnAntennaPcvView">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="toolTip">
-          <string>Show receiverantenna PCV file</string>
-         </property>
-         <property name="icon">
-          <iconset resource="rtknavi_qt.qrc">
-           <normaloff>:/buttons/doc</normaloff>:/buttons/doc</iconset>
-         </property>
-         <property name="flat">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="25" column="0" colspan="2">
+       <item row="24" column="0" colspan="2">
         <widget class="QLineEdit" name="lELocalDirectory">
          <property name="toolTip">
           <string>Local directory for downloaded data</string>
          </property>
         </widget>
        </item>
-       <item row="21" column="3">
-        <widget class="QPushButton" name="btnOLFile">
-         <property name="toolTip">
-          <string>Select OTL file</string>
-         </property>
-         <property name="text">
-          <string>...</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="3">
-        <widget class="QPushButton" name="btnAntennaPcvFile">
-         <property name="toolTip">
-          <string>Select receiver antenna PCV file</string>
-         </property>
-         <property name="text">
-          <string>...</string>
-         </property>
-        </widget>
-       </item>
-       <item row="12" column="3" rowspan="2">
-        <widget class="QPushButton" name="btnEOPView">
-         <property name="toolTip">
-          <string>Show EOP file</string>
-         </property>
-         <property name="icon">
-          <iconset resource="rtknavi_qt.qrc">
-           <normaloff>:/buttons/doc</normaloff>:/buttons/doc</iconset>
-         </property>
-         <property name="flat">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="0">
-        <widget class="QLabel" name="Label48">
-         <property name="toolTip">
-          <string/>
-         </property>
-         <property name="text">
-          <string>Geoid Data File</string>
-         </property>
-        </widget>
-       </item>
-       <item row="7" column="0">
+       <item row="6" column="0">
         <widget class="QLabel" name="Label1">
-         <property name="toolTip">
-          <string/>
-         </property>
          <property name="text">
           <string>DCB Data File</string>
          </property>
         </widget>
        </item>
-       <item row="0" column="1">
-        <widget class="QPushButton" name="btnSatellitePcvView">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
+       <item row="5" column="0" colspan="2">
+        <widget class="QLineEdit" name="lEGeoidDataFile">
          <property name="toolTip">
-          <string>Show satellite PCV file</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Input the file path of the geoid data file if selecting the external model as Geoid Model (option: &lt;span style=&quot; font-style:italic;&quot;&gt;file-geoidfile&lt;/span&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
-         <property name="icon">
-          <iconset resource="rtknavi_qt.qrc">
-           <normaloff>:/buttons/doc</normaloff>:/buttons/doc</iconset>
+        </widget>
+       </item>
+       <item row="7" column="0" colspan="2">
+        <widget class="QLineEdit" name="lEDCBFile">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Input the file path of DCB correction for PPP in CODE format (option: &lt;span style=&quot; font-style:italic;&quot;&gt;file-dcbfile&lt;/span&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
-         <property name="flat">
-          <bool>true</bool>
+        </widget>
+       </item>
+       <item row="11" column="0">
+        <widget class="QLabel" name="Label23">
+         <property name="text">
+          <string>EOP Data File</string>
          </property>
         </widget>
        </item>
@@ -2711,9 +2385,47 @@
          </property>
         </spacer>
        </item>
+       <item row="18" column="0" colspan="2">
+        <widget class="QLineEdit" name="lEBLQFile">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Input the file path of an OTL coefficients file (option: &lt;span style=&quot; font-style:italic;&quot;&gt;file-blqfile&lt;/span&gt;). &lt;/p&gt;&lt;p&gt;The format of the OTL coefficients file is BLQ format.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+        </widget>
+       </item>
+       <item row="17" column="0">
+        <widget class="QLabel" name="Label34">
+         <property name="text">
+          <string>Ocean Loading BLQ Format</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0" colspan="2">
+        <widget class="QLineEdit" name="lEAntennaPcvFile">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If you apply the receiver antenna phase center offset and PCV correction, input ANTEX or NGS type antenna parameters file path (option: &lt;span style=&quot; font-style:italic;&quot;&gt;file-rcvantfile&lt;/span&gt;).&lt;/p&gt;&lt;p&gt;An example of the antenna parameter file is found at &amp;quot;data\igs08.atx&amp;quot; or &amp;quot;data\ngs_abs.pcv&amp;quot;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+        </widget>
+       </item>
+       <item row="23" column="0">
+        <widget class="QLabel" name="lblLocalDirectory">
+         <property name="text">
+          <string>FTP/HTTP Local Directory</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="Label48">
+         <property name="text">
+          <string>Geoid Data File</string>
+         </property>
+        </widget>
+       </item>
+       <item row="22" column="0">
+        <widget class="QLineEdit" name="lEIonosphereFile"/>
+       </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="TabSheet8">
+     <widget class="QWidget" name="tabMiscNavi">
       <property name="toolTip">
        <string/>
       </property>
@@ -2895,9 +2607,6 @@
        </item>
        <item row="14" column="0">
         <widget class="QLabel" name="Label43">
-         <property name="toolTip">
-          <string/>
-         </property>
          <property name="text">
           <string>Layout</string>
          </property>
@@ -2942,11 +2651,8 @@
            </disabled>
           </palette>
          </property>
-         <property name="toolTip">
-          <string/>
-         </property>
          <property name="text">
-          <string>Panel Font:</string>
+          <string>Panel Font</string>
          </property>
         </widget>
        </item>
@@ -3005,9 +2711,6 @@
            </disabled>
           </palette>
          </property>
-         <property name="toolTip">
-          <string/>
-         </property>
          <property name="text">
           <string>Solution Font</string>
          </property>
@@ -3055,9 +2758,6 @@
        </item>
        <item row="3" column="0">
         <widget class="QLabel" name="Label44">
-         <property name="toolTip">
-          <string/>
-         </property>
          <property name="text">
           <string>Timeout / Reconnect Interval</string>
          </property>
@@ -3065,9 +2765,6 @@
        </item>
        <item row="1" column="0">
         <widget class="QLabel" name="Label19">
-         <property name="toolTip">
-          <string/>
-         </property>
          <property name="text">
           <string>Process Cycle / Buffer Size</string>
          </property>
@@ -3075,9 +2772,6 @@
        </item>
        <item row="5" column="0">
         <widget class="QLabel" name="Label46">
-         <property name="toolTip">
-          <string/>
-         </property>
          <property name="text">
           <string>NMEA Cycle / File Swap Margin</string>
          </property>
@@ -3085,9 +2779,6 @@
        </item>
        <item row="7" column="0">
         <widget class="QLabel" name="Label41">
-         <property name="toolTip">
-          <string/>
-         </property>
          <property name="text">
           <string>Solution Buffer/ Log Size</string>
          </property>
@@ -3095,9 +2786,6 @@
        </item>
        <item row="8" column="0">
         <widget class="QLabel" name="Label42">
-         <property name="toolTip">
-          <string/>
-         </property>
          <property name="text">
           <string>Navigation Message Selection</string>
          </property>
@@ -3105,9 +2793,6 @@
        </item>
        <item row="10" column="0">
         <widget class="QLabel" name="Label5">
-         <property name="toolTip">
-          <string/>
-         </property>
          <property name="text">
           <string>SBAS Sat Selection (0: all) / Monitor Port</string>
          </property>
@@ -3115,11 +2800,223 @@
        </item>
        <item row="11" column="0">
         <widget class="QLabel" name="Label45">
-         <property name="toolTip">
-          <string/>
-         </property>
          <property name="text">
           <string>HTTP / NTRIP Proxy</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabMiscPost">
+      <attribute name="title">
+       <string>&amp;Misc</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_15">
+       <item row="8" column="2">
+        <widget class="QLabel" name="lblRovers">
+         <property name="text">
+          <string>Rovers</string>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="3">
+        <widget class="QPlainTextEdit" name="tEBaseList">
+         <property name="plainText">
+          <string>base</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="2" colspan="2">
+        <widget class="QLineEdit" name="lERnxOptions1">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Specify RINEX read options for rover RINEX observation data as follows (option: &lt;span style=&quot; font-style:italic;&quot;&gt;misc-rnxopt1&lt;/span&gt;). &lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Multiple options can be input separated by spaces.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;-GLss[=+n.nn]: select GPS signal ss&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;-RLss[=+n.nn]: select GLO signal ss&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;-ELss[=+n.nn]: select GAL signal ss&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;-JLss[=+n.nn]: select QZS signal ss&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;-CLss[=+n.nn]: select BDS signal ss&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;-SLss[=+n.nn]: select SBS signal ss&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;ss : signal id (refer Appendix D.3 of RTKLIB documentation)&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;=+n.nn: phase shift +n.nn (cycle) to be add to carrier-phase observables&lt;/span&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Without the option and multiple signals in a frequency, RTKLIB select a signal for a frequency according to the default priorities of signals. Refer to Appendix D.4 Default Priorities of Multiple Signals of the documentation.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="maxLength">
+          <number>256</number>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="2" colspan="2">
+        <widget class="QLineEdit" name="lEPPPOptions">
+         <property name="toolTip">
+          <string>Additional options for PPP processing</string>
+         </property>
+         <property name="maxLength">
+          <number>256</number>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0">
+        <widget class="QLabel" name="lblRinexOptionsBase">
+         <property name="text">
+          <string>RINEX Options (Base)</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="lblRinexOptionsRover">
+         <property name="text">
+          <string>RINEX Options (Rover)</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0" colspan="3">
+        <widget class="QLabel" name="lblDGPSCorrection">
+         <property name="text">
+          <string>DGPS/DGNSS Corrections</string>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="0">
+        <widget class="QLabel" name="lblStationList">
+         <property name="text">
+          <string>Station ID List</string>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="2">
+        <widget class="QPlainTextEdit" name="tERoverList">
+         <property name="plainText">
+          <string>rover</string>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="3">
+        <widget class="QLabel" name="lblBaseStations">
+         <property name="text">
+          <string>Base Stations</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="2" colspan="2">
+        <widget class="QLineEdit" name="lERnxOptions2">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Specify RINEX read options for base-station RINEX observation data (option: &lt;span style=&quot; font-style:italic;&quot;&gt;misc-rnxopt2&lt;/span&gt;).&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Multiple options can be input separated by spaces.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;-GLss[=+n.nn]: select GPS signal ss&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;-RLss[=+n.nn]: select GLO signal ss&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;-ELss[=+n.nn]: select GAL signal ss&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;-JLss[=+n.nn]: select QZS signal ss&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;-CLss[=+n.nn]: select BDS signal ss&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;-SLss[=+n.nn]: select SBS signal ss&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;ss : signal id (refer Appendix D.3 of RTKLIB documentation)&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;=+n.nn: phase shift +n.nn (cycle) to be add to carrier-phase observables&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Without the option and multiple signals in a frequency, RTKLIB select a signal for a frequency according to the default priorities of signals. Refer to Appendix D.4 Default Priorities of Multiple Signals of the documentation.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="maxLength">
+          <number>256</number>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="0">
+        <widget class="QFrame" name="frame">
+         <property name="frameShape">
+          <enum>QFrame::Box</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Sunken</enum>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_14">
+          <item row="0" column="1">
+           <widget class="QLabel" name="Label47">
+            <property name="text">
+             <string>:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QLabel" name="Label62">
+            <property name="text">
+             <string>Keywords in File Path</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QPushButton" name="btnHelp">
+            <property name="toolTip">
+             <string>Show placeholder keys</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../icon/resources.qrc">
+              <normaloff>:/buttons/key</normaloff>:/buttons/key</iconset>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2">
+           <widget class="QLabel" name="Label65">
+            <property name="toolTip">
+             <string/>
+            </property>
+            <property name="text">
+             <string>Comment in List</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="Label50">
+            <property name="text">
+             <string>#..:</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="6" column="0">
+        <widget class="QLabel" name="lblPPPOptions">
+         <property name="text">
+          <string>PPP Options</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="3">
+        <widget class="QComboBox" name="cbDGPS">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select source for differential GNSS data&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <item>
+          <property name="text">
+           <string>SBAS</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>RTCM</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="0" column="0" colspan="3">
+        <widget class="QLabel" name="lblInterpolationBaseStation">
+         <property name="text">
+          <string>Time Interpolation of Base Station Data</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="3">
+        <widget class="QComboBox" name="cBIntputReferenceObservation">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select ON to enable time interpolation of base station data (opotion: &lt;span style=&quot; font-style:italic;&quot;&gt;misc-timeinterp&lt;/span&gt;). &lt;/p&gt;&lt;p&gt;&lt;br/&gt;If selecting ON, the base station data are linearly interpolated to the rover epoch and DD (double- difference) is made with them. If not checked, nearest epoch of base station data is used for DD.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <item>
+          <property name="text">
+           <string>OFF</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>ON</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="3" column="0" colspan="2">
+        <widget class="QLabel" name="lblSbasSatellties">
+         <property name="text">
+          <string>SBAS Satellite Selection (0: All) </string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="2" colspan="2">
+        <widget class="QLineEdit" name="lESbasSat">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If SBAS DGPS correction enabled, input SBAS satellite PRN number to be used (option: &lt;span style=&quot; font-style:italic;&quot;&gt;misc-sbasatsel&lt;/span&gt;). &lt;/p&gt;&lt;p&gt;If you input 0, all available SBAS satellites are used.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="text">
+          <string>0</string>
          </property>
         </widget>
        </item>
@@ -3130,6 +3027,18 @@
    <item>
     <widget class="QWidget" name="widget" native="true">
      <layout class="QHBoxLayout" name="horizontalLayout">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
       <item>
        <widget class="QPushButton" name="btnLoad">
         <property name="toolTip">
@@ -3151,28 +3060,9 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="btnOk">
-        <property name="toolTip">
-         <string/>
-        </property>
-        <property name="text">
-         <string>&amp;OK</string>
-        </property>
-        <property name="autoDefault">
-         <bool>true</bool>
-        </property>
-        <property name="default">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="btnCancel">
-        <property name="toolTip">
-         <string/>
-        </property>
-        <property name="text">
-         <string>&amp;Cancel</string>
+       <widget class="QDialogButtonBox" name="buttonBox">
+        <property name="standardButtons">
+         <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
         </property>
        </widget>
       </item>
@@ -3189,8 +3079,6 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>btnOk</tabstop>
-  <tabstop>btnCancel</tabstop>
   <tabstop>tWOptions</tabstop>
   <tabstop>cBAmbiguityResolutionGPS</tabstop>
   <tabstop>cBAmbiguityResolutionGLO</tabstop>
@@ -3240,8 +3128,6 @@
   <tabstop>sBRoverAntennaN</tabstop>
   <tabstop>sBRoverAntennaU</tabstop>
   <tabstop>cBReferencePositionType</tabstop>
-  <tabstop>sBMaxAveEp</tabstop>
-  <tabstop>cBInitRestart</tabstop>
   <tabstop>btnReferencePosition</tabstop>
   <tabstop>lEReferencePosition1</tabstop>
   <tabstop>lEReferencePosition2</tabstop>
@@ -3251,21 +3137,10 @@
   <tabstop>sBReferenceAntennaE</tabstop>
   <tabstop>sBReferenceAntennaN</tabstop>
   <tabstop>sBReferenceAntennaU</tabstop>
-  <tabstop>lEStationPositionFile</tabstop>
-  <tabstop>btnStationPositionView</tabstop>
-  <tabstop>btnStationPositionFile</tabstop>
-  <tabstop>btnSatellitePcvView</tabstop>
-  <tabstop>btnAntennaPcvView</tabstop>
   <tabstop>lESatellitePcvFile</tabstop>
   <tabstop>lEAntennaPcvFile</tabstop>
-  <tabstop>btnAntennaPcvFile</tabstop>
   <tabstop>lEGeoidDataFile</tabstop>
-  <tabstop>btnGeoidDataFile</tabstop>
-  <tabstop>btnDCBView</tabstop>
-  <tabstop>btnEOPView</tabstop>
-  <tabstop>btnOLFileView</tabstop>
   <tabstop>lELocalDirectory</tabstop>
-  <tabstop>btnLocalDirectory</tabstop>
   <tabstop>sBServerCycle</tabstop>
   <tabstop>sBServerBufferSize</tabstop>
   <tabstop>sBTimeoutTime</tabstop>
@@ -3282,7 +3157,7 @@
   <tabstop>btnSave</tabstop>
  </tabstops>
  <resources>
-  <include location="rtknavi_qt.qrc"/>
+  <include location="../icon/resources.qrc"/>
  </resources>
  <connections/>
 </ui>

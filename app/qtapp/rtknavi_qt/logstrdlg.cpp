@@ -29,15 +29,23 @@ LogStrDialog::LogStrDialog(QWidget *parent)
     lEFilePath2->setCompleter(fileCompleter);
     lEFilePath3->setCompleter(fileCompleter);
 
-    connect(btnCancel, &QPushButton::clicked, this, &LogStrDialog::reject);
-    connect(btnOk, &QPushButton::clicked, this, &LogStrDialog::btnOkClicked);
-    connect(btnFile1, &QPushButton::clicked, this, &LogStrDialog::btnFile1Clicked);
-    connect(btnFile2, &QPushButton::clicked, this, &LogStrDialog::btnFile2Clicked);
-    connect(btnFile3, &QPushButton::clicked, this, &LogStrDialog::btnFile3Clicked);
-    connect(btnKey, &QPushButton::clicked, this, &LogStrDialog::btnKeyClicked);
-    connect(btnStream1, &QPushButton::clicked, this, &LogStrDialog::btnStream1Clicked);
-    connect(btnStream2, &QPushButton::clicked, this, &LogStrDialog::btnStream2Clicked);
-    connect(btnStream3, &QPushButton::clicked, this, &LogStrDialog::btnStream3Clicked);
+    // line edit actions
+    QAction *aclEFilePath1Select = lEFilePath1->addAction(QIcon(":/buttons/folder"), QLineEdit::TrailingPosition);
+    aclEFilePath1Select->setToolTip(tr("Select File"));
+    QAction *aclEFilePath2Select = lEFilePath2->addAction(QIcon(":/buttons/folder"), QLineEdit::TrailingPosition);
+    aclEFilePath2Select->setToolTip(tr("Select File"));
+    QAction *aclEFilePath3Select = lEFilePath3->addAction(QIcon(":/buttons/folder"), QLineEdit::TrailingPosition);
+    aclEFilePath3Select->setToolTip(tr("Select File"));
+
+    connect(buttonBox, &QDialogButtonBox::accepted, this, &LogStrDialog::saveClose);
+    connect(buttonBox, &QDialogButtonBox::rejected, this, &LogStrDialog::reject);
+    connect(aclEFilePath1Select, &QAction::triggered, this, &LogStrDialog::selectFile1);
+    connect(aclEFilePath2Select, &QAction::triggered, this, &LogStrDialog::selectFile2);
+    connect(aclEFilePath3Select, &QAction::triggered, this, &LogStrDialog::selectFile3);
+    connect(btnKey, &QPushButton::clicked, this, &LogStrDialog::showKeyDialog);
+    connect(btnStream1, &QPushButton::clicked, this, &LogStrDialog::showStreamOptions1);
+    connect(btnStream2, &QPushButton::clicked, this, &LogStrDialog::showStreamOptions2);
+    connect(btnStream3, &QPushButton::clicked, this, &LogStrDialog::showStreamOptions3);
     connect(cBStream1, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &LogStrDialog::updateEnable);
     connect(cBStream2, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &LogStrDialog::updateEnable);
     connect(cBStream3, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &LogStrDialog::updateEnable);
@@ -67,7 +75,7 @@ void LogStrDialog::showEvent(QShowEvent *event)
 	updateEnable();
 }
 //---------------------------------------------------------------------------
-void LogStrDialog::btnOkClicked()
+void LogStrDialog::saveClose()
 {
     streamEnabled[0] = cBStream1C->isChecked();
     streamEnabled[1] = cBStream2C->isChecked();
@@ -84,56 +92,56 @@ void LogStrDialog::btnOkClicked()
     accept();
 }
 //---------------------------------------------------------------------------
-void LogStrDialog::btnFile1Clicked()
+void LogStrDialog::selectFile1()
 {
     lEFilePath1->setText(QDir::toNativeSeparators(QFileDialog::getSaveFileName(this, tr("Open..."), lEFilePath1->text())));
 }
 //---------------------------------------------------------------------------
-void LogStrDialog::btnFile2Clicked()
+void LogStrDialog::selectFile2()
 {
     lEFilePath2->setText(QDir::toNativeSeparators(QFileDialog::getSaveFileName(this, tr("Open..."), lEFilePath2->text())));
 }
 //---------------------------------------------------------------------------
-void LogStrDialog::btnFile3Clicked()
+void LogStrDialog::selectFile3()
 {
     lEFilePath3->setText(QDir::toNativeSeparators(QFileDialog::getSaveFileName(this, tr("Open..."), lEFilePath3->text())));
 }
 //---------------------------------------------------------------------------
-void LogStrDialog::btnKeyClicked()
+void LogStrDialog::showKeyDialog()
 {
     keyDialog->exec();
 }
 //---------------------------------------------------------------------------
-void LogStrDialog::btnStream1Clicked()
+void LogStrDialog::showStreamOptions1()
 {
     switch (cBStream1->currentIndex()) {
-        case 0: serialOptions(0, 0); break;
-        case 1: tcpOptions(0, 1); break;
-        case 2: tcpOptions(0, 0); break;
-        case 3: tcpOptions(0, 2); break;
-        case 4: tcpOptions(0, 4); break;
+        case 0: showSerialOptions(0, 0); break;
+        case 1: showTcpOptions(0, 1); break;
+        case 2: showTcpOptions(0, 0); break;
+        case 3: showTcpOptions(0, 2); break;
+        case 4: showTcpOptions(0, 4); break;
     }
 }
 //---------------------------------------------------------------------------
-void LogStrDialog::btnStream2Clicked()
+void LogStrDialog::showStreamOptions2()
 {
     switch (cBStream2->currentIndex()) {
-        case 0: serialOptions(1, 0); break;
-        case 1: tcpOptions(1, 1); break;
-        case 2: tcpOptions(1, 0); break;
-        case 3: tcpOptions(1, 2); break;
-        case 4: tcpOptions(0, 4); break;
+        case 0: showSerialOptions(1, 0); break;
+        case 1: showTcpOptions(1, 1); break;
+        case 2: showTcpOptions(1, 0); break;
+        case 3: showTcpOptions(1, 2); break;
+        case 4: showTcpOptions(0, 4); break;
 	}
 }
 //---------------------------------------------------------------------------
-void LogStrDialog::btnStream3Clicked()
+void LogStrDialog::showStreamOptions3()
 {
     switch (cBStream3->currentIndex()) {
-        case 0: serialOptions(2, 0); break;
-        case 1: tcpOptions(2, 1); break;
-        case 2: tcpOptions(2, 0); break;
-        case 3: tcpOptions(2, 2); break;
-    case 4: tcpOptions(0, 4); break;
+        case 0: showSerialOptions(2, 0); break;
+        case 1: showTcpOptions(2, 1); break;
+        case 2: showTcpOptions(2, 0); break;
+        case 3: showTcpOptions(2, 2); break;
+    case 4: showTcpOptions(0, 4); break;
     }
 }
 //---------------------------------------------------------------------------
@@ -155,30 +163,29 @@ QString LogStrDialog::setFilePath(const QString &p)
 	return path;
 }
 //---------------------------------------------------------------------------
-void LogStrDialog::serialOptions(int index, int opt)
+void LogStrDialog::showSerialOptions(int index, int opt)
 {
-    serialOptDialog->path = paths[index][0];
-    serialOptDialog->options = opt;
+    serialOptDialog->setPath(paths[index][0]);
+    serialOptDialog->setOptions(opt);
 
     serialOptDialog->exec();
     if (serialOptDialog->result() != QDialog::Accepted) return;
 
-    paths[index][0] = serialOptDialog->path;
+    paths[index][0] = serialOptDialog->getPath();
 }
 //---------------------------------------------------------------------------
-void LogStrDialog::tcpOptions(int index, int opt)
+void LogStrDialog::showTcpOptions(int index, int opt)
 {
-    tcpOptDialog->path = paths[index][1];
-    tcpOptDialog->showOptions = opt;
-    for (int i = 0; i < 10; i++) {
-        tcpOptDialog->history[i] = history[i];
-	}
+    tcpOptDialog->setPath(paths[index][1]);
+    tcpOptDialog->setOptions(opt);
+    tcpOptDialog->setHistory(history, 10);
+
     tcpOptDialog->exec();
     if (tcpOptDialog->result() != QDialog::Accepted) return;
 
-    paths[index][1] = tcpOptDialog->path;
+    paths[index][1] = tcpOptDialog->getPath();
     for (int i = 0; i < 10; i++) {
-        history[i] = tcpOptDialog->history[i];
+        history[i] = tcpOptDialog->getHistory()[i];
 	}
 }
 //---------------------------------------------------------------------------
@@ -197,15 +204,11 @@ void LogStrDialog::updateEnable()
     lEFilePath1->setEnabled(cBStream1C->isChecked() && cBStream1->currentIndex() == 5);
     lEFilePath2->setEnabled(cBStream2C->isChecked() && cBStream2->currentIndex() == 5);
     lEFilePath3->setEnabled(cBStream3C->isChecked() && cBStream3->currentIndex() == 5);
-    btnFile1->setEnabled(cBStream1C->isChecked() && cBStream1->currentIndex() == 5);
-    btnFile2->setEnabled(cBStream2C->isChecked() && cBStream2->currentIndex() == 5);
-    btnFile3->setEnabled(cBStream3C->isChecked() && cBStream3->currentIndex() == 5);
     lblSwapInterval->setEnabled(ena);
     lblH->setEnabled(ena);
     lblF1->setEnabled(ena);
     cBTimeTag->setEnabled(ena);
     cBSwapInterval->setEnabled(ena);
     btnKey->setEnabled(ena);
-    cBOutputEvent->setEnabled(lEFilePath1->isEnabled());
 }
 //---------------------------------------------------------------------------

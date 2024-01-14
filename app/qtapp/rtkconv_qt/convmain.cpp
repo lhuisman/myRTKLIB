@@ -51,7 +51,7 @@
 
 MainWindow *mainWindow;
 
-#define PRGNAME     "RTKCONV-QT"        // program name
+#define PRGNAME     "RTKConv-Qt"        // program name
 #define MAXHIST     20                  // max number of histories
 #define TSTARTMARGIN 60.0               // time margin for file name replacement
 #define TRACEFILE   "rtkconv_qt.trace"     // trace file
@@ -81,11 +81,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     setupUi(this);
     mainWindow = this;
-
-    comboTimeInterval->setValidator(new QDoubleValidator());
-
-    gtime_t time0 = { 0, 0 };
-    int i;
+    rinexTime.sec = rinexTime.time = 0;
 
     setlocale(LC_NUMERIC, "C");
     setWindowIcon(QIcon(":/icons/rtkconv_Icon.ico"));
@@ -98,94 +94,103 @@ MainWindow::MainWindow(QWidget *parent)
     convOptDialog = new ConvOptDialog(this);
     timeDialog = new TimeDialog(this);
     keyDialog = new KeyDialog(this);
-    aboutDialog = new AboutDialog(this);
+    aboutDialog = new AboutDialog(this, QPixmap(":/icons/rtkconv"), PRGNAME);
     startDialog = new StartDialog(this);
     viewer = new TextViewer(this);
 
     // populate format combo box
     cBFormat->clear();
     cBFormat->addItem(tr("Auto"));
-    for (i = 0; i <= MAXRCVFMT; i++)
+    for (int i = 0; i <= MAXRCVFMT; i++)
         cBFormat->addItem(formatstrs[i], i);
     cBFormat->addItem(formatstrs[STRFMT_RINEX], STRFMT_RINEX);
-
-    rinexTime = time0;
 
     QCompleter *fileCompleter = new QCompleter(this);
     QFileSystemModel *fileModel = new QFileSystemModel(fileCompleter);
     fileModel->setRootPath("");
     fileCompleter->setModel(fileModel);
-    outputFile1->setCompleter(fileCompleter);
-    outputFile2->setCompleter(fileCompleter);
-    outputFile3->setCompleter(fileCompleter);
-    outputFile4->setCompleter(fileCompleter);
-    outputFile5->setCompleter(fileCompleter);
-    outputFile6->setCompleter(fileCompleter);
-    outputFile7->setCompleter(fileCompleter);
-    outputFile8->setCompleter(fileCompleter);
-    outputFile9->setCompleter(fileCompleter);
-    inputFile->setCompleter(fileCompleter);
+    lEOutputFile1->setCompleter(fileCompleter);
+    lEOutputFile2->setCompleter(fileCompleter);
+    lEOutputFile3->setCompleter(fileCompleter);
+    lEOutputFile4->setCompleter(fileCompleter);
+    lEOutputFile5->setCompleter(fileCompleter);
+    lEOutputFile6->setCompleter(fileCompleter);
+    lEOutputFile7->setCompleter(fileCompleter);
+    lEOutputFile8->setCompleter(fileCompleter);
+    lEOutputFile9->setCompleter(fileCompleter);
+    cBInputFile->setCompleter(fileCompleter);
+
+    comboTimeInterval->setValidator(new QDoubleValidator());
 
     QCompleter *dirCompleter = new QCompleter(this);
     QFileSystemModel *dirModel = new QFileSystemModel(dirCompleter);
     dirModel->setRootPath("");
     dirModel->setFilter(QDir::AllDirs | QDir::Drives | QDir::NoDotAndDotDot);
     dirCompleter->setModel(dirModel);
-    outputDirectory->setCompleter(dirCompleter);
+    lEOutputDirectory->setCompleter(dirCompleter);
 
-    btnAbort->setVisible(false);
-    
-    connect(btnPlot, &QPushButton::clicked, this, &MainWindow::showRtkPlot);
+    QAction *acOutputFileSelect[9], *acOutputFileView[9];
+    QLineEdit *lEOutputs[9] = {lEOutputFile1, lEOutputFile2, lEOutputFile3, lEOutputFile4,
+                               lEOutputFile5, lEOutputFile6, lEOutputFile7, lEOutputFile8, lEOutputFile9};
+    for (int i = 0; i < 9; i++) {
+        acOutputFileSelect[i] = lEOutputs[i]->addAction(QIcon(":/buttons/folder"), QLineEdit::TrailingPosition);
+        acOutputFileSelect[i]->setToolTip(tr("Select File"));
+        acOutputFileView[i] = lEOutputs[i]->addAction(QIcon(":/buttons/doc"), QLineEdit::TrailingPosition);
+        acOutputFileView[i]->setToolTip(tr("View File"));
+    }
+
+    connect(btnPlot, &QPushButton::clicked, this, &MainWindow::callRtkPlot);
     connect(btnConvert, &QPushButton::clicked, this, &MainWindow::convertFile);
-    connect(btnOptions, &QPushButton::clicked, this, &MainWindow::btnOptionsClicked);
+    connect(btnOptions, &QPushButton::clicked, this, &MainWindow::showOptions);
     connect(btnExit, &QPushButton::clicked, this, &MainWindow::close);
-    connect(btnAbout, &QPushButton::clicked, this, &MainWindow::btnAboutClicked);
-    connect(btnTimeStart, &QPushButton::clicked, this, &MainWindow::btnTimeStartClicked);
-    connect(btnTimeStop, &QPushButton::clicked, this, &MainWindow::btnTimeStopClicked);
-    connect(btnInputFile, &QPushButton::clicked, this, &MainWindow::btnInputFileClicked);
-    connect(btnInputFileView, &QPushButton::clicked, this, &MainWindow::btnInputFileViewClicked);
-    connect(btnOutputFile1, &QPushButton::clicked, this, &MainWindow::btnOutputFile1Clicked);
-    connect(btnOutputFile2, &QPushButton::clicked, this, &MainWindow::btnOutputFile2Clicked);
-    connect(btnOutputFile3, &QPushButton::clicked, this, &MainWindow::btnOutputFile3Clicked);
-    connect(btnOutputFile4, &QPushButton::clicked, this, &MainWindow::btnOutputFile4Clicked);
-    connect(btnOutputFile5, &QPushButton::clicked, this, &MainWindow::btnOutputFile5Clicked);
-    connect(btnOutputFile6, &QPushButton::clicked, this, &MainWindow::btnOutputFile6Clicked);
-    connect(btnOutputFile7, &QPushButton::clicked, this, &MainWindow::btnOutputFile7Clicked);
-    connect(btnOutputFile8, &QPushButton::clicked, this, &MainWindow::btnOutputFile8Clicked);
-    connect(btnOutputFile9, &QPushButton::clicked, this, &MainWindow::btnOutputFile9Clicked);
-    connect(btnOutputFileView1, &QPushButton::clicked, this, &MainWindow::btnOutputFileView1Clicked);
-    connect(btnOutputFileView2, &QPushButton::clicked, this, &MainWindow::btnOutputFileView2Clicked);
-    connect(btnOutputFileView3, &QPushButton::clicked, this, &MainWindow::btnOutputFileView3Clicked);
-    connect(btnOutputFileView4, &QPushButton::clicked, this, &MainWindow::btnOutputFileView4Clicked);
-    connect(btnOutputFileView5, &QPushButton::clicked, this, &MainWindow::btnOutputFileView5Clicked);
-    connect(btnOutputFileView6, &QPushButton::clicked, this, &MainWindow::btnOutputFileView6Clicked);
-    connect(btnOutputFileView7, &QPushButton::clicked, this, &MainWindow::btnOutputFileView7Clicked);
-    connect(btnOutputFileView8, &QPushButton::clicked, this, &MainWindow::btnOutputFileView8Clicked);
-    connect(btnOutputFileView9, &QPushButton::clicked, this, &MainWindow::btnOutputFileView9Clicked);
-    connect(btnAbort, &QCheckBox::clicked, this, &MainWindow::btnAbortClicked);
+    connect(btnAbout, &QPushButton::clicked, this, &MainWindow::showAboutDialog);
+    connect(btnTimeStart, &QPushButton::clicked, this, &MainWindow::showStartTimeDialog);
+    connect(btnTimeStop, &QPushButton::clicked, this, &MainWindow::showStopTimeDialog);
+    connect(btnInputFile, &QPushButton::clicked, this, &MainWindow::selectInputFile);
+    connect(btnInputFileView, &QPushButton::clicked, this, &MainWindow::viewInputFile);
+    connect(acOutputFileSelect[0], &QAction::triggered, this, &MainWindow::selectOutputFile1);
+    connect(acOutputFileSelect[1], &QAction::triggered, this, &MainWindow::selectOutputFile2);
+    connect(acOutputFileSelect[2], &QAction::triggered, this, &MainWindow::selectOutputFile3);
+    connect(acOutputFileSelect[3], &QAction::triggered, this, &MainWindow::selectOutputFile4);
+    connect(acOutputFileSelect[4], &QAction::triggered, this, &MainWindow::selectOutputFile5);
+    connect(acOutputFileSelect[5], &QAction::triggered, this, &MainWindow::selectOutputFile6);
+    connect(acOutputFileSelect[6], &QAction::triggered, this, &MainWindow::selectOutputFile7);
+    connect(acOutputFileSelect[7], &QAction::triggered, this, &MainWindow::selectOutputFile8);
+    connect(acOutputFileSelect[8], &QAction::triggered, this, &MainWindow::selectOutputFile9);
+    connect(acOutputFileView[0], &QAction::triggered, this, &MainWindow::viewOutputFile1);
+    connect(acOutputFileView[1], &QAction::triggered, this, &MainWindow::viewOutputFile2);
+    connect(acOutputFileView[2], &QAction::triggered, this, &MainWindow::viewOutputFile3);
+    connect(acOutputFileView[3], &QAction::triggered, this, &MainWindow::viewOutputFile4);
+    connect(acOutputFileView[4], &QAction::triggered, this, &MainWindow::viewOutputFile5);
+    connect(acOutputFileView[5], &QAction::triggered, this, &MainWindow::viewOutputFile6);
+    connect(acOutputFileView[6], &QAction::triggered, this, &MainWindow::viewOutputFile7);
+    connect(acOutputFileView[7], &QAction::triggered, this, &MainWindow::viewOutputFile8);
+    connect(acOutputFileView[8], &QAction::triggered, this, &MainWindow::viewOutputFile9);
+    connect(btnAbort, &QCheckBox::clicked, this, &MainWindow::abort);
     connect(cBTimeStart, &QCheckBox::clicked, this, &MainWindow::updateEnable);
     connect(cBTimeEnd, &QCheckBox::clicked, this, &MainWindow::updateEnable);
     connect(cBTimeInterval, &QCheckBox::clicked, this, &MainWindow::updateEnable);
     connect(cBTimeUnit, &QCheckBox::clicked, this, &MainWindow::updateEnable);
-    connect(outputDirectoryEnable, &QCheckBox::clicked, this, &MainWindow::outputDirrectoryEnableClicked);
-    connect(inputFile, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &MainWindow::inputFileChanged);
-    connect(inputFile, &QComboBox::editTextChanged, this, &MainWindow::inputFileChanged);
+    connect(cBOutputDirectoryEnable, &QCheckBox::clicked, this, &MainWindow::outputDirectoryEnableClicked);
+    connect(cBInputFile, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &MainWindow::inputFileChanged);
+    connect(cBInputFile, &QComboBox::editTextChanged, this, &MainWindow::inputFileChanged);
     connect(cBFormat, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &MainWindow::updateEnable);
-    connect(outputDirectory, &QLineEdit::editingFinished, this, &MainWindow::outputDirectoryChanged);
-    connect(btnOutputDirectory, &QPushButton::clicked, this, &MainWindow::btnOutputDirrectoryClicked);
-    connect(btnKey, &QPushButton::clicked, this, &MainWindow::btnKeyClicked);
-    connect(btnPost, &QPushButton::clicked, this, &MainWindow::btnPostClicked);
-    connect(outputFileEnable1, &QCheckBox::clicked, this, &MainWindow::updateEnable);
-    connect(outputFileEnable2, &QCheckBox::clicked, this, &MainWindow::updateEnable);
-    connect(outputFileEnable3, &QCheckBox::clicked, this, &MainWindow::updateEnable);
-    connect(outputFileEnable4, &QCheckBox::clicked, this, &MainWindow::updateEnable);
-    connect(outputFileEnable5, &QCheckBox::clicked, this, &MainWindow::updateEnable);
-    connect(outputFileEnable6, &QCheckBox::clicked, this, &MainWindow::updateEnable);
-    connect(outputFileEnable7, &QCheckBox::clicked, this, &MainWindow::updateEnable);
-    connect(outputFileEnable8, &QCheckBox::clicked, this, &MainWindow::updateEnable);
-    connect(outputFileEnable9, &QCheckBox::clicked, this, &MainWindow::updateEnable);
+    connect(lEOutputDirectory, &QLineEdit::editingFinished, this, &MainWindow::outputDirectoryChanged);
+    connect(btnOutputDirectory, &QPushButton::clicked, this, &MainWindow::selectOutputDirectory);
+    connect(btnKey, &QPushButton::clicked, this, &MainWindow::showKeyDialog);
+    connect(btnPost, &QPushButton::clicked, this, &MainWindow::callRtkPost);
+    connect(cBOutputFileEnable1, &QCheckBox::clicked, this, &MainWindow::updateEnable);
+    connect(cBOutputFileEnable2, &QCheckBox::clicked, this, &MainWindow::updateEnable);
+    connect(cBOutputFileEnable3, &QCheckBox::clicked, this, &MainWindow::updateEnable);
+    connect(cBOutputFileEnable4, &QCheckBox::clicked, this, &MainWindow::updateEnable);
+    connect(cBOutputFileEnable5, &QCheckBox::clicked, this, &MainWindow::updateEnable);
+    connect(cBOutputFileEnable6, &QCheckBox::clicked, this, &MainWindow::updateEnable);
+    connect(cBOutputFileEnable7, &QCheckBox::clicked, this, &MainWindow::updateEnable);
+    connect(cBOutputFileEnable8, &QCheckBox::clicked, this, &MainWindow::updateEnable);
+    connect(cBOutputFileEnable9, &QCheckBox::clicked, this, &MainWindow::updateEnable);
 
     setWindowTitle(QString(tr("%1 ver.%2 %3")).arg(PRGNAME).arg(VER_RTKLIB).arg(PATCH_LEVEL));
+    btnAbort->setVisible(false);
 }
 // callback on form show ----------------------------------------------------
 void MainWindow::showEvent(QShowEvent *event)
@@ -226,16 +231,17 @@ void MainWindow::closeEvent(QCloseEvent *)
 void MainWindow::setOutputFiles(const QString &infile)
 {
     QLineEdit *edit[] = {
-        outputFile1, outputFile2, outputFile3, outputFile4, outputFile5, outputFile6, outputFile7, outputFile8, outputFile9
+        lEOutputFile1, lEOutputFile2, lEOutputFile3, lEOutputFile4, lEOutputFile5, lEOutputFile6, lEOutputFile7, lEOutputFile8, lEOutputFile9
     };
-    QString formatText = cBFormat->currentText();
-    QString outputDirectory_Text = outputDirectory->text();
+    QDir outputDirectory(lEOutputDirectory->text());
     QString ofile[10];
 
-    if (outputDirectoryEnable->isChecked()) {
+    if (infile.isEmpty()) return;
+
+    if (cBOutputDirectoryEnable->isChecked()) {
         QFileInfo info(infile);
 
-        ofile[0] = outputDirectory_Text + QDir::separator() + info.fileName();
+        ofile[0] = outputDirectory.filePath(info.fileName());
     } else {
         ofile[0] = infile;
     }
@@ -244,7 +250,7 @@ void MainWindow::setOutputFiles(const QString &infile)
 
     if (!rinexFile) {
         QFileInfo info(ofile[0]);
-        ofile[0] = info.absolutePath() + QDir::separator() + info.baseName();
+        ofile[0] = info.absoluteDir().filePath(info.baseName());
         ofile[1] = ofile[0] + ".obs";
         ofile[2] = ofile[0] + ".nav";
         ofile[3] = ofile[0] + ".gnav";
@@ -294,8 +300,8 @@ void MainWindow::dropEvent(QDropEvent *event)
 
     QString file = QDir::toNativeSeparators(QUrl(event->mimeData()->text()).toLocalFile());
 
-    inputFile->setCurrentText(file);
-    setOutputFiles(inputFile->currentText());
+    cBInputFile->setCurrentText(file);
+    setOutputFiles(cBInputFile->currentText());
 }
 // add history --------------------------------------------------------------
 void MainWindow::addHistory(QComboBox *combo)
@@ -304,8 +310,8 @@ void MainWindow::addHistory(QComboBox *combo)
 
     if (history == "") return;
 
-    int i = combo->currentIndex();
-    if (i >= 0) combo->removeItem(i);
+    int idx = combo->currentIndex();
+    if (idx >= 0) combo->removeItem(idx);
 
     combo->insertItem(0, history);
     for (int i = combo->count() - 1; i >= MAXHIST; i--) combo->removeItem(i);
@@ -316,9 +322,7 @@ void MainWindow::addHistory(QComboBox *combo)
 void MainWindow::readHistory(QComboBox *combo, QSettings *ini, const QString &key)
 {
     QString item;
-    int i;
-
-    for (i = 0; i < 100; i++) {
+    for (int i = 0; i < 100; i++) {
         item = ini->value(QString("%1_%2").arg(key).arg(i, 3), "").toString();
         if (item != "" && combo->findText(item)==-1) combo->addItem(item);
     }
@@ -326,31 +330,29 @@ void MainWindow::readHistory(QComboBox *combo, QSettings *ini, const QString &ke
 // write history ------------------------------------------------------------
 void MainWindow::writeHistory(QSettings *ini, const QString &key, const QComboBox *combo)
 {
-    int i;
-
-    for (i = 0; i < combo->count(); i++)
+    for (int i = 0; i < combo->count(); i++)
         ini->setValue(QString("%1_%2").arg(key).arg(i, 3), combo->itemText(i));
 }
 // callback on button-plot --------------------------------------------------
-void MainWindow::showRtkPlot()
+void MainWindow::callRtkPlot()
 {
-    QString file1 = outputFile1->text();
-    QString file2 = outputFile2->text();
-    QString file3 = outputFile3->text();
-    QString file4 = outputFile4->text();
-    QString file5 = outputFile5->text();
-    QString file6 = outputFile6->text();
-    QString file7 = outputFile7->text();
-    QString file8 = outputFile8->text();
-    QString file[] = { file1, file2, file3, file4, file5, file6, file7, file8};
-    QString cmd1 = "rtkplot_qt", cmd2 = "..\\..\\..\\bin\\rtkplot_qt", cmd3 = "..\\rtkplot_qt\\rtkplot_qt";
+    int i, ena[8];
+    QString file1 = lEOutputFile1->text();
+    QString file2 = lEOutputFile2->text();
+    QString file3 = lEOutputFile3->text();
+    QString file4 = lEOutputFile4->text();
+    QString file5 = lEOutputFile5->text();
+    QString file6 = lEOutputFile6->text();
+    QString file7 = lEOutputFile7->text();
+    QString file8 = lEOutputFile8->text();
+    QString file[] = {file1, file2, file3, file4, file5, file6, file7, file8};
+    QCheckBox *cb[] = {
+        cBOutputFileEnable1, cBOutputFileEnable2, cBOutputFileEnable3, cBOutputFileEnable4, cBOutputFileEnable5, cBOutputFileEnable6, cBOutputFileEnable7, cBOutputFileEnable8
+    };
+    QString cmd[] = {"rtkplot_qt", "..\\..\\..\\bin\\rtkplot_qt", "..\\rtkplot_qt\\rtkplot_qt"};
     QStringList opts;
 
     opts << " -r";
-    QCheckBox *cb[] = {
-        outputFileEnable1, outputFileEnable2, outputFileEnable3, outputFileEnable4, outputFileEnable5, outputFileEnable6, outputFileEnable7, outputFileEnable8
-    };
-    int i, ena[8];
 
     for (i = 0; i < 8; i++) ena[i] = cb[i]->isEnabled() && cb[i]->isChecked();
 
@@ -359,197 +361,197 @@ void MainWindow::showRtkPlot()
 
     if (opts.size() == 1) return;
 
-    if (!execCommand(cmd1, opts) && !execCommand(cmd2, opts) && !execCommand(cmd3, opts))
+    if (!execCommand(cmd[0], opts) && !execCommand(cmd[1], opts) && !execCommand(cmd[2], opts))
         message->setText(tr("error : rtkplot_qt execution"));
 }
 // callback on button-post-proc ---------------------------------------------
-void MainWindow::btnPostClicked()
+void MainWindow::callRtkPost()
 {
-    QString cmd1 = commandPostExe, cmd2 = QString("..\\..\\..\\bin\\") + commandPostExe, cmd3 = QString("..\\rtkpost_qt\\") + commandPostExe;
+    QString cmd[] = {commandPostExe, QString("..\\..\\..\\bin\\") + commandPostExe, QString("..\\rtkpost_qt\\") + commandPostExe};
     QStringList opts;
 
-    if (!outputFileEnable1->isChecked()) return;
+    if (!cBOutputFileEnable1->isChecked()) return;
 
-    opts << " -r \"" + outputFile1->text() + "\"";
+    opts << " -r \"" + lEOutputFile1->text() + "\"";
     opts << " -n \"\" -n \"\"";
 
-    if (outputFileEnable9->isChecked())
-        opts << " -n \"" + outputFile9->text() + "\"";
+    if (cBOutputFileEnable9->isChecked())
+        opts << " -n \"" + lEOutputFile9->text() + "\"";
 
     if (cBTimeStart->isChecked()) opts << + " -ts " + dateTime1->dateTime().toString("yyyy/MM/dd hh:mm:ss");
     if (cBTimeEnd->isChecked()) opts << " -te " + dateTime2->dateTime().toString("yyyy/MM/dd hh:mm:ss");
     if (cBTimeInterval->isChecked()) opts << " -ti " + comboTimeInterval->currentText();
     if (cBTimeUnit->isChecked()) opts << " -tu " + cBTimeUnit->text();
 
-    if (!execCommand(cmd1, opts) && !execCommand(cmd2, opts) && !execCommand(cmd3, opts))
+    if (!execCommand(cmd[0], opts) && !execCommand(cmd[1], opts) && !execCommand(cmd[2], opts))
         message->setText(tr("error : rtkpost_qt execution"));
 }
 // callback on button-options -----------------------------------------------
-void MainWindow::btnOptionsClicked()
+void MainWindow::showOptions()
 {
-    int rnxfile = rinexFile;
+    int rnxfile_old = rinexFile;
 
     convOptDialog->exec();
     if (convOptDialog->result() != QDialog::Accepted) return;
 
-    if (rinexFile != rnxfile)
-        setOutputFiles(inputFile->currentText());
+    if (rinexFile != rnxfile_old)
+        setOutputFiles(cBInputFile->currentText());
 
     updateEnable();
 }
 //---------------------------------------------------------------------------
-void MainWindow::btnAbortClicked()
+void MainWindow::abort()
 {
     abortf = 1;
 }
 // callbck on button-time-1 -------------------------------------------------
-void MainWindow::btnTimeStartClicked()
+void MainWindow::showStartTimeDialog()
 {
     gtime_t ts = { 0, 0 }, te = { 0, 0 };
     double tint = 0.0, tunit = 0.0;
 
     getTime(&ts, &te, &tint, &tunit);
-    timeDialog->time = ts;
+    timeDialog->setTime(ts);
     timeDialog->exec();
 }
 // callbck on button-time-2 -------------------------------------------------
-void MainWindow::btnTimeStopClicked()
+void MainWindow::showStopTimeDialog()
 {
     gtime_t ts = { 0, 0 }, te = { 0, 0 };
     double tint = 0.0, tunit = 0.0;
 
     getTime(&ts, &te, &tint, &tunit);
-    timeDialog->time = te;
+    timeDialog->setTime(te);
     timeDialog->exec();
 }
 // callback on button-input-file --------------------------------------------
-void MainWindow::btnInputFileClicked()
+void MainWindow::selectInputFile()
 {
-    QString filename = QFileDialog::getOpenFileName(this, tr("Input RTCM, RCV RAW or RINEX File"), inputFile->currentText(),
+    QString filename = QFileDialog::getOpenFileName(this, tr("Input RTCM, RCV RAW or RINEX File"), cBInputFile->currentText(),
                                                     tr("All (*.*);;RTCM 2 (*.rtcm2);;RTCM 3 (*.rtcm3);;NovtAtel (*.gps);;ublox (*.ubx);;SuperStart II (*.log);;"
                                                        "Hemisphere (*.bin);;Javad (*.jps);;RINEX OBS (*.obs *.*O);Septentrio (*.sbf)"));
 
     if (!filename.isEmpty()) {
-        inputFile->setCurrentText(QDir::toNativeSeparators(filename));
-        setOutputFiles(inputFile->currentText());
+        cBInputFile->setCurrentText(QDir::toNativeSeparators(filename));
+        setOutputFiles(cBInputFile->currentText());
     }
 }
 // callback on output-directory change --------------------------------------
 void MainWindow::outputDirectoryChanged()
 {
-    setOutputFiles(inputFile->currentText());
+    setOutputFiles(cBInputFile->currentText());
 }
 // callback on button-output-directory --------------------------------------
-void MainWindow::btnOutputDirrectoryClicked()
+void MainWindow::selectOutputDirectory()
 {
-    outputDirectory->setText(QDir::toNativeSeparators(QFileDialog::getExistingDirectory(this, tr("Output Directory"), outputDirectory->text())));
-    setOutputFiles(inputFile->currentText());
+    lEOutputDirectory->setText(QDir::toNativeSeparators(QFileDialog::getExistingDirectory(this, tr("Output Directory"), lEOutputDirectory->text())));
+    setOutputFiles(cBInputFile->currentText());
 }
 // callback on button-keyword -----------------------------------------------
-void MainWindow::btnKeyClicked()
+void MainWindow::showKeyDialog()
 {
-    keyDialog->flag = 1;
+    keyDialog->setFlag(1);
     keyDialog->show();
 }
 // callback on button-output-file-1 -----------------------------------------
-void MainWindow::btnOutputFile1Clicked()
+void MainWindow::selectOutputFile1()
 {
     QString selectedFilter = tr("RINEX OBS (*.obs *.*O)");
 
-    QString filename = QFileDialog::getOpenFileName(this, tr("Output RINEX OBS File"), outputFile1->text(),
+    QString filename = QFileDialog::getOpenFileName(this, tr("Output RINEX OBS File"), lEOutputFile1->text(),
                                                     tr("All (*.*);;RINEX OBS (*.obs *.*O);;RINEX NAV (*.nav *.*N *.*P);;RINEX GNAV (*.gnav *.*G);;RINEX HNAV (*.hnav *.*H);;"
                                                        "RINEX QNAV (*.qnav *.*Q);;RINEX LNAV (*.lnav *.*L);;RINEX CNAV (*.cnav *.*C);;RINEX INAV (*.inav *.*I);;"
                                                        "SBAS Log (*.sbs);;LEX Log (*.lex)"), &selectedFilter);
 
     if (!filename.isEmpty())
-        outputFile1->setText(QDir::toNativeSeparators(filename));
+        lEOutputFile1->setText(QDir::toNativeSeparators(filename));
 }
 // callback on button-output-file-2 -----------------------------------------
-void MainWindow::btnOutputFile2Clicked()
+void MainWindow::selectOutputFile2()
 {
     QString selectedFilter = tr("RINEX NAV (*.nav *.*N *.*P)");
-    QString filename = QFileDialog::getOpenFileName(this, tr("Output RINEX NAV File"), outputFile2->text(),
+    QString filename = QFileDialog::getOpenFileName(this, tr("Output RINEX NAV File"), lEOutputFile2->text(),
                                         tr("All (*.*);;RINEX OBS (*.obs *.*O);;RINEX NAV (*.nav *.*N *.*P);;RINEX GNAV (*.gnav *.*G);;RINEX HNAV (*.hnav *.*H);;"
                                            "RINEX QNAV (*.qnav *.*Q);;RINEX LNAV (*.lnav *.*L);;RINEX CNAV (*.cnav *.*C);;RINEX INAV (*.inav *.*I);;"
                                            "SBAS Log (*.sbs);;LEX Log (*.lex)"), &selectedFilter);
 
     if (!filename.isEmpty())
-        outputFile2->setText(QDir::toNativeSeparators(filename));
+        lEOutputFile2->setText(QDir::toNativeSeparators(filename));
 }
 // callback on button-output-file-3 -----------------------------------------
-void MainWindow::btnOutputFile3Clicked()
+void MainWindow::selectOutputFile3()
 {
     QString selectedFilter = tr("RINEX GNAV (*.gnav *.*G)");
 
-    outputFile3->setText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("Output RINEX GNAV File"), outputFile3->text(),
+    lEOutputFile3->setText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("Output RINEX GNAV File"), lEOutputFile3->text(),
                                         tr("All (*.*);;RINEX OBS (*.obs *.*O);;RINEX NAV (*.nav *.*N *.*P);;RINEX GNAV (*.gnav *.*G);;RINEX HNAV (*.hnav *.*H);;"
                                            "RINEX QNAV (*.qnav *.*Q);;RINEX LNAV (*.lnav *.*L);;RINEX CNAV (*.cnav *.*C);;RINEX INAV (*.inav *.*I);;"
                                            "SBAS Log (*.sbs);;LEX Log (*.lex)"), &selectedFilter)));
 }
 // callback on button-output-file-4 -----------------------------------------
-void MainWindow::btnOutputFile4Clicked()
+void MainWindow::selectOutputFile4()
 {
     QString selectedFilter = tr("RINEX HNAV (*.hnav *.*H)");
 
-    outputFile4->setText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("Output RINEX HNAV File"), outputFile4->text(),
+    lEOutputFile4->setText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("Output RINEX HNAV File"), lEOutputFile4->text(),
                                         tr("All (*.*);;RINEX OBS (*.obs *.*O);;RINEX NAV (*.nav *.*N *.*P);;RINEX GNAV (*.gnav *.*G);;RINEX HNAV (*.hnav *.*H);;"
                                            "RINEX QNAV (*.qnav *.*Q);;RINEX LNAV (*.lnav *.*L);;RINEX CNAV (*.cnav *.*C);;RINEX INAV (*.inav *.*I);;"
                                            "SBAS Log (*.sbs);;LEX Log (*.lex)"), &selectedFilter)));
 }
 // callback on button-output-file-5 -----------------------------------------
-void MainWindow::btnOutputFile5Clicked()
+void MainWindow::selectOutputFile5()
 {
     QString selectedFilter = tr("RINEX QNAV (*.qnav *.*Q)");
 
-    outputFile5->setText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("Output RINEX QNAV File"), outputFile5->text(),
+    lEOutputFile5->setText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("Output RINEX QNAV File"), lEOutputFile5->text(),
                                         tr("All (*.*);;RINEX OBS (*.obs *.*O);;RINEX NAV (*.nav *.*N *.*P);;RINEX GNAV (*.gnav *.*G);;RINEX HNAV (*.hnav *.*H);;"
                                            "RINEX QNAV (*.qnav *.*Q);;RINEX LNAV (*.lnav *.*L);;RINEX CNAV (*.cnav *.*C);;RINEX INAV (*.inav *.*I);;"
                                            "SBAS Log (*.sbs);;LEX Log (*.lex)"), &selectedFilter)));
 }
 // callback on button-output-file-6 -----------------------------------------
-void MainWindow::btnOutputFile6Clicked()
+void MainWindow::selectOutputFile6()
 {
     QString selectedFilter = tr("RINEX LNAV (*.lnav *.*L)");
 
-    outputFile6->setText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("Output RINEX LNAV File"), outputFile6->text(),
+    lEOutputFile6->setText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("Output RINEX LNAV File"), lEOutputFile6->text(),
                                         tr("All (*.*);;RINEX OBS (*.obs *.*O);;RINEX NAV (*.nav *.*N *.*P);;RINEX GNAV (*.gnav *.*G);;RINEX HNAV (*.hnav *.*H);;"
                                            "RINEX QNAV (*.qnav *.*Q);;RINEX LNAV (*.lnav *.*L);;RINEX CNAV (*.cnav *.*C);;RINEX INAV (*.inav *.*I);;"
                                            "SBAS Log (*.sbs);;LEX Log (*.lex)"), &selectedFilter)));
 }
 // callback on button-output-file-7 -----------------------------------------
-void MainWindow::btnOutputFile7Clicked()
+void MainWindow::selectOutputFile7()
 {
     QString selectedFilter = tr("RINEX CNAV (*.cnav *.*C)");
 
-    outputFile7->setText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("Output SRINEX CNAVFile"), outputFile7->text(),
+    lEOutputFile7->setText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("Output SRINEX CNAVFile"), lEOutputFile7->text(),
                                         tr("All (*.*);;RINEX OBS (*.obs *.*O);;RINEX NAV (*.nav *.*N *.*P);;RINEX GNAV (*.gnav *.*G);;RINEX HNAV (*.hnav *.*H);;"
                                            "RINEX QNAV (*.qnav *.*Q);;RINEX LNAV (*.lnav *.*L);;RINEX CNAV (*.cnav *.*C);;RINEX INAV (*.inav *.*I);;"
                                            "SBAS Log (*.sbs);;LEX Log (*.lex)"), &selectedFilter)));
 }
 // callback on button-output-file-8 -----------------------------------------
-void MainWindow::btnOutputFile8Clicked()
+void MainWindow::selectOutputFile8()
 {
     QString selectedFilter = tr("RINEX INAV (*.inav *.*I)");
 
-    outputFile8->setText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("Output SBAS/LEX Log File"), outputFile8->text(),
+    lEOutputFile8->setText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("Output SBAS/LEX Log File"), lEOutputFile8->text(),
                                         tr("All (*.*);;RINEX OBS (*.obs *.*O);;RINEX NAV (*.nav *.*N *.*P);;RINEX GNAV (*.gnav *.*G);;RINEX HNAV (*.hnav *.*H);;"
                                            "RINEX QNAV (*.qnav *.*Q);;RINEX LNAV (*.lnav *.*L);;RINEX CNAV (*.cnav *.*C);;RINEX INAV (*.inav *.*I);;"
                                            "SBAS Log (*.sbs);;LEX Log (*.lex)"), &selectedFilter)));
 }
 // callback on button-output-file-9 -----------------------------------------
-void MainWindow::btnOutputFile9Clicked()
+void MainWindow::selectOutputFile9()
 {
     QString selectedFilter = tr("SBAS Log (*.sbs)");
 
-    outputFile9->setText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("Output SBAS/LEX Log File"), outputFile9->text(),
+    lEOutputFile9->setText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("Output SBAS/LEX Log File"), lEOutputFile9->text(),
                                         tr("All (*.*);;RINEX OBS (*.obs *.*O);;RINEX NAV (*.nav *.*N *.*P);;RINEX GNAV (*.gnav *.*G);;RINEX HNAV (*.hnav *.*H);;"
                                            "RINEX QNAV (*.qnav *.*Q);;RINEX LNAV (*.lnav *.*L);;RINEX CNAV (*.cnav *.*C);;RINEX INAV (*.inav *.*I);;"
                                            "SBAS Log (*.sbs);;LEX Log (*.lex)"), &selectedFilter)));
 }
 // callback on button-view-input-file ----------------------------------------
-void MainWindow::btnInputFileViewClicked()
+void MainWindow::viewInputFile()
 {
-    QString inputFilename = inputFile->currentText();
+    QString inputFilename = cBInputFile->currentText();
     QString ext = QFileInfo(inputFilename).suffix();
 
     if (ext.length() < 3) return;
@@ -568,103 +570,101 @@ void MainWindow::btnInputFileViewClicked()
     }
 }
 // callback on button-view-file-1 -------------------------------------------
-void MainWindow::btnOutputFileView1Clicked()
+void MainWindow::viewOutputFile1()
 {
     TextViewer *viewer = new TextViewer(this);
-    QString outputFile1_Text = outputFile1->text();
+    QString outputFile1_Text = lEOutputFile1->text();
 
     viewer->show();
     viewer->read(repPath(outputFile1_Text));
 }
 // callback on button-view-file-2 -------------------------------------------
-void MainWindow::btnOutputFileView2Clicked()
+void MainWindow::viewOutputFile2()
 {
     TextViewer *viewer = new TextViewer(this);
-    QString outputFile2_Text = outputFile2->text();
+    QString outputFile2_Text = lEOutputFile2->text();
 
     viewer->show();
     viewer->read(repPath(outputFile2_Text));
 }
 // callback on button-view-file-3 -------------------------------------------
-void MainWindow::btnOutputFileView3Clicked()
+void MainWindow::viewOutputFile3()
 {
     TextViewer *viewer = new TextViewer(this);
-    QString outputFile3_Text = outputFile3->text();
+    QString outputFile3_Text = lEOutputFile3->text();
 
     viewer->show();
     viewer->read(repPath(outputFile3_Text));
 }
 // callback on button-view-file-4 -------------------------------------------
-void MainWindow::btnOutputFileView4Clicked()
+void MainWindow::viewOutputFile4()
 {
     TextViewer *viewer = new TextViewer(this);
-    QString outputFile4_Text = outputFile4->text();
+    QString outputFile4_Text = lEOutputFile4->text();
 
     viewer->show();
     viewer->read(repPath(outputFile4_Text));
 }
 // callback on button-view-file-5 -------------------------------------------
-void MainWindow::btnOutputFileView5Clicked()
+void MainWindow::viewOutputFile5()
 {
     TextViewer *viewer = new TextViewer(this);
-    QString outputFile5_Text = outputFile5->text();
+    QString outputFile5_Text = lEOutputFile5->text();
 
     viewer->show();
     viewer->read(repPath(outputFile5_Text));
 }
 // callback on button-view-file-6 -------------------------------------------
-void MainWindow::btnOutputFileView6Clicked()
+void MainWindow::viewOutputFile6()
 {
     TextViewer *viewer = new TextViewer(this);
-    QString outputFile6_Text = outputFile6->text();
+    QString outputFile6_Text = lEOutputFile6->text();
 
     viewer->show();
     viewer->read(repPath(outputFile6_Text));
 }
 // callback on button-view-file-7 -------------------------------------------
-void MainWindow::btnOutputFileView7Clicked()
+void MainWindow::viewOutputFile7()
 {
     TextViewer *viewer = new TextViewer(this);
-    QString outputFile7_Text = outputFile7->text();
+    QString outputFile7_Text = lEOutputFile7->text();
 
     viewer->show();
     viewer->read(repPath(outputFile7_Text));
 }
 // callback on button-view-file-8 -------------------------------------------
-void MainWindow::btnOutputFileView8Clicked()
+void MainWindow::viewOutputFile8()
 {
     TextViewer *viewer = new TextViewer(this);
-    QString outputFile8_Text = outputFile8->text();
+    QString outputFile8_Text = lEOutputFile8->text();
 
     viewer->show();
     viewer->read(repPath(outputFile8_Text));
 }
 // callback on button-view-file-9 -------------------------------------------
-void MainWindow::btnOutputFileView9Clicked()
+void MainWindow::viewOutputFile9()
 {
     TextViewer *viewer = new TextViewer(this);
-    QString outputFile9_Text = outputFile9->text();
+    QString outputFile9_Text = lEOutputFile9->text();
 
     viewer->show();
     viewer->read(repPath(outputFile9_Text));
 }
 // callback on button-about -------------------------------------------------
-void MainWindow::btnAboutClicked()
+void MainWindow::showAboutDialog()
 {
-    aboutDialog->aboutString = PRGNAME;
-    aboutDialog->iconIndex = 3;
     aboutDialog->exec();
 }
 // callback on output-file check/uncheck ------------------------------------
-void MainWindow::outputDirrectoryEnableClicked()
+void MainWindow::outputDirectoryEnableClicked()
 {
-    setOutputFiles(inputFile->currentText());
+    setOutputFiles(cBInputFile->currentText());
     updateEnable();
 }
 // callback on input-file-change --------------------------------------------
 void MainWindow::inputFileChanged()
 {
-    setOutputFiles(inputFile->currentText());
+    setOutputFiles(cBInputFile->currentText());
 }
 // get time -----------------------------------------------------------------
 void MainWindow::getTime(gtime_t *ts, gtime_t *te, double *tint,
@@ -714,7 +714,7 @@ void MainWindow::updateEnable(void)
 {
     QString formatText = cBFormat->currentText();
     int rnx = (formatText == "RINEX");
-    int sep_nav=(rinexVersion < 3 || separateNavigation);
+    int sep_nav = (rinexVersion < 3 || separateNavigation);
 
     dateTime1->setEnabled(cBTimeStart->isChecked());
     btnTimeStart->setEnabled(cBTimeStart->isChecked());
@@ -724,53 +724,41 @@ void MainWindow::updateEnable(void)
     lbTimeInterval->setEnabled(cBTimeInterval->isEnabled());
     cBTimeUnit->setEnabled(cBTimeStart->isChecked() && cBTimeEnd->isChecked());
     sBTimeUnit->setEnabled(cBTimeStart->isChecked() && cBTimeEnd->isChecked() && cBTimeUnit->isChecked());
-    outputFileEnable3->setEnabled(sep_nav && (navSys & SYS_GLO));
-    outputFileEnable4->setEnabled(sep_nav && (navSys & SYS_SBS));
-    outputFileEnable5->setEnabled(sep_nav && (navSys & SYS_QZS) && rinexVersion>=5);
-    outputFileEnable6->setEnabled(sep_nav && (navSys & SYS_GAL) && rinexVersion>=2);
-    outputFileEnable7->setEnabled(sep_nav && (navSys & SYS_CMP) && rinexVersion>=4);
-    outputFileEnable8->setEnabled(sep_nav && (navSys & SYS_IRN) && rinexVersion>=6);
-    outputFileEnable9->setEnabled(!rnx);
-    outputDirectory->setEnabled(outputDirectoryEnable->isChecked());
-    lbOutputDirectory->setEnabled(outputDirectoryEnable->isChecked());
-    outputFile1->setEnabled(outputFileEnable1->isChecked());
-    outputFile2->setEnabled(outputFileEnable2->isChecked());
-    outputFile3->setEnabled(outputFileEnable3->isChecked() && outputFileEnable3->isEnabled());
-    outputFile4->setEnabled(outputFileEnable4->isChecked() && outputFileEnable4->isEnabled());
-    outputFile5->setEnabled(outputFileEnable5->isChecked() && outputFileEnable5->isEnabled());
-    outputFile6->setEnabled(outputFileEnable6->isChecked() && outputFileEnable6->isEnabled());
-    outputFile7->setEnabled(outputFileEnable7->isChecked() && outputFileEnable7->isEnabled());
-    outputFile8->setEnabled(outputFileEnable8->isChecked() && outputFileEnable8->isEnabled());
-    outputFile9->setEnabled(outputFileEnable9->isChecked() && !rnx);
-    btnOutputDirectory->setEnabled(outputDirectoryEnable->isChecked());
-    btnOutputFile1->setEnabled(outputFile1->isEnabled());
-    btnOutputFile2->setEnabled(outputFile2->isEnabled());
-    btnOutputFile3->setEnabled(outputFile3->isEnabled());
-    btnOutputFile4->setEnabled(outputFile4->isEnabled());
-    btnOutputFile5->setEnabled(outputFile5->isEnabled());
-    btnOutputFile6->setEnabled(outputFile6->isEnabled());
-    btnOutputFile7->setEnabled(outputFile7->isEnabled());
-    btnOutputFile8->setEnabled(outputFile8->isEnabled());
-    btnOutputFile9->setEnabled(outputFile9->isEnabled());
-    btnOutputFileView1->setEnabled(outputFile1->isEnabled());
-    btnOutputFileView2->setEnabled(outputFile2->isEnabled());
-    btnOutputFileView3->setEnabled(outputFile3->isEnabled());
-    btnOutputFileView4->setEnabled(outputFile4->isEnabled());
-    btnOutputFileView5->setEnabled(outputFile5->isEnabled());
-    btnOutputFileView6->setEnabled(outputFile6->isEnabled());
-    btnOutputFileView7->setEnabled(outputFile7->isEnabled());
-    btnOutputFileView8->setEnabled(outputFile8->isEnabled());
-    btnOutputFileView9->setEnabled(outputFile9->isEnabled());
+    cBOutputFileEnable3->setEnabled(sep_nav && (navSys & SYS_GLO));
+    cBOutputFileEnable3->setChecked(cBOutputFileEnable3->isEnabled());
+    cBOutputFileEnable4->setEnabled(sep_nav && (navSys & SYS_SBS));
+    cBOutputFileEnable4->setChecked(cBOutputFileEnable4->isEnabled());
+    cBOutputFileEnable5->setEnabled(sep_nav && (navSys & SYS_QZS) && rinexVersion >= 5);
+    cBOutputFileEnable5->setChecked(cBOutputFileEnable5->isEnabled());
+    cBOutputFileEnable6->setEnabled(sep_nav && (navSys & SYS_GAL) && rinexVersion >= 2);
+    cBOutputFileEnable6->setChecked(cBOutputFileEnable6->isEnabled());
+    cBOutputFileEnable7->setEnabled(sep_nav && (navSys & SYS_CMP) && rinexVersion >= 4);
+    cBOutputFileEnable7->setChecked(cBOutputFileEnable7->isEnabled());
+    cBOutputFileEnable8->setEnabled(sep_nav && (navSys & SYS_IRN) && rinexVersion >= 6);
+    cBOutputFileEnable8->setChecked(cBOutputFileEnable8->isEnabled());
+    cBOutputFileEnable9->setEnabled(!rnx);
+    cBOutputFileEnable9->setChecked(cBOutputFileEnable9->isEnabled());
+    lEOutputDirectory->setEnabled(cBOutputDirectoryEnable->isChecked());
+    lEOutputFile1->setEnabled(cBOutputFileEnable1->isChecked());
+    lEOutputFile2->setEnabled(cBOutputFileEnable2->isChecked());
+    lEOutputFile3->setEnabled(cBOutputFileEnable3->isChecked() && cBOutputFileEnable3->isEnabled());
+    lEOutputFile4->setEnabled(cBOutputFileEnable4->isChecked() && cBOutputFileEnable4->isEnabled());
+    lEOutputFile5->setEnabled(cBOutputFileEnable5->isChecked() && cBOutputFileEnable5->isEnabled());
+    lEOutputFile6->setEnabled(cBOutputFileEnable6->isChecked() && cBOutputFileEnable6->isEnabled());
+    lEOutputFile7->setEnabled(cBOutputFileEnable7->isChecked() && cBOutputFileEnable7->isEnabled());
+    lEOutputFile8->setEnabled(cBOutputFileEnable8->isChecked() && cBOutputFileEnable8->isEnabled());
+    lEOutputFile9->setEnabled(cBOutputFileEnable9->isChecked() && !rnx);
+    btnOutputDirectory->setEnabled(cBOutputDirectoryEnable->isChecked());
 }
 // convert file -------------------------------------------------------------
 void MainWindow::convertFile(void)
 {
-    QString inputFile_Text = inputFile->currentText();
-    QString outputFile1_Text = outputFile1->text(), outputFile2_Text = outputFile2->text();
-    QString outputFile3_Text = outputFile3->text(), outputFile4_Text = outputFile4->text();
-    QString outputFile5_Text = outputFile5->text(), outputFile6_Text = outputFile6->text();
-    QString outputFile7_Text = outputFile7->text(), outputFile8_Text = outputFile8->text();
-    QString outputFile9_Text = outputFile9->text();
+    QString inputFile_Text = cBInputFile->currentText();
+    QString outputFile1_Text = lEOutputFile1->text(), outputFile2_Text = lEOutputFile2->text();
+    QString outputFile3_Text = lEOutputFile3->text(), outputFile4_Text = lEOutputFile4->text();
+    QString outputFile5_Text = lEOutputFile5->text(), outputFile6_Text = lEOutputFile6->text();
+    QString outputFile7_Text = lEOutputFile7->text(), outputFile8_Text = lEOutputFile8->text();
+    QString outputFile9_Text = lEOutputFile9->text();
     int i;
     double RNXVER[] = { 210, 211, 212, 300, 301, 302, 303, 304 };
 
@@ -861,17 +849,17 @@ void MainWindow::convertFile(void)
         // input start date/time for rtcm 2, rtcm 3, RT17 or CMR
         startDialog->exec();
         if (startDialog->result() != QDialog::Accepted) return;
-        conversionThread->rnxopt.trtcm = startDialog->time;
+        conversionThread->rnxopt.trtcm = startDialog->getTime();
     }
-    if (outputFile1->isEnabled() && outputFileEnable1->isChecked()) strncpy(conversionThread->ofile[0], qPrintable(outputFile1_Text), 1023);
-    if (outputFile2->isEnabled() && outputFileEnable2->isChecked()) strncpy(conversionThread->ofile[1], qPrintable(outputFile2_Text), 1023);
-    if (outputFile3->isEnabled() && outputFileEnable3->isChecked()) strncpy(conversionThread->ofile[2], qPrintable(outputFile3_Text), 1023);
-    if (outputFile4->isEnabled() && outputFileEnable4->isChecked()) strncpy(conversionThread->ofile[3], qPrintable(outputFile4_Text), 1023);
-    if (outputFile5->isEnabled() && outputFileEnable5->isChecked()) strncpy(conversionThread->ofile[4], qPrintable(outputFile5_Text), 1023);
-    if (outputFile6->isEnabled() && outputFileEnable6->isChecked()) strncpy(conversionThread->ofile[5], qPrintable(outputFile6_Text), 1023);
-    if (outputFile7->isEnabled() && outputFileEnable7->isChecked()) strncpy(conversionThread->ofile[6], qPrintable(outputFile7_Text), 1023);
-    if (outputFile8->isEnabled() && outputFileEnable8->isChecked()) strncpy(conversionThread->ofile[7], qPrintable(outputFile8_Text), 1023);
-    if (outputFile9->isEnabled() && outputFileEnable9->isChecked()) strncpy(conversionThread->ofile[8], qPrintable(outputFile9_Text), 1023);
+    if (lEOutputFile1->isEnabled() && cBOutputFileEnable1->isChecked()) strncpy(conversionThread->ofile[0], qPrintable(outputFile1_Text), 1023);
+    if (lEOutputFile2->isEnabled() && cBOutputFileEnable2->isChecked()) strncpy(conversionThread->ofile[1], qPrintable(outputFile2_Text), 1023);
+    if (lEOutputFile3->isEnabled() && cBOutputFileEnable3->isChecked()) strncpy(conversionThread->ofile[2], qPrintable(outputFile3_Text), 1023);
+    if (lEOutputFile4->isEnabled() && cBOutputFileEnable4->isChecked()) strncpy(conversionThread->ofile[3], qPrintable(outputFile4_Text), 1023);
+    if (lEOutputFile5->isEnabled() && cBOutputFileEnable5->isChecked()) strncpy(conversionThread->ofile[4], qPrintable(outputFile5_Text), 1023);
+    if (lEOutputFile6->isEnabled() && cBOutputFileEnable6->isChecked()) strncpy(conversionThread->ofile[5], qPrintable(outputFile6_Text), 1023);
+    if (lEOutputFile7->isEnabled() && cBOutputFileEnable7->isChecked()) strncpy(conversionThread->ofile[6], qPrintable(outputFile7_Text), 1023);
+    if (lEOutputFile8->isEnabled() && cBOutputFileEnable8->isChecked()) strncpy(conversionThread->ofile[7], qPrintable(outputFile8_Text), 1023);
+    if (lEOutputFile9->isEnabled() && cBOutputFileEnable9->isChecked()) strncpy(conversionThread->ofile[8], qPrintable(outputFile9_Text), 1023);
 
     // check overwrite output file
     for (i = 0; i < 9; i++) {
@@ -929,7 +917,7 @@ void MainWindow::convertFile(void)
     cBFormat->setEnabled(false);
     btnKey->setEnabled(false);
     lbInputFile->setEnabled(false);
-    lbOutputDirectory->setEnabled(false);
+    cBOutputDirectoryEnable->setEnabled(false);
     lbOutputFile->setEnabled(false);
     lbFormat->setEnabled(false);
     message->setText("");
@@ -964,7 +952,7 @@ void MainWindow::conversionFinished()
     cBFormat->setEnabled(true);
     btnKey->setEnabled(true);
     lbInputFile->setEnabled(true);
-    lbOutputDirectory->setEnabled(true);
+    cBOutputDirectoryEnable->setEnabled(true);
     lbOutputFile->setEnabled(true);
     lbFormat->setEnabled(true);
 
@@ -987,7 +975,7 @@ void MainWindow::conversionFinished()
 
     conversionThread->deleteLater();
 
-    addHistory(inputFile);
+    addHistory(cBInputFile);
 }
 // load options -------------------------------------------------------------
 void MainWindow::loadOptions(void)
@@ -1042,7 +1030,7 @@ void MainWindow::loadOptions(void)
     timeTolerance	= ini.value("opt/timetol", 0.005).toInt();
     enableGlonassFrequency = ini.value("opt/glofcnena", 0).toInt();
     for (int i = 0; i < 27; i++)
-        glonassFrequency[i] = ini.value(QString("opt/glofcn%1").arg(i+1,2, 10, QLatin1Char('0')),0).toInt();
+        glonassFrequency[i] = ini.value(QString("opt/glofcn%1").arg(i + 1, 2, 10, QLatin1Char('0')), 0).toInt();
 
     cBTimeStart->setChecked(ini.value("set/timestartf", 0).toBool());
     cBTimeEnd->setChecked(ini.value("set/timeendf", 0).toBool());
@@ -1054,30 +1042,30 @@ void MainWindow::loadOptions(void)
     comboTimeInterval->setCurrentText(ini.value("set/timeint", "1").toString());
     cBTimeUnit->setChecked(ini.value("set/timeunitf", 0).toBool());
     sBTimeUnit->setValue(ini.value("set/timeunit", "24").toDouble());
-    inputFile->setCurrentText(ini.value("set/infile", "").toString());
-    outputDirectory->setText(ini.value("set/outdir", "").toString());
-    outputFile1->setText(ini.value("set/outfile1", "").toString());
-    outputFile2->setText(ini.value("set/outfile2", "").toString());
-    outputFile3->setText(ini.value("set/outfile3", "").toString());
-    outputFile4->setText(ini.value("set/outfile4", "").toString());
-    outputFile5->setText(ini.value("set/outfile5", "").toString());
-    outputFile6->setText(ini.value("set/outfile6", "").toString());
-    outputFile7->setText(ini.value("set/outfile7", "").toString());
-    outputFile8->setText(ini.value("set/outfile8", "").toString());
-    outputFile9->setText(ini.value("set/outfile9", "").toString());
-    outputDirectoryEnable->setChecked(ini.value("set/outdirena", false).toBool());
-    outputFileEnable1->setChecked(ini.value("set/outfileena1", true).toBool());
-    outputFileEnable2->setChecked(ini.value("set/outfileena2", true).toBool());
-    outputFileEnable3->setChecked(ini.value("set/outfileena3", true).toBool());
-    outputFileEnable4->setChecked(ini.value("set/outfileena4", true).toBool());
-    outputFileEnable5->setChecked(ini.value("set/outfileena5", true).toBool());
-    outputFileEnable6->setChecked(ini.value("set/outfileena6", true).toBool());
-    outputFileEnable7->setChecked(ini.value("set/outfileena7", true).toBool());
-    outputFileEnable8->setChecked(ini.value("set/outfileena8", true).toBool());
-    outputFileEnable9->setChecked(ini.value("set/outfileena9", true).toBool());
+    cBInputFile->setCurrentText(ini.value("set/infile", "").toString());
+    lEOutputDirectory->setText(ini.value("set/outdir", "").toString());
+    lEOutputFile1->setText(ini.value("set/outfile1", "").toString());
+    lEOutputFile2->setText(ini.value("set/outfile2", "").toString());
+    lEOutputFile3->setText(ini.value("set/outfile3", "").toString());
+    lEOutputFile4->setText(ini.value("set/outfile4", "").toString());
+    lEOutputFile5->setText(ini.value("set/outfile5", "").toString());
+    lEOutputFile6->setText(ini.value("set/outfile6", "").toString());
+    lEOutputFile7->setText(ini.value("set/outfile7", "").toString());
+    lEOutputFile8->setText(ini.value("set/outfile8", "").toString());
+    lEOutputFile9->setText(ini.value("set/outfile9", "").toString());
+    cBOutputDirectoryEnable->setChecked(ini.value("set/outdirena", false).toBool());
+    cBOutputFileEnable1->setChecked(ini.value("set/outfileena1", true).toBool());
+    cBOutputFileEnable2->setChecked(ini.value("set/outfileena2", true).toBool());
+    cBOutputFileEnable3->setChecked(ini.value("set/outfileena3", true).toBool());
+    cBOutputFileEnable4->setChecked(ini.value("set/outfileena4", true).toBool());
+    cBOutputFileEnable5->setChecked(ini.value("set/outfileena5", true).toBool());
+    cBOutputFileEnable6->setChecked(ini.value("set/outfileena6", true).toBool());
+    cBOutputFileEnable7->setChecked(ini.value("set/outfileena7", true).toBool());
+    cBOutputFileEnable8->setChecked(ini.value("set/outfileena8", true).toBool());
+    cBOutputFileEnable9->setChecked(ini.value("set/outfileena9", true).toBool());
     cBFormat->setCurrentIndex(ini.value("set/format", 0).toInt());
 
-    readHistory(inputFile, &ini, "hist/inputfile");
+    readHistory(cBInputFile, &ini, "hist/inputfile");
 
     TextViewer::colorText = ini.value("viewer/color1", QColor(Qt::black)).value<QColor>();
     TextViewer::colorBackground = ini.value("viewer/color2", QColor(Qt::white)).value<QColor>();
@@ -1153,33 +1141,33 @@ void MainWindow::saveOptions(void)
     ini.setValue("set/timeint", comboTimeInterval->currentText());
     ini.setValue("set/timeunitf", cBTimeUnit->isChecked());
     ini.setValue("set/timeunit", sBTimeUnit->value());
-    ini.setValue("set/infile", inputFile->currentText());
-    ini.setValue("set/outdir", outputDirectory->text());
-    ini.setValue("set/outfile1", outputFile1->text());
-    ini.setValue("set/outfile2", outputFile2->text());
-    ini.setValue("set/outfile3", outputFile3->text());
-    ini.setValue("set/outfile4", outputFile4->text());
-    ini.setValue("set/outfile5", outputFile5->text());
-    ini.setValue("set/outfile6", outputFile6->text());
-    ini.setValue("set/outfile7", outputFile7->text());
-    ini.setValue("set/outfile8", outputFile8->text());
-    ini.setValue("set/outfile9", outputFile9->text());
-    ini.setValue("set/outdirena", outputDirectoryEnable->isChecked());
-    ini.setValue("set/outfileena1", outputFileEnable1->isChecked());
-    ini.setValue("set/outfileena2", outputFileEnable2->isChecked());
-    ini.setValue("set/outfileena3", outputFileEnable3->isChecked());
-    ini.setValue("set/outfileena4", outputFileEnable4->isChecked());
-    ini.setValue("set/outfileena5", outputFileEnable5->isChecked());
-    ini.setValue("set/outfileena6", outputFileEnable6->isChecked());
-    ini.setValue("set/outfileena7", outputFileEnable7->isChecked());
-    ini.setValue("set/outfileena8", outputFileEnable8->isChecked());
-    ini.setValue("set/outfileena9", outputFileEnable9->isChecked());
+    ini.setValue("set/infile", cBInputFile->currentText());
+    ini.setValue("set/outdir", lEOutputDirectory->text());
+    ini.setValue("set/outfile1", lEOutputFile1->text());
+    ini.setValue("set/outfile2", lEOutputFile2->text());
+    ini.setValue("set/outfile3", lEOutputFile3->text());
+    ini.setValue("set/outfile4", lEOutputFile4->text());
+    ini.setValue("set/outfile5", lEOutputFile5->text());
+    ini.setValue("set/outfile6", lEOutputFile6->text());
+    ini.setValue("set/outfile7", lEOutputFile7->text());
+    ini.setValue("set/outfile8", lEOutputFile8->text());
+    ini.setValue("set/outfile9", lEOutputFile9->text());
+    ini.setValue("set/outdirena", cBOutputDirectoryEnable->isChecked());
+    ini.setValue("set/outfileena1", cBOutputFileEnable1->isChecked());
+    ini.setValue("set/outfileena2", cBOutputFileEnable2->isChecked());
+    ini.setValue("set/outfileena3", cBOutputFileEnable3->isChecked());
+    ini.setValue("set/outfileena4", cBOutputFileEnable4->isChecked());
+    ini.setValue("set/outfileena5", cBOutputFileEnable5->isChecked());
+    ini.setValue("set/outfileena6", cBOutputFileEnable6->isChecked());
+    ini.setValue("set/outfileena7", cBOutputFileEnable7->isChecked());
+    ini.setValue("set/outfileena8", cBOutputFileEnable8->isChecked());
+    ini.setValue("set/outfileena9", cBOutputFileEnable9->isChecked());
     ini.setValue("set/format", cBFormat->currentIndex());
 
-    writeHistory(&ini, "hist/inputfile", inputFile);
+    writeHistory(&ini, "hist/inputfile", cBInputFile);
 
     ini.setValue("viewer/color1", TextViewer::colorText);
-    ini.setValue("viewer/color2", TextViewer::colorText);
+    ini.setValue("viewer/color2", TextViewer::colorBackground);
     ini.setValue("viewer/fontname", TextViewer::font.family());
     ini.setValue("viewer/fontsize", TextViewer::font.pointSize());
 }

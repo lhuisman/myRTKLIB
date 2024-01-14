@@ -12,18 +12,18 @@
 static const QChar degreeChar(0260);           // character code of degree (UTF-8)
 
 //---------------------------------------------------------------------------
-RefDialog::RefDialog(QWidget *parent)
+RefDialog::RefDialog(QWidget *parent, int options)
     : QDialog(parent)
 {
     setupUi(this);
-    options = 0;
-    position[0] = position[1] = position[2] = roverPosition[0] = roverPosition[1] = roverPosition[2] = 0.0;
+    this->options = options;
+    roverPosition[0] = roverPosition[1] = roverPosition[2] = 0.0;
 
-    connect(tWStationList, &QTableWidget::cellDoubleClicked, this, &RefDialog::stationListDblClick);
-    connect(btnOK, &QPushButton::clicked, this, &RefDialog::btnOKClicked);
-    connect(btnCancel, &QPushButton::clicked, this, &RefDialog::reject);
+    connect(tWStationList, &QTableWidget::cellDoubleClicked, this, &RefDialog::stationSelected);
+    connect(buttonBox, &QDialogButtonBox::accepted, this, &RefDialog::saveClose);
+    connect(buttonBox, &QDialogButtonBox::rejected, this, &RefDialog::reject);
     connect(btnFind, &QPushButton::clicked, this, &RefDialog::findList);
-    connect(btnLoad, &QPushButton::clicked, this, &RefDialog::btnLoadClicked);
+    connect(btnLoad, &QPushButton::clicked, this, &RefDialog::loadStations);
     connect(lEFind, &QLineEdit::returnPressed, this, &RefDialog::findList);
 }
 //---------------------------------------------------------------------------
@@ -38,10 +38,10 @@ void RefDialog::showEvent(QShowEvent *event)
     QStringList columns;
     columns << tr("No") << tr("Latitude(%1)").arg(degreeChar) << tr("Longitude(%1)").arg(degreeChar) << tr("Height(m)") << tr("Id") << tr("Name") << tr("Distance(km)");
     tWStationList->setColumnCount(columns.size());
-    tWStationList->setRowCount(2);
+    tWStationList->setRowCount(1);
 
     for (int i = 0; i < columns.size(); i++)
-        for (int j = 0; j < 2; j++)
+        for (int j = 0; j < 1; j++)
             tWStationList->setItem(i, j, new QTableWidgetItem(""));
 
     fontScale = 2 * physicalDpiX();
@@ -50,32 +50,32 @@ void RefDialog::showEvent(QShowEvent *event)
 
     tWStationList->setHorizontalHeaderLabels(columns);
 
-    loadList();
+    loadList(stationPositionFile);
 
     tWStationList->sortItems(6);
 }
 //---------------------------------------------------------------------------
-void RefDialog::stationListDblClick(int, int)
+void RefDialog::stationSelected(int, int)
 {
-    if (selectReference())
+    if (validReference())
         accept();
     else
         reject();
 }
 //---------------------------------------------------------------------------
-void RefDialog::btnOKClicked()
+void RefDialog::saveClose()
 {
-    if (selectReference())
+    if (validReference())
         accept();
     else
         reject();
 }
 //---------------------------------------------------------------------------
-void RefDialog::btnLoadClicked()
+void RefDialog::loadStations()
 {
     stationPositionFile = QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("Load Station List..."), stationPositionFile, tr("Position File (*.pos *.snx);;All (*.*)")));
 
-	loadList();
+    loadList(stationPositionFile);
 }
 //---------------------------------------------------------------------------
 void RefDialog::findList(void)
@@ -89,7 +89,7 @@ void RefDialog::findList(void)
     tWStationList->setCurrentItem(f.first());
 }
 //---------------------------------------------------------------------------
-void RefDialog::loadList(void)
+void RefDialog::loadList(QString filename)
 {
     QByteArray buff;
 
@@ -99,12 +99,13 @@ void RefDialog::loadList(void)
     tWStationList->setRowCount(0);
 
 	// check format
-    QFile fp(stationPositionFile);
+    QFile fp(filename);
     if (!fp.open(QIODevice::ReadOnly)) return;
 
     buff = fp.readAll();
     if (buff.contains("%=SNX")) {
-		loadSinex();
+        fp.close();
+        loadSinex(filename);
 		return;
 	}
 
@@ -127,15 +128,15 @@ void RefDialog::loadList(void)
     if (n == 0) tWStationList->setRowCount(0);
 
     updateDistances();
-    setWindowTitle(stationPositionFile);
+    setWindowTitle(filename);
 }
 //---------------------------------------------------------------------------
-void RefDialog::loadSinex(void)
+void RefDialog::loadSinex(QString filename)
 {
     int n = 0, sol = 0;
     double rr[3], pos[3];
     bool okay;
-    QFile file(stationPositionFile);
+    QFile file(filename);
     QByteArray buff, code;
 
     if (!file.open(QIODevice::ReadOnly)) return;
@@ -191,22 +192,14 @@ void RefDialog::addReference(int n, double *pos, const QString code,
     tWStationList->setItem(row, 6, new QTableWidgetItem(""));
 }
 //---------------------------------------------------------------------------
-int RefDialog::selectReference(void)
+int RefDialog::validReference()
 {
-    bool ok;
-
     QList<QTableWidgetItem *> sel = tWStationList->selectedItems();
     if (sel.isEmpty()) return 0;
-    int row = tWStationList->row(sel.first());
-    position[0] = tWStationList->item(row, 1)->text().toDouble(&ok);
-    position[1] = tWStationList->item(row, 2)->text().toDouble(&ok);
-    position[2] = tWStationList->item(row, 3)->text().toDouble(&ok);
-    stationId = tWStationList->item(row, 4)->text();
-    stationName = tWStationList->item(row, 5)->text();
-	return 1;
+    else return 1;
 }
 //---------------------------------------------------------------------------
-void RefDialog::updateDistances(void)
+void RefDialog::updateDistances()
 {
     double pos[3], ru[3], rr[3];
     bool ok;
@@ -228,7 +221,53 @@ void RefDialog::updateDistances(void)
         pos2ecef(pos, rr);
         for (int j = 0; j < 3; j++) rr[j] -= ru[j];
 
-        tWStationList->setItem(i, 6, new QTableWidgetItem(QString::number(norm(rr, 3) / 1E3, 'f', 1)));
+        tWStationList->item(i, 6)->setText(QString::number(norm(rr, 3) / 1E3, 'f', 1));
 	}
+}
+//---------------------------------------------------------------------------
+void RefDialog::setRoverPosition(double lat, double lon, double height)
+{
+    roverPosition[0] = lat;
+    roverPosition[1] = lon;
+    roverPosition[2] = height;
+
+    updateDistances();
+}
+//---------------------------------------------------------------------------
+double* RefDialog::getPosition()
+{
+    static double position[3] = {0, 0, 0};
+    bool ok;
+
+    QList<QTableWidgetItem *> sel = tWStationList->selectedItems();
+    if (sel.isEmpty()) return position;
+
+    int row = tWStationList->row(sel.first());
+    position[0] = tWStationList->item(row, 1)->text().toDouble(&ok); if (!ok) return 0;
+    position[1] = tWStationList->item(row, 2)->text().toDouble(&ok); if (!ok) return 0;
+    position[2] = tWStationList->item(row, 3)->text().toDouble(&ok); if (!ok) return 0;
+
+    return position;
+}
+
+//---------------------------------------------------------------------------
+QString RefDialog::getStationId()
+{
+    QList<QTableWidgetItem *> sel = tWStationList->selectedItems();
+    if (sel.isEmpty()) return "";
+
+    int row = tWStationList->row(sel.first());
+
+    return tWStationList->item(row, 4)->text();
+}
+//---------------------------------------------------------------------------
+QString RefDialog::getStationName()
+{
+    QList<QTableWidgetItem *> sel = tWStationList->selectedItems();
+    if (sel.isEmpty()) return "";
+
+    int row = tWStationList->row(sel.first());
+
+    return tWStationList->item(row, 5)->text();
 }
 //---------------------------------------------------------------------------

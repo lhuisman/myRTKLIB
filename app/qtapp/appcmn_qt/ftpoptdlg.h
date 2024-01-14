@@ -14,23 +14,24 @@ class KeyDialog;
 class FtpOptDialog : public QDialog, private Ui::FtpOptDialog
 {
     Q_OBJECT
-protected:
-    void  showEvent(QShowEvent *);
-
 public slots:
-    void  btnOkClicked();
-    void  btnKeyClicked();
+    void  saveClose();
+    void  showKeyDialog();
 
 private:
     void  addHistory(QComboBox *list, QString *hist);
     void  updateEnable(void);
 
     KeyDialog *keyDlg;
-
-public:
     int options;  // 0(default): FTP options; 1: HTTP options
-    QString path, history[MAXHIST], MountpointHistory[MAXHIST];
-    explicit FtpOptDialog(QWidget *parent);
+    QString history[MAXHIST], MountpointHistory[MAXHIST];
+public:
+    explicit FtpOptDialog(QWidget *parent, int options = 0);
+
+    int getOptions() {return options;}
+    void setOptions(int);
+    QString getPath();
+    void setPath(QString);
 };
 //---------------------------------------------------------------------------
 #endif

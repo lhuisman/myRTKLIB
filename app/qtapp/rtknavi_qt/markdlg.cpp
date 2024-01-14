@@ -18,12 +18,11 @@ QMarkDialog::QMarkDialog(QWidget *parent)
     setupUi(this);
 
     nMark = 1;
-    fixPosition[0] = fixPosition[1] = fixPosition[2] = 0.0;
-    Label1->setText(QString("%%r=%1").arg(nMark, 3, 10, QLatin1Char('0')));
+    lblMarker->setText(QString("%%r=%1").arg(nMark, 3, 10, QLatin1Char('0')));
 
-    connect(btnKeyDlg, &QPushButton::clicked, this, &QMarkDialog::btnKeyDlgClicked);
-    connect(btnOk, &QPushButton::clicked, this, &QMarkDialog::btnOkClicked);
-    connect(btnCancel, &QPushButton::clicked, this, &QMarkDialog::close);
+    connect(btnKeyDlg, &QPushButton::clicked, this, &QMarkDialog::showKeyDialog);
+    connect(buttonBox, &QDialogButtonBox::accepted, this, &QMarkDialog::saveClose);
+    connect(buttonBox, &QDialogButtonBox::rejected, this, &QMarkDialog::close);
     connect(cBMarkerNameC, &QCheckBox::clicked, this, &QMarkDialog::updateEnable);
     connect(rBGo, &QRadioButton::toggled, this, &QMarkDialog::updateEnable);
     connect(rBStop, &QRadioButton::toggled, this, &QMarkDialog::updateEnable);
@@ -33,12 +32,71 @@ QMarkDialog::QMarkDialog(QWidget *parent)
     keyDialog = new KeyDialog(this);
 }
 //---------------------------------------------------------------------------
-void QMarkDialog::btnOkClicked()
+void QMarkDialog::saveClose()
 {
-    QString mrkr = cBMarkerName->currentText();
-    QString cmnt = lEMarkerComment->text();
-    char str2[1024];
+    if (cBMarkerNameC->isChecked()) {
+        rtksvrmark(&rtksvr, qPrintable(getName()), qPrintable(getComment()));
+        nMark++;
+        lblMarker->setText(QString("%%r=%1").arg(nMark, 3, 10, QLatin1Char('0')));
+    }
+}
+//---------------------------------------------------------------------------
+void QMarkDialog::updateEnable(void)
+{
+    int positionMode = getPositionMode();
+    bool ena = positionMode == PMODE_STATIC || positionMode == PMODE_PPP_STATIC ||
+               positionMode == PMODE_KINEMA || positionMode == PMODE_PPP_KINEMA ||
+               positionMode == PMODE_FIXED || positionMode == PMODE_PPP_FIXED;
 
+    rBStop->setEnabled(ena);
+    rBGo->setEnabled(ena);
+    rBFix->setEnabled(ena);
+    gBPositionMode->setEnabled(ena);
+    sBLatitude->setEnabled(rBFix->isChecked());
+    sBLongitude->setEnabled(rBFix->isChecked());
+    sBHeight->setEnabled(rBFix->isChecked());
+    btnPosition->setEnabled(rBFix->isChecked());
+    lblPosition->setEnabled(rBFix->isChecked());
+    cBMarkerName->setEnabled(cBMarkerNameC->isChecked());
+}
+//---------------------------------------------------------------------------
+void QMarkDialog::showKeyDialog()
+{
+    keyDialog->setWindowTitle(tr("Key Replacement in Marker Name"));
+    keyDialog->show();
+}
+//---------------------------------------------------------------------------
+void QMarkDialog::btnPositionClicked()
+{
+    RefDialog *refDialog =  new RefDialog(this);
+
+    refDialog->setRoverPosition(sBLatitude->value(), sBLongitude->value(), sBHeight->value());
+    refDialog->stationPositionFile = stationPositionFileF;
+
+    if (refDialog->result() != QDialog::Accepted) return;
+
+    sBLatitude->setValue(refDialog->getPosition()[0]);
+    sBLongitude->setValue(refDialog->getPosition()[1]);
+    sBHeight->setValue(refDialog->getPosition()[2]);
+}
+//---------------------------------------------------------------------------
+void QMarkDialog::setPositionMode(int mode)
+{
+    positionMode = mode;
+
+    if (positionMode == PMODE_STATIC || positionMode == PMODE_PPP_STATIC) {
+        rBStop->setChecked(true);
+    } else if (positionMode == PMODE_KINEMA || positionMode == PMODE_PPP_KINEMA) {
+        rBGo->setChecked(true);
+    } else {
+        rBStop->setChecked(false);
+        rBGo->setChecked(false);
+    }
+    updateEnable();
+}
+//---------------------------------------------------------------------------
+int QMarkDialog::getPositionMode()
+{
     if (rBGo->isChecked()) {
         if (positionMode == PMODE_STATIC || positionMode == PMODE_FIXED)
             positionMode = PMODE_KINEMA;
@@ -57,68 +115,40 @@ void QMarkDialog::btnOkClicked()
             positionMode = PMODE_PPP_FIXED;
         }
     }
-    if (cBMarkerNameC->isChecked()) {
-        reppath(qPrintable(mrkr), str2, utc2gpst(timeget()), qPrintable(QString("%1").arg(nMark, 3, 10, QChar('0'))), "");
-        rtksvrmark(&rtksvr, str2, qPrintable(cmnt));
-        nMark++;
-        Label1->setText(QString("%%r=%1").arg(nMark, 3, 10, QLatin1Char('0')));
-	}
-    name = mrkr;
-    comment = cmnt;
+    return positionMode;
 }
 //---------------------------------------------------------------------------
-void QMarkDialog::showEvent(QShowEvent *event)
+void QMarkDialog::setName(const QString &name)
 {
-    if (event->spontaneous()) return;
-
-    if (positionMode == PMODE_STATIC || positionMode == PMODE_PPP_STATIC) {
-        rBStop->setChecked(true);
-    } else if (positionMode == PMODE_KINEMA || positionMode == PMODE_PPP_KINEMA) {
-        rBGo->setChecked(true);
-    } else {
-        rBStop->setChecked(false);
-        rBGo->setChecked(false);
-	}
-	updateEnable();
+    cBMarkerName->setCurrentText(name);
 }
 //---------------------------------------------------------------------------
-void QMarkDialog::updateEnable(void)
+QString QMarkDialog::getName()
 {
-    bool ena = positionMode == PMODE_STATIC || positionMode == PMODE_PPP_STATIC ||
-               positionMode == PMODE_KINEMA || positionMode == PMODE_PPP_KINEMA ||
-               positionMode == PMODE_FIXED || positionMode == PMODE_PPP_FIXED;
+    QString mrkr = cBMarkerName->currentText();
+    char str2[1024];
 
-    rBStop->setEnabled(ena);
-    rBGo->setEnabled(ena);
-    rBFix->setEnabled(ena);
-    lblPositionMode->setEnabled(ena);
-    sBLatitude->setEnabled(rBFix->isChecked());
-    sBLongitude->setEnabled(rBFix->isChecked());
-    sBHeight->setEnabled(rBFix->isChecked());
-    btnPosition->setEnabled(rBFix->isChecked());
-    lblPosition->setEnabled(rBFix->isChecked());
-    cBMarkerName->setEnabled(cBMarkerNameC->isChecked());
+    reppath(qPrintable(mrkr), str2, utc2gpst(timeget()), qPrintable(QString("%1").arg(nMark, 3, 10, QChar('0'))), "");
+    return mrkr;
 }
 //---------------------------------------------------------------------------
-void QMarkDialog::btnKeyDlgClicked()
+void QMarkDialog::setComment(const QString &comment)
 {
-    keyDialog->setWindowTitle(tr("Key Replacement in Marker Name"));
-    keyDialog->show();
+    lEMarkerComment->setText(comment);
 }
 //---------------------------------------------------------------------------
-void QMarkDialog::btnPositionClicked()
+QString QMarkDialog::getComment()
 {
-    RefDialog *refDialog =  new RefDialog(this);
-
-    refDialog->position[0] = sBLatitude->value();
-    refDialog->position[1] = sBLongitude->value();
-    refDialog->position[2] = sBHeight->value();
-    refDialog->stationPositionFile = mainForm->optDialog->stationPositionFileF;
-
-    if (refDialog->result() != QDialog::Accepted) return;
-
-    sBLatitude->setValue(refDialog->position[0]);
-    sBLongitude->setValue(refDialog->position[1]);
-    sBHeight->setValue(refDialog->position[2]);
+    return lEMarkerComment->text();
+}
+//---------------------------------------------------------------------------
+void QMarkDialog::setStationPositionFile(const QString &file)
+{
+    stationPositionFileF = file;
+}
+//---------------------------------------------------------------------------
+QString QMarkDialog::getStationPositionFile()
+{
+    return stationPositionFileF;
 }
 //---------------------------------------------------------------------------

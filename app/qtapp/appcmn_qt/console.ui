@@ -13,9 +13,6 @@
   <property name="windowTitle">
    <string>Console</string>
   </property>
-  <property name="toolTip">
-   <string/>
-  </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QWidget" name="Panel1" native="true">
@@ -32,9 +29,6 @@
       <string/>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout">
-      <property name="spacing">
-       <number>0</number>
-      </property>
       <property name="leftMargin">
        <number>0</number>
       </property>
@@ -59,12 +53,9 @@
          <string>Ascii View</string>
         </property>
         <property name="text">
-         <string>ASC</string>
+         <string>ASCII</string>
         </property>
         <property name="checkable">
-         <bool>true</bool>
-        </property>
-        <property name="flat">
          <bool>true</bool>
         </property>
        </widget>
@@ -84,9 +75,6 @@
          <string>HEX</string>
         </property>
         <property name="checkable">
-         <bool>true</bool>
-        </property>
-        <property name="flat">
          <bool>true</bool>
         </property>
        </widget>
@@ -112,9 +100,6 @@
         <property name="checkable">
          <bool>true</bool>
         </property>
-        <property name="flat">
-         <bool>true</bool>
-        </property>
        </widget>
       </item>
       <item>
@@ -134,9 +119,6 @@
         <property name="icon">
          <iconset resource="../icon/resources.qrc">
           <normaloff>:/buttons/fitd</normaloff>:/buttons/fitd</iconset>
-        </property>
-        <property name="flat">
-         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -160,9 +142,6 @@
         <property name="icon">
          <iconset resource="../icon/resources.qrc">
           <normaloff>:/buttons/del</normaloff>:/buttons/del</iconset>
-        </property>
-        <property name="flat">
-         <bool>true</bool>
         </property>
        </widget>
       </item>

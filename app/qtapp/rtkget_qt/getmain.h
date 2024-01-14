@@ -30,26 +30,26 @@ protected:
     void  dropEvent(QDropEvent * event);
 
 public slots:
-    void  btnOptionsClicked();
-    void  btnLogClicked();
-    void  btnDownloadClicked();
-    void  btnFileClicked();
-    void  dataListClicked();
-    void  btnDirClicked();
-    void  localDirClicked();
-    void  btnStationsClicked();
-    void  btnKeywordClicked();
-    void  btnAboutClicked();
+    void  showOptionsDialog();
+    void  viewLogFile();
+    void  download();
+    void  openOutputDirectory();
+    void  dataListSelectionChanged();
+    void  selectOutputDirectory();
+    void  localDirectoryCheckBoxClicked();
+    void  showStationDialog();
+    void  showKeyDialog();
+    void  showAboutDialog();
     void  busyTimerTriggered();
-    void  btnTrayClicked();
+    void  minimizeToTray();
     void  trayIconActivated(QSystemTrayIcon::ActivationReason);
-    void  btnTestClicked();
-    void  btnAllClicked();
+    void  testDownload();
+    void  SelectDeselectAllStations();
     void  downloadFinished();
-    void  btnTimeStartClicked();
-    void  btnTimeStopClicked();
+    void  showStartTimeDetails();
+    void  showStopTimeDetails();
     void  updateEnable();
-    void  updateType();
+    void  updateDataListWidget();
     void  updateMessage();
 
 private:
@@ -64,13 +64,13 @@ private:
 
     void  loadOptions();
     void  saveOptions();
-    void  updateStationList();
+    void  updateStationListLabel();
     void  panelEnable(int ena);
     void  getTime(gtime_t *ts, gtime_t *te, double *ti);
     int   selectUrl(url_t *urls);
     int   selectStation(char **stas);
-    void  loadUrl(QString file);
-    void  loadStation(QString file);
+    void  loadUrlList(QString file);
+    void  loadStationFile(QString file);
     int   execCommand(const QString &cmd, const QStringList &opt);
     void  readHistory(QSettings &, QString key, QComboBox *);
     void  writeHistory(QSettings &, QString key, QComboBox *);

@@ -7,37 +7,38 @@
 #include "keydlg.h"
 
 //---------------------------------------------------------------------------
-KeyDialog::KeyDialog(QWidget *parent)
+KeyDialog::KeyDialog(QWidget *parent, int flag)
     : QDialog(parent)
 {
     setupUi(this);
 
-    flag = 0;
+    setFlag(flag);
 
-    connect(btnOk, &QPushButton::clicked, this, &KeyDialog::close);
+    connect(buttonBox, &QDialogButtonBox::accepted, this, &KeyDialog::close);
 }
 //---------------------------------------------------------------------------
-void KeyDialog::showEvent(QShowEvent *event)
+void KeyDialog::setFlag(int flag)
 {
-    if (event->spontaneous()) return;
+    labelS->setVisible(flag != 3);
+    labelSecond->setVisible(flag != 3);
+    labelha->setVisible(flag != 3);
+    label3H_Hour->setVisible(flag != 3);
+    labelhb->setVisible(flag != 3);
+    label6H_Hour->setVisible(flag != 3);
+    labelhc->setVisible(flag != 3);
+    label12H_Hour->setVisible(flag != 3);
 
-    Label10->setVisible(flag != 3);
-    Label21->setVisible(flag != 3);
-    Label23->setVisible(flag != 3);
-    Label24->setVisible(flag != 3);
-    Label25->setVisible(flag != 3);
-    Label26->setVisible(flag != 3);
-    Label27->setVisible(flag != 3);
-    Label28->setVisible(flag != 3);
-    Label29->setVisible(flag >= 1);
-    Label30->setVisible(flag >= 1);
-    Label31->setVisible(flag == 2);
-    Label32->setVisible(flag == 2);
-    Label33->setVisible(flag == 3);
-    Label34->setVisible(flag == 3);
-    Label35->setVisible(flag == 3);
-    Label36->setVisible(flag == 3);
-    Label37->setVisible(flag == 3);
-    Label38->setVisible(flag == 3);
+    labelr->setVisible(flag >= 1);
+    labelStationID->setVisible(flag >= 1);
+
+    labels->setVisible(flag == 3);
+    labelStationID_L->setVisible(flag == 3);
+    labelS_2->setVisible(flag == 3);
+    labelStationID_U->setVisible(flag == 3);
+    labelN->setVisible(flag == 3);
+    labelSequenceNumber->setVisible(flag == 3);
+
+    labelb->setVisible(flag == 2);
+    labelBaseStationID->setVisible(flag == 2);
 }
 //---------------------------------------------------------------------------

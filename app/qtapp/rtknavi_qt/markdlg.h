@@ -13,22 +13,32 @@ class QMarkDialog : public QDialog, private Ui::MarkDialog
 {
     Q_OBJECT
 public slots:
-    void btnOkClicked();
-    void btnKeyDlgClicked();
+    void saveClose();
+    void showKeyDialog();
     void btnPositionClicked();
 
 protected:
-    void showEvent(QShowEvent *);
-
+    int nMark;
+    QString stationPositionFileF;
+    int positionMode;
 private:
     void updateEnable(void);
     KeyDialog *keyDialog;
 
 public:
-    QString name, comment;
-    int positionMode, nMark;
-    double fixPosition[3];
-	
+
+    void setPositionMode(int);
+    int getPositionMode();
+
+    void setName(const QString&);
+    QString getName();
+
+    void setComment(const QString&);
+    QString getComment();
+
+    void setStationPositionFile(const QString&);
+    QString getStationPositionFile();
+
     explicit QMarkDialog(QWidget *parent);
 	
 };

@@ -17,10 +17,10 @@ class ConvOptDialog : public QDialog, private Ui::ConvOptDialog
     Q_OBJECT
 
 public slots:
-    void btnOkClicked();
-    void btnMaskClicked();
-    void btnFreqClicked();
-    void btnFcnClicked();
+    void saveClose();
+    void showMaskDialog();
+    void showFrequencyDialog();
+    void showFcnDialog();
 
 protected:
     void showEvent(QShowEvent*);

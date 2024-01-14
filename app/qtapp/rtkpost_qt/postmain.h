@@ -53,37 +53,37 @@ class MainForm : public QDialog, public Ui::MainForm
     Q_OBJECT
 
 public slots:
-    void btnPlotClicked();
-    void btnViewClicked();
-    void btnToKMLClicked();
-    void btnOptionClicked();
-    void btnExecClicked();
-    void btnAbortClicked();
-    void btnAboutClicked();
+    void callRtkPlot();
+    void viewOutputFile();
+    void convertToKML();
+    void showOptionsDialog();
+    void postProcess();
+    void abortProcessing();
+    void showAboutDialog();
 	
-    void btnTimeStartClicked();
-    void btnTimeStopClicked();
-    void btnInputFile1Clicked();
-    void btnInputFile3Clicked();
-    void btnInputFile2Clicked();
-    void btnInputFile4Clicked();
-    void btnInputFile5Clicked();
-    void btnOutputFileClicked();
-    void btnInputView1Clicked();
-    void btnInputView3Clicked();
-    void btnInputView2Clicked();
-    void btnInputView4Clicked();
-    void btnInputView5Clicked();
-    void btnOutputView1Clicked();
-    void btnOutputView2Clicked();
-    void btnInputPlot1Clicked();
-    void btnInputPlot2Clicked();
-    void btnKeywordClicked();
+    void showStartTimeDialog();
+    void showStopTimeDialog();
+    void selectInputFile1();
+    void selectInputFile3();
+    void selectInputFile2();
+    void selectInputFile4();
+    void selectInputFile5();
+    void selectOutputFile();
+    void viewInputFile1();
+    void viewInputFile3();
+    void viewInputFile2();
+    void viewInputFile4();
+    void viewInputFile5();
+    void viewOutputFileStat();
+    void viewOutputFileTrace();
+    void plotInputFile1();
+    void plotInputFile2();
+    void showKeyDialog();
 		
     void outputDirectoryEnableClicked();
-    void btnOutputDirectoryClicked();
-    void btnInputFile6Clicked();
-    void btnInputView6Clicked();
+    void selectOutputDirectory();
+    void selectInputFile6();
+    void viewInputFile6();
 
     void processingFinished(int);
     void showMessage(const QString  &msg);
@@ -150,7 +150,7 @@ public:
 	
     QString rnxOptions1, rnxOptions2, pppOptions;
     QString fieldSeperator, roverAntenna, referenceAntenna, antennaPcvFile, stationPositionFile, PrecEphFile;
-    QString netRSCorrFile1, netRSCorrFile2, satelliteClockCorrectionFile, googleEarthFile;
+    QString netRSCorrFile1, netRSCorrFile2, satelliteClockCorrectionFile;
     QString geoidDataFile, ionosphereFile, dcbFile, eopFile, blqFile;
     QString sbasCorrectionFile, satellitePcvFile, excludedSatellites;
     QString roverList, baseList;

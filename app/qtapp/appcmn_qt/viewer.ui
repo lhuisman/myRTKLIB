@@ -11,10 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>TEXT VIEWER</string>
-  </property>
-  <property name="toolTip">
-   <string/>
+   <string>Text Viewer</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -37,12 +34,15 @@
         <property name="toolTip">
          <string>Search string</string>
         </property>
+        <property name="clearButtonEnabled">
+         <bool>true</bool>
+        </property>
        </widget>
       </item>
       <item>
        <widget class="QPushButton" name="btnFind">
         <property name="toolTip">
-         <string/>
+         <string>Search string</string>
         </property>
         <property name="text">
          <string>&amp;Find</string>
@@ -80,7 +80,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="btnRead">
+       <widget class="QPushButton" name="btnReadSave">
         <property name="toolTip">
          <string/>
         </property>
@@ -90,7 +90,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="btnOpt">
+       <widget class="QPushButton" name="btnOptions">
         <property name="toolTip">
          <string/>
         </property>
@@ -123,7 +123,11 @@
     </widget>
    </item>
    <item>
-    <widget class="QPlainTextEdit" name="textEdit"/>
+    <widget class="QPlainTextEdit" name="textEdit">
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

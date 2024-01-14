@@ -13,21 +13,22 @@ class SerialOptDialog : public QDialog, private Ui::SerialOptDialog
     Q_OBJECT
 
 protected:
-    void showEvent(QShowEvent *);
-
     void updatePortList();
 
     CmdOptDialog *cmdOptDialog;
 
 public slots:
-    void  btnOkClicked();
     void updateEnable();
 
 public:
-    QString path, commands[2];
-    int options, commandsEnabled[2];
+    QString commands[2];
+    int commandsEnabled[2];
 
-    explicit SerialOptDialog(QWidget*);
+    explicit SerialOptDialog(QWidget*, int options = 0);
+
+    void setOptions(int options);
+    QString getPath();
+    void setPath(QString path);
 };
 //---------------------------------------------------------------------------
 #endif

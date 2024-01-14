@@ -29,13 +29,19 @@ OutputStrDialog::OutputStrDialog(QWidget *parent)
     lEFilePath1->setCompleter(fileCompleter);
     lEFilePath2->setCompleter(fileCompleter);
 
-    connect(btnCancel, &QPushButton::clicked, this, &OutputStrDialog::reject);
-    connect(btnFile1, &QPushButton::clicked, this, &OutputStrDialog::btnFile1Clicked);
-    connect(btnFile2, &QPushButton::clicked, this, &OutputStrDialog::btnFile2Clicked);
-    connect(btnKey, &QPushButton::clicked, this, &OutputStrDialog::btnKeyClicked);
-    connect(btnOk, &QPushButton::clicked, this, &OutputStrDialog::btnOkClicked);
-    connect(btnStream1, &QPushButton::clicked, this, &OutputStrDialog::btnStream1Clicked);
-    connect(btnStream2, &QPushButton::clicked, this, &OutputStrDialog::btnStream2Clicked);
+    // line edit actions
+    QAction *aclEFilePath1Select = lEFilePath1->addAction(QIcon(":/buttons/folder"), QLineEdit::TrailingPosition);
+    aclEFilePath1Select->setToolTip(tr("Select File"));
+    QAction *aclEFilePath2Select = lEFilePath2->addAction(QIcon(":/buttons/folder"), QLineEdit::TrailingPosition);
+    aclEFilePath2Select->setToolTip(tr("Select File"));
+
+    connect(buttonBox, &QDialogButtonBox::accepted, this, &OutputStrDialog::saveClose);
+    connect(buttonBox, &QDialogButtonBox::rejected, this, &OutputStrDialog::reject);
+    connect(aclEFilePath1Select, &QAction::triggered, this, &OutputStrDialog::selectFile1);
+    connect(aclEFilePath2Select, &QAction::triggered, this, &OutputStrDialog::selectFile2);
+    connect(btnKey, &QPushButton::clicked, this, &OutputStrDialog::showKeyDialog);
+    connect(btnStream1, &QPushButton::clicked, this, &OutputStrDialog::showStream1Options);
+    connect(btnStream2, &QPushButton::clicked, this, &OutputStrDialog::showStream2Options);
     connect(cBStream1, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &OutputStrDialog::updateEnable);
     connect(cBStream2, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &OutputStrDialog::updateEnable);
     connect(cBStream1C, &QCheckBox::clicked, this, &OutputStrDialog::updateEnable);
@@ -62,7 +68,7 @@ void OutputStrDialog::showEvent(QShowEvent *event)
     updateEnable();
 }
 //---------------------------------------------------------------------------
-void OutputStrDialog::btnOkClicked()
+void OutputStrDialog::saveClose()
 {
     streamEnabled[0] = cBStream1C->isChecked();
     streamEnabled[1] = cBStream2C->isChecked();
@@ -78,40 +84,40 @@ void OutputStrDialog::btnOkClicked()
     accept();
 }
 //---------------------------------------------------------------------------
-void OutputStrDialog::btnFile1Clicked()
+void OutputStrDialog::selectFile1()
 {
     lEFilePath1->setText(QDir::toNativeSeparators(QFileDialog::getSaveFileName(this, tr("Load..."), lEFilePath1->text())));
 }
 //---------------------------------------------------------------------------
-void OutputStrDialog::btnFile2Clicked()
+void OutputStrDialog::selectFile2()
 {
     lEFilePath2->setText(QDir::toNativeSeparators(QFileDialog::getSaveFileName(this, tr("Load..."), lEFilePath2->text())));
 }
 //---------------------------------------------------------------------------
-void OutputStrDialog::btnKeyClicked()
+void OutputStrDialog::showKeyDialog()
 {
     keyDialog->exec();
 }
 //---------------------------------------------------------------------------
-void OutputStrDialog::btnStream1Clicked()
+void OutputStrDialog::showStream1Options()
 {
     switch (cBStream1->currentIndex()) {
-        case 0: serialOptions(0, 0); break;
-        case 1: tcpOptions(0, 1); break;
-        case 2: tcpOptions(0, 0); break;
-        case 3: tcpOptions(0, 2); break;
-        case 4: tcpOptions(0, 4); break;
+        case 0: showSerialOptions(0, 0); break;
+        case 1: showTcpOptions(0, 1); break;
+        case 2: showTcpOptions(0, 0); break;
+        case 3: showTcpOptions(0, 2); break;
+        case 4: showTcpOptions(0, 4); break;
     }
 }
 //---------------------------------------------------------------------------
-void OutputStrDialog::btnStream2Clicked()
+void OutputStrDialog::showStream2Options()
 {
     switch (cBStream2->currentIndex()) {
-        case 0: serialOptions(1, 0); break;
-        case 1: tcpOptions(1, 1); break;
-        case 2: tcpOptions(1, 0); break;
-        case 3: tcpOptions(1, 2); break;
-        case 4: tcpOptions(0, 4); break;
+        case 0: showSerialOptions(1, 0); break;
+        case 1: showTcpOptions(1, 1); break;
+        case 2: showTcpOptions(1, 0); break;
+        case 3: showTcpOptions(1, 2); break;
+        case 4: showTcpOptions(0, 4); break;
     }
 }
 //---------------------------------------------------------------------------
@@ -134,31 +140,29 @@ QString OutputStrDialog::setFilePath(const QString p)
     return path;
 }
 //---------------------------------------------------------------------------
-void OutputStrDialog::serialOptions(int index, int opt)
+void OutputStrDialog::showSerialOptions(int index, int opt)
 {
-    serialOptDialog->path = paths[index][0];
-    serialOptDialog->options = opt;
+    serialOptDialog->setPath(paths[index][0]);
+    serialOptDialog->setOptions(opt);
 
     serialOptDialog->exec();
     if (serialOptDialog->result() != QDialog::Accepted) return;
 
-    paths[index][0] = serialOptDialog->path;
+    paths[index][0] = serialOptDialog->getPath();
 }
 //---------------------------------------------------------------------------
-void OutputStrDialog::tcpOptions(int index, int opt)
+void OutputStrDialog::showTcpOptions(int index, int opt)
 {
-    tcpOptDialog->path = paths[index][1];
-    tcpOptDialog->showOptions = opt;
-    for (int i = 0; i < 10; i++) {
-        tcpOptDialog->history[i] = history[i];
-	}
+    tcpOptDialog->setPath(paths[index][1]);
+    tcpOptDialog->setOptions(opt);
+    tcpOptDialog->setHistory(history, 10);
 
     tcpOptDialog->exec();
     if (tcpOptDialog->exec() != QDialog::Accepted) return;
 
-    paths[index][1] = tcpOptDialog->path;
+    paths[index][1] = tcpOptDialog->getPath();
     for (int i = 0; i < 10; i++) {
-        history[i] = tcpOptDialog->history[i];
+        history[i] = tcpOptDialog->getHistory()[i];
 	}
 }
 //---------------------------------------------------------------------------
@@ -173,8 +177,6 @@ void OutputStrDialog::updateEnable(void)
     btnStream2->setEnabled(cBStream2C->isChecked() && cBStream2->currentIndex() <= 4);
     lEFilePath1->setEnabled(cBStream1C->isChecked() && cBStream1->currentIndex() == 5);
     lEFilePath2->setEnabled(cBStream2C->isChecked() && cBStream2->currentIndex() == 5);
-    btnFile1->setEnabled(cBStream1C->isChecked() && cBStream1->currentIndex() == 5);
-    btnFile2->setEnabled(cBStream2C->isChecked() && cBStream2->currentIndex() == 5);
     lblF1->setEnabled(ena);
     lblSwapInterval->setEnabled(ena);
     lblH->setEnabled(ena);

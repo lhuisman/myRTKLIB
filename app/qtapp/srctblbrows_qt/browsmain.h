@@ -13,6 +13,7 @@ class QCloseEvent;
 class StaListDialog;
 class MapView;
 class QTimer;
+class MntpOptDialog;
 
 //---------------------------------------------------------------------------
 class MainForm : public QMainWindow, private Ui::MainForm
@@ -39,6 +40,7 @@ public slots:
     void btnMapClicked();
     void loadTimerExpired();
     void streamTableCellClicked(int ARow, int ACol);
+    void streamTableCellDblClicked(int ARow, int ACol);
     void casterTableCellDblClicked(int ARow, int ACol);
     void btnStatsionClicked();
     void updateCaster();
@@ -50,6 +52,7 @@ private:
     float fontScale;
     MapView *mapView;
     StaListDialog *staListDialog;
+    MntpOptDialog *mountPointDialog;
     QTimer *loadTimer;
     QFutureWatcher<char*> tableWatcher;
     QFutureWatcher<char*> casterWatcher;

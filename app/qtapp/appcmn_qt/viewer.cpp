@@ -9,60 +9,63 @@
 #include "viewer.h"
 #include "vieweropt.h"
 
-QColor TextViewer::colorText = Qt::black, TextViewer::colorBackground = Qt::black;
+QColor TextViewer::colorText = Qt::black, TextViewer::colorBackground = Qt::white;
 QFont TextViewer::font;
 
 //---------------------------------------------------------------------------
-TextViewer::TextViewer(QWidget *parent)
+TextViewer::TextViewer(QWidget *parent, int option)
     : QDialog(parent)
 {
     setupUi(this);
 
-    option = 1;
-
     viewerOptDialog = new ViewerOptDialog(this);
 
     connect(btnClose, &QPushButton::clicked, this, &TextViewer::accept);
-    connect(btnFind, &QPushButton::clicked, this, &TextViewer::btnFindClicked);
-    connect(btnOpt, &QPushButton::clicked, this, &TextViewer::btnOptionsClicked);
-    connect(btnRead, &QPushButton::clicked, this, &TextViewer::btnReadClicked);
-    connect(btnReload, &QPushButton::clicked, this, &TextViewer::btnReloadClicked);
-    connect(findStr, &QLineEdit::editingFinished, this, &TextViewer::btnFindClicked);
+    connect(btnFind, &QPushButton::clicked, this, &TextViewer::findText);
+    connect(btnOptions, &QPushButton::clicked, this, &TextViewer::showOptions);
+    connect(btnReadSave, &QPushButton::clicked, this, &TextViewer::readSaveFile);
+    connect(btnReload, &QPushButton::clicked, this, &TextViewer::reloadText);
+    connect(findStr, &QLineEdit::editingFinished, this, &TextViewer::findText);
+
+    setOption(option);
+}
+//---------------------------------------------------------------------------
+void TextViewer::setOption(int option)
+{
+    if (option == 0) {
+        btnReload->setVisible(false);
+        btnReadSave->setVisible(false);
+    } else if (option == 2) {
+        btnReload->setVisible(false);
+        btnReadSave->setText(tr("Save..."));
+    }
 }
 //---------------------------------------------------------------------------
 void TextViewer::showEvent(QShowEvent *event)
 {
     if (event->spontaneous()) return;
 
-    if (option == 0) {
-        btnReload->setVisible(false);
-        btnRead->setVisible(false);
-    } else if (option == 2) {
-        btnReload->setVisible(false);
-        btnRead->setText(tr("Save..."));
-	}
-
 	updateText();
 }
 //---------------------------------------------------------------------------
-void TextViewer::btnReloadClicked()
+void TextViewer::reloadText()
 {
 	read(file);
 }
 //---------------------------------------------------------------------------
-void TextViewer::btnReadClicked()
+void TextViewer::readSaveFile()
 {
-    if (btnRead->text() == tr("Save..."))
+    if (btnReadSave->text() == tr("Save..."))
         save(QDir::toNativeSeparators(QFileDialog::getSaveFileName(this, QString(), file)));
     else
         read(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, QString(), file)));
 }
 //---------------------------------------------------------------------------
-void TextViewer::btnOptionsClicked()
+void TextViewer::showOptions()
 {
-    viewerOptDialog->font = font;
-    viewerOptDialog->colorText = colorText;
-    viewerOptDialog->colorBackground = colorBackground;
+    viewerOptDialog->setFont(font);
+    viewerOptDialog->setTextColor(colorText);
+    viewerOptDialog->setBackgroundColor(colorBackground);
 
     viewerOptDialog->move(this->size().width() / 2 - viewerOptDialog->size().width() / 2,
                           this->size().height() / 2 - viewerOptDialog->size().height() / 2);
@@ -70,14 +73,14 @@ void TextViewer::btnOptionsClicked()
 
     if (viewerOptDialog->result() != QDialog::Accepted) return;
 
-    font = viewerOptDialog->font;
-    colorText = viewerOptDialog->colorText;
-    colorBackground = viewerOptDialog->colorBackground;
+    font = viewerOptDialog->getFont();
+    colorText = viewerOptDialog->getTextColor();
+    colorBackground = viewerOptDialog->getBackgroundColor();
 
 	updateText();
 }
 //---------------------------------------------------------------------------
-void TextViewer::btnFindClicked()
+void TextViewer::findText()
 {
     textEdit->find(findStr->text());
 }
@@ -89,7 +92,6 @@ bool TextViewer::read(const QString &path)
     if (expath(qPrintable(path), p, 1) < 1) return false;
 
     QFile f(filename);
-
     if (!f.open(QIODevice::ReadOnly)) return false;
     textEdit->setPlainText("");
 
@@ -114,7 +116,7 @@ bool TextViewer::save(const QString &filename)
     return true;
 }
 //---------------------------------------------------------------------------
-void TextViewer::updateText(void)
+void TextViewer::updateText()
 {
     QPalette pal;
 

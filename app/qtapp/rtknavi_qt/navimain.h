@@ -34,44 +34,44 @@ public:
 public slots:
     void updateTimerTriggered();
 
-    void startClicked();
-    void stopClicked();
+    void startServer();
+    void stopServer();
     void showRtkPlot();
-    void btnOptionsClicked();
-    void exitClicked();
+    void showOptionsDialog();
+    void exit();
 
-    void btnTimeSystemClicked();
-    void btnInputStreamClicked();
-    void btnOutputStreamClicked();
-    void btnLogStreamClicked();
-    void btnSolutionTypeClicked();
-    void btnPlotType1Clicked();
+    void changeTimeSystem();
+    void showInputStreamDialog();
+    void showOutputStreamDialog();
+    void showLogStreamDialog();
+    void changeSolutionType();
+    void changePlotType1();
 
     void showMonitorDialog();
     void btnSaveClicked();
-    void btnAboutClicked();
-    void btnTaskTrayClicked();
+    void showAboutDialog();
+    void minimizeToTray();
 
-    void menuExpandClicked();
-    void sBSolutionChanged();
+    void expandFromTray();
+    void changeSolutionIndex();
 
-    void trayIconClicked(QSystemTrayIcon::ActivationReason);
-    void btnFrequencyType1Clicked();
-    void btnPanelClicked();
-    void btnPlotType2Clicked();
-    void btnFrequencyType2Clicked();
-    void btnPlotType3Clicked();
-    void btnFrequencyType3Clicked();
-    void btnPlotType4Clicked();
-    void btnFrequencyType4Clicked();
-    void btnExpand1Clicked();
-    void btnShrink1Clicked();
-    void btnExpand2Clicked();
-    void btnShrink2Clicked();
-    void btnExpand3Clicked();
-    void btnShrink3Clicked();
-    void btnExpand4Clicked();
-    void btnShrink4Clicked();
+    void maximizeFromTray(QSystemTrayIcon::ActivationReason);
+    void changeFrequencyType1();
+    void changePanelMode();
+    void changePlotType2();
+    void changeFrequencyType2();
+    void changePlotType3();
+    void changeFrequencyType3();
+    void changePlotType4();
+    void changeFrequencyType4();
+    void expandPlot1();
+    void shrinkPlot1();
+    void expandPlot2();
+    void shrinkPlot2();
+    void expandPlot3();
+    void shrinkPlot3();
+    void expandPlot4();
+    void shrinkPlot4();
     void btnMarkClicked();
 
 protected:
@@ -92,7 +92,7 @@ private:
                      double *rb, int ns, double age, double ratio);
     void serverStart();
     void serverStop();
-    void updatePanel();
+    void updatePanels();
     void updateTimeSystem();
     void updateSolutionType();
     void updateFont();
@@ -123,7 +123,10 @@ private:
     void saveOptions(void);
     void setTrayIcon(int index);
     int execCommand(const QString &cmd, const QStringList &opt, int show);
-    void btnFrequencyTypeChanged(int i);
+    void changeFrequencyType(int i);
+    void showFrequenciesDialog();
+    void showMaskDialog();
+    void showKeyDialog();
     QColor snrColor(int snr);
 public:
     OptDialog *optDialog;
@@ -133,7 +136,7 @@ public:
     int panelStacking, panelMode;
     int serverCycle, serverBufferSize, scale, solutionBufferSize, NavSelect, savedSolutions;
 
-    int NmeaReq, nmeaCycle, inputTimeTag, inputTime64Bit;
+    int nmeaRequestType, nmeaCycle, inputTimeTag, inputTimeTag64bit;
     int outputTimeTag, outputAppend, logTimeTag,logAppend;
     int timeoutTime, reconnectionTime, sbasCorrection, dgpsCorrection, tideCorrection, fileSwapMargin;
     int streamType[MAXSTRRTK], streamEnabled[MAXSTRRTK], inputFormat[MAXSTRRTK];
@@ -165,8 +168,8 @@ public:
     QColor panelFontColor, positionFontColor;
 
     int debugTraceLevel, debugStatusLevel, outputGeoidF, baselineEnabled;
-    int roverPositionTypeF, referencePositionTypeF, roverAntennaPcvF, referenceAntennaPcvF;
-    QString roverAntennaF, referenceAntennaF, satellitePcvFileF, antennaPcvFileF;
+    int roverPositionType, referencePositionType, roverAntennaPcv, referenceAntennaPcv;
+    QString roverAntenna, referenceAntenna, satellitePcvFile, antennaPcvFile;
     double roverAntennaDelta[3], referenceAntennaDelta[3], roverPosition[3], referencePosition[3], nmeaPosition[3];
     double baseline[2];
 
@@ -174,7 +177,7 @@ public:
 
     QTimer updateTimer;
 
-    QString geoidDataFileF, stationPositionFileF, dcbFile, eopFileF;
+    QString geoidDataFile, stationPositionFile, dcbFile, eopFile;
     QString localDirectory, pointName[MAXMAPPNT];
 
     double pointPosition[MAXMAPPNT][3];

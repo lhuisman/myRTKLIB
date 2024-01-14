@@ -9,13 +9,11 @@ TimeDialog::TimeDialog(QWidget *parent)
 {
     setupUi(this);
 
-    connect(btnOk, &QPushButton::clicked, this, &TimeDialog::close);
+    connect(buttonBox, &QDialogButtonBox::accepted, this, &TimeDialog::close);
 }
 //---------------------------------------------------------------------------
-void TimeDialog::showEvent(QShowEvent *event)
+void TimeDialog::setTime(gtime_t time)
 {
-    if (event->spontaneous()) return;
-
 	gtime_t utc;
     double tow, doy;
 	int week;

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>635</width>
-    <height>612</height>
+    <width>634</width>
+    <height>500</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -53,16 +53,6 @@
      </property>
      <property name="value">
       <number>16384</number>
-     </property>
-    </widget>
-   </item>
-   <item row="19" column="7">
-    <widget class="QPushButton" name="btnLocalDir">
-     <property name="toolTip">
-      <string>Select directory for HTTP &amp; FTP data</string>
-     </property>
-     <property name="text">
-      <string>...</string>
      </property>
     </widget>
    </item>
@@ -125,16 +115,6 @@
      </property>
      <property name="text">
       <string>Offset E/N/U</string>
-     </property>
-    </widget>
-   </item>
-   <item row="17" column="7">
-    <widget class="QPushButton" name="btnLogFile">
-     <property name="toolTip">
-      <string>Select log file</string>
-     </property>
-     <property name="text">
-      <string>...</string>
      </property>
     </widget>
    </item>
@@ -229,6 +209,9 @@
      </property>
      <property name="text">
       <string/>
+     </property>
+     <property name="placeholderText">
+      <string>&lt;antenna description&gt;,&lt;antenna serial number&gt;, &lt;setup description&gt;</string>
      </property>
     </widget>
    </item>
@@ -367,13 +350,6 @@
      </property>
     </widget>
    </item>
-   <item row="17" column="2" colspan="5">
-    <widget class="QLineEdit" name="lELogFile">
-     <property name="toolTip">
-      <string>Path to log file</string>
-     </property>
-    </widget>
-   </item>
    <item row="4" column="2">
     <widget class="QSpinBox" name="sBDataTimeout">
      <property name="toolTip">
@@ -397,22 +373,6 @@
      </property>
      <property name="text">
       <string>Inactive Timeout</string>
-     </property>
-    </widget>
-   </item>
-   <item row="16" column="2" colspan="5">
-    <widget class="QSpinBox" name="sBProgressBar">
-     <property name="toolTip">
-      <string>Maximum range of input byte buffer</string>
-     </property>
-     <property name="suffix">
-      <string> kb</string>
-     </property>
-     <property name="maximum">
-      <number>100000</number>
-     </property>
-     <property name="value">
-      <number>2000</number>
      </property>
     </widget>
    </item>
@@ -562,17 +522,13 @@
      </property>
     </widget>
    </item>
-   <item row="19" column="2" colspan="5">
-    <widget class="QLineEdit" name="lELocalDir">
-     <property name="toolTip">
-      <string>Local storage directory for HTTP &amp; FTP data</string>
-     </property>
-    </widget>
-   </item>
    <item row="20" column="2" colspan="6">
     <widget class="QLineEdit" name="lEProxyAddress">
      <property name="toolTip">
       <string>Proxy server</string>
+     </property>
+     <property name="placeholderText">
+      <string>&lt;address&gt;:&lt;port&gt;</string>
      </property>
     </widget>
    </item>
@@ -587,9 +543,12 @@
      <property name="text">
       <string/>
      </property>
+     <property name="placeholderText">
+      <string>&lt;antenna description&gt;,&lt;antenna serial number&gt;, &lt;setup description&gt;</string>
+     </property>
     </widget>
    </item>
-   <item row="15" column="2" colspan="5">
+   <item row="15" column="2" colspan="6">
     <widget class="QComboBox" name="cBRelayMessage">
      <property name="toolTip">
       <string>Relay back output messages to input stream</string>
@@ -614,6 +573,36 @@
        <string>(3) -&gt; (0)</string>
       </property>
      </item>
+    </widget>
+   </item>
+   <item row="16" column="2" colspan="6">
+    <widget class="QSpinBox" name="sBProgressBar">
+     <property name="toolTip">
+      <string>Maximum range of input byte buffer</string>
+     </property>
+     <property name="suffix">
+      <string> kb</string>
+     </property>
+     <property name="maximum">
+      <number>100000</number>
+     </property>
+     <property name="value">
+      <number>2000</number>
+     </property>
+    </widget>
+   </item>
+   <item row="17" column="2" colspan="6">
+    <widget class="QLineEdit" name="lELogFile">
+     <property name="toolTip">
+      <string>Path to log file</string>
+     </property>
+    </widget>
+   </item>
+   <item row="19" column="2" colspan="6">
+    <widget class="QLineEdit" name="lELocalDir">
+     <property name="toolTip">
+      <string>Local storage directory for HTTP &amp; FTP data</string>
+     </property>
     </widget>
    </item>
   </layout>
@@ -644,9 +633,7 @@
   <tabstop>cBRelayMessage</tabstop>
   <tabstop>sBProgressBar</tabstop>
   <tabstop>lELogFile</tabstop>
-  <tabstop>btnLogFile</tabstop>
   <tabstop>lELocalDir</tabstop>
-  <tabstop>btnLocalDir</tabstop>
   <tabstop>lEProxyAddress</tabstop>
  </tabstops>
  <resources/>

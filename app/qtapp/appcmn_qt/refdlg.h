@@ -16,24 +16,29 @@ protected:
     void  showEvent(QShowEvent *);
 
 public slots:
-    void  btnOKClicked();
-    void  stationListDblClick(int, int);
-    void  btnLoadClicked();
-    void  findList(void);
+    void  saveClose();
+    void  stationSelected(int, int);
+    void  loadStations();
+    void  findList();
 
 private:
-    void  loadList(void);
-    void  loadSinex(void);
+    void  loadList(QString filename);
+    void  loadSinex(QString filename);
     void  addReference(int n, double *pos, const QString code, const QString name);
-    int   selectReference(void);
-    void  updateDistances(void);
+    int   validReference();
+    void  updateDistances();
 
-public:
-    QString stationPositionFile, stationId, stationName;
     int options, fontScale;
-    double position[3], roverPosition[3];
+    double roverPosition[3];
+public:
+    explicit RefDialog(QWidget* parent, int options = 0);
 
-    explicit RefDialog(QWidget* parent);
+    void setRoverPosition(double lat, double lon, double h);
+    double *getPosition();
+
+    QString getStationId();
+    QString getStationName();
+    QString stationPositionFile;
 };
 //---------------------------------------------------------------------------
 #endif

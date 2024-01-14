@@ -15,9 +15,9 @@ protected:
     void showEvent(QShowEvent *);
 
 public slots:
-    void btnOkClicked();
-    void btnLoadClicked();
-    void btnSaveClicked();
+    void saveClose();
+    void load();
+    void save();
     void updateEnable();
 
 public:

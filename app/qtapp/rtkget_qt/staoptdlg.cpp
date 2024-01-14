@@ -14,10 +14,10 @@ StaListDialog::StaListDialog(QWidget *parent)
 {
     setupUi(this);
 
-    connect(btnCancel, &QPushButton::clicked, this, &StaListDialog::reject);
-    connect(btnLoad, &QPushButton::clicked, this, &StaListDialog::btnLoadClicked);
-    connect(btnOk, &QPushButton::clicked, this, &StaListDialog::btnOkClicked);
-    connect(btnSave, &QPushButton::clicked, this, &StaListDialog::btnSaveClicked);
+    connect(buttonBox, &QDialogButtonBox::accepted, this, &StaListDialog::btnOkClicked);
+    connect(buttonBox, &QDialogButtonBox::rejected, this, &StaListDialog::reject);
+    connect(btnLoad, &QPushButton::clicked, this, &StaListDialog::loadFile);
+    connect(btnSave, &QPushButton::clicked, this, &StaListDialog::saveFile);
 }
 //---------------------------------------------------------------------------
 void StaListDialog::showEvent(QShowEvent *event)
@@ -40,7 +40,7 @@ void StaListDialog::btnOkClicked()
     accept();
 }
 //---------------------------------------------------------------------------
-void StaListDialog::btnLoadClicked()
+void StaListDialog::loadFile()
 {
     QString filename;
     QFile fp;
@@ -60,7 +60,7 @@ void StaListDialog::btnLoadClicked()
     }
 }
 //---------------------------------------------------------------------------
-void StaListDialog::btnSaveClicked()
+void StaListDialog::saveFile()
 {
     QString file = QDir::toNativeSeparators(QFileDialog::getSaveFileName(this, tr("Save...")));
     QFile fp;

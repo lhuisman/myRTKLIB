@@ -14,7 +14,9 @@ class TcpOptDialog : public QDialog, private Ui::TcpOptDialog
     Q_OBJECT
 
 protected:
-    void  showEvent(QShowEvent *);
+    MntpOptDialog *mntpOptDialog;
+    QString history[MAXHIST];
+    int showOptions;
 
 public slots:
     void btnOkClicked();
@@ -27,11 +29,13 @@ private:
     int  ExecCommand(const QString &cmd, const QStringList &opt, int show);
 
 public:
-    int showOptions;
-    QString path, history[MAXHIST];
-    MntpOptDialog *mntpOptDialog;
+    explicit TcpOptDialog(QWidget* parent, int options = 0);
+    void setOptions(int options);  // 0: TCP Server, 1: TCP Client, 2: NTRIP Server, 3: NTRIP Client, 4: NTRIP Caster Client, 5: NTRIP Caster Server, 6: UDP Server, 7: UDP Client,
 
-    explicit TcpOptDialog(QWidget* parent);
+    QString getPath();
+    void setPath(QString path);
+    QString* getHistory();
+    void setHistory(QString history[], int size);
 };
 //---------------------------------------------------------------------------
 #endif

@@ -29,6 +29,7 @@ SOURCES += \
     ../appcmn_qt/mapviewopt.cpp \
     ../appcmn_qt/aboutdlg.cpp \
     ../appcmn_qt/helper.cpp \
+    ../appcmn_qt/mntpoptdlg.cpp \
     ../appcmn_qt/viewer.cpp \
     ../appcmn_qt/vieweropt.cpp
 
@@ -40,6 +41,7 @@ HEADERS  += \
     ../appcmn_qt/gm_template.h \
     ../appcmn_qt/aboutdlg.h \
     ../appcmn_qt/helper.h \
+    ../appcmn_qt/mntpoptdlg.h \
     ../appcmn_qt/viewer.h \
     ../appcmn_qt/vieweropt.h
 
@@ -49,6 +51,7 @@ FORMS    += \
     ../appcmn_qt/mapview.ui \
     ../appcmn_qt/mapviewopt.ui \
     ../appcmn_qt/aboutdlg.ui \
+    ../appcmn_qt/mntpoptdlg.ui \
     ../appcmn_qt/viewer.ui \
     ../appcmn_qt/vieweropt.ui
 

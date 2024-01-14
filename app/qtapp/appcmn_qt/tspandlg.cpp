@@ -79,8 +79,11 @@ void SpanDialog::btnTimeStartClicked(void)
 {
     TimeDialog * timeDialog = new TimeDialog(this);
 
-    timeDialog->time.time = dTTimeStart->dateTime().toSecsSinceEpoch();
-    timeDialog->time.sec = dTTimeStart->dateTime().time().msec() / 1000;
+    gtime_t time;
+    time.time = dTTimeStart->dateTime().toSecsSinceEpoch();
+    time.sec = dTTimeStart->dateTime().time().msec() / 1000;
+    timeDialog->setTime(time);
+
     timeDialog->exec();
 }
 //---------------------------------------------------------------------------
@@ -88,8 +91,11 @@ void SpanDialog::btnTimeEndClicked(void)
 {
     TimeDialog * timeDialog = new TimeDialog(this);
 
-    timeDialog->time.time = dTTimeEnd->dateTime().toSecsSinceEpoch();
-    timeDialog->time.sec = dTTimeEnd->dateTime().time().msec() / 1000;
+    gtime_t time;
+    time.time = dTTimeEnd->dateTime().toSecsSinceEpoch();
+    time.sec = dTTimeEnd->dateTime().time().msec() / 1000;
+    timeDialog->setTime(time);
+
     timeDialog->exec();
 }
 //---------------------------------------------------------------------------

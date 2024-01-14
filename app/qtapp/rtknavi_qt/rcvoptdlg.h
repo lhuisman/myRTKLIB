@@ -10,16 +10,11 @@ class RcvOptDialog : public QDialog, private Ui::RcvOptDialog
 {
     Q_OBJECT
 
-protected:
-    void showEvent(QShowEvent *);
-
-public slots:
-    void btnOkClicked();
-
 public:
-    QString options;
-
     explicit RcvOptDialog(QWidget* parent);
+
+    QString getOptions();
+    void setOptions(const QString &);
 };
 //---------------------------------------------------------------------------
 #endif

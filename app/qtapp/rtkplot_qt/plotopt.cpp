@@ -23,7 +23,7 @@ PlotOptDialog::PlotOptDialog(QWidget *parent)
 {
     setupUi(this);
 
-    refDialog = new RefDialog(this);
+    refDialog = new RefDialog(this, 1);
 
     QCompleter *fileCompleter = new QCompleter(this);
     QFileSystemModel *fileModel = new QFileSystemModel(fileCompleter);
@@ -364,20 +364,17 @@ void PlotOptDialog::tleSatelliteFileOpen()
 //---------------------------------------------------------------------------
 void PlotOptDialog::referencePositionSelect()
 {
-    refDialog->roverPosition[0] = sBReferencePosition1->value();
-    refDialog->roverPosition[1] = sBReferencePosition2->value();
-    refDialog->roverPosition[2] = sBReferencePosition3->value();
+    refDialog->setRoverPosition(sBReferencePosition1->value(), sBReferencePosition2->value(), sBReferencePosition3->value());
 
     refDialog->move(pos().x() + size().width() / 2 - refDialog->size().width() / 2,
             pos().y() + size().height() / 2 - refDialog->size().height() / 2);
 
-    refDialog->options = 1;
     refDialog->exec();
     if (refDialog->result() != QDialog::Accepted) return;
 
-    sBReferencePosition1->setValue(refDialog->position[0]);
-    sBReferencePosition2->setValue(refDialog->position[1]);
-    sBReferencePosition3->setValue(refDialog->position[2]);
+    sBReferencePosition1->setValue(refDialog->getPosition()[0]);
+    sBReferencePosition2->setValue(refDialog->getPosition()[1]);
+    sBReferencePosition3->setValue(refDialog->getPosition()[2]);
 }
 //---------------------------------------------------------------------------
 void PlotOptDialog::updateFont(void)

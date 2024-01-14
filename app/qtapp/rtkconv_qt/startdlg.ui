@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>324</width>
-    <height>119</height>
+    <width>317</width>
+    <height>101</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,6 +26,18 @@
       <string/>
      </property>
      <layout class="QGridLayout" name="gridLayout">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
       <item row="1" column="0">
        <widget class="QDateTimeEdit" name="tETime">
         <property name="toolTip">
@@ -33,6 +45,9 @@
         </property>
         <property name="calendarPopup">
          <bool>true</bool>
+        </property>
+        <property name="timeSpec">
+         <enum>Qt::UTC</enum>
         </property>
        </widget>
       </item>
@@ -49,7 +64,7 @@
       <item row="1" column="1">
        <widget class="QPushButton" name="btnFileTime">
         <property name="toolTip">
-         <string>Set fiel creation time</string>
+         <string>Set time to file creation time</string>
         </property>
         <property name="text">
          <string>File Time</string>
@@ -60,47 +75,10 @@
     </widget>
    </item>
    <item>
-    <widget class="QWidget" name="widget" native="true">
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <property name="leftMargin">
-       <number>0</number>
-      </property>
-      <property name="topMargin">
-       <number>0</number>
-      </property>
-      <property name="rightMargin">
-       <number>0</number>
-      </property>
-      <property name="bottomMargin">
-       <number>0</number>
-      </property>
-      <item>
-       <widget class="QPushButton" name="btnOk">
-        <property name="toolTip">
-         <string/>
-        </property>
-        <property name="text">
-         <string>&amp;OK</string>
-        </property>
-        <property name="autoDefault">
-         <bool>true</bool>
-        </property>
-        <property name="default">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="btnCancel">
-        <property name="toolTip">
-         <string/>
-        </property>
-        <property name="text">
-         <string>&amp;Cancel</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
     </widget>
    </item>
   </layout>

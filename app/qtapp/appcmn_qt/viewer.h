@@ -20,10 +20,10 @@ protected:
     ViewerOptDialog *viewerOptDialog;
 
 public slots:
-    void btnReadClicked();
-    void btnOptionsClicked();
-    void btnReloadClicked();
-    void btnFindClicked();
+    void readSaveFile();
+    void showOptions();
+    void reloadText();
+    void findText();
 
 private:
     QString file;
@@ -31,14 +31,15 @@ private:
     void updateText(void);
 
 public:
-    int option;  // 0: disable file loading; 1(default): allow file loading; 2: switch to file saving
     static QColor colorText, colorBackground;
     static QFont font;
 
     bool read(const QString &file);
     bool save(const QString &file);
 
-    explicit TextViewer(QWidget* parent);
+    explicit TextViewer(QWidget* parent, int option = 1);
+
+    void setOption(int option);  // 0: disable file loading; 1(default): allow file loading; 2: switch to file saving
 };
 //---------------------------------------------------------------------------
 #endif

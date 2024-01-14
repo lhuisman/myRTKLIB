@@ -234,7 +234,7 @@ Plot::Plot(QWidget *parent) : QMainWindow(parent)
     connectDialog = new ConnectDialog(this);
     skyImgDialog = new SkyImgDialog(this);
     plotOptDialog = new PlotOptDialog(this);
-    aboutDialog = new AboutDialog(this);
+    aboutDialog = new AboutDialog(this, QPixmap(":/icons/rtkplot"), PRGNAME);
     pntDialog = new PntDialog(this);
     fileSelDialog = new FileSelDialog(this);
     viewer = new TextViewer(this);
@@ -954,7 +954,7 @@ void Plot::menuSrcSolutionClicked()
     if (solutionFiles[sel].count() <= 0) return;
 
     viewer->setWindowTitle(solutionFiles[sel].at(0));
-    viewer->option = 0;
+    viewer->setOption(0);
     viewer->show();
     viewer->read(solutionFiles[sel].at(0));
 }
@@ -974,7 +974,7 @@ void Plot::menuSrcObservationClicked()
 
     viewer = new TextViewer(this);
     viewer->setWindowTitle(observationFiles.at(0));
-    viewer->option = 0;
+    viewer->setOption(0);
     viewer->show();
     viewer->read(!cstat ? file : tmpfile);
 
@@ -1287,8 +1287,6 @@ void Plot::menuAboutClicked()
 {
     trace(3, "menuAboutClick\n");
 
-    aboutDialog->aboutString = PRGNAME;
-    aboutDialog->iconIndex = 2;
     aboutDialog->exec();
 }
 // callback on button-connect/disconnect ------------------------------------

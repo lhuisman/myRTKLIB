@@ -10,21 +10,17 @@ RcvOptDialog::RcvOptDialog(QWidget *parent)
 {
     setupUi(this);
 
-    connect(btnOk, &QPushButton::clicked, this, &RcvOptDialog::btnOkClicked);
-    connect(btnCancel, &QPushButton::clicked, this, &RcvOptDialog::reject);
+    connect(buttonBox, &QDialogButtonBox::accepted, this, &RcvOptDialog::accept);
+    connect(buttonBox, &QDialogButtonBox::rejected, this, &RcvOptDialog::reject);
 }
 //---------------------------------------------------------------------------
-void RcvOptDialog::showEvent(QShowEvent *event)
+void RcvOptDialog::setOptions(const QString &options)
 {
-    if (event->spontaneous()) return;
-
     lEOption->setText(options);
 }
 //---------------------------------------------------------------------------
-void RcvOptDialog::btnOkClicked()
+QString RcvOptDialog::getOptions()
 {
-    options = lEOption->text();
-
-    accept();
+    return lEOption->text();
 }
 //---------------------------------------------------------------------------
