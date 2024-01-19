@@ -461,7 +461,7 @@ static int readbiaf(const char *file, nav_t *nav)
     while (fgets(buff,sizeof(buff),fp)) {
         if (sscanf(buff,"%4s %5s %4s %4s %4s",bias,svn,prn,obs1,obs2)<5) continue;
         if (obs1[0]!='C') continue;  /* skip phase biases for now */
-        if ((cbias=str2num(buff,82,10))==0.0) continue;
+        if ((cbias=str2num(buff,70,21))==0.0) continue;
         sat=satid2no(prn);
         sys=satsys(sat,NULL);
         /* other code biases are L1/L2, Galileo is L1/L5 */
