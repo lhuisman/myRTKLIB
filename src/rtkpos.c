@@ -1445,10 +1445,7 @@ static double intpres(gtime_t time, const obsd_t *obs, int n, const nav_t *nav,
                *p=(ttb*(*p)-tt*(*q))/(ttb-tt);
         }
     }
-    if (fabs(tt)<fabs(ttb)) {
-        nb=n;for (i=0;i<n;i++) obsb[i]=obs[i];  /* copy obs to previous base obs */
-        return tt;
-    } else return ttb;
+    return fabs(ttb)>fabs(tt)?ttb:tt;
 }
 /* index for single to double-difference transformation matrix (D') --------------------*/
 static int ddidx(rtk_t *rtk, int *ix, int gps, int glo, int sbs)
