@@ -42,7 +42,7 @@ public slots:
     void  showAboutDialog();
     void  busyTimerTriggered();
     void  minimizeToTray();
-    void  trayIconActivated(QSystemTrayIcon::ActivationReason);
+    void  restoreFromTaskTray(QSystemTrayIcon::ActivationReason);
     void  testDownload();
     void  SelectDeselectAllStations();
     void  downloadFinished();

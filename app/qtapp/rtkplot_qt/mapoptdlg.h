@@ -18,10 +18,10 @@ protected:
     void showEvent(QShowEvent*);
 
 public slots:
-    void btnSaveClicked();
+    void saveTag();
 
     void btnCenterClicked();
-    void scaleEqualClicked();
+    void scaleEqualChanged();
 
 private slots:
     void updateMap();

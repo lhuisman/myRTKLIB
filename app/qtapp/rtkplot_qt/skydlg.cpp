@@ -52,7 +52,7 @@ void SkyImgDialog::btnSaveClicked()
     if (!fp.open(QIODevice::WriteOnly)) return;
 
     QString data;
-    data = QString("%% sky image tag file: rtkplot %1 %2\n\n").arg(VER_RTKLIB).arg(PATCH_LEVEL);
+    data = QString("%% sky image tag file: rtkplot %1 %2\n\n").arg(VER_RTKLIB, PATCH_LEVEL);
     data += QString("centx   = %1\n").arg(plot->skyCenter[0], 0, 'g', 6);
     data += QString("centy   = %1\n").arg(plot->skyCenter[1], 0, 'g', 6);
     data += QString("scale   = %1\n").arg(plot->skyScale, 0, 'g', 6);

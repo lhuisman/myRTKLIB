@@ -1336,11 +1336,11 @@ void Plot::drawSky(QPainter &c, int level)
     p2.rx() -= 10; p2.ry() = p1.y();
 
     if (showStats && !simulatedObservation) {
-        s = QString(tr("MARKER: %1 %2")).arg(station.name).arg(station.marker);
+        s = QString(tr("MARKER: %1 %2")).arg(station.name, station.marker);
         drawLabel(graphSky, c, p1, s, Graph::Alignment::Left, Graph::Alignment::Top); p1.ry() += hh;
-        s = QString(tr("REC: %1 %2 %3")).arg(station.rectype).arg(station.recver).arg(station.recsno);
+        s = QString(tr("REC: %1 %2 %3")).arg(station.rectype, station.recver, station.recsno);
         drawLabel(graphSky, c, p1, s, Graph::Alignment::Left, Graph::Alignment::Top); p1.ry() += hh;
-        s = QString(tr("ANT: %1 %2")).arg(station.antdes).arg(station.antsno);
+        s = QString(tr("ANT: %1 %2")).arg(station.antdes, station.antsno);
         drawLabel(graphSky, c, p1, s, Graph::Alignment::Left, Graph::Alignment::Top); p1.ry() += hh;
     }
         // show statistics
@@ -1386,8 +1386,9 @@ void Plot::drawSky(QPainter &c, int level)
              } else if (ok) {
                 freq-=freq>2?2:0;  /* L1,L2,L5,L6 ... */
                 if (!obs->code[freq-1]) continue;
-                s += QString("%1  %2 %3 %4  ").arg(code2obs(obs->code[freq - 1])).arg(
-                              obs->P[freq - 1] == 0.0 ? "-" : "C").arg(obs->L[freq - 1] == 0.0 ? "-" : "L").arg(
+                s += QString("%1  %2 %3 %4  ").arg(code2obs(obs->code[freq - 1]),
+                              obs->P[freq - 1] == 0.0 ? "-" : "C",
+                              obs->L[freq - 1] == 0.0 ? "-" : "L",
                               obs->D[freq - 1] == 0.0 ? "-" : "D");
 
                 if (obs->P[freq - 1] == 0.0 && obs->L[freq - 1] == 0.0) s += "---- ";
@@ -1400,8 +1401,9 @@ void Plot::drawSky(QPainter &c, int level)
                     if (!strcmp(code2obs(obs->code[j]), qPrintable(obstype))) break;
                 if (j >= NFREQ + NEXOBS) continue;
 
-                s += QString("%1  %2 %3 %4  ").arg(code2obs(obs->code[j])).arg(
-                                 obs->P[j] == 0.0 ? "-" : "C").arg(obs->L[j] == 0.0 ? "-" : "L").arg(
+                s += QString("%1  %2 %3 %4  ").arg(code2obs(obs->code[j]),
+                                 obs->P[j] == 0.0 ? "-" : "C",
+                                 obs->L[j] == 0.0 ? "-" : "L",
                                  obs->D[j] == 0.0 ? "-" : "D");
 
                 if (obs->P[j] == 0.0 && obs->L[j] == 0.0) s += "---- ";
@@ -1611,7 +1613,6 @@ void Plot::drawDopStat(QPainter &c, double *dop, int *ns, int n)
 void Plot::drawSnr(QPainter &c, int level)
 {
     QPushButton *btn[] = { btnOn1, btnOn2, btnOn3 };
-    QString obsTypeText = cBObservationType2->currentText();
     QString label[] = { tr("SNR"), tr("Multipath"), tr("Elevation") };
     QString unit[] = { "dBHz", "m", degreeChar };
     gtime_t time = { 0, 0 };
@@ -1769,14 +1770,14 @@ void Plot::drawSnr(QPainter &c, int level)
         graphTriple[i]->getExtent(p1, p2);
         p1.rx() += 5;
         p1.ry() += 3;
-        drawLabel(graphTriple[i], c, p1, QString("%1 (%2)").arg(label[i]).arg(unit[i]), Graph::Alignment::Left, Graph::Alignment::Top);
+        drawLabel(graphTriple[i], c, p1, QString("%1 (%2)").arg(label[i], unit[i]), Graph::Alignment::Left, Graph::Alignment::Top);
     }
 }
 // draw SNR, MP to elevation-plot ----------------------------------------------
 void Plot::drawSnrE(QPainter &c, int level)
 {
     QPushButton *btn[] = { btnOn1, btnOn2, btnOn3 };
-    QString s, obsTypeText = cBObservationType2->currentText();
+    QString s;
     QString label[] = { tr("SNR (dBHz)"), tr("Multipath (m)") };
     gtime_t time = { 0, 0 };
     double ave = 0.0, rms = 0.0;
@@ -1921,11 +1922,11 @@ void Plot::drawSnrE(QPainter &c, int level)
             graphDual[i]->getExtent(p1, p2);
             p1.rx() += 8;
             p1.ry() += 6;
-            s = QString("MARKER: %1 %2").arg(station.name).arg(station.marker);
+            s = QString("MARKER: %1 %2").arg(station.name, station.marker);
             drawLabel(graphDual[i], c, p1, s, Graph::Alignment::Left, Graph::Alignment::Top); p1.ry() += hh;
-            s = QString("REC: %1 %2 %3").arg(station.rectype).arg(station.recver).arg(station.recsno);
+            s = QString("REC: %1 %2 %3").arg(station.rectype, station.recver, station.recsno);
             drawLabel(graphDual[i], c, p1, s, Graph::Alignment::Left, Graph::Alignment::Top); p1.ry() += hh;
-            s = QString("ANT: %1 %2").arg(station.antdes).arg(station.antsno);
+            s = QString("ANT: %1 %2").arg(station.antdes, station.antsno);
             drawLabel(graphDual[i], c, p1, s, Graph::Alignment::Left, Graph::Alignment::Top); p1.ry() += hh;
         }
         if (btn[1]->isChecked() && nrms > 0 && !btnShowTrack->isChecked()) {

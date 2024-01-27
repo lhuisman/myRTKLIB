@@ -8,20 +8,19 @@
 #include <QShowEvent>
 #include <QPixmap>
 
-#include "ui_aboutdlg.h"
+namespace Ui {
+    class AboutDlg;
+}
 
 //---------------------------------------------------------------------------
-class AboutDialog : public QDialog, private Ui::AboutDlg
+class AboutDialog : public QDialog
 {
     Q_OBJECT
 
-protected:
-    void showEvent(QShowEvent *);
-
-    QPixmap icon;
-    QString aboutString;
 public:
-
     explicit AboutDialog(QWidget*, QPixmap icon, QString labelText);
+
+private:
+    Ui::AboutDlg *ui;
 };
 #endif

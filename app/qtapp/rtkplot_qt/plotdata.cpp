@@ -757,7 +757,6 @@ void Plot::readShapeFile(const QStringList &files)
 void Plot::readGpxFile(const QString &file)
 {
     QFile fp(file);
-    QByteArray buff;
     QString name;
     double pos[3] = { 0 };
 
@@ -778,7 +777,7 @@ void Plot::readGpxFile(const QString &file)
             } else if ((tag.toLower() == "name") && norm(pos, 3) > 0.0) {
                 inputStream.readNext();
                 name = inputStream.text().toString();
-            } else if ((tag.toLower().startsWith("ogr:")) && norm(pos, 3) > 0.0 && name.isEmpty()) {
+            } else if ((tag.startsWith("ogr:", Qt::CaseInsensitive)) && norm(pos, 3) > 0.0 && name.isEmpty()) {
                 inputStream.readNext();
                 name = inputStream.text().toString();
             }
@@ -957,7 +956,7 @@ void Plot::readStationPosition(const QString &file, const QString &sta,
             for (int i = 0; i < 3; i++) pos[i] = tokens.at(i).toDouble();
             code = "";
             for (int i = 3; i < tokens.size(); i++) code += tokens.at(i) + ' ';
-            code = code.simplified();
+            code = code.trimmed();
 
             if (code != sta) continue;
 
@@ -1141,7 +1140,7 @@ void Plot::connectStream(void)
     if (!connectState) return;
 
     if (title != "") setWindowTitle(title);
-    else setWindowTitle(tr("CONNECT %1 %2").arg(name[0]).arg(name[1]));
+    else setWindowTitle(tr("CONNECT %1 %2").arg(name[0], name[1]));
 
     btnConnect->setChecked(true);
     btnSolution1->setChecked(!name[0].isEmpty());
@@ -1445,7 +1444,7 @@ void Plot::clear(void)
     if (!connectState) {
         initsolbuf(solutionData, 0, 0);
         initsolbuf(solutionData + 1, 0, 0);
-        setWindowTitle(title != "" ? title : tr("%1 ver.%2 %3").arg(PRGNAME).arg(VER_RTKLIB).arg(PATCH_LEVEL));
+        setWindowTitle(title != "" ? title : tr("%1 ver.%2 %3").arg(PRGNAME).arg(VER_RTKLIB, PATCH_LEVEL));
     } else {
         initsolbuf(solutionData, 1, rtBufferSize + 1);
         initsolbuf(solutionData + 1, 1, rtBufferSize + 1);

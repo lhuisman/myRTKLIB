@@ -22,7 +22,7 @@ GloFcnDialog::GloFcnDialog(QWidget* parent) : QDialog(parent)
 //---------------------------------------------------------------------------
 void GloFcnDialog::readRinex()
 {
-    QString filename, text;
+    QString filename;
     nav_t nav;
 	int prn;
 

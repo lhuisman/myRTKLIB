@@ -4,22 +4,27 @@
 //---------------------------------------------------------------------------
 #include <QDialog>
 
-#include "ui_staoptdlg.h"
+namespace Ui {
+class StaListDialog;
+}
+
 //---------------------------------------------------------------------------
-class StaListDialog : public QDialog, private Ui::StaListDialog
+class StaListDialog : public QDialog
 {
     Q_OBJECT
 
-protected:
-    void  showEvent(QShowEvent *);
-
-public slots:
-    void  btnLoadClicked();
-    void  btnOkClicked();
-    void  btnSaveClicked();
-
 public:
     explicit StaListDialog(QWidget* parent);
+
+    void setStationList(const QStringList&);
+    QStringList getStationList();
+
+private:
+    Ui::StaListDialog *ui;
+
+public slots:
+    void  loadFile();
+    void  saveFile();
 };
 //---------------------------------------------------------------------------
 #endif

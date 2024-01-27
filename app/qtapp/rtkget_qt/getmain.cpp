@@ -191,7 +191,7 @@ MainForm::MainForm(QWidget *parent)
     connect(cBHidePasswd, &QCheckBox::clicked, this, &MainForm::updateEnable);
     connect(dataListWidget, &QListWidget::clicked, this, &MainForm::dataListSelectionChanged);
     connect(stationListWidget, &QListWidget::clicked, this, &MainForm::updateStationListLabel);
-    connect(&trayIcon, &QSystemTrayIcon::activated, this, &MainForm::trayIconActivated);
+    connect(&trayIcon, &QSystemTrayIcon::activated, this, &MainForm::restoreFromTaskTray);
     connect(&busyTimer, &QTimer::timeout, this, &MainForm::busyTimerTriggered);
     connect(btnTimeStart, &QPushButton::clicked, this, &MainForm::showStartTimeDetails);
     connect(btnTimeStop, &QPushButton::clicked, this, &MainForm::showStopTimeDetails);
@@ -217,9 +217,9 @@ void MainForm::showEvent(QShowEvent *event)
     QString appFilename = QApplication::applicationFilePath();
     QFileInfo fi(appFilename);
 
-    iniFilename = fi.absolutePath() + QDir::separator() + fi.baseName() + ".ini";
+    iniFilename = fi.absoluteDir().filePath(fi.baseName()) + ".ini";
 
-    setWindowTitle(QString("%1 v.%2").arg(PRGNAME).arg(VER_RTKLIB));
+    setWindowTitle(QString("%1 v.%2 %3").arg(PRGNAME, VER_RTKLIB, PATCH_LEVEL));
 
     QCommandLineParser parser;
     parser.setApplicationDescription("RTK Get Qt");
@@ -279,7 +279,6 @@ void MainForm::viewLogFile()
 {
     if (logFile == "") return;
 
-    viewer = new TextViewer(this);
     viewer->setWindowTitle(logFile);
     viewer->read(logFile);
     viewer->exec();
@@ -407,9 +406,6 @@ void MainForm::downloadFinished()
         messageLabel1->setStyleSheet("QLabel { color: bloack;}");
         messageLabel3->setText("");
 
-        TextViewer *viewer;
-
-        viewer = new TextViewer(this);
         viewer->setOption(2);  // allow to save file
         viewer->read(TEST_FILE);
         viewer->setWindowTitle(tr("Local File Test"));
@@ -523,7 +519,7 @@ void MainForm::minimizeToTray()
     trayIcon.setVisible(true);
 }
 //---------------------------------------------------------------------------
-void MainForm::trayIconActivated(QSystemTrayIcon::ActivationReason reason)
+void MainForm::restoreFromTaskTray(QSystemTrayIcon::ActivationReason reason)
 {
     if (reason != QSystemTrayIcon::DoubleClick &&
             reason != QSystemTrayIcon::Trigger) return;
@@ -593,16 +589,12 @@ void MainForm::loadOptions()
     cBDirectory->insertItem(0, setting.value("opt/localdir", "").toString()); cBDirectory->setCurrentIndex(0);
     cBDataType->insertItem(0, setting.value("opt/datatype", "").toString()); cBDataType->setCurrentIndex(0);
 
-    TextViewer::colorText = setting.value("viewer/color1", QColor(Qt::black)).value<QColor>();
-    TextViewer::colorBackground = setting.value("viewer/color2", QColor(Qt::white)).value<QColor>();
-    TextViewer::font.setFamily(setting.value("viewer/fontname", "Courier New").toString());
-    TextViewer::font.setPixelSize(setting.value("viewer/fontsize", 9).toInt());
+    viewer->loadOptions(setting);
 }
 //---------------------------------------------------------------------------
 void MainForm::saveOptions()
 {
     QSettings setting(iniFilename, QSettings::IniFormat);
-    QString sta;
 
     setting.setValue("opt/startd", dateTimeStart->date());
     setting.setValue("opt/starth", dateTimeStart->time());
@@ -633,16 +625,14 @@ void MainForm::saveOptions()
     {
         QString buffer;
         for (int k = 0; k < 256 && j < stationListWidget->count(); k++) {
-            buffer.append(QStringLiteral("%1%2").arg(k==0?"":",").arg(stationListWidget->item(j++)->text()));
+            buffer.append(QStringLiteral("%1%2").arg(k == 0 ? "" : ",", stationListWidget->item(j++)->text()));
         };
         setting.setValue(QString("sta/station%1").arg(i), buffer);
     }
 
     writeHistory(setting, "dir", cBDirectory);
-    setting.setValue("viewer/color1", TextViewer::colorText);
-    setting.setValue("viewer/color2", TextViewer::colorBackground);
-    setting.setValue("viewer/fontname", TextViewer::font.family());
-    setting.setValue("viewer/fontsize", TextViewer::font.pixelSize());
+
+    viewer->saveOptions(setting);
 }
 //---------------------------------------------------------------------------
 void MainForm::loadUrlList(QString file)

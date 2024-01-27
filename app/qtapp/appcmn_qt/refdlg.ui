@@ -42,83 +42,69 @@
     </widget>
    </item>
    <item>
-    <widget class="QWidget" name="widget" native="true">
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <property name="leftMargin">
-       <number>0</number>
-      </property>
-      <property name="topMargin">
-       <number>0</number>
-      </property>
-      <property name="rightMargin">
-       <number>0</number>
-      </property>
-      <property name="bottomMargin">
-       <number>0</number>
-      </property>
-      <item>
-       <widget class="QPushButton" name="btnLoad">
-        <property name="toolTip">
-         <string>Load stations</string>
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QPushButton" name="btnLoad">
+       <property name="toolTip">
+        <string>Load stations</string>
+       </property>
+       <property name="text">
+        <string>&amp;Load</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QFrame" name="wgFind">
+       <property name="frameShape">
+        <enum>QFrame::Box</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Sunken</enum>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <property name="leftMargin">
+         <number>2</number>
         </property>
-        <property name="text">
-         <string>&amp;Load</string>
+        <property name="topMargin">
+         <number>2</number>
         </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QFrame" name="wgFind">
-        <property name="frameShape">
-         <enum>QFrame::Box</enum>
+        <property name="rightMargin">
+         <number>2</number>
         </property>
-        <property name="frameShadow">
-         <enum>QFrame::Sunken</enum>
+        <property name="bottomMargin">
+         <number>2</number>
         </property>
-        <layout class="QHBoxLayout" name="horizontalLayout_2">
-         <property name="leftMargin">
-          <number>2</number>
-         </property>
-         <property name="topMargin">
-          <number>2</number>
-         </property>
-         <property name="rightMargin">
-          <number>2</number>
-         </property>
-         <property name="bottomMargin">
-          <number>2</number>
-         </property>
-         <item>
-          <widget class="QLineEdit" name="lEFind">
-           <property name="toolTip">
-            <string>Search string</string>
-           </property>
-           <property name="clearButtonEnabled">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="btnFind">
-           <property name="toolTip">
-            <string>Start search</string>
-           </property>
-           <property name="text">
-            <string>Find</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item>
-       <widget class="QDialogButtonBox" name="buttonBox">
-        <property name="standardButtons">
-         <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
+        <item>
+         <widget class="QLineEdit" name="lEFind">
+          <property name="toolTip">
+           <string>Search string</string>
+          </property>
+          <property name="clearButtonEnabled">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btnFind">
+          <property name="toolTip">
+           <string>Start search</string>
+          </property>
+          <property name="text">
+           <string>&amp;Find</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QDialogButtonBox" name="buttonBox">
+       <property name="standardButtons">
+        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>

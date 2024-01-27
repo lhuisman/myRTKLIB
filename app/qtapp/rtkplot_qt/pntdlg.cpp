@@ -25,7 +25,7 @@ PntDialog::PntDialog(QWidget *parent)
 
     noUpdate = false;
 
-    connect(btnClose, &QPushButton::clicked, this, &PntDialog::close);
+    connect(buttonBox, &QDialogButtonBox::rejected, this, &PntDialog::close);
     connect(btnUpdate, &QPushButton::clicked, this, &PntDialog::updatePoint);
     connect(btnDelete, &QPushButton::clicked, this, &PntDialog::btnDeleteClicked);
     connect(btnAdd, &QPushButton::clicked, this, &PntDialog::btnAddClicked);
@@ -40,7 +40,7 @@ void PntDialog::showEvent(QShowEvent *event)
 
     int width[] = {90, 90, 80, 90};
 
-    fontScale = this->physicalDpiX();
+    int fontScale = QFontMetrics(tWPntList->font()).height() * 4;
     for (int i = 0; i < 4; i++)
         tWPntList->setColumnWidth(i, width[i] * fontScale / 96);
 

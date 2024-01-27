@@ -30,10 +30,10 @@ SOURCES += \
     ../appcmn_qt/helper.cpp \
     ../appcmn_qt/graph.cpp \
     ../widgets_qt/scientificspinbox.cpp \
+    mondlg.cpp \
     instrdlg.cpp \
     logstrdlg.cpp \
     main.cpp \
-    mondlg.cpp \
     navimain.cpp \
     naviopt.cpp \
     outstrdlg.cpp \
@@ -44,10 +44,10 @@ HEADERS  += \
     instrdlg.h \
     rcvoptdlg.h \
     logstrdlg.h \
-    mondlg.h \
     navimain.h \
     naviopt.h \
     outstrdlg.h \
+    mondlg.h \
     ../appcmn_qt/aboutdlg.h \
     ../appcmn_qt/cmdoptdlg.h \
     ../appcmn_qt/fileoptdlg.h \
@@ -71,9 +71,9 @@ FORMS    += \
     logstrdlg.ui \
     navimain.ui \
     naviopt.ui \
-    mondlg.ui \
     outstrdlg.ui \
     rcvoptdlg.ui \
+    mondlg.ui \
     ../appcmn_qt/aboutdlg.ui \
     ../appcmn_qt/cmdoptdlg.ui \
     ../appcmn_qt/fileoptdlg.ui \

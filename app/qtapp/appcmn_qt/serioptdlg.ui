@@ -42,7 +42,10 @@
       <string/>
      </property>
      <property name="text">
-      <string>Bitrate</string>
+      <string>Bit&amp;rate</string>
+     </property>
+     <property name="buddy">
+      <cstring>cBBitRate</cstring>
      </property>
     </widget>
    </item>
@@ -52,12 +55,19 @@
       <string/>
      </property>
      <property name="text">
-      <string>Flow Control</string>
+      <string>&amp;Flow Control</string>
+     </property>
+     <property name="buddy">
+      <cstring>cBFlowControl</cstring>
      </property>
     </widget>
    </item>
    <item row="7" column="3">
-    <widget class="QSpinBox" name="cBTcpPort"/>
+    <widget class="QSpinBox" name="cBTcpPort">
+     <property name="maximum">
+      <number>35536</number>
+     </property>
+    </widget>
    </item>
    <item row="4" column="2">
     <widget class="QLabel" name="label5">
@@ -65,7 +75,10 @@
       <string/>
      </property>
      <property name="text">
-      <string>Stop Bits</string>
+      <string>&amp;Stop Bits</string>
+     </property>
+     <property name="buddy">
+      <cstring>cBStopBits</cstring>
      </property>
     </widget>
    </item>
@@ -75,7 +88,10 @@
       <string/>
      </property>
      <property name="text">
-      <string>Port</string>
+      <string>&amp;Port</string>
+     </property>
+     <property name="buddy">
+      <cstring>cBPort</cstring>
      </property>
     </widget>
    </item>
@@ -102,7 +118,7 @@
       <string>Stream serial data to TCP port</string>
      </property>
      <property name="text">
-      <string>Output Received Stream to TCP Port</string>
+      <string>&amp;Output Received Stream to TCP Port</string>
      </property>
     </widget>
    </item>
@@ -112,7 +128,10 @@
       <string/>
      </property>
      <property name="text">
-      <string>Parity</string>
+      <string>P&amp;arity</string>
+     </property>
+     <property name="buddy">
+      <cstring>cBParity</cstring>
      </property>
     </widget>
    </item>
@@ -184,7 +203,10 @@
       <string/>
      </property>
      <property name="text">
-      <string>Byte Size</string>
+      <string>&amp;Byte Size</string>
+     </property>
+     <property name="buddy">
+      <cstring>cBByteSize</cstring>
      </property>
     </widget>
    </item>

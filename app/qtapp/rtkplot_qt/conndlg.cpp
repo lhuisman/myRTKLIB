@@ -18,8 +18,8 @@ ConnectDialog::ConnectDialog(QWidget *parent)
     stream1 = stream2 = format1 = format2 = 0;
     commandEnable1[0] = commandEnable1[1] = commandEnable2[0] = commandEnable2[1] = 0;
 
-    connect(btnCancel, &QPushButton::clicked, this, &ConnectDialog::reject);
-    connect(btnOk, &QPushButton::clicked, this, &ConnectDialog::btnOkClicked);
+    connect(buttonBox, &QDialogButtonBox::accepted, this, &ConnectDialog::btnOkClicked);
+    connect(buttonBox, &QDialogButtonBox::rejected, this, &ConnectDialog::reject);
     connect(btnCommand1, &QPushButton::clicked, this, &ConnectDialog::btnCommand1Clicked);
     connect(btnCommand2, &QPushButton::clicked, this, &ConnectDialog::btnCommand2Clicked);
     connect(btnOption1, &QPushButton::clicked, this, &ConnectDialog::btnOption1Clicked);
@@ -94,36 +94,36 @@ void ConnectDialog::btnCommand1Clicked()
 {
     CmdOptDialog dialog(this);
 
-    dialog.commands[0] = commands1[0];
-    dialog.commands[1] = commands1[1];
-    dialog.commandsEnabled[0] = commandEnable1[0];
-    dialog.commandsEnabled[1] = commandEnable1[1];
+    dialog.setCommands(0, commands1[0]);
+    dialog.setCommands(1, commands1[1]);
+    dialog.setCommandsEnabled(0, commandEnable1[0]);
+    dialog.setCommandsEnabled(1, commandEnable1[1]);
     dialog.exec();
 
     if (dialog.result() != QDialog::Accepted) return;
 
-    commands1[0] = dialog.commands[0];
-    commands1[1] = dialog.commands[1];
-    commandEnable1[0] = dialog.commandsEnabled[0];
-    commandEnable1[1] = dialog.commandsEnabled[1];
+    commands1[0] = dialog.getCommands(0);
+    commands1[1] = dialog.getCommands(1);
+    commandEnable1[0] = dialog.getCommandsEnabled(0);
+    commandEnable1[1] = dialog.getCommandsEnabled(1);
 }
 //---------------------------------------------------------------------------
 void ConnectDialog::btnCommand2Clicked()
 {
     CmdOptDialog dialog(this);
 
-    dialog.commands[0] = commands2[0];
-    dialog.commands[1] = commands2[1];
-    dialog.commandsEnabled[0] = commandEnable2[0];
-    dialog.commandsEnabled[1] = commandEnable2[1];
+    dialog.setCommands(0, commands2[0]);
+    dialog.setCommands(1, commands2[1]);
+    dialog.setCommandsEnabled(0, commandEnable2[0]);
+    dialog.setCommandsEnabled(1, commandEnable2[1]);
     dialog.exec();
 
     if (dialog.result() != QDialog::Accepted) return;
 
-    commands2[0] = dialog.commands[0];
-    commands2[1] = dialog.commands[1];
-    commandEnable2[0] = dialog.commandsEnabled[0];
-    commandEnable2[1] = dialog.commandsEnabled[1];
+    commands2[0] = dialog.getCommands(0);
+    commands2[1] = dialog.getCommands(1);
+    commandEnable2[0] = dialog.getCommandsEnabled(0);
+    commandEnable2[1] = dialog.getCommandsEnabled(1);
 }
 //---------------------------------------------------------------------------
 void ConnectDialog::serialOption1(int opt)

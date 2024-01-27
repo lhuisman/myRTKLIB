@@ -7,6 +7,9 @@
 
 #include "ui_browsmain.h"
 
+namespace Ui {
+class MainForm;
+}
 
 class QShowEvent;
 class QCloseEvent;
@@ -16,7 +19,7 @@ class QTimer;
 class MntpOptDialog;
 
 //---------------------------------------------------------------------------
-class MainForm : public QMainWindow, private Ui::MainForm
+class MainForm : public QMainWindow
 {
     Q_OBJECT
 
@@ -25,29 +28,30 @@ protected:
     void closeEvent(QCloseEvent*);
 
 public slots:
-    void btnUpdateClicked();
-    void btnListClicked();
-    void addressChanged();
-    void menuOpenClicked();
-    void menuSaveClicked();
-    void menuUpdateCasterClicked();
-    void menuUpdateTableClicked();
-    void menuViewStrClicked();
-    void menuViewCasterClicked();
-    void menuViewNetClicked();
-    void menuViewSourceClicked();
-    void menuAboutClicked();
-    void btnMapClicked();
+    void openSourceTable();
+    void saveSourceTable();
+    void viewStreamTable();
+    void viewCasterTable();
+    void viewNetTable();
+    void viewSourceTable();
+    void showAboutDialog();
+    void showMap();
     void loadTimerExpired();
-    void streamTableCellClicked(int ARow, int ACol);
-    void streamTableCellDblClicked(int ARow, int ACol);
-    void casterTableCellDblClicked(int ARow, int ACol);
-    void btnStatsionClicked();
+    void streamTableSelectItem(int ARow, int ACol);
+    void streamTableShowMountpoint(int ARow, int ACol);
+    void casterTableSelectItem(int ARow, int ACol);
+    void showStationDialog();
     void updateCaster();
     void updateTable();
     void showMsg(const QString &);
 
 private:
+    void getCaster(void);
+    void getTable(void);
+    void updateMap(void);
+    void updateEnable(void);
+    void showTable(void);
+
     QString addressList, addressCaster, sourceTable, iniFile;
     float fontScale;
     MapView *mapView;
@@ -57,11 +61,7 @@ private:
     QFutureWatcher<char*> tableWatcher;
     QFutureWatcher<char*> casterWatcher;
 
-    void getCaster(void);
-    void getTable(void);
-    void updateMap(void);
-    void updateEnable(void);
-    void showTable(void);
+    Ui::MainForm * ui;
 public:
     QStringList stationList;
 

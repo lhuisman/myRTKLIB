@@ -31,7 +31,6 @@
 //---------------------------------------------------------------------------
 #include <clocale>
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
 
@@ -168,13 +167,13 @@ MainForm::MainForm(QWidget *parent)
     mainForm=  this;
 
     setWindowIcon(QIcon(":/icons/rktpost_Icon.ico"));
-    setWindowTitle(QString("%1 ver.%2 %3").arg(PRGNAME).arg(VER_RTKLIB).arg(PATCH_LEVEL));
+    setWindowTitle(QString("%1 ver.%2 %3").arg(PRGNAME, VER_RTKLIB, PATCH_LEVEL));
     setlocale(LC_NUMERIC, "C");
     int i;
 
     QString file = QApplication::applicationFilePath();
     QFileInfo fi(file);
-    iniFile = fi.absolutePath() + "/" + fi.baseName() + ".ini";
+    iniFile = fi.absoluteDir().filePath(fi.baseName()) + ".ini";
 
     dynamicModel = ionosphereOption = troposphereOption = roverAntennaPcv = referenceAntennaPcv = ambiguityResolutionGPS = 0;
     roverPositionType = referencePositionType = 0;
@@ -469,6 +468,7 @@ void MainForm::showOptionsDialog()
 void MainForm::postProcess()
 {
     QString outputFile = cBOutputFile->currentText();
+    static QRegularExpression reg = QRegularExpression(R"(\.\d\d[ondg])", QRegularExpression::CaseInsensitiveOption);
     abortFlag = false;
 
     if (cBInputFile1->currentText().isEmpty()) {
@@ -490,7 +490,7 @@ void MainForm::postProcess()
         f.suffix().contains(".gnav", Qt::CaseInsensitive) ||
         f.suffix().contains(".gz", Qt::CaseInsensitive) ||
         f.suffix().contains(".Z", Qt::CaseInsensitive) ||
-        f.suffix().contains(QRegularExpression(R"(\.\d\d[ondg])", QRegularExpression::CaseInsensitiveOption))) {
+        f.suffix().contains(reg)) {
         showMessage(tr("Error: Invalid extension of output file (%1)").arg(outputFile));
             return;
     }
@@ -954,7 +954,7 @@ int MainForm::getOption(prcopt_t &prcopt, solopt_t &solopt, filopt_t &filopt)
     }
     if (!excludedSatellites.isEmpty()) { // excluded satellites
         QStringList ex_sats = excludedSatellites.split(" ");
-        for (QString sat: ex_sats)
+        for (QString sat: std::as_const(ex_sats))
         {
             if ((sat.length()>1) && (sat.at(0) == '+'))
             {
@@ -989,7 +989,7 @@ int MainForm::getOption(prcopt_t &prcopt, solopt_t &solopt, filopt_t &filopt)
     solopt.sstat = debugStatus;
     solopt.trace = debugTrace;
     strncpy(solopt.sep, fieldSeperator.isEmpty() ? " " : qPrintable(fieldSeperator), 63);
-    strncpy(solopt.prog, qPrintable(QString("%1 ver.%2 %3").arg(PRGNAME).arg(VER_RTKLIB).arg(PATCH_LEVEL)), 63);
+    strncpy(solopt.prog, qPrintable(QString("%1 ver.%2 %3").arg(PRGNAME, VER_RTKLIB, PATCH_LEVEL)), 63);
 
     // file options
     strncpy(filopt.satantp, qPrintable(satellitePcvFile), 1023);
@@ -1360,11 +1360,7 @@ void MainForm::loadOptions()
     roverList.replace("@@", "\n");
     baseList.replace("@@", "\n");
 
-    textViewer->colorText = ini.value("viewer/color1", QColor(Qt::black)).value<QColor>();
-    textViewer->colorBackground = ini.value("viewer/color2", QColor(Qt::white)).value<QColor>();
-    textViewer->font.setFamily(ini.value ("viewer/fontname", "Courier New").toString());
-    textViewer->font.setPointSize(ini.value("viewer/fontsize", 9).toInt());
-
+    textViewer->loadOptions(ini);
     convDialog->loadOptions(ini);
 
 }
@@ -1547,11 +1543,8 @@ void MainForm::saveOptions()
         ini.setValue(QString("opt/baselist%1").arg(i + 1), baseList.mid(i*2000, 2000));
     }
 
-    ini.setValue ("viewer/color1", textViewer->colorText);
-    ini.setValue ("viewer/color2", textViewer->colorBackground);
-    ini.setValue ("viewer/fontname", textViewer->font.family());
-    ini.setValue ("viewer/fontsize", textViewer->font.pointSize());
 
+    textViewer->saveOptions(ini);
     convDialog->saveOptions(ini);
 }
 //---------------------------------------------------------------------------

@@ -8,10 +8,12 @@
 
 #include "rtklib.h"
 
-#include "ui_mondlg.h"
+namespace Ui {
+class MonitorDialog;
+}
 
 //---------------------------------------------------------------------------
-class MonitorDialog : public QDialog, private Ui::MonitorDialog
+class MonitorDialog : public QDialog
 {
     Q_OBJECT
 protected:
@@ -77,6 +79,7 @@ private:
 
     void addConsole(const unsigned char *msg, int n, int mode, bool newline);
 
+    Ui::MonitorDialog *ui;
 public:
     explicit MonitorDialog(QWidget* parent);
     ~MonitorDialog();

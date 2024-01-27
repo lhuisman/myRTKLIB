@@ -175,7 +175,7 @@ void Plot::updateInfoObservation(void)
 // update statistics-information for solution plot --------------------------
 void Plot::updateInfoSolution(void)
 {
-    QString msg, s;
+    QString msg;
     QList<QString> msgs;
     TIMEPOS *pos = NULL, *pos1, *pos2;
     sol_t *data;

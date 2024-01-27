@@ -188,7 +188,7 @@ QVariant ScientificSpinBox::validateAndInterpret(QString &input, int &pos, QVali
         if (!ok) {
             // maybe group separator caused failure
 #if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
-            if (loc.groupSeparator()[0].isPrint())
+            if (loc.groupSeparator().at(0).isPrint())
 #else
             if (loc.groupSeparator().isPrint())
 #endif

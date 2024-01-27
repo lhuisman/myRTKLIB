@@ -19,6 +19,7 @@
 #include <QCommandLineParser>
 #include <QProcess>
 #include <QMenu>
+#include <QDir>
 
 #include "rtklib.h"
 #include "launchmain.h"
@@ -42,13 +43,13 @@ MainForm::MainForm(QWidget *parent)
 
     QString prgFilename = QApplication::applicationFilePath();
     QFileInfo prgFileInfo(prgFilename);
-    iniFile = prgFileInfo.absolutePath() + "/" + prgFileInfo.baseName() + ".ini";
+    iniFile = prgFileInfo.absoluteDir().filePath(prgFileInfo.baseName()) + ".ini";
     option = 0;
     minimize = 0;
 
     launchOptDlg = new LaunchOptDialog(this);
 
-    setWindowTitle(tr("RTKLIB v.%1 %2").arg(VER_RTKLIB).arg(PATCH_LEVEL));
+    setWindowTitle(tr("RTKLIB v.%1 %2").arg(VER_RTKLIB, PATCH_LEVEL));
     setWindowIcon(QIcon(":/icons/rtk9"));
 
     QCoreApplication::setApplicationName("rtklaunch_qt");
@@ -136,7 +137,7 @@ MainForm::MainForm(QWidget *parent)
     connect(btnGet, &QPushButton::clicked, this, &MainForm::launchRTKGet);
     connect(btnOption, &QPushButton::clicked, this, &MainForm::showOptions);
     connect(btnExit, &QPushButton::clicked, this, &MainForm::accept);
-    connect(&trayIcon, &QSystemTrayIcon::activated, this, &MainForm::trayIconActivated);
+    connect(&trayIcon, &QSystemTrayIcon::activated, this, &MainForm::restoreFromTaskTray);
 
     connect(actionRtkConv, &QAction::triggered, this, &MainForm::launchRTKConv);
     connect(actionRtkGet, &QAction::triggered, this, &MainForm::launchRTKGet);
@@ -243,7 +244,7 @@ void MainForm::moveToTray()
     trayIcon.setVisible(true);
 }
 //---------------------------------------------------------------------------
-void MainForm::trayIconActivated(QSystemTrayIcon::ActivationReason reason)
+void MainForm::restoreFromTaskTray(QSystemTrayIcon::ActivationReason reason)
 {
     if (reason != QSystemTrayIcon::DoubleClick && reason != QSystemTrayIcon::Trigger) return;
 

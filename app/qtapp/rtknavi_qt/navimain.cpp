@@ -53,10 +53,10 @@
 #include "mondlg.h"
 #include "aboutdlg.h"
 #include "markdlg.h"
-#include "viewer.h"
 #include "naviopt.h"
 #include "navimain.h"
 #include "graph.h"
+#include "helper.h"
 #include "helper.h"
 
 MainWindow *mainForm;
@@ -118,6 +118,7 @@ static void degtodms(double deg, double *dms)
     dms[2] = (deg - dms[0] - dms[1] / 60.0) * 3600;
     dms[0] *= sgn;
 }
+
 // execute command ----------------------------------------------------------
 int MainWindow::execCommand(const QString &cmd, const QStringList &opt, int show)
 {
@@ -168,7 +169,7 @@ MainWindow::MainWindow(QWidget *parent)
     rtksvrinit(&rtksvr);
     strinit(&monistr);
 
-    setWindowTitle(QString(tr("%1 ver. %2 %3")).arg(PRGNAME).arg(VER_RTKLIB).arg(PATCH_LEVEL));
+    setWindowTitle(QString(tr("%1 ver. %2 %3")).arg(PRGNAME).arg(VER_RTKLIB, PATCH_LEVEL));
     setWindowIcon(QIcon(":/icons/rtknavi_Icon.ico"));
 
     panelStacking = panelMode = 0;
@@ -271,7 +272,7 @@ void MainWindow::showEvent(QShowEvent *event)
 #if 1
     QString file = QApplication::applicationFilePath();
     QFileInfo fi(file);
-    iniFile = fi.absolutePath() + "/" + fi.baseName() + ".ini";
+    iniFile = fi.absoluteDir().filePath(fi.baseName()) + ".ini";
 #else // use unix config path
     QSettings tempSettings(QSettings::IniFormat, QSettings::UserScope, "rtknavi-qt", "rtklib");
     IniFile = tempSettings.fileName();
@@ -445,7 +446,7 @@ void MainWindow::showRtkPlot()
     }
 
     opts << QString(" -p tcpcli://localhost:%1 -t \"%2 %3\"").arg(monitorPortOpen)
-          .arg(windowTitle()).arg(": RTKPlot Qt");
+          .arg(windowTitle(), ": RTKPlot Qt");
 
     if (!execCommand(cmd[0], opts, 1) && !execCommand(cmd[1], opts, 1) && !execCommand(cmd[2], opts, 1))
         QMessageBox::critical(this, tr("Error"), tr("Error: rtkplot could not be executed"));
@@ -1119,7 +1120,7 @@ void MainWindow::serverStart()
 
     if (!excludedSatellites.isEmpty()) { // excluded satellites
         QStringList ex_sats = excludedSatellites.split(" ");
-        for (QString sat: ex_sats)
+        for (QString sat: std::as_const(ex_sats))
         {
             if ((sat.length()>1) && (sat.at(0) == '+'))
             {
@@ -1280,7 +1281,7 @@ void MainWindow::serverStart()
     sBSolution->setEnabled(false);
     btnStop->setVisible(true);
     menuStopAction->setEnabled(true);
-    lblServer->setStyleSheet("QLabel {background-color: rgb(255,128,0);}");
+    setLabelBackgroundColor(lblServer, QColor(255, 128, 0));
 
     setTrayIcon(0);
 }
@@ -1317,12 +1318,12 @@ void MainWindow::serverStop()
     sBSolution->setEnabled(true);
     btnStop->setVisible(false);
     menuStopAction->setEnabled(false);
-    lblServer->setStyleSheet("QLabel {background-color: gray;}");
+    setLabelBackgroundColor(lblServer, QColor(Qt::gray));
 
     setTrayIcon(1);
 
-    lblTime->setStyleSheet("QLabel {color: gray;}");
-    lblIndicatorSolution->setStyleSheet("QLabel {color: white; background-color: white;}");
+    setLabelTextColor(lblTime, QColor(Qt::gray));
+    setLabelBackgroundColor(lblIndicatorSolution, QColor(Qt::white));
 
     n = solutionsEnd - solutionsStart; if (n < 0) n += solutionBufferSize;
     m = solutionsCurrent - solutionsStart;  if (m < 0) m += solutionBufferSize;
@@ -1368,12 +1369,12 @@ void MainWindow::updateTimerTriggered()
     }
 
     if (solutionCurrentStatus) {
-        lblServer->setStyleSheet("QLabel {background-color: rgb(0,255,0);}");
-        lblTime->setStyleSheet("QLabel { color: black;}");
+        setLabelBackgroundColor(lblServer, QColor(0, 255, 0));
+        setLabelTextColor(lblTime, QColor(Qt::black));
     } else {
-        lblIndicatorSolution->setStyleSheet("QLabel {color: white; background-color: white;}");
-        lblSolution->setStyleSheet("QLabel {color: gray;}");
-        lblServer->setStyleSheet(rtksvr.state ? "QLabel {background-color: green; }" : "QLabel {background-color: gray; }");
+        setLabelBackgroundColor(lblIndicatorSolution, QColor(Qt::white));
+        setLabelTextColor(lblSolution, QColor(Qt::gray));
+        setLabelBackgroundColor(lblServer, rtksvr.state ? QColor(Qt::green) : QColor(Qt::gray));
     }
 
     if (!(++timerCycle % 5)) updatePlot();
@@ -1391,7 +1392,7 @@ void MainWindow::updateTimerTriggered()
 // update time-system -------------------------------------------------------
 void MainWindow::updateTimeSystem()
 {
-    QString label[] = {tr("GPST"), tr("UTC"), tr("LT"), tr("GPST")};
+    static QString label[] = {tr("GPST"), tr("UTC"), tr("LT"), tr("GPST")};
 
     trace(3, "updateTimeSystem\n");
 
@@ -1402,7 +1403,7 @@ void MainWindow::updateTimeSystem()
 // update solution type -----------------------------------------------------
 void MainWindow::updateSolutionType()
 {
-    QString label[] = {
+    static QString label[] = {
         tr("Lat/Lon/Height"), tr("Lat/Lon/Height"), tr("X/Y/Z-ECEF"), tr("E/N/U-Baseline"),
         tr("Pitch/Yaw/Length-Baseline"), ""
     };
@@ -1451,21 +1452,21 @@ void MainWindow::updateFont()
     QLabel *label[] = {
         lblSolutionText, lblPositionText1, lblPositionText2, lblPositionText3, lblPosition1, lblPosition2, lblPosition3, lblSolution, lblStd, lblNSatellites
     };
-    QString color = label[7]->styleSheet();
+    const QColor &color = label[7]->palette().color(label[7]->foregroundRole());
 
     trace(4, "UpdateFont\n");
 
     for (int i = 0; i < 10; i++) {
         label[i]->setFont(positionFont);
-        label[8]->setStyleSheet(QString("QLabel {color: %1;}").arg(color2String(positionFontColor)));
+        setLabelTextColor(label[8], positionFontColor);
     }
     QFont tmp = positionFont;
     tmp.setPointSize(9);
     label[0]->setFont(tmp);
-    label[7]->setStyleSheet(color);
+    setLabelTextColor(label[7], color);
     tmp.setPointSize(8);
-    label[8]->setFont(tmp); label[8]->setStyleSheet("QLabel {color: gray;}");
-    label[9]->setFont(tmp); label[9]->setStyleSheet("QLabel {color: gray;}");
+    label[8]->setFont(tmp); setLabelTextColor(label[8], QColor(Qt::gray));
+    label[9]->setFont(tmp); setLabelTextColor(label[9], QColor(Qt::gray));
 }
 // update time --------------------------------------------------------------
 void MainWindow::updateTime()
@@ -1499,9 +1500,9 @@ void MainWindow::updateTime()
 void MainWindow::updatePosition()
 {
     QLabel *label[] = {lblPositionText1, lblPositionText2, lblPositionText3, lblPosition1, lblPosition2, lblPosition3, lblStd, lblNSatellites};
-    QString sol[] = {tr("----"), tr("FIX"), tr("FLOAT"), tr("SBAS"), tr("DGPS"), tr("SINGLE"), tr("PPP")};
+    static QString sol[] = {tr("----"), tr("FIX"), tr("FLOAT"), tr("SBAS"), tr("DGPS"), tr("SINGLE"), tr("PPP")};
     QString s[9], ext = "";
-    QString color[] = {"silver", "green", "rgb(0,170,255)", "rgb(255,0,255)", "blue", "red", "rgb(128,0,128)"};
+    static QColor color[] = {QColor(QColorConstants::Svg::silver), QColor(Qt::green), QColor(0, 170, 255), QColor(255, 0, 255), QColor(Qt::blue), QColor(Qt::red), QColor(128, 0, 128)};
     double *rrover = solutionRover + solutionsCurrent * 3;
     double *rbase = solutionReference + solutionsCurrent * 3;
     double *qrover = solutionQr + solutionsCurrent * 9;
@@ -1518,8 +1519,8 @@ void MainWindow::updatePosition()
     lblSolutionText->setText(tr("Solution%1:").arg(ext));
 
     lblSolution->setText(sol[stat]);
-    lblSolution->setStyleSheet(QString("QLabel {color: %1;}").arg(rtksvr.state ? color[stat] : "gray"));
-    lblIndicatorSolution->setStyleSheet(QString("QLabel {color: %1; background-color: %1}").arg(rtksvr.state && stat ? color[stat] : "white"));
+    setLabelTextColor(lblSolution, rtksvr.state ? color[stat] : QColor(Qt::gray));
+    setLabelBackgroundColor(lblIndicatorSolution, rtksvr.state ? color[stat] : QColor(Qt::white));
     lblIndicatorSolution->setToolTip(sol[stat]);
 
     if (norm(rrover, 3) > 0.0 && norm(rbase, 3) > 0.0)
@@ -1596,19 +1597,25 @@ void MainWindow::updatePosition()
 
     for (i = 0; i < 8; i++) label[i]->setText(s[i]);
     for (i = 3; i < 6; i++)
-        label[i]->setStyleSheet(QString("QLabel {color: %1;}").arg(processingOptions.mode == PMODE_MOVEB && solutionType <= 2 ? "grey" : "black"));
-    lblIndicatorQ->setStyleSheet(lblIndicatorSolution->styleSheet());
+        setLabelTextColor(label[i], processingOptions.mode == PMODE_MOVEB && solutionType <= 2 ? QColor(Qt::gray) : QColor(Qt::black));
+    setLabelBackgroundColor(lblIndicatorQ, lblIndicatorSolution->palette().color(lblIndicatorSolution->foregroundRole()));
     lblIndicatorQ->setToolTip(lblIndicatorSolution->toolTip());
     lblSolutionS->setText(lblSolution->text());
-    lblSolutionS->setStyleSheet(lblSolution->styleSheet());
-    lblSolutionQ->setText(QString("%1 %2 %3 %4 %5 %6 %7%8").arg(ext).arg(label[0]->text()).arg(label[3]->text())
-                              .arg(label[1]->text()).arg(label[4]->text())
-                              .arg(label[2]->text()).arg(label[5]->text()).arg(s[8]));
+    setLabelTextColor(lblSolutionS, lblSolution->palette().color(lblSolution->foregroundRole()));
+    lblSolutionQ->setText(QString("%1 %2 %3 %4 %5 %6 %7%8").arg(
+                                                                ext,
+                                                                label[0]->text(),
+                                                                label[3]->text(),
+                                                                label[1]->text(),
+                                                                label[4]->text(),
+                                                                label[2]->text(),
+                                                                label[5]->text(),
+                                                                s[8]));
 }
 // update stream status indicators ------------------------------------------
 void MainWindow::updateStream()
 {
-    QString color[] = {"red", "gray", "orange", "rgb(0,128,0)", "rgb(0,255,0)"};
+    static QColor color[] = {QColor(255,0,0), QColor(0xa0,0xa0,0xa4), QColor(255,165,0), QColor(0,128,0), QColor(0,255,0)};
     QLabel *ind[MAXSTRRTK] = {lblStream1, lblStream2, lblStream3, lblStream4, lblStream5, lblStream6, lblStream7, lblStream8};
     int i, sstat[MAXSTRRTK] = {0};
     char msg[MAXSTRMSG] = "";
@@ -1617,7 +1624,7 @@ void MainWindow::updateStream()
 
     rtksvrsstat(&rtksvr, sstat, msg);
     for (i = 0; i < MAXSTRRTK; i++) {
-        ind[i]->setStyleSheet(QString("QLabel {background-color: %1}").arg(color[sstat[i] + 1]));
+        setLabelBackgroundColor(ind[i], color[sstat[i]+1]);
         if (sstat[i]) {
             lblMessage->setText(msg);
             lblMessage->setToolTip(msg);
@@ -1627,7 +1634,7 @@ void MainWindow::updateStream()
 // draw solution plot -------------------------------------------------------
 void MainWindow::drawSolutionPlot(QLabel *plot, int type, int freq)
 {
-    QString s1, s2, fstr[NFREQ+2];;
+    QString s1, s2, fstr[NFREQ+2];
     gtime_t time;
     int id;
 
@@ -1674,7 +1681,7 @@ void MainWindow::drawSolutionPlot(QLabel *plot, int type, int freq)
         if (ns[i] > 0) {
             numSatellites[i] = ns[i];
             for (int j = 0; j < ns[i]; j++) {
-                satellites[i][j] = sat [i][j];
+                satellites[i][j] = sat[i][j];
                 satellitesAzimuth[i][j] = az[i][j];
                 satellitesElevation[i][j] = el[i][j];
                 for (int k = 0; k < NFREQ; k++)
@@ -1846,7 +1853,7 @@ void MainWindow::drawSnr(QPainter &c, int w, int h, int x0, int y0,
             else height = offset;
             height = height > y1 - 2 ? y1 - 2 : (height < 0 ? 0 : height);  // limit bar not go negative or to high
 
-            QRect r1(x1, y1, barWidth, height);
+            QRect r1(x1, y1, barWidth, -height);
             if (j == 0) {  // filled bar
                 c.setBrush(QBrush(freq < NFREQ + 1 ? snrColor(snr[snrIdx]) : color_sys[sysIdx], Qt::SolidPattern));
                 if (!validSatellites[index][i])
@@ -1906,7 +1913,7 @@ void MainWindow::drawSatellites(QPainter &c, int w, int h, int x0, int y0,
         sysIdx = (q = strchr(sys, id[0])) ? (int)(q - sys) : 6;
         x[i] = static_cast<int>(p.x() + r * (90 - satellitesElevation[index][k] * R2D) / 90 * sin(satellitesAzimuth[index][k])) + x0;
         y[i] = static_cast<int>(p.y() - r * (90 - satellitesElevation[index][k] * R2D) / 90 * cos(satellitesAzimuth[index][k])) + y0;
-        radius = panelFont.pixelSize() * 3 / 2;
+        radius = QFontMetrics(panelFont).height();
 
         c.setBrush(!validSatellites[index][k] ? ColorSilver :
                         (freq < NFREQ ? snrColor(snr[freq]) : color_sys[sysIdx]));
@@ -1929,8 +1936,8 @@ void MainWindow::drawSatellites(QPainter &c, int w, int h, int x0, int y0,
 // draw baseline plot -------------------------------------------------------
 void MainWindow::drawBaseline(QPainter &c, int id, int w, int h)
 {
-    QColor colors[] = {ColorSilver, Qt::green, ColorOrange, ColorFuchsia, Qt::blue, Qt::red, ColorTeal};
-    QString directions[] = {tr("N"), tr("E"), tr("S"), tr("W")};
+    static QColor colors[] = {ColorSilver, Qt::green, ColorOrange, ColorFuchsia, Qt::blue, Qt::red, ColorTeal};
+    static QString directions[] = {tr("N"), tr("E"), tr("S"), tr("W")};
     QPoint center(w / 2, h / 2), p1, p2, pp;
     double radius = MIN(w * 0.95, h * 0.95) / 2;
     double *rrover = solutionRover + solutionsCurrent * 3;
@@ -2022,12 +2029,12 @@ void MainWindow::drawBaseline(QPainter &c, int id, int w, int h)
 // draw track plot ----------------------------------------------------------
 void MainWindow::drawTrack(QPainter &c, int id, QPaintDevice *plot)
 {
-    QColor mcolor[] = {ColorSilver, Qt::green, ColorOrange, ColorFuchsia, Qt::blue, Qt::red, ColorTeal};
+    static QColor mcolor[] = {ColorSilver, Qt::green, ColorOrange, ColorFuchsia, Qt::blue, Qt::red, ColorTeal};
     QColor *color;
     Graph *graph = new Graph(plot);
     QPoint p1, p2;
     QString label;
-    double scale[] = {
+    static double scale[] = {
         0.00021, 0.00047, 0.001, 0.0021, 0.0047, 0.01, 0.021, 0.047, 0.1,   0.21,   0.47,
         1.0,	 2.1,	  4.7,	 10.0,	 21.0,	 47.0, 100.0, 210.0, 470.0, 1000.0, 2100.0,4700.0,
         10000.0
@@ -2132,7 +2139,7 @@ void MainWindow::drawTrack(QPainter &c, int id, QPaintDevice *plot)
 // draw skyplot -------------------------------------------------------------
 void MainWindow::drawSky(QPainter &c, int w, int h, int x0, int y0)
 {
-    QString label[] = {tr("N"), tr("E"), tr("S"), tr("W")};
+    static QString label[] = {tr("N"), tr("E"), tr("S"), tr("W")};
     QPoint p(x0 + w / 2, y0 + h / 2);
     double radius = MIN(w * 0.95, h * 0.95) / 2;
     int a, e, d, x, y;
@@ -2155,7 +2162,7 @@ void MainWindow::drawSky(QPainter &c, int w, int h, int x0, int y0)
     }
 }
 // draw text ----------------------------------------------------------------
-void MainWindow::drawText(QPainter &c, int x, int y, const QString &s,
+void MainWindow::drawText(QPainter &c, int x, int y, const QString &str,
               const QColor &color, int ha, int va)
 {
     // ha  = horizontal alignment (0: center, 1: left,   2: right)
@@ -2172,14 +2179,20 @@ void MainWindow::drawText(QPainter &c, int x, int y, const QString &s,
         case 1: flags |= Qt::AlignBottom; break;
         case 2: flags |= Qt::AlignTop; break;
     }
+    QFont old_font = c.font();
     c.setFont(panelFont);
-    c.setPen(color);
 
-    QRectF off = c.boundingRect(QRectF(), flags, s);
+    QPen pen = c.pen();
+    c.setBrush(Qt::NoBrush);
+    pen.setColor(color);
+    c.setPen(pen);
+
+    QRect off = c.boundingRect(QRect(), flags, str);
 
     c.translate(x, y);
-    c.drawText(off, s);
+    c.drawText(off, str);
     c.translate(-x, -y);
+    c.setFont(old_font);
 }
 // draw arrow ---------------------------------------------------------------
 void MainWindow::drawArrow(QPainter &c, int x, int y, int siz,
@@ -2206,7 +2219,6 @@ void MainWindow::drawArrow(QPainter &c, int x, int y, int siz,
 // open monitor port --------------------------------------------------------
 void MainWindow::openMonitorPort(int port)
 {
-    QString s;
     int i;
 
     if (port <= 0) return;
@@ -2217,7 +2229,7 @@ void MainWindow::openMonitorPort(int port)
         if (stropen(&monistr, STR_TCPSVR, STR_MODE_RW, qPrintable(QString(":%1").arg(port + i)))) {
             strsettimeout(&monistr, timeoutTime, reconnectionTime);
             if (i > 0)
-                setWindowTitle(QString(tr("%1 ver.%2 (%3)")).arg(PRGNAME).arg(VER_RTKLIB).arg(i + 1));
+                setWindowTitle(QString(tr("%1 ver.%2 (%3)")).arg(PRGNAME, VER_RTKLIB).arg(i + 1));
             monitorPortOpen = port + i;
             return;
         }
@@ -2298,7 +2310,7 @@ void MainWindow::saveLogs()
     if (solutionOptions.outhead) {
         QString data;
 
-        data = QString(tr("%% program : %1 ver.%2 %3\n")).arg(PRGNAME).arg(VER_RTKLIB).arg(PATCH_LEVEL);
+        data = QString(tr("%% program : %1 ver.%2 %3\n")).arg(PRGNAME, VER_RTKLIB, PATCH_LEVEL);
         str << data;
         if (processingOptions.mode == PMODE_DGPS || processingOptions.mode == PMODE_KINEMA ||
             processingOptions.mode == PMODE_STATIC) {
@@ -2461,7 +2473,6 @@ void MainWindow::setTrayIcon(int index)
 void MainWindow::loadOptions()
 {
     QSettings settings(iniFile, QSettings::IniFormat);
-    QString s;
     int i, j, no, strno[] = { 0, 1, 6, 2, 3, 4, 5, 7 };
 
     trace(3, "loadOptions\n");
@@ -2682,11 +2693,6 @@ void MainWindow::loadOptions()
     positionFontColor = QColor(static_cast<QRgb>(settings.value("setting/posfontcolor", static_cast<int>(Qt::black)).toInt()));
     if (settings.value("setting/posfontbold", 0).toInt()) positionFont.setBold(true);
     if (settings.value("setting/posfontitalic", 0).toInt()) positionFont.setItalic(true); ;
-
-    TextViewer::colorText = QColor(static_cast<QRgb>(settings.value("viewer/color1", static_cast<int>(Qt::black)).toInt()));
-    TextViewer::colorBackground = QColor(static_cast<QRgb>(settings.value("viewer/color2", static_cast<int>(Qt::white)).toInt()));
-    TextViewer::font.setFamily(settings.value("viewer/fontname", "Courier New").toString());
-    TextViewer::font.setPointSize(settings.value("viewer/fontsize", 9).toInt());
 
     updatePanels();
 
@@ -2915,11 +2921,6 @@ void MainWindow::saveOptions()
     settings.setValue("setting/posfontcolor", static_cast<int>(positionFontColor.rgb()));
     settings.setValue("setting/posfontbold", positionFont.bold());
     settings.setValue("setting/posfontitalic", positionFont.italic());
-
-    settings.setValue("viewer/color1", static_cast<int>(TextViewer::colorText.rgb()));
-    settings.setValue("viewer/color2", static_cast<int>(TextViewer::colorBackground.rgb()));
-    settings.setValue("viewer/fontname", TextViewer::font.family());
-    settings.setValue("viewer/fontsize", TextViewer::font.pointSize());
 
     settings.setValue("window/width", size().width());
     settings.setValue("window/height", size().height());

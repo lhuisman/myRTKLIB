@@ -27,7 +27,7 @@ FileSelDialog::FileSelDialog(QWidget *parent)
 #else
     directorySelector = new QTreeView(this);
 #endif
-    Panel2->layout()->addWidget(directorySelector);
+    panel2->layout()->addWidget(directorySelector);
     directorySelector->setModel(dirModel);
     directorySelector->hideColumn(1); directorySelector->hideColumn(2); directorySelector->hideColumn(3); //only show names
 
@@ -55,14 +55,14 @@ void FileSelDialog::showEvent(QShowEvent *event)
 
     QFileInfoList drives = QDir::drives();
     if (drives.size() > 1 && drives.at(0).filePath() != "/") {
-        wgDrivePanel->setVisible(true);
+        cBDriveSelect->setVisible(true);
         cBDriveSelect->clear();
 
         foreach(const QFileInfo &drive, drives) {
             cBDriveSelect->addItem(drive.filePath());
         }
     } else {
-        wgDrivePanel->setVisible(false); // do not show drive selection on unix
+        cBDriveSelect->setVisible(false); // do not show drive selection on unix
     }
     if (directory == "") directory = drives.at(0).filePath();
 

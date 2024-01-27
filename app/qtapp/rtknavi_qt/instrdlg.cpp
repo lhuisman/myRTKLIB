@@ -316,12 +316,12 @@ void InputStrDialog::showCommandDialog(int streamNo)
 {
     for (int i = 0; i < 3; i++) {
         if (cBStream1->currentIndex() == 0) {
-            cmdOptDialog->commands[i] = commands[streamNo][i];
-            cmdOptDialog->commandsEnabled[i] = commandEnable[streamNo][i];
+            cmdOptDialog->setCommands(i, commands[streamNo][i]);
+            cmdOptDialog->setCommandsEnabled(i, commandEnable[streamNo][i]);
         }
         else {
-            cmdOptDialog->commands[i] = commandsTcp[streamNo][i];
-            cmdOptDialog->commandsEnabled[i] = commandEnableTcp[streamNo][i];
+            cmdOptDialog->setCommands(i, commandsTcp[streamNo][i]);
+            cmdOptDialog->setCommandsEnabled(i, commandEnableTcp[streamNo][i]);
         }
     }
 
@@ -330,12 +330,12 @@ void InputStrDialog::showCommandDialog(int streamNo)
 
     for (int i = 0; i < 3; i++) {
         if (cBStream1->currentIndex() == 0) {
-            commands[streamNo][i] = cmdOptDialog->commands[i];
-            commandEnable[streamNo][i] = cmdOptDialog->commandsEnabled[i];
+            commands[streamNo][i] = cmdOptDialog->getCommands(i);
+            commandEnable[streamNo][i] = cmdOptDialog->getCommandsEnabled(i);
         }
         else {
-            commandsTcp[streamNo][i] = cmdOptDialog->commands[i];
-            commandEnableTcp[streamNo][i] = cmdOptDialog->commandsEnabled[i];
+            commandsTcp[streamNo][i] = cmdOptDialog->getCommands(i);
+            commandEnableTcp[streamNo][i] = cmdOptDialog->getCommandsEnabled(i);
         }
     }
 }

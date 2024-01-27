@@ -189,7 +189,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(cBOutputFileEnable8, &QCheckBox::clicked, this, &MainWindow::updateEnable);
     connect(cBOutputFileEnable9, &QCheckBox::clicked, this, &MainWindow::updateEnable);
 
-    setWindowTitle(QString(tr("%1 ver.%2 %3")).arg(PRGNAME).arg(VER_RTKLIB).arg(PATCH_LEVEL));
+    setWindowTitle(QString(tr("%1 ver.%2 %3")).arg(PRGNAME).arg(VER_RTKLIB, PATCH_LEVEL));
     btnAbort->setVisible(false);
 }
 // callback on form show ----------------------------------------------------
@@ -572,83 +572,74 @@ void MainWindow::viewInputFile()
 // callback on button-view-file-1 -------------------------------------------
 void MainWindow::viewOutputFile1()
 {
-    TextViewer *viewer = new TextViewer(this);
     QString outputFile1_Text = lEOutputFile1->text();
 
-    viewer->show();
     viewer->read(repPath(outputFile1_Text));
+    viewer->show();
 }
 // callback on button-view-file-2 -------------------------------------------
 void MainWindow::viewOutputFile2()
 {
-    TextViewer *viewer = new TextViewer(this);
     QString outputFile2_Text = lEOutputFile2->text();
 
-    viewer->show();
     viewer->read(repPath(outputFile2_Text));
+    viewer->show();
 }
 // callback on button-view-file-3 -------------------------------------------
 void MainWindow::viewOutputFile3()
 {
-    TextViewer *viewer = new TextViewer(this);
     QString outputFile3_Text = lEOutputFile3->text();
 
-    viewer->show();
     viewer->read(repPath(outputFile3_Text));
+    viewer->show();
 }
 // callback on button-view-file-4 -------------------------------------------
 void MainWindow::viewOutputFile4()
 {
-    TextViewer *viewer = new TextViewer(this);
     QString outputFile4_Text = lEOutputFile4->text();
 
-    viewer->show();
     viewer->read(repPath(outputFile4_Text));
+    viewer->show();
 }
 // callback on button-view-file-5 -------------------------------------------
 void MainWindow::viewOutputFile5()
 {
-    TextViewer *viewer = new TextViewer(this);
     QString outputFile5_Text = lEOutputFile5->text();
 
-    viewer->show();
     viewer->read(repPath(outputFile5_Text));
+    viewer->show();
 }
 // callback on button-view-file-6 -------------------------------------------
 void MainWindow::viewOutputFile6()
 {
-    TextViewer *viewer = new TextViewer(this);
     QString outputFile6_Text = lEOutputFile6->text();
 
-    viewer->show();
     viewer->read(repPath(outputFile6_Text));
+    viewer->show();
 }
 // callback on button-view-file-7 -------------------------------------------
 void MainWindow::viewOutputFile7()
 {
-    TextViewer *viewer = new TextViewer(this);
     QString outputFile7_Text = lEOutputFile7->text();
 
-    viewer->show();
     viewer->read(repPath(outputFile7_Text));
+    viewer->show();
 }
 // callback on button-view-file-8 -------------------------------------------
 void MainWindow::viewOutputFile8()
 {
-    TextViewer *viewer = new TextViewer(this);
     QString outputFile8_Text = lEOutputFile8->text();
 
-    viewer->show();
     viewer->read(repPath(outputFile8_Text));
+    viewer->show();
 }
 // callback on button-view-file-9 -------------------------------------------
 void MainWindow::viewOutputFile9()
 {
-    TextViewer *viewer = new TextViewer(this);
     QString outputFile9_Text = lEOutputFile9->text();
 
-    viewer->show();
     viewer->read(repPath(outputFile9_Text));
+    viewer->show();
 }
 // callback on button-about -------------------------------------------------
 void MainWindow::showAboutDialog()
@@ -981,7 +972,7 @@ void MainWindow::conversionFinished()
 void MainWindow::loadOptions(void)
 {
     QSettings ini(iniFile, QSettings::IniFormat);
-    QString opt, mask = "11111111111111111111111111111111111111111111111111111111111111111111";
+    QString mask = "11111111111111111111111111111111111111111111111111111111111111111111";
 
     rinexVersion = ini.value("opt/rnxver", 6).toInt();
     rinexFile = ini.value("opt/rnxfile", 0).toInt();
@@ -1067,10 +1058,7 @@ void MainWindow::loadOptions(void)
 
     readHistory(cBInputFile, &ini, "hist/inputfile");
 
-    TextViewer::colorText = ini.value("viewer/color1", QColor(Qt::black)).value<QColor>();
-    TextViewer::colorBackground = ini.value("viewer/color2", QColor(Qt::white)).value<QColor>();
-    TextViewer::font.setFamily(ini.value("viewer/fontname", "Courier New").toString());
-    TextViewer::font.setPointSize(ini.value("viewer/fontsize", 9).toInt());
+    viewer->loadOptions(ini);
 
     commandPostExe = ini.value("set/cmdpostexe", "rtkpost_qt").toString();
 
@@ -1166,9 +1154,6 @@ void MainWindow::saveOptions(void)
 
     writeHistory(&ini, "hist/inputfile", cBInputFile);
 
-    ini.setValue("viewer/color1", TextViewer::colorText);
-    ini.setValue("viewer/color2", TextViewer::colorBackground);
-    ini.setValue("viewer/fontname", TextViewer::font.family());
-    ini.setValue("viewer/fontsize", TextViewer::font.pointSize());
-}
+    viewer->saveOptions(ini);
+};
 //---------------------------------------------------------------------------

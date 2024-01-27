@@ -32,7 +32,10 @@
       <item row="0" column="0">
        <widget class="QLabel" name="Label2">
         <property name="text">
-         <string>Download Address (address/file-path)</string>
+         <string>Download &amp;Address (address/file-path)</string>
+        </property>
+        <property name="buddy">
+         <cstring>cBAddress</cstring>
         </property>
        </widget>
       </item>
@@ -93,7 +96,10 @@
          <string/>
         </property>
         <property name="text">
-         <string>Download Interval</string>
+         <string>Download &amp;Interval</string>
+        </property>
+        <property name="buddy">
+         <cstring>cBInterval</cstring>
         </property>
        </widget>
       </item>
@@ -103,7 +109,10 @@
          <string/>
         </property>
         <property name="text">
-         <string>User</string>
+         <string>&amp;User</string>
+        </property>
+        <property name="buddy">
+         <cstring>lEUser</cstring>
         </property>
        </widget>
       </item>
@@ -178,7 +187,10 @@
          <string/>
         </property>
         <property name="text">
-         <string>Time Offset in Path</string>
+         <string>Time Offset in &amp;Path</string>
+        </property>
+        <property name="buddy">
+         <cstring>cBPathOffset</cstring>
         </property>
        </widget>
       </item>
@@ -188,7 +200,10 @@
          <string/>
         </property>
         <property name="text">
-         <string>Download Offset</string>
+         <string>Download &amp;Offset</string>
+        </property>
+        <property name="buddy">
+         <cstring>cBOffset</cstring>
         </property>
        </widget>
       </item>
@@ -281,7 +296,10 @@
          <string/>
         </property>
         <property name="text">
-         <string>Retry Interval</string>
+         <string>&amp;Retry Interval</string>
+        </property>
+        <property name="buddy">
+         <cstring>sBRetryInterval</cstring>
         </property>
        </widget>
       </item>
@@ -346,7 +364,10 @@
          <string/>
         </property>
         <property name="text">
-         <string>Password</string>
+         <string>&amp;Password</string>
+        </property>
+        <property name="buddy">
+         <cstring>lEPassword</cstring>
         </property>
        </widget>
       </item>

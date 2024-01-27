@@ -113,7 +113,7 @@ Plot::Plot(QWidget *parent) : QMainWindow(parent)
 
     QString file = QApplication::applicationFilePath();
     QFileInfo fi(file);
-    iniFile = fi.absolutePath() + "/" + fi.baseName() + ".ini";
+    iniFile = fi.absoluteDir().filePath(fi.baseName()) + ".ini";
 
     toolBar->addWidget(toolPanel);
 
@@ -504,7 +504,7 @@ void Plot::showEvent(QShowEvent *event)
         connectPath(path2, 1);
         connectStream();
     } else if (openFiles.count() <= 0) {
-        setWindowTitle(title != "" ? title : QString(tr("%1 ver. %2 %3")).arg(PRGNAME).arg(VER_RTKLIB).arg(PATCH_LEVEL));
+        setWindowTitle(title != "" ? title : QString(tr("%1 ver. %2 %3")).arg(PRGNAME, VER_RTKLIB, PATCH_LEVEL));
     }
     if (shapeFile != "") {
         QStringList files;
@@ -718,25 +718,25 @@ void Plot::menuVisibilityAnalysisClicked()
         showMessage(tr("Specify receiver position as lat/lon/height"));
         return;
     }
-    if (spanDialog->timeStart.time == 0) {
+    if (spanDialog->getStartTime().time == 0) {
         int week;
         double tow = time2gpst(utc2gpst(timeget()), &week);
-        spanDialog->timeStart = gpst2time(week, floor(tow / 3600.0) * 3600.0);
-        spanDialog->timeEnd = timeadd(spanDialog->timeStart, 86400.0);
-        spanDialog->timeInterval = 30.0;
+        spanDialog->setStartTime(gpst2time(week, floor(tow / 3600.0) * 3600.0));
+        spanDialog->setEndTime(timeadd(spanDialog->getStartTime(), 86400.0));
+        spanDialog->setTimeInterval(30.0);
     }
-    spanDialog->timeEnabled[0] = spanDialog->timeEnabled[1] = spanDialog->timeEnabled[2] = 1;
-    spanDialog->timeValid[0] = spanDialog->timeValid[1] = spanDialog->timeValid[2] = 2;
+    spanDialog->setTimeEnable(0, 1); spanDialog->setTimeEnable(1, 1); spanDialog->setTimeEnable(2, 1);
+    spanDialog->setTimeValid(0, 2); spanDialog->setTimeValid(1, 2); spanDialog->setTimeValid(2, 2);
 
     spanDialog->exec();
 
     if (spanDialog->result() == QDialog::Accepted) {
-        timeStart = spanDialog->timeStart;
-        timeEnd = spanDialog->timeEnd;
-        timeInterval = spanDialog->timeInterval;
+        timeStart = spanDialog->getStartTime();
+        timeEnd = spanDialog->getEndTime();
+        timeInterval = spanDialog->getTimeInterval();
         generateVisibilityData();
     }
-    spanDialog->timeValid[0] = spanDialog->timeValid[1] = spanDialog->timeValid[2] = 1;
+    spanDialog->setTimeValid(0, 1); spanDialog->setTimeValid(1, 1); spanDialog->setTimeValid(2, 1);
 }
 // callback on menu-save image ----------------------------------------------
 void Plot::menuSaveImageClicked()
@@ -891,29 +891,29 @@ void Plot::menuTimeClicked()
         }
     }
     for (i = 0; i < 3; i++)
-        spanDialog->timeEnabled[i] = timeEnabled[i];
+        spanDialog->setTimeEnable(i, timeEnabled[i]);
 
-    spanDialog->timeStart = timeStart;
-    spanDialog->timeEnd = timeEnd;
-    spanDialog->timeInterval = timeInterval;
-    spanDialog->timeValid[0] = !connectState;
-    spanDialog->timeValid[1] = !connectState;
+    spanDialog->setStartTime(timeStart);
+    spanDialog->setEndTime(timeEnd);
+    spanDialog->setTimeInterval(timeInterval);
+    spanDialog->setTimeValid(0, !connectState);
+    spanDialog->setTimeValid(1, !connectState);
 
     spanDialog->exec();
 
     if (spanDialog->result() != QDialog::Accepted) return;
 
-    if (timeEnabled[0] != spanDialog->timeEnabled[0] ||
-        timeEnabled[1] != spanDialog->timeEnabled[1] ||
-        timeEnabled[2] != spanDialog->timeEnabled[2] ||
-        timediff(timeStart, spanDialog->timeStart) != 0.0 ||
-        timediff(timeEnd, spanDialog->timeEnd) != 0.0 ||
-        !qFuzzyCompare(timeInterval, spanDialog->timeInterval)) {
-        for (i = 0; i < 3; i++) timeEnabled[i] = spanDialog->timeEnabled[i];
+    if (timeEnabled[0] != spanDialog->getTimeEnable(0) ||
+        timeEnabled[1] != spanDialog->getTimeEnable(1) ||
+        timeEnabled[2] != spanDialog->getTimeEnable(2) ||
+        timediff(timeStart, spanDialog->getStartTime()) != 0.0 ||
+        timediff(timeEnd, spanDialog->getEndTime()) != 0.0 ||
+        !qFuzzyCompare(timeInterval, spanDialog->getTimeInterval())) {
+        for (i = 0; i < 3; i++) timeEnabled[i] = spanDialog->getTimeEnable(i);
 
-        timeStart = spanDialog->timeStart;
-        timeEnd = spanDialog->timeEnd;
-        timeInterval = spanDialog->timeInterval;
+        timeStart = spanDialog->getStartTime();
+        timeEnd = spanDialog->getEndTime();
+        timeInterval = spanDialog->getTimeInterval();
 
         reload();
     }
@@ -961,7 +961,6 @@ void Plot::menuSrcSolutionClicked()
 // callback on menu-obs-data-source -----------------------------------------
 void Plot::menuSrcObservationClicked()
 {
-    TextViewer *viewer;
     char file[1024], tmpfile[1024];
     int cstat;
 
@@ -972,7 +971,6 @@ void Plot::menuSrcObservationClicked()
     strncpy(file, qPrintable(observationFiles.at(0)), 1023);
     cstat = rtk_uncompress(file, tmpfile);
 
-    viewer = new TextViewer(this);
     viewer->setWindowTitle(observationFiles.at(0));
     viewer->setOption(0);
     viewer->show();
@@ -1121,7 +1119,7 @@ void Plot::menuMapViewClicked()
     trace(3, "menuMapViewClicked\n");
 
     mapView->setWindowTitle(
-        QString(tr("%1 ver.%2 %3: Map View")).arg(PRGNAME).arg(VER_RTKLIB).arg(PATCH_LEVEL));
+        QString(tr("%1 ver.%2 %3: Map View")).arg(PRGNAME,VER_RTKLIB, PATCH_LEVEL));
     mapView->show();
 }
 // callback on menu-center-origin -------------------------------------------
@@ -2874,10 +2872,7 @@ void Plot::loadOptions(void)
         streamHistory [i] = settings.value(QString("str/strhistry_%1").arg(i), "").toString();
     }
 
-    TextViewer::colorText = settings.value("viewer/color1", QColor(Qt::black)).value<QColor>();
-    TextViewer::colorBackground = settings.value("viewer/color2", QColor(Qt::white)).value<QColor>();
-    TextViewer::font.setFamily(settings.value("viewer/fontname", "Consolas").toString());
-    TextViewer::font.setPointSize(settings.value("viewer/fontsize", 9).toInt());
+    viewer->loadOptions(settings);
 
     menuBrowse->setChecked(settings.value("solbrows/show", 0).toBool());
     browseSplitter->restoreState(settings.value("solbrows/split1", 100).toByteArray());
@@ -3031,10 +3026,7 @@ void Plot::saveOption(void)
         settings.setValue(QString("str/strhistry_%1").arg(i), streamHistory [i]);
     }
 
-    settings.setValue("viewer/color1", TextViewer::colorText);
-    settings.setValue("viewer/color2", TextViewer::colorBackground);
-    settings.setValue("viewer/fontname", TextViewer::font.family());
-    settings.setValue("viewer/fontsize", TextViewer::font.pointSize());
+    viewer->saveOptions(settings);
 
     settings.setValue("solbrows/dir", fileSelDialog->directory);
     settings.setValue("solbrows/split1", browseSplitter->saveState());

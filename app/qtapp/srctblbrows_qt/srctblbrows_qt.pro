@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui widgets
+QT       += core gui widgets concurrent
 
 greaterThan(QT_MAJOR_VERSION, 5) {  # QT 6
     QT += quickwidgets

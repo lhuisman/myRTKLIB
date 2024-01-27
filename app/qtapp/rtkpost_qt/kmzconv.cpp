@@ -189,7 +189,7 @@ int ConvDialog::execCommand(const QString &cmd, const QStringList &opt)
 void ConvDialog::showMessage(const QString &msg)
 {
     lblMessage->setText(msg);
-    if (msg.toLower().contains("error")) lblMessage->setStyleSheet("QLabel {color : red}");
+    if (msg.contains("error", Qt::CaseInsensitive)) lblMessage->setStyleSheet("QLabel {color : red}");
     else lblMessage->setStyleSheet("QLabel {color : blue}");
 }
 //---------------------------------------------------------------------------

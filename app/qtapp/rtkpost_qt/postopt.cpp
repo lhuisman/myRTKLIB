@@ -24,7 +24,7 @@ OptDialog::OptDialog(QWidget *parent)
     int nglo = MAXPRNGLO, ngal = MAXPRNGAL, nqzs = MAXPRNQZS, ncmp = MAXPRNCMP;
     int nirn = MAXPRNIRN;
 
-    QString label, s;
+    QString label;
     cBFrequencies->clear();
     for (int i = 0; i < NFREQ; i++) {
         label="L1";
@@ -111,30 +111,30 @@ OptDialog::OptDialog(QWidget *parent)
     connect(btnRoverPosition, &QPushButton::clicked, this, &OptDialog::showRoverPositionDialog);
     connect(acStationPositionFileView, &QAction::triggered, this, &OptDialog::viewStationPositionFile);
     connect(acStationPositionFileSelect, &QAction::triggered, this, &OptDialog::selectStationPositionFile);
-    connect(lEStationPositionFile, &QLineEdit::textChanged, [acStationPositionFileView, this]()
+    connect(lEStationPositionFile, &QLineEdit::textChanged, this, [acStationPositionFileView, this]()
             {acStationPositionFileView->setEnabled(QFile::exists(this->lEStationPositionFile->text()));});
     connect(cBOutputHeight, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &OptDialog::updateEnable);
     connect(cBReferencePositionType, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &OptDialog::updateEnable);
     connect(cBRoverPositionType, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &OptDialog::updateEnable);
     connect(acSatellitePcvFileSelect, &QAction::triggered, this, &OptDialog::selectSatellitePcvFile);
     connect(acSatellitePcvFileView, &QAction::triggered, this, &OptDialog::viewSatelitePcvFile);
-    connect(lESatellitePcvFile, &QLineEdit::textChanged, [acSatellitePcvFileView, this]()
+    connect(lESatellitePcvFile, &QLineEdit::textChanged, this, [acSatellitePcvFileView, this]()
             {acSatellitePcvFileView->setEnabled(QFile::exists(this->lESatellitePcvFile->text()));});
     connect(acAntennaPcvFileSelect, &QAction::triggered, this, &OptDialog::selectAntennaPcvFile);
     connect(acAntennaPcvFileView, &QAction::triggered, this, &OptDialog::viewAntennaPcvFile);
-    connect(lEAntennaPcvFile, &QLineEdit::textChanged, [acAntennaPcvFileView, this]()
+    connect(lEAntennaPcvFile, &QLineEdit::textChanged, this, [acAntennaPcvFileView, this]()
             {acAntennaPcvFileView->setEnabled(QFile::exists(this->lEAntennaPcvFile->text()));});
     connect(acDCBFileSelect, &QAction::triggered, this, &OptDialog::selectDCBFile);
     connect(acDCBFileView, &QAction::triggered, this, &OptDialog::viewDCBFile);
-    connect(lEDCBFile, &QLineEdit::textChanged, [acDCBFileView, this]()
+    connect(lEDCBFile, &QLineEdit::textChanged, this, [acDCBFileView, this]()
             {acDCBFileView->setEnabled(QFile::exists(this->lEDCBFile->text()));});
     connect(acBLQFileSelect, &QAction::triggered, this, &OptDialog::selectBLQFile);
     connect(acBLQFileView, &QAction::triggered, this, &OptDialog::viewBLQFile);
-    connect(lEBLQFile, &QLineEdit::textChanged, [acBLQFileView, this]()
+    connect(lEBLQFile, &QLineEdit::textChanged, this, [acBLQFileView, this]()
             {acBLQFileView->setEnabled(QFile::exists(this->lEBLQFile->text()));});
     connect(acEOPFileSelect, &QAction::triggered, this, &OptDialog::selectEOPFile);
     connect(acEOPFileView, &QAction::triggered, this, &OptDialog::viewEOPView);
-    connect(lEEOPFile, &QLineEdit::textChanged, [acEOPFileView, this]()
+    connect(lEEOPFile, &QLineEdit::textChanged, this, [acEOPFileView, this]()
             {acEOPFileView->setEnabled(QFile::exists(this->lEEOPFile->text()));});
     connect(acGeoidDataFileSelect, &QAction::triggered, this, &OptDialog::selectGeoidDataFile);
     connect(acIonosphereFileSelect, &QAction::triggered, this, &OptDialog::selectIonosphereFile);

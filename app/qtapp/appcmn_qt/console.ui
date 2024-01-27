@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>640</width>
-    <height>434</height>
+    <width>659</width>
+    <height>461</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -53,7 +53,7 @@
          <string>Ascii View</string>
         </property>
         <property name="text">
-         <string>ASCII</string>
+         <string>&amp;ASCII</string>
         </property>
         <property name="checkable">
          <bool>true</bool>
@@ -72,7 +72,7 @@
          <string>Hex View</string>
         </property>
         <property name="text">
-         <string>HEX</string>
+         <string>&amp;HEX</string>
         </property>
         <property name="checkable">
          <bool>true</bool>
@@ -97,6 +97,9 @@
          <iconset resource="../icon/resources.qrc">
           <normaloff>:/buttons/pause</normaloff>:/buttons/pause</iconset>
         </property>
+        <property name="shortcut">
+         <string>Ctrl+P</string>
+        </property>
         <property name="checkable">
          <bool>true</bool>
         </property>
@@ -120,6 +123,9 @@
          <iconset resource="../icon/resources.qrc">
           <normaloff>:/buttons/fitd</normaloff>:/buttons/fitd</iconset>
         </property>
+        <property name="shortcut">
+         <string>Ctrl+D</string>
+        </property>
        </widget>
       </item>
       <item>
@@ -142,6 +148,9 @@
         <property name="icon">
          <iconset resource="../icon/resources.qrc">
           <normaloff>:/buttons/del</normaloff>:/buttons/del</iconset>
+        </property>
+        <property name="shortcut">
+         <string>Ctrl+X</string>
         </property>
        </widget>
       </item>

@@ -24,11 +24,8 @@ private:
     void updatePoint(void);
 
 public:
-    double position[3];
-    int fontScale;
-
     explicit PntDialog(QWidget* parent = NULL);
-    void setPoint(void);
+    void setPoint();
 };
 //---------------------------------------------------------------------------
 #endif

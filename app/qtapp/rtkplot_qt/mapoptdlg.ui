@@ -6,30 +6,21 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>510</width>
-    <height>191</height>
+    <width>515</width>
+    <height>167</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Map Image</string>
   </property>
-  <property name="toolTip">
-   <string/>
-  </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QWidget" name="Panel1" native="true">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
+    <widget class="QWidget" name="panelSize" native="true">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
-     </property>
-     <property name="toolTip">
-      <string/>
      </property>
      <property name="text" stdset="0">
       <string/>
@@ -52,9 +43,6 @@
       </property>
       <item>
        <widget class="QLabel" name="Label1">
-        <property name="toolTip">
-         <string/>
-        </property>
         <property name="text">
          <string>Image Size Width/Height</string>
         </property>
@@ -75,17 +63,11 @@
       </item>
       <item>
        <widget class="QLabel" name="Label2">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
         <property name="sizePolicy">
          <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
-        </property>
-        <property name="toolTip">
-         <string/>
         </property>
         <property name="text">
          <string>x</string>
@@ -110,12 +92,6 @@
    </item>
    <item>
     <widget class="QWidget" name="Panel2" native="true">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="toolTip">
-      <string/>
-     </property>
      <property name="text" stdset="0">
       <string/>
      </property>
@@ -137,9 +113,6 @@
       </property>
       <item row="1" column="0" colspan="2">
        <widget class="QLabel" name="Label5">
-        <property name="toolTip">
-         <string/>
-        </property>
         <property name="text">
          <string>Image Center Lon/Lat</string>
         </property>
@@ -191,9 +164,6 @@
       </item>
       <item row="2" column="0">
        <widget class="QLabel" name="Label6">
-        <property name="toolTip">
-         <string/>
-        </property>
         <property name="text">
          <string>Scale X/Y</string>
         </property>
@@ -251,7 +221,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QWidget" name="widget" native="true">
+    <widget class="QWidget" name="panelButtons" native="true">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -272,7 +242,7 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="QPushButton" name="btnSave">
+       <widget class="QPushButton" name="btnSaveTag">
         <property name="toolTip">
          <string>Save map image tag</string>
         </property>
@@ -302,18 +272,9 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="btnClose">
-        <property name="toolTip">
-         <string/>
-        </property>
-        <property name="text">
-         <string>&amp;Close</string>
-        </property>
-        <property name="autoDefault">
-         <bool>true</bool>
-        </property>
-        <property name="default">
-         <bool>true</bool>
+       <widget class="QDialogButtonBox" name="buttonBox">
+        <property name="standardButtons">
+         <set>QDialogButtonBox::Close</set>
         </property>
        </widget>
       </item>

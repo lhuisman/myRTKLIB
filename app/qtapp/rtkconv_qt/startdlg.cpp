@@ -25,7 +25,7 @@ void StartDialog::setFileName(QString fn)
     uint32_t timetag = 0;
     uint8_t buff[80] = {0};
     char path_tag[1024], path[1020], *paths[1];
-    gtime_t time;
+    gtime_t time = {0, 0};
 
     // read time tag file if exists
     paths[0] = path;

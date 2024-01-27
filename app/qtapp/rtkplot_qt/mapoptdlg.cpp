@@ -21,30 +21,32 @@ MapOptDialog::MapOptDialog(QWidget* parent)
     : QDialog(parent)
 {
     setupUi(this);
-    connect(btnSave, &QPushButton::clicked, this, &MapOptDialog::btnSaveClicked);
-    connect(btnClose, &QPushButton::clicked, this, &MapOptDialog::close);
-    connect(cBScaleEqual, &QCheckBox::clicked, this, &MapOptDialog::scaleEqualClicked);
+    connect(btnSaveTag, &QPushButton::clicked, this, &MapOptDialog::saveTag);
+    connect(buttonBox, &QDialogButtonBox::rejected, this, &MapOptDialog::close);
+    connect(cBScaleEqual, &QCheckBox::clicked, this, &MapOptDialog::scaleEqualChanged);
     connect(btnUpdate, &QPushButton::clicked, this, &MapOptDialog::updateMap);
 }
 //---------------------------------------------------------------------------
-void MapOptDialog::showEvent(QShowEvent*)
+void MapOptDialog::showEvent(QShowEvent* event)
 {
+    if (event->spontaneous()) return;
+
 	updateField();
 	updateEnable();
 }
 //---------------------------------------------------------------------------
-void MapOptDialog::btnSaveClicked()
+void MapOptDialog::saveTag()
 {
-    QString file = plot->mapImageFile;
-    if (file == "") return;
-    file = file + ".tag";
+    if (plot->mapImageFile.isEmpty()) return;
+    QFileInfo fi(plot->mapImageFile);
+    QString file = fi.absoluteDir().filePath(fi.baseName()) + ".tag";
 
     QFile fp(file);
     if (!fp.open(QIODevice::WriteOnly | QIODevice::Text)) {
         if (QMessageBox::question(this, file, tr("File exists. Overwrite it?")) != QMessageBox::Yes) return;
 	}
     QTextStream out(&fp);
-    out << QString("%% map image tag file: rtkplot %1 %2\n\n").arg(VER_RTKLIB).arg(PATCH_LEVEL);
+    out << QString("%% map image tag file: rtkplot %1 %2\n\n").arg(VER_RTKLIB, PATCH_LEVEL);
     out << QString("scalex  = %1\n").arg(plot->mapScaleX, 0, 'g', 6);
     out << QString("scaley  = %1\n").arg(plot->mapScaleEqual ? plot->mapScaleX : plot->mapScaleY, 0, 'g', 6);
     out << QString("scaleeq = %1\n").arg(plot->mapScaleEqual);
@@ -66,7 +68,7 @@ void MapOptDialog::btnCenterClicked()
 	updateMap();
 }
 //---------------------------------------------------------------------------
-void MapOptDialog::scaleEqualClicked()
+void MapOptDialog::scaleEqualChanged()
 {
 	updateMap();
 	updateEnable();

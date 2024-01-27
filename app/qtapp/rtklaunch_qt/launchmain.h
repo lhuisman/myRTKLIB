@@ -31,7 +31,7 @@ public slots:
     void launchRTKGet();
     void moveToTray();
     void showOptions();
-    void trayIconActivated(QSystemTrayIcon::ActivationReason);
+    void restoreFromTaskTray(QSystemTrayIcon::ActivationReason);
     void expandWindow();
 
 private:

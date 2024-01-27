@@ -4,29 +4,19 @@
 //---------------------------------------------------------------------------
 #include <QDialog>
 
-#include "ui_tcpoptdlg.h"
 #define MAXHIST		10
 
+namespace Ui {
+class TcpOptDialog;
+}
+
 class MntpOptDialog;
+class QComboBox;
+
 //---------------------------------------------------------------------------
-class TcpOptDialog : public QDialog, private Ui::TcpOptDialog
+class TcpOptDialog : public QDialog
 {
     Q_OBJECT
-
-protected:
-    MntpOptDialog *mntpOptDialog;
-    QString history[MAXHIST];
-    int showOptions;
-
-public slots:
-    void btnOkClicked();
-    void btnNtripClicked();
-    void btnMountpointClicked();
-    void btnBrowseClicked();
-
-private:
-    void addHistory(QComboBox *list, QString *hist);
-    int  ExecCommand(const QString &cmd, const QStringList &opt, int show);
 
 public:
     explicit TcpOptDialog(QWidget* parent, int options = 0);
@@ -36,6 +26,23 @@ public:
     void setPath(QString path);
     QString* getHistory();
     void setHistory(QString history[], int size);
+
+protected:
+    MntpOptDialog *mntpOptDialog;
+    QString history[MAXHIST];
+    int showOptions;
+
+protected slots:
+    void btnOkClicked();
+    void btnNtripClicked();
+    void btnMountpointClicked();
+    void btnBrowseClicked();
+
+private:
+    void addHistory(QComboBox *list, QString *hist);
+    int  execCommand(const QString &cmd, const QStringList &opt, int show);
+    Ui::TcpOptDialog *ui;
+
 };
 //---------------------------------------------------------------------------
 #endif

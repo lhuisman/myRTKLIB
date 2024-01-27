@@ -188,30 +188,30 @@ OptDialog::OptDialog(QWidget *parent)
     connect(btnSave, &QPushButton::clicked, this, &OptDialog::saveOptions);
     connect(acAntennaPcvFileSelect, &QAction::triggered, this, &OptDialog::selectAntennaPcvFile);
     connect(acAntennaPcvFileView, &QAction::triggered, this, &OptDialog::viewAntennaPcvFile);
-    connect(lEAntennaPcvFile, &QLineEdit::textChanged, [acAntennaPcvFileView, this]()
+    connect(lEAntennaPcvFile, &QLineEdit::textChanged, this, [acAntennaPcvFileView, this]()
             {acAntennaPcvFileView->setEnabled(QFile::exists(this->lEAntennaPcvFile->text()));});
     connect(acSatellitePcvFileSelect, &QAction::triggered, this, &OptDialog::selectSatellitePcvFile);
     connect(acSatellitePcvFileView, &QAction::triggered, this, &OptDialog::viewSatellitePcvFile);
-    connect(lESatellitePcvFile, &QLineEdit::textChanged, [acSatellitePcvFileView, this]()
+    connect(lESatellitePcvFile, &QLineEdit::textChanged, this, [acSatellitePcvFileView, this]()
             {acSatellitePcvFileView->setEnabled(QFile::exists(this->lESatellitePcvFile->text()));});
     connect(acDCBFileSelect, &QAction::triggered, this, &OptDialog::selectDCBFile);
     connect(acDCBFileView, &QAction::triggered, this, &OptDialog::viewDCBFile);
-    connect(lEDCBFile, &QLineEdit::textChanged, [acDCBFileView, this]()
+    connect(lEDCBFile, &QLineEdit::textChanged, this, [acDCBFileView, this]()
             {acDCBFileView->setEnabled(QFile::exists(this->lEDCBFile->text()));});
     connect(acEOPFileSelect, &QAction::triggered, this, &OptDialog::selectEOPFile);
     connect(acEOPFileView, &QAction::triggered, this, &OptDialog::viewEOPFile);
-    connect(lEEOPFile, &QLineEdit::textChanged, [acEOPFileView, this]()
+    connect(lEEOPFile, &QLineEdit::textChanged, this, [acEOPFileView, this]()
             {acEOPFileView->setEnabled(QFile::exists(this->lEEOPFile->text()));});
     connect(acGeoidDataFileSelect, &QAction::triggered, this, &OptDialog::selectGeoidDataFile);
     connect(acLocalDirectorySelect, &QAction::triggered, this, &OptDialog::selectLocalDirectory);
     connect(acIonosphereFileSelect, &QAction::triggered, this, &OptDialog::selectIonosphereFile);
     connect(acBLQFileSelect, &QAction::triggered, this, &OptDialog::selectBLQFile);
     connect(acBLQFileView, &QAction::triggered, this, &OptDialog::viewBLQFile);
-    connect(lEBLQFile, &QLineEdit::textChanged, [acBLQFileView, this]()
+    connect(lEBLQFile, &QLineEdit::textChanged, this, [acBLQFileView, this]()
             {acBLQFileView->setEnabled(QFile::exists(this->lEBLQFile->text()));});
     connect(acStationPositionFileSelect, &QAction::triggered, this, &OptDialog::selectStationPositionFile);
     connect(acStationPositionFileView, &QAction::triggered, this, &OptDialog::viewStationPositionFile);
-    connect(lEStationPositionFile, &QLineEdit::textChanged, [acStationPositionFileView, this]()
+    connect(lEStationPositionFile, &QLineEdit::textChanged, this, [acStationPositionFileView, this]()
             {acStationPositionFileView->setEnabled(QFile::exists(this->lEStationPositionFile->text()));});
     connect(btnReferencePosition, &QPushButton::clicked, this, &OptDialog::selectReferencePosition);
     connect(btnRoverPosition, &QPushButton::clicked, this, &OptDialog::selectRoverPosition);
