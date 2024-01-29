@@ -289,9 +289,9 @@ static int convbin(int format, rnxopt_t *opt, const char *ifile, char **file,
     }
     for (i=0;i<NOUTFILE;i++) {
         if (!*dir||!*ofile[i]) continue;
-        if ((p=strrchr(ofile[i],FILEPATHSEP))) strcpy(work,p+1);
+        if ((p=strrchr(ofile[i],RTKLIB_FILEPATHSEP))) strcpy(work,p+1);
         else strcpy(work,ofile[i]);
-        sprintf(ofile[i],"%s%c%s",dir,FILEPATHSEP,work);
+        sprintf(ofile[i],"%s%c%s",dir,RTKLIB_FILEPATHSEP,work);
     }
     fprintf(stderr,"input file  : %s (%s)\n",ifile,formatstrs[format]);
     

@@ -3039,24 +3039,24 @@ static char file_trace[1024];   /* trace file */
 static int level_trace=0;       /* level of trace */
 static uint32_t tick_trace=0;   /* tick time at traceopen (ms) */
 static gtime_t time_trace={0};  /* time at traceopen */
-static lock_t lock_trace;       /* lock for trace */
+static rtklib_lock_t lock_trace;       /* lock for trace */
 
 static void traceswap(void)
 {
     gtime_t time=utc2gpst(timeget());
     char path[1024];
     
-    lock(&lock_trace);
+    rtklib_lock(&lock_trace);
     
     if ((int)(time2gpst(time      ,NULL)/INT_SWAP_TRAC)==
         (int)(time2gpst(time_trace,NULL)/INT_SWAP_TRAC)) {
-        unlock(&lock_trace);
+        rtklib_unlock(&lock_trace);
         return;
     }
     time_trace=time;
     
     if (!reppath(file_trace,path,time,"","")) {
-        unlock(&lock_trace);
+        rtklib_unlock(&lock_trace);
         return;
     }
     if (fp_trace) fclose(fp_trace);
@@ -3064,7 +3064,7 @@ static void traceswap(void)
     if (!(fp_trace=fopen(path,"w"))) {
         fp_trace=stderr;
     }
-    unlock(&lock_trace);
+    rtklib_unlock(&lock_trace);
 }
 extern void traceopen(const char *file)
 {
@@ -3076,7 +3076,7 @@ extern void traceopen(const char *file)
     strcpy(file_trace,file);
     tick_trace=tickget();
     time_trace=time;
-    initlock(&lock_trace);
+    rtklib_initlock(&lock_trace);
 }
 extern void traceclose(void)
 {
@@ -3360,7 +3360,7 @@ static int mkdir_r(const char *dir)
     if (!*dir||!strcmp(dir+1,":\\")) return 1;
     
     sprintf(pdir,"%.1023s",dir);
-    if ((p=strrchr(pdir,FILEPATHSEP))) {
+    if ((p=strrchr(pdir,RTKLIB_FILEPATHSEP))) {
         *p='\0';
         h=FindFirstFile(pdir,&data);
         if (h==INVALID_HANDLE_VALUE) {
@@ -3377,7 +3377,7 @@ static int mkdir_r(const char *dir)
     if (!*dir) return 1;
     
     sprintf(pdir,"%.1023s",dir);
-    if ((p=strrchr(pdir,FILEPATHSEP))) {
+    if ((p=strrchr(pdir,RTKLIB_FILEPATHSEP))) {
         *p='\0';
         if (!(fp=fopen(pdir,"r"))) {
             if (!mkdir_r(pdir)) return 0;
@@ -3402,7 +3402,7 @@ extern void createdir(const char *path)
     tracet(3,"createdir: path=%s\n",path);
     
     strcpy(buff,path);
-    if (!(p=strrchr(buff,FILEPATHSEP))) return;
+    if (!(p=strrchr(buff,RTKLIB_FILEPATHSEP))) return;
     *p='\0';
     
     mkdir_r(buff);

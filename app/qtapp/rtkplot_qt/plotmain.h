@@ -10,7 +10,6 @@
 
 #include "graph.h"
 #include "console.h"
-#define INHIBIT_RTK_LOCK_MACROS
 #include "rtklib.h"
 
 #include "ui_plotmain.h"
