@@ -3676,16 +3676,20 @@ extern double ionmapf(const double *pos, const double *azel)
 *          double re        I   earth radius (km)
 *          double hion      I   altitude of ionosphere (km)
 *          double *posp     O   pierce point position {lat,lon,h} (rad,m)
-* return : slant factor
+* return : slant factor, the single-layer mapping function.
 * notes  : see ref [2], only valid on the earth surface
 *          fixing bug on ref [2] A.4.4.10.1 A-22,23
 *-----------------------------------------------------------------------------*/
 extern double ionppp(const double *pos, const double *azel, double re,
                      double hion, double *posp)
 {
-    double cosaz,rp,ap,sinap,tanap;
-    
-    rp=re/(re+hion)*cos(azel[1]);
+    double cosaz,r,rp,ap,sinap,tanap;
+
+    /* The radius at the receiver station. */
+    r=re+pos[2];
+    /* asin(rp) is the zenith angle at the IPP. */
+    rp=r/(re+hion)*cos(azel[1]);
+    /* The angle at the center of the earth. */
     ap=PI/2.0-azel[1]-asin(rp);
     sinap=sin(ap);
     tanap=tan(ap);
@@ -3699,6 +3703,7 @@ extern double ionppp(const double *pos, const double *azel, double re,
     else {
         posp[1]=pos[1]+asin(sinap*sin(azel[0])/cos(posp[0]));
     }
+    /* Equivalent to 1/cos(asin(rp)) */
     return 1.0/sqrt(1.0-rp*rp);
 }
 /* select iono-free linear combination (L1/L2 or L1/L5) ----------------------*/
