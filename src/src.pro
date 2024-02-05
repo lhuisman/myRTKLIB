@@ -71,7 +71,7 @@ SOURCES += rtkcmn.c \
     rcv/rt17.c \
     rcv/septentrio.c \
     rcv/skytraq.c \
-	rcv/swiftnav.c \
+    rcv/swiftnav.c \
     rcv/ublox.c 
 
 HEADERS += rtklib.h

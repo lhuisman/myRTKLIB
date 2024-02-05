@@ -1628,7 +1628,7 @@ static int rspntrip_c(ntrip_t *ntrip, char *msg)
         ntrip->state=2;
         sprintf(msg,"%s/%s",ntrip->tcp->svr.saddr,ntrip->mntpnt);
         tracet(3,"rspntrip_c: response ok nb=%d\n",ntrip->nb);
-		ntrip->tcp->tirecon=ticonnect;
+        ntrip->tcp->tirecon=ticonnect;
         return 1;
     }
     if ((p=strstr((char *)ntrip->buff,NTRIP_RSP_SRCTBL))) { /* source table */
@@ -1643,7 +1643,7 @@ static int rspntrip_c(ntrip_t *ntrip, char *msg)
         ntrip->nb=0;
         ntrip->buff[0]='\0';
         ntrip->state=0;
-		/* increase subsequent disconnect time to avoid too many reconnect requests */
+        /* increase subsequent disconnect time to avoid too many reconnect requests */
         if (ntrip->tcp->tirecon>300000) ntrip->tcp->tirecon=ntrip->tcp->tirecon*5/4;
 
         discontcp(&ntrip->tcp->svr,ntrip->tcp->tirecon);

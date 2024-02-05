@@ -358,9 +358,9 @@ static int get_filetime(const char *file, gtime_t *time)
             time->sec=0.0;
             fclose(fp);
             return 1;
-		}
+        }
         fclose(fp);
-	}
+    }
     /* get modified time of input file */
     if (!stat(path,&st)&&(tm=gmtime(&st.st_mtime))) {
         ep[0]=tm->tm_year+1900;
@@ -385,7 +385,7 @@ static int cmdopts(int argc, char **argv, rnxopt_t *opt, char **ifile,
     
     opt->rnxver=304;
     opt->obstype=OBSTYPE_PR|OBSTYPE_CP;
-	opt->navsys=SYS_GPS|SYS_GLO|SYS_GAL|SYS_QZS|SYS_SBS|SYS_CMP|SYS_IRN;
+    opt->navsys=SYS_GPS|SYS_GLO|SYS_GAL|SYS_QZS|SYS_SBS|SYS_CMP|SYS_IRN;
     opt->ttol = 0.005;
     
     for (i=0;i<6;i++) for (j=0;j<64;j++) opt->mask[i][j]='1';
