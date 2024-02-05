@@ -322,8 +322,9 @@ static int rescode(int iter, const obsd_t *obs, int n, const double *rs,
                 continue;
             }
             if ((freq=sat2freq(sat,obs[i].code[0],nav))==0.0) continue;
+            /* Convert from FREQL1 to freq */
             dion*=SQR(FREQL1/freq);
-            vion*=SQR(FREQL1/freq);
+            vion*=SQR(SQR(FREQL1/freq));
         
             /* tropospheric correction */
             if (!tropcorr(time,nav,pos,azel+i*2,opt->tropopt,&dtrp,&vtrp)) {
