@@ -127,13 +127,15 @@ static gtime_t time_stat={0};    /* rtk status file time */
 *          velef/velnf/veluf : velocity e/n/u (m/s) fixed
 *          accef/accnf/accuf : acceleration e/n/u (m/s^2) fixed
 *
-*   $CLK,week,tow,stat,clk1,clk2,clk3,clk4
+*   $CLK,week,tow,stat,clk1,clk2,clk3,clk4,clk5,clk6
 *          week/tow : gps week no/time of week (s)
 *          stat     : solution status
 *          clk1     : receiver clock bias GPS (ns)
 *          clk2     : receiver clock bias GLO-GPS (ns)
 *          clk3     : receiver clock bias GAL-GPS (ns)
 *          clk4     : receiver clock bias BDS-GPS (ns)
+*          clk5     : receiver clock bias IRN-GPS (ns)
+*          clk6     : receiver clock bias QZS-GPS (ns)
 *
 *   $ION,week,tow,stat,sat,az,el,ion,ion-fixed
 *          week/tow : gps week no/time of week (s)
@@ -261,9 +263,10 @@ extern int rtkoutstat(rtk_t *rtk, char *buff)
                    0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0);
     }
     /* receiver clocks */
-    p+=sprintf(p,"$CLK,%d,%.3f,%d,%d,%.3f,%.3f,%.3f,%.3f\n",
+    p+=sprintf(p,"$CLK,%d,%.3f,%d,%d,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f\n",
                week,tow,rtk->sol.stat,1,rtk->sol.dtr[0]*1E9,rtk->sol.dtr[1]*1E9,
-               rtk->sol.dtr[2]*1E9,rtk->sol.dtr[3]*1E9);
+               rtk->sol.dtr[2]*1E9,rtk->sol.dtr[3]*1E9,
+               rtk->sol.dtr[4]*1E9,rtk->sol.dtr[5]*1E9);
     
     /* ionospheric parameters */
     if (est&&rtk->opt.ionoopt==IONOOPT_EST) {
