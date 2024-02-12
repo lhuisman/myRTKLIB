@@ -423,13 +423,10 @@ static int decode_rxmrawx(raw_t *raw)
         frqid=U1(p+23);    /* freqId (fcn + 7) */
         lockt=U2(p+24);    /* locktime (ms) */
         cn0  =U1(p+26);    /* cn0 (dBHz) */
-        prstd=U1(p+27)&15; /* pseudorange std-dev */
-        cpstd=U1(p+28)&15; /* cpStdev (m) */
-        /* The min prstd for the M8T appears to be 5, so subtract this when encoding
-         * into the rinex 0-9 range. This offset is added back when decoding.
-         * The cpstd ranges from 1 to around 8 for the M8T and is 15 for a slip,
-         * so let this be clipped at 9 when encoding into the rinex 0-9 range. */
-        prstd=prstd>=5?prstd-5:0;
+	prstd=U1(p+27)&15; /* pseudorange std-dev: (0.01*2^n meters) */
+	cpstd=U1(p+28)&15; /* cpStdev (n*0.004 m) */
+	/* subtract offset to use valid rinex format range (0->9) */
+	prstd=prstd>=5?prstd-5:0; /* prstd=0.01*2^(x-5) meters*/
 
         tstat=U1(p+30);    /* trkStat */
         if (!(tstat&1)) P=0.0;
