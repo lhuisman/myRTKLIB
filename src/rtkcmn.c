@@ -1936,7 +1936,7 @@ extern double dms2deg(const double *dms)
     double sign=dms[0]<0.0?-1.0:1.0;
     return sign*(fabs(dms[0])+dms[1]/60.0+dms[2]/3600.0);
 }
-/* transform ecef to geodetic postion ------------------------------------------
+/* transform ecef to geodetic position -----------------------------------------
 * transform ecef position to geodetic position
 * args   : double *r        I   ecef position {x,y,z} (m)
 *          double *pos      O   geodetic position {lat,lon,h} (rad,m)
