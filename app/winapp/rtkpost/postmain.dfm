@@ -1027,8 +1027,8 @@ object MainForm: TMainForm
       '|RINEX NAV (*.*nav,*.*N,*.*P,*.*G,*.*H,*.*Q,*.*C,*.*L,*.*J)|*.*n' +
       'av;*.*N;*.*P;*.*G;*.*H;*.*Q;*.*C;*.*L;*.*J;*N.rnx|Precise Ephem/' +
       'Clock/Bias (*.sp3,*.eph*,*.clk*,*.bia*,*.bsx*)|*.sp3;*eph*;*.clk' +
-      '*;*.bia*;*.bsx*|FCB (*.fcb),IONEX (*.*i,*.ionex,*.INX,*.inx),SBA' +
-      'S (*.sbs,*.ems)|*.fcb;*.*i;*.ionex;*.sbs;*.ems'
+      '*;*.bia*;*.bsx*|FCB (*.fcb),IONEX (*.*i,*.ionex,*.inx),SBAS' +
+      ' (*.sbs,*.ems)|*.fcb;*.*i;*.ionex;*.inx;*.sbs;*.ems'
     Options = [ofHideReadOnly, ofNoChangeDir, ofAllowMultiSelect, ofEnableSizing]
     Left = 334
     Top = 235
