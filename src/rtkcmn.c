@@ -216,8 +216,8 @@ const prcopt_t prcopt_default={ /* defaults processing options */
     {1E-4,1E-3,1E-4,1E-1,1E-2,0.0}, /* prn[] */
     5E-12,                      /* sclkstab */
     {3.0,0.25,0.0,1E-9,1E-5,3.0,3.0,0.0}, /* thresar */
-	0.0,0.0,0.05,0,             /* elmaskar,elmaskhold,thresslip,thresdop, */
-	0.1,0.01,30.0,              /* varholdamb,gainholdamb,maxtdif */
+    0.0,0.0,0.05,0,             /* elmaskar,elmaskhold,thresslip,thresdop, */
+    0.1,0.01,30.0,              /* varholdamb,gainholdamb,maxtdif */
     {5.0,30.0},                 /* maxinno {phase,code} */
     {0},{0},{0},                /* baseline,ru,rb */
     {"",""},                    /* anttype */
@@ -267,13 +267,13 @@ static char *obscodes[]={       /* observation code strings */
 };
 static char codepris[7][MAXFREQ][16]={  /* code priority for each freq-index */
     /* L1/E1/B1I L2/E5b/B2I L5/E5a/B3I E6/LEX/B2A E5(a+b)         */
-	{"CPYWMNSLX","CPYWMNDLSX","IQX"     ,""       ,""       ,""}, /* GPS */
+    {"CPYWMNSLX","CPYWMNDLSX","IQX"     ,""       ,""       ,""}, /* GPS */
     {"CPABX"   ,"CPABX"     ,"IQX"     ,""       ,""       ,""}, /* GLO */
     {"CABXZ"   ,"XIQ"       ,"XIQ"     ,"ABCXZ"  ,"IQX"    ,""}, /* GAL */
     {"CLSXZ"   ,"LSX"       ,"IQXDPZ"  ,"LSXEZ"  ,""       ,""}, /* QZS */
     {"C"       ,"IQX"       ,""        ,""       ,""       ,""}, /* SBS */
-	{"IQXDPAN" ,"IQXDPZ"    ,"IQXA"    ,"DPX"   ,"DPX"    ,""}, /* BDS */
-	{"ABCX"    ,"ABCX"      ,""        ,""       ,""       ,""}  /* IRN */
+    {"IQXDPAN" ,"IQXDPZ"    ,"IQXA"    ,"DPX"   ,"DPX"    ,""}, /* BDS */
+    {"ABCX"    ,"ABCX"      ,""        ,""       ,""       ,""}  /* IRN */
 };
 static fatalfunc_t *fatalfunc=NULL; /* fatal callback function */
 
