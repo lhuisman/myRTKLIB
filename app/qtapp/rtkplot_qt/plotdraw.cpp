@@ -5,7 +5,6 @@
 #include <QPainter>
 #include <QDebug>
 
-#define INHIBIT_RTK_LOCK_MACROS
 #include "rtklib.h"
 #include "plotmain.h"
 #include "graph.h"

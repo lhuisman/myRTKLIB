@@ -2317,7 +2317,7 @@ static void *ftpthread(void *arg)
     reppath(ftp->file,remote,time,"","");
     
     if ((p=strrchr(remote,'/'))) p++; else p=remote;
-    sprintf(local,"%.768s%c%.254s",localdir,FILEPATHSEP,p);
+    sprintf(local,"%.768s%c%.254s",localdir,RTKLIB_FILEPATHSEP,p);
     sprintf(errfile,"%.1019s.err",local);
     
     /* if local file exist, skip download */

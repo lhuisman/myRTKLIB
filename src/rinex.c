@@ -1685,7 +1685,7 @@ extern int readrnxt(const char *file, int rcv, gtime_t ts, gtime_t te,
     }
     /* if station name empty, set 4-char name from file head */
     if (type=='O'&&sta) {
-        if (!(p=strrchr(file,FILEPATHSEP))) p=file-1;
+        if (!(p=strrchr(file,RTKLIB_FILEPATHSEP))) p=file-1;
         if (!*sta->name) setstr(sta->name,p+1,4);
     }
     for (i=0;i<MAXEXFILE;i++) free(files[i]);
