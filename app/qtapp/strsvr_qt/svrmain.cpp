@@ -696,13 +696,13 @@ void MainForm::Timer2Timer()
     int i,len,inb,inr,outb,outr;
 
     if (strMonDialog->StrFmt) {
-        lock(&strsvr.lock);
+        rtklib_lock(&strsvr.lock);
         len = strsvr.npb;
         if (len > 0 && (msg = (unsigned char *)malloc(len))) {
             memcpy(msg, strsvr.pbuf, len);
             strsvr.npb = 0;
         }
-        unlock(&strsvr.lock);
+        rtklib_unlock(&strsvr.lock);
         if (len <= 0 || !msg) return;
         strMonDialog->AddMsg(msg, len);
         free(msg);
