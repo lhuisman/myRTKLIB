@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1098</width>
-    <height>457</height>
+    <height>470</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -61,7 +61,7 @@
            <number>0</number>
           </property>
           <item>
-           <widget class="QPushButton" name="btnList">
+           <widget class="QToolButton" name="btnList">
             <property name="toolTip">
              <string>Update Caster List</string>
             </property>
@@ -91,7 +91,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="btnUpdate">
+           <widget class="QToolButton" name="btnUpdate">
             <property name="toolTip">
              <string>Update Data Streams</string>
             </property>
@@ -103,12 +103,6 @@
           </item>
           <item>
            <widget class="QToolButton" name="btnTypeStr">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
             <property name="toolTip">
              <string>Data Streams</string>
             </property>
@@ -122,12 +116,6 @@
           </item>
           <item>
            <widget class="QToolButton" name="btnTypeCas">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
             <property name="toolTip">
              <string>Caster</string>
             </property>
@@ -141,12 +129,6 @@
           </item>
           <item>
            <widget class="QToolButton" name="btnTypeNet">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
             <property name="toolTip">
              <string>Networks</string>
             </property>
@@ -160,12 +142,6 @@
           </item>
           <item>
            <widget class="QToolButton" name="btnTypeSrc">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
             <property name="toolTip">
              <string>Source Table</string>
             </property>
@@ -178,7 +154,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="btnMap">
+           <widget class="QToolButton" name="btnMap">
             <property name="toolTip">
              <string/>
             </property>
@@ -228,7 +204,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="btnSta">
+           <widget class="QToolButton" name="btnSta">
             <property name="enabled">
              <bool>true</bool>
             </property>
@@ -237,9 +213,6 @@
             </property>
             <property name="text">
              <string>...</string>
-            </property>
-            <property name="flat">
-             <bool>false</bool>
             </property>
            </widget>
           </item>
@@ -313,7 +286,7 @@
      <x>0</x>
      <y>0</y>
      <width>1098</width>
-     <height>23</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="File">

@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui widgets concurrent
+QT += core gui widgets concurrent
 
 greaterThan(QT_MAJOR_VERSION, 5) {  # QT 6
     QT += quickwidgets
@@ -13,8 +13,8 @@ greaterThan(QT_MAJOR_VERSION, 5) {  # QT 6
 include(../qtapp.pri)
 
 qtHaveModule(webenginewidgets) {
-    QT+= webenginewidgets
-    DEFINES+=QWEBENGINE
+    QT += webenginewidgets
+    DEFINES += QWEBENGINE
 }
 
 INCLUDEPATH += ../../../src/ ../appcmn_qt
@@ -33,7 +33,7 @@ SOURCES += \
     ../appcmn_qt/viewer.cpp \
     ../appcmn_qt/vieweropt.cpp
 
-HEADERS  += \ 
+HEADERS += \
     browsmain.h \
     ../appcmn_qt/staoptdlg.h \
     ../appcmn_qt/mapview.h \

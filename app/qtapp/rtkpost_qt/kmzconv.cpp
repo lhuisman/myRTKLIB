@@ -144,8 +144,8 @@ void ConvDialog::convert()
     if (ui->rBFormatKML->isChecked() && ui->cBCompress->isChecked()) {
 #ifdef Q_OS_WIN
         cmd = "zip.exe";
-        opt << "-j"
-        opt << QString("-m %1").arg(lEOutputFile->text()); //TODO: zip for other platforms
+        opt << "-j";
+        opt << QString("-m %1").arg(ui->lEOutputFile->text()); //TODO: zip for other platforms
 #endif
 #ifdef Q_OS_LINUX
         cmd = "gzip";

@@ -1,12 +1,12 @@
 //---------------------------------------------------------------------------
 #include <QDebug>
 
-#include "rtklib.h"
 #include "convopt.h"
 #include "codeopt.h"
 
 #include "ui_codeopt.h"
 
+#include "rtklib.h"
 
 //---------------------------------------------------------------------------
 CodeOptDialog::CodeOptDialog(QWidget *parent)

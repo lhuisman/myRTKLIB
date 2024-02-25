@@ -1,7 +1,5 @@
 //---------------------------------------------------------------------------
 #define INHIBIT_RTK_LOCK_MACROS
-#include "rtklib.h"
-
 #include <QShowEvent>
 #include <QKeyEvent>
 #include <QTextStream>
@@ -13,6 +11,7 @@
 
 #include "ui_mapoptdlg.h"
 
+#include "rtklib.h"
 
 #define INC_LATLON  0.000001
 #define INC_SCALE   0.0001

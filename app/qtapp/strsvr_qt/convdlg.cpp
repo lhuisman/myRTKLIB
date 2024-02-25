@@ -1,8 +1,9 @@
 //---------------------------------------------------------------------------
-#include "rtklib.h"
 #include "convdlg.h"
 
 #include "ui_convdlg.h"
+
+#include "rtklib.h"
 
 //---------------------------------------------------------------------------
 ConvDialog::ConvDialog(QWidget *parent)

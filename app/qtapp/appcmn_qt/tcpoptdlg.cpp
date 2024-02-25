@@ -6,11 +6,12 @@
 #include <QProcess>
 #include <QUrl>
 
-#include "rtklib.h"
 #include "tcpoptdlg.h"
 #include "mntpoptdlg.h"
 
 #include "ui_tcpoptdlg.h"
+
+#include "rtklib.h"
 
 //---------------------------------------------------------------------------
 

@@ -336,7 +336,7 @@ void MonitorDialog::setRtk()
     int width[] = {220, 380};
 
     ui->tWConsole->setColumnCount(2);
-    ui->tWConsole->setRowCount(53 + NFREQ*2);
+    ui->tWConsole->setRowCount(52 + NFREQ*2);
     ui->tWConsole->setHorizontalHeaderLabels(header);
 
     for (int i = 0; (i < ui->tWConsole->columnCount()) && (i < 2); i++)
@@ -355,7 +355,6 @@ void MonitorDialog::showRtk()
     double *del, *off, rt[3] = {0}, dop[4] = {0};
     double azel[MAXSAT * 2], pos[3], vel[3], rr[3] = {0}, enu[3] = {0};
     int row, j, k, cycle, state, rtkstat, nsat0, nsat1, prcout, nave;
-    unsigned long thread;
     int cputime, nb[3] = {0}, ne;
     unsigned int nmsg[3][10] = {{0}};
     char tstr[64], id[32], s1[64] = "-", s2[64] = "-", s3[64] = "-";
@@ -367,7 +366,6 @@ void MonitorDialog::showRtk()
     rtksvrlock(rtksvr); // lock
 
     rtk = rtksvr->rtk;
-    thread = (unsigned long)rtksvr->thread;
     cycle = rtksvr->cycle;
     state = rtksvr->state;
     rtkstat = rtksvr->rtk.sol.stat;
@@ -425,9 +423,6 @@ void MonitorDialog::showRtk()
 
     ui->tWConsole->setItem(row, 0, new QTableWidgetItem(tr("RTKLIB Version")));
     ui->tWConsole->setItem(row++, 1, new QTableWidgetItem(QString("%1 %2").arg(VER_RTKLIB, PATCH_LEVEL)));
-
-    ui->tWConsole->setItem(row, 0, new QTableWidgetItem(tr("RTK Server Thread")));
-    ui->tWConsole->setItem(row++, 1, new QTableWidgetItem(QString::number(thread)));
 
     ui->tWConsole->setItem(row, 0, new QTableWidgetItem(tr("RTK Server State")));
     ui->tWConsole->setItem(row++, 1, new QTableWidgetItem(svrstate[state]));
