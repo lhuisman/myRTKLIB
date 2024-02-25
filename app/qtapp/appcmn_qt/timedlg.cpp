@@ -3,21 +3,24 @@
 #include "timedlg.h"
 #include <QShowEvent>
 
+#include "ui_timedlg.h"
+
 //---------------------------------------------------------------------------
 TimeDialog::TimeDialog(QWidget *parent)
-    : QDialog(parent)
+    : QDialog(parent), ui(new Ui::TimeDialog)
 {
-    setupUi(this);
+    ui->setupUi(this);
 
-    connect(buttonBox, &QDialogButtonBox::accepted, this, &TimeDialog::close);
+    connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &TimeDialog::close);
 }
 //---------------------------------------------------------------------------
-void TimeDialog::setTime(gtime_t time)
+void TimeDialog::setTime(const gtime_t &time)
 {
-	gtime_t utc;
+    QString msg;
+
+    gtime_t utc;
     double tow, doy;
 	int week;
-    QString msg;
     char s1[64], s2[64];
 
     utc = gpst2utc(time);
@@ -35,6 +38,6 @@ void TimeDialog::setTime(gtime_t time)
     msg += QString(tr("Time of Day: %1 s\n")).arg(fmod(tow, 86400.0), 0, 'f', 0);
     msg += QString(tr("Leap Seconds: %1 s\n")).arg(timediff(time, utc), 0, 'f', 0);
 
-    message->setText(msg);
+    ui->message->setText(msg);
 }
 //---------------------------------------------------------------------------

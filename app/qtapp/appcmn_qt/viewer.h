@@ -46,7 +46,7 @@ private:
     QString file;
     Ui::TextViewer *ui;
 	
-    void updateText(void);
+    void updateText();
 };
 //---------------------------------------------------------------------------
 #endif

@@ -37,6 +37,9 @@
         <property name="text">
          <string>RINEX Version</string>
         </property>
+        <property name="buddy">
+         <cstring>cBRinexVersion</cstring>
+        </property>
        </widget>
       </item>
       <item>
@@ -101,6 +104,9 @@
         <property name="text">
          <string>Station ID</string>
         </property>
+        <property name="buddy">
+         <cstring>lERinexStationCode</cstring>
+        </property>
        </widget>
       </item>
       <item>
@@ -117,6 +123,9 @@
        <widget class="QLabel" name="lbTimeTolerance">
         <property name="text">
          <string>Time Torelance</string>
+        </property>
+        <property name="buddy">
+         <cstring>sBTimeTolerance</cstring>
         </property>
        </widget>
       </item>
@@ -163,6 +172,9 @@
         <property name="text">
          <string>Antenna # / Type</string>
         </property>
+        <property name="buddy">
+         <cstring>lEAntenna</cstring>
+        </property>
        </widget>
       </item>
       <item row="0" column="2">
@@ -186,6 +198,9 @@
         </property>
         <property name="text">
          <string>Antenna Delta H / E / N</string>
+        </property>
+        <property name="buddy">
+         <cstring>sBAntennaDelta0</cstring>
         </property>
        </widget>
       </item>
@@ -234,6 +249,9 @@
         <property name="text">
          <string>Receiver # / Type / Version</string>
         </property>
+        <property name="buddy">
+         <cstring>lEReceiver</cstring>
+        </property>
        </widget>
       </item>
       <item row="5" column="2">
@@ -254,6 +272,9 @@
        <widget class="QLabel" name="lbMarker">
         <property name="text">
          <string>Marker Name / # / Type</string>
+        </property>
+        <property name="buddy">
+         <cstring>lEMarker</cstring>
         </property>
        </widget>
       </item>
@@ -325,12 +346,18 @@
         <property name="text">
          <string>RunBy / Observer / Agency</string>
         </property>
+        <property name="buddy">
+         <cstring>lERunBy</cstring>
+        </property>
        </widget>
       </item>
       <item row="7" column="0">
        <widget class="QLabel" name="lbApproxPosition">
         <property name="text">
          <string>Approx. Position X / Y / Z</string>
+        </property>
+        <property name="buddy">
+         <cstring>sBApproxPosition0</cstring>
         </property>
        </widget>
       </item>
@@ -347,13 +374,6 @@
         </property>
         <property name="minimum">
          <double>-99.000000000000000</double>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0" rowspan="2">
-       <widget class="QLabel" name="lbComment">
-        <property name="text">
-         <string>Comment</string>
         </property>
        </widget>
       </item>
@@ -395,6 +415,16 @@
        <widget class="QLineEdit" name="lEComment0">
         <property name="toolTip">
          <string>Comment</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="lbComment">
+        <property name="text">
+         <string>Comment</string>
+        </property>
+        <property name="buddy">
+         <cstring>lEComment0</cstring>
         </property>
        </widget>
       </item>
@@ -724,7 +754,7 @@
          <item>
           <widget class="QPushButton" name="btnFcn">
            <property name="toolTip">
-            <string>Specify Glonass frequency numbers</string>
+            <string>Specify Glonass frequency channel numbers</string>
            </property>
            <property name="text">
             <string>FCN...</string>
@@ -779,6 +809,9 @@
         <property name="text">
          <string>Receiver Options</string>
         </property>
+        <property name="buddy">
+         <cstring>lEReceiverOptions</cstring>
+        </property>
        </widget>
       </item>
       <item>
@@ -792,6 +825,9 @@
        <widget class="QLabel" name="lbDebug">
         <property name="text">
          <string>Debug</string>
+        </property>
+        <property name="buddy">
+         <cstring>cBTraceLevel</cstring>
         </property>
        </widget>
       </item>
@@ -852,29 +888,43 @@
  </widget>
  <tabstops>
   <tabstop>cBRinexVersion</tabstop>
+  <tabstop>cBSeperateNavigation</tabstop>
   <tabstop>lERinexStationCode</tabstop>
+  <tabstop>sBTimeTolerance</tabstop>
   <tabstop>cBRinexFilename</tabstop>
   <tabstop>lERunBy</tabstop>
   <tabstop>lEObserver</tabstop>
+  <tabstop>lEAgency</tabstop>
   <tabstop>lEComment0</tabstop>
   <tabstop>lEComment1</tabstop>
   <tabstop>lEMarker</tabstop>
   <tabstop>lEMarkerNo</tabstop>
+  <tabstop>lEMarkerType</tabstop>
   <tabstop>lEReceiver</tabstop>
   <tabstop>lEReceiverType</tabstop>
+  <tabstop>lEReceiverVersion</tabstop>
   <tabstop>lEAntenna</tabstop>
   <tabstop>lEAntennaType</tabstop>
   <tabstop>cBAutoPosition</tabstop>
   <tabstop>sBApproxPosition0</tabstop>
   <tabstop>sBApproxPosition1</tabstop>
+  <tabstop>sBApproxPosition2</tabstop>
   <tabstop>sBAntennaDelta0</tabstop>
   <tabstop>sBAntennaDelta1</tabstop>
+  <tabstop>sBAntennaDelta2</tabstop>
+  <tabstop>cBOutputIonoCorr</tabstop>
+  <tabstop>cBHalfCycle</tabstop>
+  <tabstop>cBPhaseShift</tabstop>
+  <tabstop>cBOutputLeapSecs</tabstop>
+  <tabstop>cBOutputTimeCorr</tabstop>
   <tabstop>cBNavSys1</tabstop>
   <tabstop>cBNavSys2</tabstop>
   <tabstop>cBNavSys3</tabstop>
   <tabstop>cBNavSys4</tabstop>
   <tabstop>cBNavSys6</tabstop>
   <tabstop>cBNavSys7</tabstop>
+  <tabstop>cBNavSys5</tabstop>
+  <tabstop>lEExcludedSatellites</tabstop>
   <tabstop>cBObservationTypeC</tabstop>
   <tabstop>cBObservationTypeL</tabstop>
   <tabstop>cBObservationTypeD</tabstop>
@@ -885,6 +935,8 @@
   <tabstop>cBFreq4</tabstop>
   <tabstop>cBFreq5</tabstop>
   <tabstop>btnMask</tabstop>
+  <tabstop>btnFcn</tabstop>
+  <tabstop>btnFrequencies</tabstop>
   <tabstop>lEReceiverOptions</tabstop>
   <tabstop>cBTraceLevel</tabstop>
  </tabstops>

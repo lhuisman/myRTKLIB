@@ -79,20 +79,20 @@
         </item>
        </widget>
       </item>
-      <item row="0" column="3">
-       <widget class="QLineEdit" name="lETimeStart">
-        <property name="toolTip">
-         <string>Specify the start time for replay</string>
-        </property>
+      <item row="0" column="2">
+       <widget class="QLabel" name="lblPlus">
         <property name="text">
-         <string>0</string>
+         <string>+</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="2">
-       <widget class="QLabel" name="lblF3">
-        <property name="text">
-         <string>+</string>
+      <item row="0" column="3">
+       <widget class="QDoubleSpinBox" name="sBTimeStart">
+        <property name="suffix">
+         <string> s</string>
+        </property>
+        <property name="maximum">
+         <double>3600.000000000000000</double>
         </property>
        </widget>
       </item>
@@ -107,13 +107,6 @@
        </widget>
       </item>
       <item row="0" column="4">
-       <widget class="QLabel" name="lblF2">
-        <property name="text">
-         <string>s</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="5">
        <widget class="QCheckBox" name="cB64Bit">
         <property name="toolTip">
          <string>Use 64 bit time-tags</string>
@@ -142,7 +135,7 @@
        <number>0</number>
       </property>
       <item row="1" column="0">
-       <widget class="QLabel" name="label">
+       <widget class="QLabel" name="label_1">
         <property name="text">
          <string>(1)</string>
         </property>
@@ -177,12 +170,15 @@
        </widget>
       </item>
       <item row="0" column="0" colspan="2">
-       <widget class="QLabel" name="lblF1">
+       <widget class="QLabel" name="lblInputFilePath">
         <property name="toolTip">
          <string/>
         </property>
         <property name="text">
          <string>Input File Paths</string>
+        </property>
+        <property name="buddy">
+         <cstring>lEFilePath1</cstring>
         </property>
        </widget>
       </item>
@@ -222,6 +218,9 @@
        <widget class="QLabel" name="lblNmea">
         <property name="text">
          <string>Transmit NMEA GGA to Base Station</string>
+        </property>
+        <property name="buddy">
+         <cstring>cBNmeaRequestType</cstring>
         </property>
        </widget>
       </item>
@@ -356,12 +355,18 @@
            <property name="text">
             <string>Max. Baseline</string>
            </property>
+           <property name="buddy">
+            <cstring>sBMaxBaseLine</cstring>
+           </property>
           </widget>
          </item>
          <item row="0" column="0">
           <widget class="QLabel" name="lblResetCmd">
            <property name="text">
             <string>Reset Command</string>
+           </property>
+           <property name="buddy">
+            <cstring>lEResetCmd</cstring>
            </property>
           </widget>
          </item>
@@ -410,7 +415,7 @@
        <number>0</number>
       </property>
       <item row="0" column="5">
-       <widget class="QLabel" name="Label1">
+       <widget class="QLabel" name="lblReceiverOptions">
         <property name="toolTip">
          <string/>
         </property>
@@ -420,7 +425,7 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QLabel" name="Label5">
+       <widget class="QLabel" name="lblStreamType">
         <property name="toolTip">
          <string/>
         </property>
@@ -502,7 +507,7 @@
        </widget>
       </item>
       <item row="0" column="4">
-       <widget class="QLabel" name="Label7">
+       <widget class="QLabel" name="lblFormat">
         <property name="toolTip">
          <string/>
         </property>
@@ -529,7 +534,7 @@
        </widget>
       </item>
       <item row="0" column="2">
-       <widget class="QLabel" name="Label6">
+       <widget class="QLabel" name="lblStreamOptions">
         <property name="toolTip">
          <string/>
         </property>
@@ -588,7 +593,7 @@
        </widget>
       </item>
       <item row="0" column="0">
-       <widget class="QLabel" name="Label10">
+       <widget class="QLabel" name="lblInputStream">
         <property name="toolTip">
          <string/>
         </property>
@@ -675,7 +680,7 @@
        </widget>
       </item>
       <item row="0" column="3">
-       <widget class="QLabel" name="Label11">
+       <widget class="QLabel" name="lblCommands">
         <property name="toolTip">
          <string/>
         </property>
@@ -721,6 +726,39 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>cBStreamC1</tabstop>
+  <tabstop>cBStream1</tabstop>
+  <tabstop>btnStream1</tabstop>
+  <tabstop>btnCmd1</tabstop>
+  <tabstop>cBFormat1</tabstop>
+  <tabstop>btnReceiverOptions1</tabstop>
+  <tabstop>cBStreamC2</tabstop>
+  <tabstop>cBStream2</tabstop>
+  <tabstop>btnStream2</tabstop>
+  <tabstop>btnCmd2</tabstop>
+  <tabstop>cBFormat2</tabstop>
+  <tabstop>btnReceiverOptions2</tabstop>
+  <tabstop>cBStreamC3</tabstop>
+  <tabstop>cBStream3</tabstop>
+  <tabstop>btnStream3</tabstop>
+  <tabstop>btnCmd3</tabstop>
+  <tabstop>cBFormat3</tabstop>
+  <tabstop>btnReceiverOptions3</tabstop>
+  <tabstop>cBNmeaRequestType</tabstop>
+  <tabstop>sBNmeaPosition1</tabstop>
+  <tabstop>sBNmeaPosition2</tabstop>
+  <tabstop>sBNmeaPosition3</tabstop>
+  <tabstop>btnPosition</tabstop>
+  <tabstop>lEResetCmd</tabstop>
+  <tabstop>sBMaxBaseLine</tabstop>
+  <tabstop>lEFilePath1</tabstop>
+  <tabstop>lEFilePath2</tabstop>
+  <tabstop>lEFilePath3</tabstop>
+  <tabstop>cBTimeTag</tabstop>
+  <tabstop>cBTimeSpeed</tabstop>
+  <tabstop>cB64Bit</tabstop>
+ </tabstops>
  <resources>
   <include location="../icon/resources.qrc"/>
  </resources>

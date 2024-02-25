@@ -2,7 +2,6 @@
 #include <QShowEvent>
 #include <QFileDialog>
 
-#include "browsmain.h"
 #include "staoptdlg.h"
 
 #include "ui_staoptdlg.h"

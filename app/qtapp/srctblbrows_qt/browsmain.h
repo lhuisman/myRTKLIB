@@ -23,6 +23,11 @@ class MainForm : public QMainWindow
 {
     Q_OBJECT
 
+public:
+    QStringList stationList;
+
+    explicit MainForm(QWidget *parent = NULL);
+
 protected:
     void showEvent(QShowEvent*);
     void closeEvent(QCloseEvent*);
@@ -46,11 +51,11 @@ public slots:
     void showMsg(const QString &);
 
 private:
-    void getCaster(void);
-    void getTable(void);
-    void updateMap(void);
-    void updateEnable(void);
-    void showTable(void);
+    void getCaster();
+    void getTable();
+    void updateMap();
+    void updateEnable();
+    void showTable();
 
     QString addressList, addressCaster, sourceTable, iniFile;
     float fontScale;
@@ -62,10 +67,6 @@ private:
     QFutureWatcher<char*> casterWatcher;
 
     Ui::MainForm * ui;
-public:
-    QStringList stationList;
-
-    explicit MainForm(QWidget *parent = NULL);
 };
 //---------------------------------------------------------------------------
 #endif

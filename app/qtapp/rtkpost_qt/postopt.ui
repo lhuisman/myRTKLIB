@@ -24,7 +24,7 @@
    <item row="0" column="0" rowspan="2" colspan="7">
     <widget class="QTabWidget" name="tWOptions">
      <property name="currentIndex">
-      <number>4</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="TabSheet1">
       <attribute name="title">
@@ -172,6 +172,9 @@
          <property name="text">
           <string>Ionosphere Correction</string>
          </property>
+         <property name="buddy">
+          <cstring>cBIonosphereOption</cstring>
+         </property>
         </widget>
        </item>
        <item row="4" column="2">
@@ -294,12 +297,18 @@
          <property name="text">
           <string>Receiver Dynamics / Earth Tides Correction</string>
          </property>
+         <property name="buddy">
+          <cstring>cBDynamicModel</cstring>
+         </property>
         </widget>
        </item>
        <item row="3" column="0">
         <widget class="QLabel" name="lblElevationMask">
          <property name="text">
           <string>Elevation Mask (°) / SNR Mask (dBHz)</string>
+         </property>
+         <property name="buddy">
+          <cstring>cBElevationMask</cstring>
          </property>
         </widget>
        </item>
@@ -308,12 +317,18 @@
          <property name="text">
           <string>Troposphere Correction</string>
          </property>
+         <property name="buddy">
+          <cstring>cBTroposphereOption</cstring>
+         </property>
         </widget>
        </item>
        <item row="1" column="0">
         <widget class="QLabel" name="lblPosMode">
          <property name="text">
           <string>Positioning Mode</string>
+         </property>
+         <property name="buddy">
+          <cstring>cBPositionMode</cstring>
          </property>
         </widget>
        </item>
@@ -511,12 +526,18 @@
          <property name="text">
           <string>Frequencies / Filter Type</string>
          </property>
+         <property name="buddy">
+          <cstring>cBFrequencies</cstring>
+         </property>
         </widget>
        </item>
        <item row="12" column="0">
         <widget class="QLabel" name="lblExcludedSatellites">
          <property name="text">
           <string>Excluded Satellites (+PRN: Included)</string>
+         </property>
+         <property name="buddy">
+          <cstring>lEExcludedSatellites</cstring>
          </property>
         </widget>
        </item>
@@ -556,6 +577,9 @@
         <widget class="QLabel" name="lblEphemerisClocks">
          <property name="text">
           <string>Satellite Ephemeris / Clock</string>
+         </property>
+         <property name="buddy">
+          <cstring>cBSatelliteEphemeris</cstring>
          </property>
         </widget>
        </item>
@@ -2769,10 +2793,9 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>btnLoad</tabstop>
-  <tabstop>btnSave</tabstop>
   <tabstop>tWOptions</tabstop>
   <tabstop>cBPositionMode</tabstop>
+  <tabstop>btnFrequencies</tabstop>
   <tabstop>cBFrequencies</tabstop>
   <tabstop>cBSolution</tabstop>
   <tabstop>cBElevationMask</tabstop>
@@ -2789,14 +2812,15 @@
   <tabstop>cBPositionOption5</tabstop>
   <tabstop>cBPositionOption6</tabstop>
   <tabstop>lEExcludedSatellites</tabstop>
-  <tabstop>cBAmbiguityResolutionGPS</tabstop>
-  <tabstop>cBAmbiguityResolutionGLO</tabstop>
-  <tabstop>sBValidThresARMin</tabstop>
-  <tabstop>sBLockCountFixAmbiguity</tabstop>
-  <tabstop>sBFixCountHoldAmbiguity</tabstop>
-  <tabstop>sBElevationMaskHold</tabstop>
-  <tabstop>sBSlipThreshold</tabstop>
-  <tabstop>sBMaxAgeDifferences</tabstop>
+  <tabstop>cBNavSys1</tabstop>
+  <tabstop>cBNavSys2</tabstop>
+  <tabstop>cBNavSys3</tabstop>
+  <tabstop>cBNavSys4</tabstop>
+  <tabstop>cBNavSys6</tabstop>
+  <tabstop>cBNavSys7</tabstop>
+  <tabstop>cBNavSys5</tabstop>
+  <tabstop>btnLoad</tabstop>
+  <tabstop>btnSave</tabstop>
   <tabstop>sBRejectCode</tabstop>
   <tabstop>sBRejectPhase</tabstop>
   <tabstop>cBBaselineConstrain</tabstop>
@@ -2855,6 +2879,49 @@
   <tabstop>lERnxOptions1</tabstop>
   <tabstop>lERnxOptions2</tabstop>
   <tabstop>lEPPPOptions</tabstop>
+  <tabstop>sBMaxAgeDifferences</tabstop>
+  <tabstop>cBAmbiguityResolutionGPS</tabstop>
+  <tabstop>cBAmbiguityResolutionGLO</tabstop>
+  <tabstop>sBValidThresARMin</tabstop>
+  <tabstop>sBLockCountFixAmbiguity</tabstop>
+  <tabstop>sBFixCountHoldAmbiguity</tabstop>
+  <tabstop>sBElevationMaskHold</tabstop>
+  <tabstop>sBSlipThreshold</tabstop>
+  <tabstop>sBMinFixSats</tabstop>
+  <tabstop>sBDopplerThreshold</tabstop>
+  <tabstop>sBValidThresARMax</tabstop>
+  <tabstop>sBElevationMaskAR</tabstop>
+  <tabstop>sBValidThresAR</tabstop>
+  <tabstop>sBGlonassHwBias</tabstop>
+  <tabstop>sBMinHoldSats</tabstop>
+  <tabstop>cBAmbiguityResolutionBDS</tabstop>
+  <tabstop>cBSyncSolution</tabstop>
+  <tabstop>sBOutageCountResetAmbiguity</tabstop>
+  <tabstop>sBMinDropSats</tabstop>
+  <tabstop>sBVarHoldAmb</tabstop>
+  <tabstop>sBGainHoldAmb</tabstop>
+  <tabstop>sBNumIteration</tabstop>
+  <tabstop>sBMaxPositionVarAR</tabstop>
+  <tabstop>cBARFilter</tabstop>
+  <tabstop>cBOutputVelocity</tabstop>
+  <tabstop>sBProcessNoise4</tabstop>
+  <tabstop>sBProcessNoise5</tabstop>
+  <tabstop>sBProcessNoise3</tabstop>
+  <tabstop>sBProcessNoise2</tabstop>
+  <tabstop>sBProcessNoise1</tabstop>
+  <tabstop>sBMeasurementErrorR5</tabstop>
+  <tabstop>sBMeasurementError3</tabstop>
+  <tabstop>sBMeasurementErrorSNR</tabstop>
+  <tabstop>sBMeasurementErrorReceiver</tabstop>
+  <tabstop>sBMeasurementErrorSNR_Max</tabstop>
+  <tabstop>sBSatelliteClockStability</tabstop>
+  <tabstop>cBDatumReference</tabstop>
+  <tabstop>tEBaseList</tabstop>
+  <tabstop>tERoverList</tabstop>
+  <tabstop>btnHelp</tabstop>
+  <tabstop>cbDGPS</tabstop>
+  <tabstop>cBIntputReferenceObservation</tabstop>
+  <tabstop>lESbasSat</tabstop>
  </tabstops>
  <resources>
   <include location="../icon/resources.qrc"/>

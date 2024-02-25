@@ -4,6 +4,7 @@
 #include <QFileSystemModel>
 #include <QCompleter>
 #include <QFileDialog>
+#include <QAction>
 
 #include "rtklib.h"
 #include "refdlg.h"
@@ -153,7 +154,7 @@ void SvrOptDialog::localDirectorySelect()
     ui->lELocalDir->setText(dir);
 }
 //---------------------------------------------------------------------------
-void SvrOptDialog::updateEnable(void)
+void SvrOptDialog::updateEnable()
 {
     ui->sBNmeaCycle->setEnabled(ui->cBNmeaReq->isChecked());
     ui->sBStationId->setEnabled(ui->cBStationId->isChecked());

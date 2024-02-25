@@ -11,6 +11,7 @@
 #include <QSettings>
 #include <QFile>
 #include <QTextStream>
+#include <QLabel>
 
 #include <cmath>
 
@@ -156,7 +157,7 @@ void MapView::showMap(int map)
     }
 }
 //---------------------------------------------------------------------------
-void MapView::showMapLL(void)
+void MapView::showMapLL()
 {
     QString pageSource;
     int i, j;
@@ -215,7 +216,7 @@ void MapView::timerLLTimer()
     timerLL.stop();
 }
 //---------------------------------------------------------------------------
-void MapView::showMapGM(void)
+void MapView::showMapGM()
 {
     QString pageSource;
 
@@ -263,7 +264,7 @@ void MapView::setView(int map, double lat, double lon, int zoom)
     execFunction(map, QString("SetView(%1,%2,%3)").arg(lat, 0, 'f', 9).arg(lon, 0, 'f', 9).arg(zoom));
 }
 //---------------------------------------------------------------------------
-void MapView::updateMap(void)
+void MapView::updateMap()
 {
     setCenter(center_latitude, center_longitude);
     for (int i = 0; i < 255; i++) {
@@ -379,6 +380,8 @@ void MapView::execFunction(int map, const QString &func)
     if (page == NULL) return;
 
     page->runJavaScript(func);
+#else
+    Q_UNUSED(func)
 #endif
 }
 //---------------------------------------------------------------------------
@@ -389,15 +392,22 @@ bool MapView::isLoaded()
 //---------------------------------------------------------------------------
 void MapView::loadOptions(QSettings &settings)
 {
+    QStringList strs;
     for (int i = 0; i < 6; i++)
     {
-        QStringList strs = settings.value(QString("set/mapstring%1").arg(i), "").toString().split(",");
+        if (i==0)
+            strs = settings.value("mapview/mapstrs_0", "OpenStreetMap,"
+                                                       "https://tile.openstreetmap.org/{z}/{x}/{y}.png,"
+                                                       "https://osm.org/copyright").toString().split(",");
+        else
+            strs = settings.value(QString("set/mapstring%1").arg(i), "").toString().split(",");
         if (strs.length() == 3)
         {
             for (int j = 0; j < 3; j++)
                 mapStrings[i][j] = strs[j];
         }
     }
+    apiKey = settings.value("mapview/apikey" ,"").toString();
 }
 //---------------------------------------------------------------------------
 void MapView::saveOptions(QSettings &settings)
@@ -407,5 +417,7 @@ void MapView::saveOptions(QSettings &settings)
         QString str = mapStrings[i][0] + "," + mapStrings[i][1] + "," + mapStrings[i][2];
         settings.setValue(QString("set/mapstring%1").arg(i), str);
     }
+
+    settings.setValue("mapview/apikey", apiKey);
 }
 //---------------------------------------------------------------------------

@@ -444,7 +444,7 @@ void MainForm::updateServerStat()
     ui->lblMessage->setToolTip(QString(msg).trimmed());
 }
 // start stream server ------------------------------------------------------
-void MainForm::startServer(void)
+void MainForm::startServer()
 {
     QComboBox *type[MAXSTR] = {ui->cBInput, ui->cBOutput1, ui->cBOutput2, ui->cBOutput3, ui->cBOutput4, ui->cBOutput5, ui->cBOutput6};
     strconv_t *conv[MAXSTR - 1] = {0};
@@ -579,7 +579,7 @@ void MainForm::startServer(void)
 
 }
 // stop stream server -------------------------------------------------------
-void MainForm::stopServer(void)
+void MainForm::stopServer()
 {
     char *cmds[MAXSTR];
     QComboBox *type[] = {ui->cBInput, ui->cBOutput1, ui->cBOutput2, ui->cBOutput3, ui->cBOutput4, ui->cBOutput5, ui->cBOutput6};
@@ -783,7 +783,7 @@ void MainForm::fileOptions(int index, int path)
     paths[index][path] = fileOptDialog->getPath();
 }
 // undate enable of widgets -------------------------------------------------
-void MainForm::updateEnable(void)
+void MainForm::updateEnable()
 {
     QComboBox *type[MAXSTR - 1] = {ui->cBOutput1, ui->cBOutput2, ui->cBOutput3, ui->cBOutput4, ui->cBOutput5, ui->cBOutput6};
     QLabel *lblOutput[MAXSTR - 1] = {ui->lblOutput1, ui->lblOutput2, ui->lblOutput3, ui->lblOutput4, ui->lblOutput5, ui->lblOutput6};
@@ -814,7 +814,7 @@ void MainForm::setTrayIcon(int index)
     trayIcon->setIcon(QIcon(icon[index]));
 }
 // load options -------------------------------------------------------------
-void MainForm::loadOptions(void)
+void MainForm::loadOptions()
 {
     QSettings settings(iniFile, QSettings::IniFormat);
     QComboBox *type[MAXSTR - 1] = {ui->cBOutput1, ui->cBOutput2, ui->cBOutput3, ui->cBOutput4, ui->cBOutput5, ui->cBOutput6};
@@ -893,7 +893,7 @@ void MainForm::loadOptions(void)
     updateEnable();
 }
 // save options--------------------------------------------------------------
-void MainForm::saveOptions(void)
+void MainForm::saveOptions()
 {
     QSettings settings(iniFile, QSettings::IniFormat);
     QComboBox *type[MAXSTR - 1] = {ui->cBOutput1, ui->cBOutput2, ui->cBOutput3, ui->cBOutput4, ui->cBOutput5, ui->cBOutput6};

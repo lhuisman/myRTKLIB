@@ -22,10 +22,10 @@
     </widget>
    </item>
    <item>
-    <widget class="QWidget" name="panel2" native="true">
+    <widget class="QWidget" name="vPanelDirectory" native="true">
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
-       <widget class="QWidget" name="panelDirectory" native="true">
+       <widget class="QWidget" name="hPanelDirectory" native="true">
         <property name="editable" stdset="0">
          <bool>true</bool>
         </property>

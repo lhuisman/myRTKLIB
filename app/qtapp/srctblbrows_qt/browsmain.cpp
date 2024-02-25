@@ -20,6 +20,8 @@
 #include "browsmain.h"
 #include "staoptdlg.h"
 #include "mntpoptdlg.h"
+
+
 //---------------------------------------------------------------------------
 
 #define PRGNAME                 "NTRIP Browser Qt"
@@ -425,7 +427,7 @@ void MainForm::loadTimerExpired()
     loadTimer->stop();
 }
 //---------------------------------------------------------------------------
-void MainForm::getCaster(void)
+void MainForm::getCaster()
 {
     if (casterWatcher.isRunning()) return;
 
@@ -620,7 +622,7 @@ void MainForm::showStationDialog()
     stationList = staListDialog->getStationList();
 }
 //---------------------------------------------------------------------------
-void MainForm::updateEnable(void)
+void MainForm::updateEnable()
 {
     ui->btnSta->setEnabled(ui->cBStatationMask->isChecked());
     ui->btnMap->setEnabled(ui->actMenuViewStr->isChecked());

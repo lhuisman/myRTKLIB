@@ -6,21 +6,26 @@
 
 #include "rtklib.h"
 
-#include "ui_maskoptdlg.h"
+namespace Ui {
+class MaskOptDialog;
+}
 
 //---------------------------------------------------------------------------
-class MaskOptDialog : public QDialog, private Ui::MaskOptDialog
+class MaskOptDialog : public QDialog
 {
     Q_OBJECT
-
-public slots:
-    void  updateEnable(void);
 
 public:
     explicit MaskOptDialog(QWidget* parent = nullptr);
 
     snrmask_t getSnrMask();
     void setSnrMask(snrmask_t);
+
+protected slots:
+    void  updateEnable();
+
+private:
+    Ui::MaskOptDialog *ui;
 };
 //---------------------------------------------------------------------------
 #endif

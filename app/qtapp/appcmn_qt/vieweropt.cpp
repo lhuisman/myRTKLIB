@@ -37,13 +37,13 @@ void ViewerOptDialog::setFont(const QFont &font)
 void ViewerOptDialog::setTextColor(const QColor &color)
 {
     colorText = color;
-    setLabelBackgroundColor(ui->lbColorText, colorText);
+    setWidgetBackgroundColor(ui->lbColorText, colorText);
 }
 //---------------------------------------------------------------------------
 void ViewerOptDialog::setBackgroundColor(const QColor &color)
 {
     colorBackground = color;
-    setLabelBackgroundColor(ui->lbColorBackground, colorBackground);
+    setWidgetBackgroundColor(ui->lbColorBackground, colorBackground);
 }
 //---------------------------------------------------------------------------
 void ViewerOptDialog::selectTextColor()
@@ -54,7 +54,7 @@ void ViewerOptDialog::selectTextColor()
     d.exec();
     colorText = d.selectedColor();
 
-    setLabelBackgroundColor(ui->lbColorText, colorText);
+    setWidgetBackgroundColor(ui->lbColorText, colorText);
 }
 //---------------------------------------------------------------------------
 void ViewerOptDialog::selectBackgroundColor()
@@ -65,7 +65,7 @@ void ViewerOptDialog::selectBackgroundColor()
     d.exec();
     colorBackground = d.selectedColor();
 
-    setLabelBackgroundColor(ui->lbColorBackground, colorBackground);
+    setWidgetBackgroundColor(ui->lbColorBackground, colorBackground);
 }
 //---------------------------------------------------------------------------
 void ViewerOptDialog::selectFont()

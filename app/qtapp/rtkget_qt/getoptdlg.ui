@@ -31,6 +31,9 @@
         <property name="text">
          <string>Date Format for Test</string>
         </property>
+        <property name="buddy">
+         <cstring>cBDateFormat</cstring>
+        </property>
        </widget>
       </item>
       <item row="0" column="0" colspan="2">
@@ -53,16 +56,6 @@
         </property>
        </widget>
       </item>
-      <item row="9" column="0" colspan="2">
-       <widget class="QLabel" name="label1">
-        <property name="toolTip">
-         <string/>
-        </property>
-        <property name="text">
-         <string>URL List File for GNSS Data</string>
-        </property>
-       </widget>
-      </item>
       <item row="5" column="0">
        <widget class="QLabel" name="label2">
         <property name="toolTip">
@@ -70,6 +63,9 @@
         </property>
         <property name="text">
          <string>Output Debug Trace</string>
+        </property>
+        <property name="buddy">
+         <cstring>cBTraceLevel</cstring>
         </property>
        </widget>
       </item>
@@ -80,6 +76,9 @@
         </property>
         <property name="text">
          <string># Columns for Test</string>
+        </property>
+        <property name="buddy">
+         <cstring>sBTestColumnCount</cstring>
         </property>
        </widget>
       </item>
@@ -98,6 +97,9 @@
         <property name="text">
          <string>Proxy Address</string>
         </property>
+        <property name="buddy">
+         <cstring>lEProxy</cstring>
+        </property>
        </widget>
       </item>
       <item row="7" column="0">
@@ -107,6 +109,9 @@
         </property>
         <property name="text">
          <string>Download Log File</string>
+        </property>
+        <property name="buddy">
+         <cstring>lELogFilename</cstring>
         </property>
        </widget>
       </item>
@@ -212,6 +217,19 @@
         </item>
        </widget>
       </item>
+      <item row="9" column="0" colspan="3">
+       <widget class="QLabel" name="label1">
+        <property name="toolTip">
+         <string/>
+        </property>
+        <property name="text">
+         <string>URL List File for GNSS Data</string>
+        </property>
+        <property name="buddy">
+         <cstring>lEUrlFilename</cstring>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
@@ -227,6 +245,9 @@
  <tabstops>
   <tabstop>cBKeepErr</tabstop>
   <tabstop>cBKeepList</tabstop>
+  <tabstop>sBTestColumnCount</tabstop>
+  <tabstop>cBDateFormat</tabstop>
+  <tabstop>cBTraceLevel</tabstop>
   <tabstop>lEProxy</tabstop>
   <tabstop>cBLogAppend</tabstop>
   <tabstop>lELogFilename</tabstop>

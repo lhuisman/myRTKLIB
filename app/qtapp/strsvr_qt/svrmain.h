@@ -42,8 +42,8 @@ public slots:
     void expandFromTaskTray();
     void showConvertDialog();
     void showLogStreamDialog();
-    void startServer(void);
-    void stopServer(void);
+    void startServer();
+    void stopServer();
 
 protected:
     void closeEvent(QCloseEvent*);
@@ -77,10 +77,10 @@ private:
     void udpServerOptions(int index, int path);
     void fileOptions(int index, int path);
     void showMessage(const QString &msg);
-    void updateEnable(void);
+    void updateEnable();
     void setTrayIcon(int index);
-    void loadOptions(void);
-    void saveOptions(void);
+    void loadOptions();
+    void saveOptions();
 
     Ui::MainForm *ui;
 public:

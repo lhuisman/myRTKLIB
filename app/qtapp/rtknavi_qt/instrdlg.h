@@ -5,7 +5,9 @@
 
 #include <QDialog>
 
-#include "ui_instrdlg.h"
+namespace Ui {
+class InputStrDialog;
+}
 
 class CmdOptDialog;
 class RcvOptDialog;
@@ -15,51 +17,13 @@ class TcpOptDialog;
 class FtpOptDialog;
 
 //---------------------------------------------------------------------------
-class InputStrDialog : public QDialog, private Ui::InputStrDialog
+class InputStrDialog : public QDialog
 {
     Q_OBJECT
 
-protected:
-    void  showEvent(QShowEvent*);
-
-public slots:
-    void  showStreamOptions1();
-    void  showStreamOptions2();
-    void  showStreamOptions3();
-    void  showCommandDialog1();
-    void  showCommandDialog2();
-    void  showCommandDialog3();
-    void  selectFile1();
-    void  selectFile2();
-    void  selectFile3();
-    void  showReceiverOptions1();
-    void  showReceiverOptions2();
-    void  showReceiverOptions3();
-    void  btnOkClicked();
-    void  selectPosition();
-    void  updateEnable();
-
-private:
-    QString  getFilePath(const QString &path);
-    QString  setFilePath(const QString &path);
-    void  showSerialOptionsDialog(int index, int opt);
-    void  showTcpOptionsDialog(int index, int opt);
-    void  showFtpOptionsDialog(int index, int opt);
-    void showCommandDialog(int streamNo);
-    void showReceiverOptionDialog(int streamNo);
-
-    CmdOptDialog *cmdOptDialog;
-    RcvOptDialog *rcvOptDialog;
-    RefDialog *refDialog;
-    SerialOptDialog *serialOptDialog;
-    TcpOptDialog *tcpOptDialog;
-    FtpOptDialog *ftpOptDialog;
-
-    QString receiverOptions[3];
-    QString history[10];
-    int noFormats;
-    QString stationPositionFile;
 public:
+    explicit InputStrDialog(QWidget* parent);
+
     void setStreamEnabled(int stream, int enabled);
     int getStreamEnabled(int stream);
 
@@ -70,7 +34,7 @@ public:
     int getStreamFormat(int stream);
 
     void setReceiverOptions(int stream, const QString &options);
-    const QString &getReceiverOptions(int stream);
+    QString getReceiverOptions(int stream);
 
     void setFilePath(int stream, const QString &path);
     const QString &getFilePath(int stream);
@@ -96,8 +60,8 @@ public:
     void setTimeTag64bit(bool);
     bool getTimeTag64bit();
 
-    void setTimeStart(const QString &time);
-    QString getTimeStart();
+    void setTimeStart(double);
+    double getTimeStart();
 
     void setTimeSpeed(const QString &speed);
     QString getTimeSpeed();
@@ -105,9 +69,63 @@ public:
     void setStationPositionFile(const QString &file);
     QString getStationPositionFile();
 
-    int commandEnable[3][3], commandEnableTcp[3][3];
-    QString paths[3][4], commands[3][3], commandsTcp[3][3];
+    void setCommands(int stream, int type, const QString &);
+    QString getCommands(int stream, int type);
 
-    explicit InputStrDialog(QWidget* parent);
+    void setCommandsEnabled(int stream, int type, bool ena);
+    bool getCommandsEnabled(int stream, int type);
+
+    void setCommandsTcp(int stream, int type, const QString &);
+    QString getCommandsTcp(int stream, int type);
+
+    void setCommandsTcpEnabled(int stream, int type, bool ena);
+    bool getCommandsTcpEnabled(int stream, int type);
+
+    void setPath(int stream, int type, const QString &);
+    QString getPath(int stream, int type);
+
+public slots:
+    void  showStreamOptions1();
+    void  showStreamOptions2();
+    void  showStreamOptions3();
+    void  showCommandDialog1();
+    void  showCommandDialog2();
+    void  showCommandDialog3();
+    void  selectFile1();
+    void  selectFile2();
+    void  selectFile3();
+    void  showReceiverOptions1();
+    void  showReceiverOptions2();
+    void  showReceiverOptions3();
+    void  selectPosition();
+    void  updateEnable();
+
+private:
+    QString getFilePath(const QString &path);
+    QString setFilePath(const QString &path);
+    void showSerialOptionsDialog(int index, int opt);
+    void showTcpOptionsDialog(int index, int opt);
+    void showFtpOptionsDialog(int index, int opt);
+    void showCommandDialog(int streamNo);
+    void showReceiverOptionDialog(int streamNo);
+
+    CmdOptDialog *cmdOptDialog;
+    RcvOptDialog *rcvOptDialog;
+    RefDialog *refDialog;
+    SerialOptDialog *serialOptDialog;
+    TcpOptDialog *tcpOptDialog;
+    FtpOptDialog *ftpOptDialog;
+
+    int commandEnable[3][3], commandEnableTcp[3][3];
+    QString commands[3][3], commandsTcp[3][3];
+    QString paths[3][4];
+
+
+    QString receiverOptions[3];
+    QString history[10];
+    int noFormats;
+    QString stationPositionFile;
+
+    Ui::InputStrDialog *ui;
 };
 #endif

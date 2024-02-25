@@ -24,7 +24,7 @@ TEMPLATE = app
 SOURCES += \ 
     browsmain.cpp \
     srctblbrows.cpp \
-    staoptdlg.cpp \
+    ../appcmn_qt/staoptdlg.cpp \
     ../appcmn_qt/mapview.cpp \
     ../appcmn_qt/mapviewopt.cpp \
     ../appcmn_qt/aboutdlg.cpp \
@@ -35,7 +35,7 @@ SOURCES += \
 
 HEADERS  += \ 
     browsmain.h \
-    staoptdlg.h \
+    ../appcmn_qt/staoptdlg.h \
     ../appcmn_qt/mapview.h \
     ../appcmn_qt/mapviewopt.h \
     ../appcmn_qt/gm_template.h \
@@ -47,7 +47,7 @@ HEADERS  += \
 
 FORMS    += \ 
     browsmain.ui \
-    staoptdlg.ui \
+    ../appcmn_qt/staoptdlg.ui \
     ../appcmn_qt/mapview.ui \
     ../appcmn_qt/mapviewopt.ui \
     ../appcmn_qt/aboutdlg.ui \

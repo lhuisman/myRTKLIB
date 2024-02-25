@@ -17,7 +17,7 @@ TEMPLATE = app
 SOURCES += main.cpp \
     getmain.cpp \
     getoptdlg.cpp \
-    staoptdlg.cpp \
+    ../appcmn_qt/staoptdlg.cpp \
     ../appcmn_qt/aboutdlg.cpp \
     ../appcmn_qt/keydlg.cpp \
     ../appcmn_qt/viewer.cpp \
@@ -28,7 +28,7 @@ SOURCES += main.cpp \
 HEADERS  += \
     getmain.h \
     getoptdlg.h \
-    staoptdlg.h \
+    ../appcmn_qt/staoptdlg.h \
     ../appcmn_qt/aboutdlg.h \
     ../appcmn_qt/keydlg.h \
     ../appcmn_qt/viewer.h \
@@ -39,7 +39,7 @@ HEADERS  += \
 FORMS    += \
     getmain.ui \
     getoptdlg.ui \
-    staoptdlg.ui \
+    ../appcmn_qt/staoptdlg.ui \
     ../appcmn_qt/aboutdlg.ui \
     ../appcmn_qt/keydlg.ui \
     ../appcmn_qt/viewer.ui \

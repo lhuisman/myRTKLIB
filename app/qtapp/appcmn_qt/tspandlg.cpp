@@ -124,7 +124,7 @@ int SpanDialog::getTimeEnable(int i)
     }
 }
 //---------------------------------------------------------------------------
-void SpanDialog::setTimeEnable(int i, int enable)
+void SpanDialog::setTimeEnable(int i, bool enable)
 {
     switch(i)
     {

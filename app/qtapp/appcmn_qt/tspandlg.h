@@ -39,7 +39,7 @@ public:
     void setTimeInterval(double);
 
     int getTimeEnable(int i);
-    void setTimeEnable(int i, int enable);
+    void setTimeEnable(int i, bool enable);
 
     int getTimeValid(int i);
     void setTimeValid(int i, int valid);

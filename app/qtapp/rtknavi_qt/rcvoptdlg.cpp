@@ -4,23 +4,26 @@
 
 #include <QShowEvent>
 
+#include <ui_rcvoptdlg.h>
+
+
 //---------------------------------------------------------------------------
 RcvOptDialog::RcvOptDialog(QWidget *parent)
-    : QDialog(parent)
+    : QDialog(parent), ui(new Ui::RcvOptDialog)
 {
-    setupUi(this);
+    ui->setupUi(this);
 
-    connect(buttonBox, &QDialogButtonBox::accepted, this, &RcvOptDialog::accept);
-    connect(buttonBox, &QDialogButtonBox::rejected, this, &RcvOptDialog::reject);
+    connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &RcvOptDialog::accept);
+    connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &RcvOptDialog::reject);
 }
 //---------------------------------------------------------------------------
 void RcvOptDialog::setOptions(const QString &options)
 {
-    lEOption->setText(options);
+    ui->lEOption->setText(options);
 }
 //---------------------------------------------------------------------------
 QString RcvOptDialog::getOptions()
 {
-    return lEOption->text();
+    return ui->lEOption->text();
 }
 //---------------------------------------------------------------------------

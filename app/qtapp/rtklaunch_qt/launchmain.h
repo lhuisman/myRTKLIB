@@ -6,22 +6,29 @@
 #include <QSystemTrayIcon>
 #include <QMenu>
 
-#include "ui_launchmain.h"
+namespace Ui {
+class MainForm;
+}
 
 class QCloseEvent;
 class QCloseEvent;
 class LaunchOptDialog;
 
 //---------------------------------------------------------------------------
-class MainForm : public QDialog, private Ui::MainForm
+class MainForm : public QDialog
 {
     Q_OBJECT
+
+public:
+    explicit MainForm(QWidget *parent = 0);
 
 protected:
     void showEvent(QShowEvent *);
     void closeEvent(QCloseEvent *);
 
-public slots:
+    int option, minimize;
+
+protected slots:
     void launchRTKPlot();
     void launchRTKConv();
     void launchStrSvr();
@@ -35,18 +42,15 @@ public slots:
     void expandWindow();
 
 private:
+    int execCommand(const QString &cmd, const QStringList &opt);
+    void updatePanel();
+
     QString iniFile;
     QSystemTrayIcon trayIcon;
     QMenu *trayMenu;
     LaunchOptDialog *launchOptDlg;
     bool tray;
-    
-    int execCommand(const QString &cmd, const QStringList &opt);
-    void updatePanel();
-
-public:
-    int option, minimize;
-    explicit MainForm(QWidget *parent = 0);
+    Ui::MainForm *ui;
 };
 //---------------------------------------------------------------------------
 #endif

@@ -15,7 +15,12 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="1" column="0">
-    <widget class="QPushButton" name="btnOption"/>
+    <widget class="QPushButton" name="btnOption">
+     <property name="icon">
+      <iconset resource="../icon/resources.qrc">
+       <normaloff>:/buttons/tool</normaloff>:/buttons/tool</iconset>
+     </property>
+    </widget>
    </item>
    <item row="2" column="0" colspan="2">
     <widget class="QWidget" name="panelBottom" native="true">
@@ -58,19 +63,10 @@
    </item>
    <item row="1" column="1">
     <widget class="QPushButton" name="btnTray">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>15</width>
-       <height>15</height>
-      </size>
-     </property>
      <property name="maximumSize">
       <size>
-       <width>15</width>
-       <height>15</height>
+       <width>30</width>
+       <height>16777215</height>
       </size>
      </property>
      <property name="toolTip">
@@ -84,7 +80,7 @@
    </item>
    <item row="0" column="0" colspan="2">
     <widget class="QWidget" name="panelTop" native="true">
-     <layout class="QGridLayout" name="gridLayout_2">
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
       <property name="leftMargin">
        <number>0</number>
       </property>
@@ -97,51 +93,7 @@
       <property name="bottomMargin">
        <number>0</number>
       </property>
-      <item row="0" column="6">
-       <widget class="QPushButton" name="btnGet">
-        <property name="toolTip">
-         <string>Data downloader</string>
-        </property>
-        <property name="icon">
-         <iconset resource="../icon/resources.qrc">
-          <normaloff>:/icons/rtkget</normaloff>:/icons/rtkget</iconset>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="4">
-       <widget class="QPushButton" name="btnSrcTblBrows">
-        <property name="toolTip">
-         <string>NTRIP Browser</string>
-        </property>
-        <property name="icon">
-         <iconset resource="../icon/resources.qrc">
-          <normaloff>:/icons/srctblbrows</normaloff>:/icons/srctblbrows</iconset>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="5">
-       <widget class="QPushButton" name="btnNavi">
-        <property name="toolTip">
-         <string>Real-time Navigation</string>
-        </property>
-        <property name="icon">
-         <iconset resource="../icon/resources.qrc">
-          <normaloff>:/icons/rtknavi</normaloff>:/icons/rtknavi</iconset>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QPushButton" name="btnConv">
-        <property name="toolTip">
-         <string>Data format converter</string>
-        </property>
-        <property name="icon">
-         <iconset resource="../icon/resources.qrc">
-          <normaloff>:/icons/rtkconv</normaloff>:/icons/rtkconv</iconset>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
+      <item>
        <widget class="QPushButton" name="btnPlot">
         <property name="toolTip">
          <string>Plotting</string>
@@ -152,7 +104,29 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="3">
+      <item>
+       <widget class="QPushButton" name="btnConv">
+        <property name="toolTip">
+         <string>Data format converter</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../icon/resources.qrc">
+          <normaloff>:/icons/rtkconv</normaloff>:/icons/rtkconv</iconset>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btnStrSvr">
+        <property name="toolTip">
+         <string>Stream Server</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../icon/resources.qrc">
+          <normaloff>:/icons/strsvr</normaloff>:/icons/strsvr</iconset>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="btnPost">
         <property name="toolTip">
          <string>Post Processing</string>
@@ -163,14 +137,36 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="2">
-       <widget class="QPushButton" name="btnStrSvr">
+      <item>
+       <widget class="QPushButton" name="btnSrcTblBrows">
         <property name="toolTip">
-         <string>Stream Server</string>
+         <string>NTRIP Browser</string>
         </property>
         <property name="icon">
          <iconset resource="../icon/resources.qrc">
-          <normaloff>:/icons/strsvr</normaloff>:/icons/strsvr</iconset>
+          <normaloff>:/icons/srctblbrows</normaloff>:/icons/srctblbrows</iconset>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btnNavi">
+        <property name="toolTip">
+         <string>Real-time Navigation</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../icon/resources.qrc">
+          <normaloff>:/icons/rtknavi</normaloff>:/icons/rtknavi</iconset>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btnGet">
+        <property name="toolTip">
+         <string>Data downloader</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../icon/resources.qrc">
+          <normaloff>:/icons/rtkget</normaloff>:/icons/rtkget</iconset>
         </property>
        </widget>
       </item>

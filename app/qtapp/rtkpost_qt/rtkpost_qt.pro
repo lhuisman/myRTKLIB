@@ -16,9 +16,10 @@ INCLUDEPATH += ../../../src/ ../appcmn_qt ../widgets_qt
 SOURCES += \
     kmzconv.cpp \
     postmain.cpp \
-    postopt.cpp \
+    #postopt.cpp \
     rtkpost.cpp \
     ../widgets_qt/scientificspinbox.cpp \
+    ../appcmn_qt/navi_post_opt.cpp \
     ../appcmn_qt/aboutdlg.cpp \
     ../appcmn_qt/freqdlg.cpp \
     ../appcmn_qt/keydlg.cpp \
@@ -32,8 +33,9 @@ SOURCES += \
 HEADERS  += \
     kmzconv.h \
     postmain.h \
-    postopt.h \
+    #postopt.h \
     ../widgets_qt/scientificspinbox.h \
+    ../appcmn_qt/navi_post_opt.h \
     ../appcmn_qt/keydlg.h \
     ../appcmn_qt/freqdlg.h \
     ../appcmn_qt/maskoptdlg.h \
@@ -47,7 +49,8 @@ HEADERS  += \
 FORMS    += \ 
     kmzconv.ui \
     postmain.ui \
-    postopt.ui \
+    #postopt.ui \
+    ../appcmn_qt/navi_post_opt.ui \
     ../appcmn_qt/keydlg.ui \
     ../appcmn_qt/freqdlg.ui \
     ../appcmn_qt/maskoptdlg.ui \

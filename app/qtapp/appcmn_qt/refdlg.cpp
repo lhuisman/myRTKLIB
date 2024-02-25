@@ -78,7 +78,7 @@ void RefDialog::loadStations()
     loadList(stationPositionFile);
 }
 //---------------------------------------------------------------------------
-void RefDialog::findList(void)
+void RefDialog::findList()
 {
     QString str = ui->lEFind->text();
 

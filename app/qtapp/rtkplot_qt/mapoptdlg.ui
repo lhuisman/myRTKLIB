@@ -46,6 +46,9 @@
         <property name="text">
          <string>Image Size Width/Height</string>
         </property>
+        <property name="buddy">
+         <cstring>sBMapSize1</cstring>
+        </property>
        </widget>
       </item>
       <item>
@@ -91,7 +94,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QWidget" name="Panel2" native="true">
+    <widget class="QWidget" name="panelPosition" native="true">
      <property name="text" stdset="0">
       <string/>
      </property>
@@ -115,6 +118,9 @@
        <widget class="QLabel" name="Label5">
         <property name="text">
          <string>Image Center Lon/Lat</string>
+        </property>
+        <property name="buddy">
+         <cstring>sBLongitude</cstring>
         </property>
        </widget>
       </item>
@@ -167,6 +173,9 @@
         <property name="text">
          <string>Scale X/Y</string>
         </property>
+        <property name="buddy">
+         <cstring>cBScaleEqual</cstring>
+        </property>
        </widget>
       </item>
       <item row="2" column="1">
@@ -196,6 +205,9 @@
         <property name="singleStep">
          <double>0.000100000000000</double>
         </property>
+        <property name="value">
+         <double>0.100000000000000</double>
+        </property>
        </widget>
       </item>
       <item row="2" column="3">
@@ -214,6 +226,9 @@
         </property>
         <property name="singleStep">
          <double>0.000100000000000</double>
+        </property>
+        <property name="value">
+         <double>0.100000000000000</double>
         </property>
        </widget>
       </item>

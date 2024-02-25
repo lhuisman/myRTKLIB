@@ -2,6 +2,7 @@
 
 #include <QShowEvent>
 #include <QFile>
+#include <QAction>
 
 #include "viewer.h"
 #include "mapviewopt.h"

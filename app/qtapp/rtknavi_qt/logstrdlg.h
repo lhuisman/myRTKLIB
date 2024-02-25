@@ -4,33 +4,57 @@
 //---------------------------------------------------------------------------
 #include <QDialog>
 
-#include "ui_logstrdlg.h"
+namespace Ui {
+class LogStrDialog;
+}
 
 class KeyDialog;
 class SerialOptDialog;
 class TcpOptDialog;
 
 //---------------------------------------------------------------------------
-class LogStrDialog : public QDialog, private Ui::LogStrDialog
+class LogStrDialog : public QDialog
 {
     Q_OBJECT
 
-protected:
-    void showEvent(QShowEvent *);
+public:
+    explicit LogStrDialog(QWidget* parent);
 
+    void setStreamEnabled(int stream, int enabled);
+    int getStreamEnabled(int stream);
+
+    void setStreamType(int stream, int type);
+    int getStreamType(int stream);
+
+    void setPath(int stream, int type, const QString &);
+    QString getPath(int stream, int type);
+
+    void setLogTimeTagEnabled(bool);
+    bool getLogTimeTagEnabled();
+
+
+    void setSwapInterval(const QString &);
+    QString getSwapInterval();
+
+    void setHistory(int i, const QString &history);
+    const QString &getHistory(int i);
+
+protected:
     KeyDialog *keyDialog;
     SerialOptDialog *serialOptDialog;
     TcpOptDialog *tcpOptDialog;
 
+    QString paths[3][4];
+    QString history[10];
+
 public slots:
-    void saveClose();
     void showStreamOptions1();
     void showStreamOptions2();
     void showStreamOptions3();
     void selectFile1();
     void selectFile2();
-    void showKeyDialog();
     void selectFile3();
+    void showKeyDialog();
     void updateEnable();
 
 private:
@@ -40,12 +64,7 @@ private:
     void showSerialOptions(int index, int opt);
     void showTcpOptions(int index, int opt);
 
-public:
-    int streamEnabled[3], stream[3], logTimeTag, logAppend;
-    QString paths[3][4], swapInterval;
-    QString history[10];
-
-    explicit LogStrDialog(QWidget* parent);
+    Ui::LogStrDialog *ui;
 };
 //---------------------------------------------------------------------------
 #endif

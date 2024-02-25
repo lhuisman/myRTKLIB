@@ -29,15 +29,17 @@ SOURCES += \
     ../appcmn_qt/freqdlg.cpp \
     ../appcmn_qt/helper.cpp \
     ../appcmn_qt/graph.cpp \
+    #../appcmn_qt/pntdlg.cpp \
     ../widgets_qt/scientificspinbox.cpp \
+    ../appcmn_qt/navi_post_opt.cpp \
     mondlg.cpp \
     instrdlg.cpp \
     logstrdlg.cpp \
     main.cpp \
     navimain.cpp \
-    naviopt.cpp \
     outstrdlg.cpp \
     rcvoptdlg.cpp \
+    #mapdlg.cpp \
     markdlg.cpp
 
 HEADERS  += \
@@ -45,9 +47,11 @@ HEADERS  += \
     rcvoptdlg.h \
     logstrdlg.h \
     navimain.h \
-    naviopt.h \
     outstrdlg.h \
     mondlg.h \
+    #mapdlg.h \
+    markdlg.h \
+    ../appcmn_qt/navi_post_opt.h \
     ../appcmn_qt/aboutdlg.h \
     ../appcmn_qt/cmdoptdlg.h \
     ../appcmn_qt/fileoptdlg.h \
@@ -63,17 +67,19 @@ HEADERS  += \
     ../appcmn_qt/freqdlg.h \
     ../appcmn_qt/helper.h \
     ../appcmn_qt/graph.h \
-    ../widgets_qt/scientificspinbox.h \
-    markdlg.h
+    #../appcmn_qt/pntdlg.h \
+    ../widgets_qt/scientificspinbox.h
 
 FORMS    += \
     instrdlg.ui \
     logstrdlg.ui \
     navimain.ui \
-    naviopt.ui \
     outstrdlg.ui \
     rcvoptdlg.ui \
     mondlg.ui \
+    #mapdlg.ui \
+    markdlg.ui \
+    ../appcmn_qt/navi_post_opt.ui \
     ../appcmn_qt/aboutdlg.ui \
     ../appcmn_qt/cmdoptdlg.ui \
     ../appcmn_qt/fileoptdlg.ui \
@@ -86,8 +92,8 @@ FORMS    += \
     ../appcmn_qt/vieweropt.ui \
     ../appcmn_qt/tcpoptdlg.ui \
     ../appcmn_qt/mntpoptdlg.ui \
-    ../appcmn_qt/freqdlg.ui \
-    markdlg.ui
+    #../appcmn_qt/pntdlg.ui \
+    ../appcmn_qt/freqdlg.ui
 
 RESOURCES += \
     ../appcmn_qt/appcmn_qt.qrc \

@@ -299,6 +299,9 @@
            <property name="text">
             <string>RINEX OBS</string>
            </property>
+           <property name="buddy">
+            <cstring>cBInputFile1</cstring>
+           </property>
           </widget>
          </item>
          <item row="7" column="5">
@@ -446,6 +449,9 @@
            <property name="text">
             <string>RINEX NAV/CLK, SP3, Bias-SINEX, IONEX, SBS/EMS  or RTCM</string>
            </property>
+           <property name="buddy">
+            <cstring>cBInputFile3</cstring>
+           </property>
           </widget>
          </item>
          <item row="3" column="6">
@@ -486,6 +492,9 @@
            </property>
            <property name="text">
             <string>RINEX OBS: Base Station</string>
+           </property>
+           <property name="buddy">
+            <cstring>cBInputFile2</cstring>
            </property>
           </widget>
          </item>
@@ -604,6 +613,9 @@
           <widget class="QLabel" name="lblSolution">
            <property name="text">
             <string>Solution</string>
+           </property>
+           <property name="buddy">
+            <cstring>cBOutputDirectoryEnable</cstring>
            </property>
           </widget>
          </item>
@@ -857,28 +869,36 @@
   </layout>
  </widget>
  <tabstops>
-  <tabstop>btnExec</tabstop>
-  <tabstop>btnAbort</tabstop>
-  <tabstop>btnExit</tabstop>
   <tabstop>cBTimeStart</tabstop>
   <tabstop>btnTimeStart</tabstop>
   <tabstop>cBTimeEnd</tabstop>
   <tabstop>btnTimeStop</tabstop>
   <tabstop>cBTimeIntervalF</tabstop>
+  <tabstop>cBTimeUnitF</tabstop>
   <tabstop>dtDateTimeStart</tabstop>
   <tabstop>dtDateTimeStop</tabstop>
   <tabstop>cBTimeInterval</tabstop>
+  <tabstop>sBTimeUnit</tabstop>
+  <tabstop>btnKeyword</tabstop>
+  <tabstop>btnInputPlot1</tabstop>
   <tabstop>cBInputFile1</tabstop>
+  <tabstop>btnInputView1</tabstop>
   <tabstop>btnInputFile1</tabstop>
+  <tabstop>btnInputPlot2</tabstop>
   <tabstop>cBInputFile2</tabstop>
+  <tabstop>btnInputView2</tabstop>
   <tabstop>btnInputFile2</tabstop>
   <tabstop>cBInputFile3</tabstop>
+  <tabstop>btnInputView3</tabstop>
   <tabstop>btnInputFile3</tabstop>
   <tabstop>cBInputFile4</tabstop>
+  <tabstop>btnInputView4</tabstop>
   <tabstop>btnInputFile4</tabstop>
   <tabstop>cBInputFile5</tabstop>
+  <tabstop>btnInputView5</tabstop>
   <tabstop>btnInputFile5</tabstop>
   <tabstop>cBInputFile6</tabstop>
+  <tabstop>btnInputView6</tabstop>
   <tabstop>btnInputFile6</tabstop>
   <tabstop>cBOutputDirectoryEnable</tabstop>
   <tabstop>lEOutputDirectory</tabstop>
@@ -892,6 +912,9 @@
   <tabstop>btnView</tabstop>
   <tabstop>btnToKML</tabstop>
   <tabstop>btnOption</tabstop>
+  <tabstop>btnExec</tabstop>
+  <tabstop>btnAbort</tabstop>
+  <tabstop>btnExit</tabstop>
  </tabstops>
  <resources>
   <include location="../icon/resources.qrc"/>

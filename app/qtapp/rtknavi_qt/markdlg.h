@@ -4,28 +4,20 @@
 #define markdlgH
 //---------------------------------------------------------------------------
 #include <QDialog>
-#include "ui_markdlg.h"
+
+namespace Ui {
+class MarkDialog;
+}
 
 class KeyDialog;
 
 //---------------------------------------------------------------------------
-class QMarkDialog : public QDialog, private Ui::MarkDialog
+class MarkDialog : public QDialog
 {
     Q_OBJECT
-public slots:
-    void saveClose();
-    void showKeyDialog();
-    void btnPositionClicked();
-
-protected:
-    int nMark;
-    QString stationPositionFileF;
-    int positionMode;
-private:
-    void updateEnable(void);
-    KeyDialog *keyDialog;
 
 public:
+    explicit MarkDialog(QWidget *parent);
 
     void setPositionMode(int);
     int getPositionMode();
@@ -39,7 +31,21 @@ public:
     void setStationPositionFile(const QString&);
     QString getStationPositionFile();
 
-    explicit QMarkDialog(QWidget *parent);
+public slots:
+    void saveClose();
+    void showKeyDialog();
+    void btnPositionClicked();
+
+protected:
+    int nMark;
+    QString stationPositionFileF;
+    int positionMode;
+
+private:
+    void updateEnable();
+    KeyDialog *keyDialog;
+
+    Ui::MarkDialog *ui;
 	
 };
 //---------------------------------------------------------------------------

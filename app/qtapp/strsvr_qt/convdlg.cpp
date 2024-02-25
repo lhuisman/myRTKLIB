@@ -19,7 +19,7 @@ ConvDialog::ConvDialog(QWidget *parent)
     connect(ui->cBConversion, &QCheckBox::toggled, this, &ConvDialog::updateEnable);
 }
 //---------------------------------------------------------------------------
-void ConvDialog::updateEnable(void)
+void ConvDialog::updateEnable()
 {
     ui->cBInputFormat->setEnabled(ui->cBConversion->isChecked());
     ui->cBOutputFormat->setEnabled(ui->cBConversion->isChecked());

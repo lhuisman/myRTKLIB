@@ -6,20 +6,23 @@
 
 #include "rtklib.h"
 #include "startdlg.h"
+
+#include "ui_startdlg.h"
+
 //---------------------------------------------------------------------------
 StartDialog::StartDialog(QWidget *parent)
-    : QDialog(parent)
+    : QDialog(parent), ui(new Ui::StartDialog)
 {
-    setupUi(this);
+    ui->setupUi(this);
 
-    connect(buttonBox, &QDialogButtonBox::accepted, this, &StartDialog::accept);
-    connect(buttonBox, &QDialogButtonBox::rejected, this, &StartDialog::reject);
-    connect(btnFileTime, &QPushButton::clicked, this, &StartDialog::setTimeFromFile);
+    connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &StartDialog::accept);
+    connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &StartDialog::reject);
+    connect(ui->btnFileTime, &QPushButton::clicked, this, &StartDialog::setTimeFromFile);
 
     setTime(utc2gpst(timeget()));
 }
 //---------------------------------------------------------------------------
-void StartDialog::setFileName(QString fn)
+void StartDialog::setFileName(const QString &fn)
 {
     FILE *fp;
     uint32_t timetag = 0;
@@ -44,17 +47,17 @@ void StartDialog::setFileName(QString fn)
     }
 }
 //---------------------------------------------------------------------------
-void StartDialog::setTime(gtime_t time)
+void StartDialog::setTime(const gtime_t &time)
 {
     QDateTime date = QDateTime::fromSecsSinceEpoch(time.time);
     date = date.addMSecs(time.sec*1000);
 
-    tETime->setDateTime(date);
+    ui->tETime->setDateTime(date);
 }
 //---------------------------------------------------------------------------
 gtime_t StartDialog::getTime()
 {
-    QDateTime date(tETime->dateTime());
+    QDateTime date(ui->tETime->dateTime());
     gtime_t time;
 
     time.time = date.toSecsSinceEpoch();
@@ -76,7 +79,7 @@ void StartDialog::setTimeFromFile()
     QFileInfo fi(filename);
     QDateTime d = fi.birthTime();
 
-    tETime->setDateTime(d);
+    ui->tETime->setDateTime(d);
 }
 //---------------------------------------------------------------------------
     

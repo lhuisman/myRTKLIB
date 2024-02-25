@@ -6,19 +6,23 @@
 
 #include "rtklib.h"
 
-#include "ui_timedlg.h"
+namespace Ui {
+class TimeDialog;
+}
 
 class QShowEvent;
 
 //---------------------------------------------------------------------------
-class TimeDialog : public QDialog, public Ui::TimeDialog
+class TimeDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-
     explicit TimeDialog(QWidget *parent = nullptr);
-    void setTime(gtime_t time);
+    void setTime(const gtime_t &time);
+
+private:
+    Ui::TimeDialog *ui;
 };
 //---------------------------------------------------------------------------
 #endif

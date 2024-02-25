@@ -16,15 +16,25 @@ class MonitorDialog;
 class MonitorDialog : public QDialog
 {
     Q_OBJECT
+
+public:
+    explicit MonitorDialog(QWidget* parent, rtksvr_t *server, stream_t* stream);
+    ~MonitorDialog();
+
+    int getDisplayType();
+
 protected:
     void showEvent(QShowEvent*);
     void closeEvent(QCloseEvent*);
 
+    rtksvr_t *rtksvr;		// rtk server struct
+    stream_t *monistr;	// monitor stream
+
 public slots:
-    void btnClearClicked();
-    void btnDownClicked();
+    void clearOutput();
+    void scrollDown();
     void displayTypeChanged();
-    void updateTimerTriggered();
+    void updateDisplays();
     void showBuffers();
     void observationModeChanged();
     void consoleFormatChanged();
@@ -80,11 +90,6 @@ private:
     void addConsole(const unsigned char *msg, int n, int mode, bool newline);
 
     Ui::MonitorDialog *ui;
-public:
-    explicit MonitorDialog(QWidget* parent);
-    ~MonitorDialog();
-
-    int getDisplayType();
 };
 //---------------------------------------------------------------------------
 #endif

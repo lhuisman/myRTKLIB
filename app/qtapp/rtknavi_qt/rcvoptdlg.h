@@ -4,9 +4,13 @@
 //---------------------------------------------------------------------------
 
 #include <QDialog>
-#include <ui_rcvoptdlg.h>
+
+namespace Ui {
+class RcvOptDialog;
+}
+
 //---------------------------------------------------------------------------
-class RcvOptDialog : public QDialog, private Ui::RcvOptDialog
+class RcvOptDialog : public QDialog
 {
     Q_OBJECT
 
@@ -15,6 +19,9 @@ public:
 
     QString getOptions();
     void setOptions(const QString &);
+
+private:
+    Ui::RcvOptDialog *ui;
 };
 //---------------------------------------------------------------------------
 #endif

@@ -5,9 +5,11 @@
 #include <QMainWindow>
 #include <QThread>
 
-#include "ui_convmain.h"
-
 #include "rtklib.h"
+
+namespace Ui {
+class MainWindow;
+}
 
 class QShowEvent;
 class QCloseEvent;
@@ -53,9 +55,14 @@ protected:
 };
 
 //---------------------------------------------------------------------------
-class MainWindow : public QMainWindow, public Ui::MainWindow
+class MainWindow : public QMainWindow
 {
     Q_OBJECT
+
+public:
+    explicit MainWindow(QWidget *parent = 0);
+
+    void showMessage(const QString &);
 
 protected:
     void showEvent(QShowEvent*);
@@ -63,7 +70,7 @@ protected:
     void dragEnterEvent(QDragEnterEvent *);
     void dropEvent(QDropEvent *);
 
-public slots:
+protected slots:
     void callRtkPlot();
     void showOptions();
     void showAboutDialog();
@@ -100,7 +107,7 @@ public slots:
     void conversionFinished();
     void updateEnable();
 
-    void convertFile(void);
+    void convertFile();
 
 private:
     QString iniFile, commandPostExe;
@@ -115,8 +122,8 @@ private:
     void getTime(gtime_t *ts, gtime_t *te, double *tint, double *tunit);
     int  execCommand(const QString &cmd, QStringList &opt);
     QString repPath(const QString &File);
-    void loadOptions(void);
-    void saveOptions(void);
+    void loadOptions();
+    void saveOptions();
 		
     ConvOptDialog *convOptDialog;
     TimeDialog *timeDialog;
@@ -124,17 +131,8 @@ private:
     AboutDialog* aboutDialog;
     StartDialog* startDialog;
     TextViewer *viewer;
-public:
-    gtime_t rinexTime;
-    QString runBy, marker, markerNo, markerType, name[2], receiver[3], antenna[3];
-    QString rinexStationCode, comment[2], receiverOptions, excludedSatellites;
-    QString codeMask[7];
-    double approxPosition[3], antennaDelta[3], timeTolerance;
-    int rinexVersion, rinexFile, navSys, observationType, frequencyType, traceLevel;
-    int autoPosition, phaseShift, halfCycle, outputIonoCorr, outputTimeCorr, outputLeapSeconds, separateNavigation;
-    int enableGlonassFrequency, glonassFrequency[27];
-	
-    explicit MainWindow(QWidget *parent=0);
+
+    Ui::MainWindow *ui;
 };
 //---------------------------------------------------------------------------
 #endif

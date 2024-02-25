@@ -13,12 +13,9 @@
   <property name="windowTitle">
    <string>KML/GPX Converter</string>
   </property>
-  <property name="toolTip">
-   <string/>
-  </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QWidget" name="panel1" native="true">
+    <widget class="QWidget" name="panelMain" native="true">
      <property name="text" stdset="0">
       <string/>
      </property>
@@ -36,17 +33,20 @@
        <number>0</number>
       </property>
       <item row="6" column="0">
-       <widget class="QLabel" name="Label2">
+       <widget class="QLabel" name="lblOutputWaypoint">
         <property name="toolTip">
          <string/>
         </property>
         <property name="text">
-         <string>Output Waypoint</string>
+         <string>Output &amp;Waypoint</string>
+        </property>
+        <property name="buddy">
+         <cstring>cBPointColor</cstring>
         </property>
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QLabel" name="label_4">
+       <widget class="QLabel" name="lblStart">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -54,7 +54,10 @@
          </sizepolicy>
         </property>
         <property name="text">
-         <string>Start</string>
+         <string>&amp;Start</string>
+        </property>
+        <property name="buddy">
+         <cstring>dateTimeStart</cstring>
         </property>
        </widget>
       </item>
@@ -64,7 +67,7 @@
          <string/>
         </property>
         <property name="text">
-         <string>Time Span</string>
+         <string>Time Sp&amp;an</string>
         </property>
        </widget>
       </item>
@@ -112,9 +115,12 @@
        </widget>
       </item>
       <item row="13" column="0" colspan="2">
-       <widget class="QLabel" name="label_3">
+       <widget class="QLabel" name="lblOutputFile">
         <property name="text">
-         <string>Output File</string>
+         <string>&amp;Output File</string>
+        </property>
+        <property name="buddy">
+         <cstring>lEOutputFile</cstring>
         </property>
        </widget>
       </item>
@@ -161,7 +167,7 @@
          <string/>
         </property>
         <property name="text">
-         <string>Add Offset E/N/U</string>
+         <string>Add &amp;Offset E/N/U</string>
         </property>
        </widget>
       </item>
@@ -203,39 +209,51 @@
        </widget>
       </item>
       <item row="2" column="3">
-       <widget class="QLabel" name="label_5">
+       <widget class="QLabel" name="lblEnd">
         <property name="text">
-         <string>End</string>
+         <string>&amp;End</string>
+        </property>
+        <property name="buddy">
+         <cstring>dateTimeStop</cstring>
         </property>
        </widget>
       </item>
       <item row="5" column="0">
-       <widget class="QLabel" name="Label1">
+       <widget class="QLabel" name="lblOutputTrack">
         <property name="toolTip">
          <string/>
         </property>
         <property name="text">
-         <string>Output Track</string>
+         <string>Output &amp;Track</string>
+        </property>
+        <property name="buddy">
+         <cstring>cBTrackColor</cstring>
         </property>
        </widget>
       </item>
       <item row="9" column="0">
-       <widget class="QLabel" name="Label7">
+       <widget class="QLabel" name="lblInputFile">
         <property name="toolTip">
          <string/>
         </property>
         <property name="text">
-         <string>Input File</string>
+         <string>&amp;Input File</string>
+        </property>
+        <property name="buddy">
+         <cstring>lEInputFile</cstring>
         </property>
        </widget>
       </item>
       <item row="4" column="3">
-       <widget class="QLabel" name="Label5">
+       <widget class="QLabel" name="lblQFlags">
         <property name="toolTip">
          <string/>
         </property>
         <property name="text">
-         <string>Q-Flags</string>
+         <string>Q-&amp;Flags</string>
+        </property>
+        <property name="buddy">
+         <cstring>cBQFlags</cstring>
         </property>
        </widget>
       </item>
@@ -334,19 +352,25 @@
        </widget>
       </item>
       <item row="6" column="3">
-       <widget class="QLabel" name="Label4">
+       <widget class="QLabel" name="lblOutputTime">
         <property name="toolTip">
          <string/>
         </property>
         <property name="text">
-         <string>Output Time</string>
+         <string>Output Ti&amp;me</string>
+        </property>
+        <property name="buddy">
+         <cstring>cBOutputTime</cstring>
         </property>
        </widget>
       </item>
       <item row="16" column="0" colspan="2">
-       <widget class="QLabel" name="label_2">
+       <widget class="QLabel" name="lblGEExecutable">
         <property name="text">
          <string>Google Earth Executable</string>
+        </property>
+        <property name="buddy">
+         <cstring>lEGoogleEarthFile</cstring>
         </property>
        </widget>
       </item>
@@ -443,12 +467,15 @@
        </widget>
       </item>
       <item row="5" column="3">
-       <widget class="QLabel" name="Label3">
+       <widget class="QLabel" name="lblOutputAltitude">
         <property name="toolTip">
          <string/>
         </property>
         <property name="text">
-         <string>Output Altitude</string>
+         <string>Output &amp;Altitude</string>
+        </property>
+        <property name="buddy">
+         <cstring>cBOutputAltitude</cstring>
         </property>
        </widget>
       </item>
@@ -458,7 +485,7 @@
          <string/>
         </property>
         <property name="text">
-         <string>Interval</string>
+         <string>I&amp;nterval</string>
         </property>
        </widget>
       </item>
@@ -491,7 +518,7 @@
          <item row="0" column="0">
           <widget class="QRadioButton" name="rBFormatKML">
            <property name="text">
-            <string>Google &amp;Earth KML</string>
+            <string>Google Earth &amp;KML</string>
            </property>
           </widget>
          </item>
@@ -589,18 +616,30 @@
   </layout>
  </widget>
  <tabstops>
-  <tabstop>btnConvert</tabstop>
-  <tabstop>btnClose</tabstop>
+  <tabstop>rBFormatKML</tabstop>
+  <tabstop>rBFormatGPX</tabstop>
   <tabstop>cBTimeSpan</tabstop>
+  <tabstop>dateTimeStart</tabstop>
+  <tabstop>dateTimeStop</tabstop>
   <tabstop>cBTimeInterval</tabstop>
   <tabstop>sBTimeInterval</tabstop>
+  <tabstop>cBQFlags</tabstop>
   <tabstop>cBTrackColor</tabstop>
+  <tabstop>cBOutputAltitude</tabstop>
   <tabstop>cBPointColor</tabstop>
+  <tabstop>cBOutputTime</tabstop>
   <tabstop>cBAddOffset</tabstop>
+  <tabstop>sBOffset1</tabstop>
+  <tabstop>sBOffset2</tabstop>
+  <tabstop>sBOffset3</tabstop>
   <tabstop>lEInputFile</tabstop>
   <tabstop>lEOutputFile</tabstop>
+  <tabstop>cBCompress</tabstop>
   <tabstop>lEGoogleEarthFile</tabstop>
+  <tabstop>btnGoogleEarth</tabstop>
   <tabstop>btnView</tabstop>
+  <tabstop>btnConvert</tabstop>
+  <tabstop>btnClose</tabstop>
  </tabstops>
  <resources>
   <include location="../icon/resources.qrc"/>

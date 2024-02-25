@@ -4,21 +4,67 @@
 #define plotoptH
 //---------------------------------------------------------------------------
 #include <QDialog>
-#include "ui_plotopt.h"
+#include <QSettings>
 
-class Plot;
+#define MAXMAPLAYER 12                  // max number of map layers
+
+namespace Ui {
+    class PlotOptDialog;
+}
+//class Plot;
 class RefDialog;
 
 //---------------------------------------------------------------------------
-class PlotOptDialog : public QDialog, private Ui::PlotOptDialog
+class PlotOptDialog : public QDialog
 {
     Q_OBJECT
 
-protected:
-    void showEvent(QShowEvent*);
+public:
+    explicit PlotOptDialog(QWidget *parent=NULL);
+    void loadOptions(QSettings &);
+    void saveOptions(QSettings &);
 
-public slots:
-    void btnOKClicked();
+    // plot options
+    int getTimeFormat();
+    int getLatLonFormat();
+    int getShowStats();
+    int getShowSlip();
+    int getShowHalfC();
+    int getShowEphemeris();
+    double getElevationMask();
+    int getElevationMaskEnabled();
+    int getHideLowSatellites();
+    double getMaxDop();
+    double getMaxMP();
+    int getNavSys();
+    QString getExcludedSatellites();
+    int getShowError();
+    int getShowArrow();
+    int getShowGridLabel();
+    int getShowLabel();
+    int getShowCompass();
+    int getShowScale();
+    int getAutoScale();
+    double getYRange();
+    int getRtBufferSize();
+    int getTimeSyncOut();
+    int getTimeSyncPort();
+    int getOrigin();
+    int getReceiverPosition();
+    double* getOoPosition();
+    int getPlotStyle();
+    int getMarkSize();
+    int getAnimationCycle();
+    int getRefreshCycle();
+    QString getShapeFile();
+    QString getTleFile();
+    QString getRinexOptions();
+    QString getTleSatelliteFile();
+    QFont getFont();
+    QColor getCColor(int i);
+    QColor getMarkerColor(int i, int j);
+
+protected slots:
     void color1Select();
     void color2Select();
     void color3Select();
@@ -33,17 +79,18 @@ public slots:
     void tleSatelliteFileView();
 
 private:
-    void updateFont(void);
-    void updateEnable(void);
+    void updateFont();
+    void updateEnable();
+
+protected:
     QColor markerColor[2][8]; // {{mark1 0-7},{mark2 0-7}}
     QColor cColor[4];    // {background,grid,text,line}
-    QFont fontOption;
 
-public:
-    Plot *plot;
+    QFont fontOption;
     RefDialog *refDialog;
 
-    explicit PlotOptDialog(QWidget *parent=NULL);
+private:
+    Ui::PlotOptDialog *ui;
 };
 //---------------------------------------------------------------------------
 #endif

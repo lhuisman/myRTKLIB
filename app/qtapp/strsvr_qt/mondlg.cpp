@@ -118,14 +118,14 @@ void StrMonDialog::addConsole(unsigned char *msg, int n, int mode, bool newline)
          if (p - buff >= MAXLEN) p += sprintf(p, "\n");
 
          if (*(p - 1) == '\n') {
-             consoleBuffer[consoleBuffer.count() - 1] = QString(buff).removeLast();
+             consoleBuffer[consoleBuffer.count() - 1] = QString(buff).remove(QString(buff).size()-1, 1);
              consoleBuffer.append("");
              *(p = buff) = 0;
              while (consoleBuffer.count() >= MAXLINE) consoleBuffer.removeFirst();
          }
      }
      // store last (incomplete) line
-     consoleBuffer[consoleBuffer.count() - 1] = QString(buff).removeLast();
+     consoleBuffer[consoleBuffer.count() - 1] = QString(buff).remove(QString(buff).size()-1, 1);
 
      // write consoleBuffer to table widget
      ui->tWConsole->setColumnCount(1);

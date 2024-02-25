@@ -5,36 +5,38 @@
 
 #include <QShowEvent>
 
+#include "ui_launchoptdlg.h"
+
 //---------------------------------------------------------------------------
 LaunchOptDialog::LaunchOptDialog(QWidget *parent)
-    : QDialog(parent)
+    : QDialog(parent), ui(new Ui::LaunchOptDialog)
 {
-    setupUi(this);
+    ui->setupUi(this);
 
-    connect(buttonBox, &QDialogButtonBox::accepted, this, &LaunchOptDialog::accept);
-    connect(buttonBox, &QDialogButtonBox::rejected, this, &LaunchOptDialog::reject);
+    connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &LaunchOptDialog::accept);
+    connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &LaunchOptDialog::reject);
 }
 //---------------------------------------------------------------------------
 void LaunchOptDialog::setOption(int option)
 {
 
     if (option == 1) {
-        rBOptionMkl->setChecked(true);
+        ui->rBOptionMkl->setChecked(true);
 	}
     else if (option == 2) {
-        rBOptionWin64->setChecked(true);
+        ui->rBOptionWin64->setChecked(true);
 	}
 	else {
-        rBOptionNormal->setChecked(true);
+        ui->rBOptionNormal->setChecked(true);
 	}
 }
 //---------------------------------------------------------------------------
 int LaunchOptDialog::getOption()
 {
-    if (rBOptionMkl->isChecked()) {
+    if (ui->rBOptionMkl->isChecked()) {
         return 1;
 	}
-    else if (rBOptionWin64->isChecked()) {
+    else if (ui->rBOptionWin64->isChecked()) {
         return 2;
 	}
 	else {
@@ -44,11 +46,11 @@ int LaunchOptDialog::getOption()
 //---------------------------------------------------------------------------
 void LaunchOptDialog::setMinimize(int minimize)
 {
-    cBMinimize->setChecked(minimize);
+    ui->cBMinimize->setChecked(minimize);
 }
 //---------------------------------------------------------------------------
 int LaunchOptDialog::getMinimize()
 {
-    return cBMinimize->isChecked();
+    return ui->cBMinimize->isChecked();
 }
 //---------------------------------------------------------------------------

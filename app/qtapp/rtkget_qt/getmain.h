@@ -10,26 +10,38 @@
 
 #define INHIBIT_RTK_LOCK_MACROS
 #include "rtklib.h"
-#include "ui_getmain.h"
+
+namespace Ui {
+class MainForm;
+}
 
 class TextViewer;
+class DownOptDialog;
 class DownloadThread;
 class TimeDialog;
+class QComboBox;
 
 //---------------------------------------------------------------------------
-class MainForm : public QWidget, public Ui::MainForm
+class MainForm : public QWidget
 {
      Q_OBJECT
 
+public:
+    explicit MainForm(QWidget* parent);
+
+    void showMessage(int i, const QString&);
+
 protected:
     void  closeEvent(QCloseEvent *);
-
     void  showEvent(QShowEvent*);
-
     void  dragEnterEvent(QDragEnterEvent *event);
     void  dropEvent(QDropEvent * event);
 
-public slots:
+    QString iniFilename;
+    QTimer busyTimer;
+    int timerCnt;
+
+protected slots:
     void  showOptionsDialog();
     void  viewLogFile();
     void  download();
@@ -44,7 +56,7 @@ public slots:
     void  minimizeToTray();
     void  restoreFromTaskTray(QSystemTrayIcon::ActivationReason);
     void  testDownload();
-    void  SelectDeselectAllStations();
+    void  selectDeselectAllStations();
     void  downloadFinished();
     void  showStartTimeDetails();
     void  showStopTimeDetails();
@@ -61,6 +73,9 @@ private:
     DownloadThread *processingThread;
     TextViewer *viewer;
     TimeDialog *timeDialog;
+    DownOptDialog *downOptDialog;
+
+    Ui::MainForm *ui;
 
     void  loadOptions();
     void  saveOptions();
@@ -69,29 +84,13 @@ private:
     void  getTime(gtime_t *ts, gtime_t *te, double *ti);
     int   selectUrl(url_t *urls);
     int   selectStation(char **stas);
-    void  loadUrlList(QString file);
-    void  loadStationFile(QString file);
+    void  loadUrlList(const QString &file);
+    void  loadStationFile(const QString &file);
     int   execCommand(const QString &cmd, const QStringList &opt);
-    void  readHistory(QSettings &, QString key, QComboBox *);
-    void  writeHistory(QSettings &, QString key, QComboBox *);
+    void  readHistory(QSettings &, const QString &key, QComboBox *);
+    void  writeHistory(QSettings &, const QString &key, QComboBox *);
     void  addHistory(QComboBox *combo);
 	
-public:
-    QString iniFilename;
-    QString urlFile;
-    QString logFile;
-    QString stations;
-    QString proxyAddr;
-    int holdErr;
-    int holdList;
-    int columnCnt;
-    int dateFormat;
-    int traceLevel;
-    int logAppend;
-    int timerCnt;
-    QTimer busyTimer;
-
-    explicit MainForm(QWidget* parent);
 };
 //---------------------------------------------------------------------------
 #endif

@@ -32,7 +32,7 @@ protected slots:
 
 private:
     void addHistory(QComboBox *list, QString *hist);
-    void updateEnable(void);
+    void updateEnable();
 
     KeyDialog *keyDlg;
     int options;

@@ -9,6 +9,7 @@
 #include <QIntValidator>
 #include <QFileSystemModel>
 #include <QCompleter>
+#include <QAction>
 
 #include "ui_fileoptdlg.h"
 
@@ -165,7 +166,7 @@ void FileOptDialog::keyDialogShow()
     keyDialog->exec();
 }
 //---------------------------------------------------------------------------
-void FileOptDialog::updateEnable(void)
+void FileOptDialog::updateEnable()
 {
     ui->lEFilePath->setEnabled(ui->cBPathEnable->isChecked());
     ui->cBTimeSpeed->setEnabled(ui->cBTimeTag->isChecked());

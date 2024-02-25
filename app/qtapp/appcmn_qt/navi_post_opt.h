@@ -3,24 +3,66 @@
 #define navioptH
 //---------------------------------------------------------------------------
 #include <QDialog>
-#include "ui_naviopt.h"
 #include "rtklib.h"
+
+namespace Ui {
+class OptDialog;
+}
 
 class TextViewer;
 class FreqDialog;
+class QLineEdit;
+class QSettings;
+
 //---------------------------------------------------------------------------
-class OptDialog : public QDialog, private Ui::OptDialog
+class OptDialog : public QDialog
 {
     Q_OBJECT
+
+public:
+    enum OptionsType {NaviOptions = 0, PostOptions = 1};
+
+    explicit OptDialog(QWidget* parent, int opts);
+
+    void loadOptions(QSettings &);
+    void saveOptions(QSettings &);
+
+    opt_t *appOptions;  // additional application specific options to load and save
+
+    prcopt_t processingOptions;
+    solopt_t solutionOptions;
+    filopt_t fileOptions;
+
+    // RTKNavi options
+    int serverCycle, serverBufferSize, solutionBufferSize, navSelect, savedSolutions;
+    int nmeaCycle, timeoutTime, reconnectTime;
+    int monitorPort, fileSwapMargin, panelStacking;
+    QString proxyAddress;
+    QFont panelFont, positionFont;
+    QColor panelFontColor, positionFontColor;
+
+    // RTKPost options
+    QString roverList, baseList;
+
 protected:
     void showEvent(QShowEvent*);
+    QString excludedSatellitesString(prcopt_t *prcopt);
+    bool fillExcludedSatellites(prcopt_t *prcopt, const QString &excludedSatellites);
 
-public slots:
+    char proxyaddr[1024];  // proxy address stores in naviopts
+    opt_t *naviopts;
+    snrmask_t snrmask;
+    int current_roverPositionType, current_referencePositionType;
+
+    TextViewer *textViewer;
+    FreqDialog * freqDialog;
+
+protected slots:
     void saveClose();
     void selectAntennaPcvFile();
     void viewAntennaPcvFile();
-    void loadOptions();
-    void saveOptions();
+    void loadSettings();
+    void saveSettings();
     void selectReferencePosition();
     void selectRoverPosition();
     void viewStationPositionFile();
@@ -45,43 +87,15 @@ public slots:
     void showSnrMaskDialog();
 
 private:
-    void getOptions(void);
-    void setOptions(void);
     void load(const QString &file);
     void save(const QString &file);
-    void readAntennaList(void);
-    void updateEnable(void);
+    void readAntennaList();
+    void updateEnable();
     void showFrequenciesDialog();
     void showKeyDialog();
     int options;
+    Ui::OptDialog *ui;
 
-public:
-    enum OptionsType {NaviOptions = 0, PostOptions = 1};
-    prcopt_t processOptions;
-    solopt_t solutionOption;
-    QFont panelFont, positionFont;
-    TextViewer *textViewer;
-    FreqDialog * freqDialog;
-
-    int serverCycle, serverBufferSize, solutionBufferSize, navSelect, savedSolution;
-    int nmeaRequest, nmeaCycle, timeoutTime, reconnectTime, dgpsCorrection, sbasCorrection;
-    int debugTrace, debugStatus;
-    int roverPositionType, referencePositionType, roverAntennaPcv, referenceAntennaPcv, baselineC;
-    int monitorPort, fileSwapMargin, panelStack;
-
-    QString excludedSatellites, localDirectory;
-    QString roverAntenna, referenceAntenna, satellitePcvFile, antennaPcvFile, stationPositionFile;
-    QString geoidDataFile, dcbFile, eopFile, blqFile, ionosphereFile, tleFile, tleSatFile;
-    QString proxyAddr;
-
-    double roverAntennaDelta[3], referenceAntennaDelta[3], roverPosition[3], referencePosition[3];
-    double baseline[2], nmeaInterval[2];
-
-    QString roverList, baseList;
-    QString rnxOptions1, rnxOptions2, pppOptions;
-    int sbasSat, intpolateReferenceObs;
-
-    explicit OptDialog(QWidget* parent);
 };
 //---------------------------------------------------------------------------
 #endif

@@ -26,7 +26,7 @@ protected:
     RefDialog *refDialog;
 
 private:
-    void updateEnable(void);
+    void updateEnable();
     Ui::SvrOptDialog *ui;
 
 public:

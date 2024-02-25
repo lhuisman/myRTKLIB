@@ -123,7 +123,7 @@ void FtpOptDialog::addHistory(QComboBox *list, QString *hist)
         if (hist[i] != "") list->addItem(hist[i]);
 }
 //---------------------------------------------------------------------------
-void FtpOptDialog::updateEnable(void)
+void FtpOptDialog::updateEnable()
 {
     ui->lEUser->setEnabled(options == 0);
     ui->lEPassword->setEnabled(options == 0);

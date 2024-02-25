@@ -6,16 +6,18 @@
 #include "rtklib.h"
 #include "glofcndlg.h"
 
-//---------------------------------------------------------------------------
-GloFcnDialog::GloFcnDialog(QWidget* parent) : QDialog(parent)
-{
-    setupUi(this);
+#include "ui_glofcndlg.h"
 
-    connect(buttonBox, &QDialogButtonBox::accepted, this, &GloFcnDialog::accept);
-    connect(buttonBox, &QDialogButtonBox::rejected, this, &GloFcnDialog::reject);
-    connect(btnClear, &QPushButton::clicked, this, &GloFcnDialog::clearFrequencies);
-    connect(btnRead, &QPushButton::clicked, this, &GloFcnDialog::readRinex);
-    connect(cBEnableFcn, &QCheckBox::stateChanged, this, &GloFcnDialog::updateEnable);
+//---------------------------------------------------------------------------
+GloFcnDialog::GloFcnDialog(QWidget* parent) : QDialog(parent), ui(new Ui::GloFcnDialog)
+{
+    ui->setupUi(this);
+
+    connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &GloFcnDialog::accept);
+    connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &GloFcnDialog::reject);
+    connect(ui->btnClear, &QPushButton::clicked, this, &GloFcnDialog::clearFrequencies);
+    connect(ui->btnRead, &QPushButton::clicked, this, &GloFcnDialog::readRinex);
+    connect(ui->cBEnableFcn, &QCheckBox::stateChanged, this, &GloFcnDialog::updateEnable);
 
     updateEnable();
 }
@@ -46,37 +48,36 @@ void GloFcnDialog::clearFrequencies()
 	}
 }
 //---------------------------------------------------------------------------
-void GloFcnDialog::updateEnable(void)
+void GloFcnDialog::updateEnable()
 {
-    btnClear->setEnabled(cBEnableFcn->isChecked());
-    btnRead ->setEnabled(cBEnableFcn->isChecked());
-    lblDescription1->setEnabled(cBEnableFcn->isChecked());
-    lblDescription1->setEnabled(cBEnableFcn->isChecked());
+    ui->btnClear->setEnabled(ui->cBEnableFcn->isChecked());
+    ui->btnRead ->setEnabled(ui->cBEnableFcn->isChecked());
+    ui->lblDescription1->setEnabled(ui->cBEnableFcn->isChecked());
+    ui->lblDescription1->setEnabled(ui->cBEnableFcn->isChecked());
 	
     for (int i = 0; i < 27; i++) {
-        getFcn(i + 1)->setEnabled(cBEnableFcn->isChecked());
+        getFcn(i + 1)->setEnabled(ui->cBEnableFcn->isChecked());
 	}
 }
 //---------------------------------------------------------------------------
 QSpinBox * GloFcnDialog::getFcn(int prn)
 {
     QSpinBox *fcn[] = {
-        sBFcn01, sBFcn02, sBFcn03, sBFcn04, sBFcn05, sBFcn06, sBFcn07, sBFcn08, sBFcn09, sBFcn10,
-        sBFcn11, sBFcn12, sBFcn13, sBFcn14, sBFcn15, sBFcn16, sBFcn17, sBFcn18, sBFcn19, sBFcn20,
-        sBFcn21, sBFcn22, sBFcn23, sBFcn24, sBFcn25, sBFcn26, sBFcn27
+        ui->sBFcn01, ui->sBFcn02, ui->sBFcn03, ui->sBFcn04, ui->sBFcn05, ui->sBFcn06, ui->sBFcn07, ui->sBFcn08, ui->sBFcn09, ui->sBFcn10,
+        ui->sBFcn11, ui->sBFcn12, ui->sBFcn13, ui->sBFcn14, ui->sBFcn15, ui->sBFcn16, ui->sBFcn17, ui->sBFcn18, ui->sBFcn19, ui->sBFcn20,
+        ui->sBFcn21, ui->sBFcn22, ui->sBFcn23, ui->sBFcn24, ui->sBFcn25, ui->sBFcn26, ui->sBFcn27
 	};
     return fcn[prn - 1];
 }
 //---------------------------------------------------------------------------
 int GloFcnDialog::getGloFcnEnable()
 {
-    return cBEnableFcn->isChecked();
+    return ui->cBEnableFcn->isChecked();
 }
 //---------------------------------------------------------------------------
 void GloFcnDialog::setGloFcnEnable(int enable)
 {
-    cBEnableFcn->setChecked(enable);
-
+    ui->cBEnableFcn->setChecked(enable);
 }
 //---------------------------------------------------------------------------
 int GloFcnDialog::getGloFcn(int i)
@@ -84,8 +85,7 @@ int GloFcnDialog::getGloFcn(int i)
     int no = getFcn(i + 1)->value();
     if (no >= -7 && no <= 6) {
         return no + 8;
-    }
-    else return 0; // GLONASS FCN+8 (0:none)
+    } else return 0; // GLONASS FCN+8 (0:none)
 }
 //---------------------------------------------------------------------------
 void GloFcnDialog::setGloFcn(int i, int fcn)

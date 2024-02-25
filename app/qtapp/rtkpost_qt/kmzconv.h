@@ -5,15 +5,26 @@
 //---------------------------------------------------------------------------
 #include <QDialog>
 #include <QSettings>
-#include "ui_kmzconv.h"
+
+namespace Ui {
+class ConvDialog;
+}
 
 class TextViewer;
 //---------------------------------------------------------------------------
-class ConvDialog : public QDialog, public Ui::ConvDialog
+class ConvDialog : public QDialog
 {
     Q_OBJECT
 
-public slots:
+public:
+    explicit ConvDialog(QWidget *parent);
+
+    void setInput(const QString &File);
+
+    void loadOptions(QSettings&);
+    void saveOptions(QSettings&);
+
+protected slots:
     void convert();
     void viewOutputFile();
     void selectInputFile();
@@ -27,16 +38,11 @@ private:
     void showMessage(const QString &msg);
     void updateOutputFile();
 
+    Ui::ConvDialog *ui;
+
 protected:
     TextViewer *viewer;
 
-public:
-    explicit ConvDialog(QWidget *parent);
-
-    void setInput(const QString &File);
-
-    void loadOptions(QSettings&);
-    void saveOptions(QSettings&);
 };
 //---------------------------------------------------------------------------
 #endif

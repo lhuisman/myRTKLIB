@@ -15,7 +15,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
-    <widget class="QWidget" name="panelStreams" native="true">
+    <widget class="QWidget" name="panelTop" native="true">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -92,7 +92,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="QWidget" name="Panel12" native="true">
+       <widget class="QWidget" name="panelStream" native="true">
         <property name="text" stdset="0">
          <string/>
         </property>
@@ -387,7 +387,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QWidget" name="Panel2" native="true">
+    <widget class="QWidget" name="panelMain" native="true">
      <property name="toolTip">
       <string/>
      </property>
@@ -429,20 +429,6 @@
              <string/>
             </property>
             <layout class="QGridLayout" name="gridLayout">
-             <item row="0" column="0">
-              <widget class="QLabel" name="lblSolutionText">
-               <property name="text">
-                <string>Solution:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="1">
-              <widget class="QLabel" name="lblSolution">
-               <property name="text">
-                <string>----</string>
-               </property>
-              </widget>
-             </item>
              <item row="1" column="0">
               <widget class="QLabel" name="lblPositionText1">
                <property name="text">
@@ -457,17 +443,17 @@
                </property>
               </widget>
              </item>
-             <item row="2" column="0">
-              <widget class="QLabel" name="lblPositionText2">
-               <property name="text">
-                <string>E:</string>
-               </property>
-              </widget>
-             </item>
              <item row="2" column="1" colspan="2">
               <widget class="QLabel" name="lblPosition2">
                <property name="text">
                 <string>0 00' 00.0000&quot;</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="0" colspan="3">
+              <widget class="QLabel" name="lblStd">
+               <property name="text">
+                <string>E: 0.000 N: 0.000 U: 0.000 m</string>
                </property>
               </widget>
              </item>
@@ -478,17 +464,31 @@
                </property>
               </widget>
              </item>
+             <item row="0" column="1">
+              <widget class="QLabel" name="lblSolution">
+               <property name="text">
+                <string>----</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0">
+              <widget class="QLabel" name="lblSolutionText">
+               <property name="text">
+                <string>Solution:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="lblPositionText2">
+               <property name="text">
+                <string>E:</string>
+               </property>
+              </widget>
+             </item>
              <item row="3" column="1" colspan="2">
               <widget class="QLabel" name="lblPosition3">
                <property name="text">
                 <string>0.000 m</string>
-               </property>
-              </widget>
-             </item>
-             <item row="4" column="0" colspan="3">
-              <widget class="QLabel" name="lblStd">
-               <property name="text">
-                <string>E: 0.000 N: 0.000 U: 0.000 m</string>
                </property>
               </widget>
              </item>
@@ -503,7 +503,7 @@
            </widget>
           </item>
           <item row="3" column="0" colspan="4">
-           <widget class="QWidget" name="Panel213" native="true">
+           <widget class="QWidget" name="panelSolutionPosition" native="true">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -563,10 +563,7 @@
            </widget>
           </item>
           <item row="0" column="0" colspan="2">
-           <widget class="QLabel" name="Plabel0">
-            <property name="toolTip">
-             <string/>
-            </property>
+           <widget class="QLabel" name="lblLatLonHeight">
             <property name="text">
              <string>Lat/Lon/Height</string>
             </property>
@@ -1049,64 +1046,40 @@
        </widget>
       </item>
       <item>
-       <widget class="QWidget" name="Panel33" native="true">
-        <property name="text" stdset="0">
+       <widget class="QPushButton" name="btnTaskTray">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Ignored">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="toolTip">
+         <string>Move to task tray</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../icon/resources.qrc">
+          <normaloff>:/buttons/tray</normaloff>:/buttons/tray</iconset>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btnAbout">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Ignored">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="toolTip">
+         <string>About</string>
+        </property>
+        <property name="text">
          <string/>
         </property>
-        <layout class="QHBoxLayout" name="horizontalLayout_3">
-         <property name="spacing">
-          <number>0</number>
-         </property>
-         <property name="leftMargin">
-          <number>0</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
-          <number>0</number>
-         </property>
-         <item>
-          <widget class="QPushButton" name="btnTaskTray">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Ignored">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="toolTip">
-            <string>Move to task tray</string>
-           </property>
-           <property name="icon">
-            <iconset resource="../icon/resources.qrc">
-             <normaloff>:/buttons/tray</normaloff>:/buttons/tray</iconset>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="btnAbout">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Ignored">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="toolTip">
-            <string>About</string>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="icon">
-            <iconset resource="../icon/resources.qrc">
-             <normaloff>:/icons/rtknavi</normaloff>:/icons/rtknavi</iconset>
-           </property>
-          </widget>
-         </item>
-        </layout>
+        <property name="icon">
+         <iconset resource="../icon/resources.qrc">
+          <normaloff>:/icons/rtknavi</normaloff>:/icons/rtknavi</iconset>
+        </property>
        </widget>
       </item>
      </layout>
@@ -1221,6 +1194,39 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>btnPanel</tabstop>
+  <tabstop>btnTimeSys</tabstop>
+  <tabstop>btnInputStream</tabstop>
+  <tabstop>btnOutputStream</tabstop>
+  <tabstop>btnLogStream</tabstop>
+  <tabstop>btnSolutionType2</tabstop>
+  <tabstop>btnSave</tabstop>
+  <tabstop>btnMonitor</tabstop>
+  <tabstop>btnStart</tabstop>
+  <tabstop>btnStop</tabstop>
+  <tabstop>btnMark</tabstop>
+  <tabstop>btnPlot</tabstop>
+  <tabstop>btnOptions</tabstop>
+  <tabstop>btnExit</tabstop>
+  <tabstop>btnSolutionType</tabstop>
+  <tabstop>btnExpand1</tabstop>
+  <tabstop>btnShrink1</tabstop>
+  <tabstop>btnFrequencyType1</tabstop>
+  <tabstop>btnPlotType1</tabstop>
+  <tabstop>btnExpand2</tabstop>
+  <tabstop>btnShrink2</tabstop>
+  <tabstop>btnFrequencyType2</tabstop>
+  <tabstop>btnPlotType2</tabstop>
+  <tabstop>btnExpand3</tabstop>
+  <tabstop>btnShrink3</tabstop>
+  <tabstop>btnFrequencyType3</tabstop>
+  <tabstop>btnPlotType3</tabstop>
+  <tabstop>btnExpand4</tabstop>
+  <tabstop>btnShrink4</tabstop>
+  <tabstop>btnFrequencyType4</tabstop>
+  <tabstop>btnPlotType4</tabstop>
+ </tabstops>
  <resources>
   <include location="../icon/resources.qrc"/>
  </resources>

@@ -421,7 +421,7 @@ void OptDialog::getOptions(void)
     sBGlonassHwBias->setValue(mainForm->glonassHwBias);
     sBOutageCountResetAmbiguity->setValue(mainForm->outputCntResetAmbiguity);
     sBFixCountHoldAmbiguity->setValue(mainForm->fixCntHoldAmbiguity);
-    sBLockCountFixAmbiguity->setValue(mainForm->LockCntFixAmbiguity);
+    sBLockCountFixAmbiguity->setValue(mainForm->lockCntFixAmbiguity);
     sBElevationMaskAR->setValue(mainForm->elevationMaskAR);
     sBElevationMaskHold->setValue(mainForm->elevationMaskHold);
     sBMaxAgeDifferences->setValue(mainForm->maxAgeDiff);
@@ -539,7 +539,7 @@ void OptDialog::setOptions(void)
     mainForm->validThresARMin = sBValidThresARMin->value();
     mainForm->validThresARMax = sBValidThresARMax->value();
     mainForm->outputCntResetAmbiguity = sBOutageCountResetAmbiguity->value();
-    mainForm->LockCntFixAmbiguity = sBLockCountFixAmbiguity->value();
+    mainForm->lockCntFixAmbiguity = sBLockCountFixAmbiguity->value();
     mainForm->fixCntHoldAmbiguity = sBFixCountHoldAmbiguity->value();
     mainForm->elevationMaskAR = sBElevationMaskAR->value();
     mainForm->elevationMaskHold = sBElevationMaskHold->value();

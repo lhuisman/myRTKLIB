@@ -93,7 +93,7 @@ QString SerialOptDialog::getPath()
     return path;
 }
 //---------------------------------------------------------------------------
-void SerialOptDialog::updatePortList(void)
+void SerialOptDialog::updatePortList()
 {
     ui->cBPort->clear();
     QList<QSerialPortInfo> ports = QSerialPortInfo::availablePorts();
@@ -102,7 +102,7 @@ void SerialOptDialog::updatePortList(void)
         ui->cBPort->addItem(ports.at(i).portName());
 }
 //---------------------------------------------------------------------------
-void SerialOptDialog::updateEnable(void)
+void SerialOptDialog::updateEnable()
 {
     ui->cBTcpPort->setEnabled(ui->cBOutputTcpPort->isChecked());
 }

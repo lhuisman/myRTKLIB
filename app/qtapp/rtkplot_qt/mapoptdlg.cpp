@@ -11,34 +11,35 @@
 #include "plotmain.h"
 #include "mapoptdlg.h"
 
-extern Plot *plot;
+#include "ui_mapoptdlg.h"
+
 
 #define INC_LATLON  0.000001
 #define INC_SCALE   0.0001
 
 //---------------------------------------------------------------------------
-MapOptDialog::MapOptDialog(QWidget* parent)
-    : QDialog(parent)
+MapOptDialog::MapOptDialog( Plot *plt, QWidget* parent)
+    : QDialog(parent), ui(new Ui::MapAreaDialog), plot(plt)
 {
-    setupUi(this);
-    connect(btnSaveTag, &QPushButton::clicked, this, &MapOptDialog::saveTag);
-    connect(buttonBox, &QDialogButtonBox::rejected, this, &MapOptDialog::close);
-    connect(cBScaleEqual, &QCheckBox::clicked, this, &MapOptDialog::scaleEqualChanged);
-    connect(btnUpdate, &QPushButton::clicked, this, &MapOptDialog::updateMap);
+    ui->setupUi(this);
+
+    connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &MapOptDialog::close);
+    connect(ui->btnSaveTag, &QPushButton::clicked, this, &MapOptDialog::saveTag);
+    connect(ui->btnUpdate, &QPushButton::clicked, this, &MapOptDialog::updateMap);
+    connect(ui->cBScaleEqual, &QCheckBox::clicked, this, &MapOptDialog::scaleEqualChanged);
 }
 //---------------------------------------------------------------------------
 void MapOptDialog::showEvent(QShowEvent* event)
 {
     if (event->spontaneous()) return;
 
-	updateField();
 	updateEnable();
 }
 //---------------------------------------------------------------------------
 void MapOptDialog::saveTag()
 {
-    if (plot->mapImageFile.isEmpty()) return;
-    QFileInfo fi(plot->mapImageFile);
+    if (plot->getMapImageFileName().isEmpty()) return;
+    QFileInfo fi(plot->getMapImageFileName());
     QString file = fi.absoluteDir().filePath(fi.baseName()) + ".tag";
 
     QFile fp(file);
@@ -47,12 +48,45 @@ void MapOptDialog::saveTag()
 	}
     QTextStream out(&fp);
     out << QString("%% map image tag file: rtkplot %1 %2\n\n").arg(VER_RTKLIB, PATCH_LEVEL);
-    out << QString("scalex  = %1\n").arg(plot->mapScaleX, 0, 'g', 6);
-    out << QString("scaley  = %1\n").arg(plot->mapScaleEqual ? plot->mapScaleX : plot->mapScaleY, 0, 'g', 6);
-    out << QString("scaleeq = %1\n").arg(plot->mapScaleEqual);
-    out << QString("lat     = %1\n").arg(plot->mapLatitude, 0, 'g', 9);
-    out << QString("lon     = %1\n").arg(plot->mapLongitude, 0, 'g', 9);
+    out << QString("scalex  = %1\n").arg(getMapScaleX(), 0, 'g', 6);
+    out << QString("scaley  = %1\n").arg(getMapScaleEqual() ? getMapScaleX() : getMapScaleY(), 0, 'g', 6);
+    out << QString("scaleeq = %1\n").arg(getMapScaleEqual());
+    out << QString("lat     = %1\n").arg(getMapLatitude(), 0, 'g', 9);
+    out << QString("lon     = %1\n").arg(getMapLongitude(), 0, 'g', 9);
 
+}
+// read map tag data --------------------------------------------------------
+void MapOptDialog::readMapTag(const QString &file)
+{
+    QFile fp(file + ".tag");
+    QByteArray buff;
+
+    trace(3, "readMapTag\n");
+
+    if (!(fp.open(QIODevice::ReadOnly))) return;
+
+    // set default values
+    ui->sBScaleX->setValue(1);
+    ui->sBScaleY->setValue(1);
+    ui->cBScaleEqual->setChecked(false);
+    ui->sBLatitude->setValue(0);
+    ui->sBLongitude->setValue(0);
+
+    // read tags
+    while (!fp.atEnd()) {
+        buff = fp.readLine();
+        if (buff.at(0) == '\0' || buff.at(0) == '%' || buff.at(0) == '#') continue;
+        QList<QByteArray> tokens = buff.split('=');
+        if (tokens.size() < 2) continue;
+
+        if (tokens.at(0) == "scalex") ui->sBScaleX->setValue(tokens.at(1).toDouble());
+        else if (tokens.at(0) == "scaley") ui->sBScaleY->setValue(tokens.at(1).toDouble());
+        else if (tokens.at(0) == "scaleeq") ui->cBScaleEqual->setChecked(tokens.at(1).toInt());
+        else if (tokens.at(0) == "lat") ui->sBLatitude->setValue(tokens.at(1).toDouble());
+        else if (tokens.at(0) == "lon") ui->sBLongitude->setValue(tokens.at(1).toDouble());
+    }
+
+    setWindowTitle(file);
 }
 //---------------------------------------------------------------------------
 void MapOptDialog::btnCenterClicked()
@@ -62,8 +96,8 @@ void MapOptDialog::btnCenterClicked()
 
 	ecef2pos(rr,pos);
 
-    sBLatitude->setValue(pos[0]*R2D);
-    sBLongitude->setValue(pos[1]*R2D);
+    ui->sBLatitude->setValue(pos[0]*R2D);
+    ui->sBLongitude->setValue(pos[1]*R2D);
 
 	updateMap();
 }
@@ -74,31 +108,53 @@ void MapOptDialog::scaleEqualChanged()
 	updateEnable();
 }
 //---------------------------------------------------------------------------
-void MapOptDialog::updateField()
-{
-    setWindowTitle(plot->mapImageFile);
-    sBMapSize1->setValue(plot->mapSize[0]);
-    sBMapSize2->setValue(plot->mapSize[1]);
-    sBScaleX->setValue(plot->mapScaleX);
-    sBScaleY->setValue(plot->mapScaleY);
-    sBLatitude->setValue(plot->mapLatitude);
-    sBLongitude->setValue(plot->mapLongitude);
-    cBScaleEqual->setChecked(plot->mapScaleEqual);
-}
-//---------------------------------------------------------------------------
 void MapOptDialog::updateMap()
 {
-    plot->mapScaleX=sBScaleX->value();
-    plot->mapScaleY=sBScaleY->value();
-    plot->mapLatitude=sBLatitude->value();
-    plot->mapLongitude=sBLongitude->value();
-    plot->mapScaleEqual=cBScaleEqual->isChecked();
     plot->updatePlot();
 }
 //---------------------------------------------------------------------------
 void MapOptDialog::updateEnable()
 {
-    sBScaleY->setEnabled(!cBScaleEqual->isChecked());
-} 
+    ui->sBScaleY->setEnabled(!ui->cBScaleEqual->isChecked());
+}
 //---------------------------------------------------------------------------
-
+void MapOptDialog::setMapSize(const QImage &mapImage)
+{
+    ui->sBMapSize1->setValue(mapImage.width());
+    ui->sBMapSize2->setValue(mapImage.height());
+}
+//---------------------------------------------------------------------------
+int MapOptDialog::getMapSize(int dim)
+{
+    if (dim == 0)
+        return ui->sBMapSize1->value();
+    else if (dim == 1)
+        return ui->sBMapSize2->value();
+    return 0;
+}
+//---------------------------------------------------------------------------
+bool MapOptDialog::getMapScaleEqual()
+{
+    return ui->cBScaleEqual->isChecked();
+}
+//---------------------------------------------------------------------------
+double MapOptDialog::getMapScaleX()
+{
+    return ui->sBScaleX->value();
+}
+//---------------------------------------------------------------------------
+double MapOptDialog::getMapScaleY()
+{
+    return ui->sBScaleY->value();
+}
+//---------------------------------------------------------------------------
+double MapOptDialog::getMapLatitude()
+{
+    return ui->sBLatitude->value();
+}
+//---------------------------------------------------------------------------
+double MapOptDialog::getMapLongitude()
+{
+    return ui->sBLongitude->value();
+}
+//---------------------------------------------------------------------------

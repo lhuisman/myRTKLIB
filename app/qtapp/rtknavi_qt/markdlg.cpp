@@ -6,108 +6,108 @@
 #include "keydlg.h"
 #include "markdlg.h"
 #include "refdlg.h"
-#include "naviopt.h"
-#include "navimain.h"
 
-extern rtksvr_t rtksvr;
+#include "ui_markdlg.h"
 
 //---------------------------------------------------------------------------
-QMarkDialog::QMarkDialog(QWidget *parent)
-    : QDialog(parent)
+MarkDialog::MarkDialog(QWidget *parent)
+    : QDialog(parent), ui(new Ui::MarkDialog)
 {
-    setupUi(this);
+    ui->setupUi(this);
 
     nMark = 1;
-    lblMarker->setText(QString("%%r=%1").arg(nMark, 3, 10, QLatin1Char('0')));
+    ui->lblMarker->setText(QString("%%r=%1").arg(nMark, 3, 10, QLatin1Char('0')));
 
-    connect(btnKeyDlg, &QPushButton::clicked, this, &QMarkDialog::showKeyDialog);
-    connect(buttonBox, &QDialogButtonBox::accepted, this, &QMarkDialog::saveClose);
-    connect(buttonBox, &QDialogButtonBox::rejected, this, &QMarkDialog::close);
-    connect(cBMarkerNameC, &QCheckBox::clicked, this, &QMarkDialog::updateEnable);
-    connect(rBGo, &QRadioButton::toggled, this, &QMarkDialog::updateEnable);
-    connect(rBStop, &QRadioButton::toggled, this, &QMarkDialog::updateEnable);
-    connect(rBFix, &QRadioButton::toggled, this, &QMarkDialog::updateEnable);
-    connect(btnPosition, &QPushButton::clicked, this, &QMarkDialog::btnPositionClicked);
+    connect(ui->btnKeyDlg, &QPushButton::clicked, this, &MarkDialog::showKeyDialog);
+    connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &MarkDialog::saveClose);
+    connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &MarkDialog::close);
+    connect(ui->btnPosition, &QPushButton::clicked, this, &MarkDialog::btnPositionClicked);
+    connect(ui->cBMarkerNameC, &QCheckBox::clicked, this, &MarkDialog::updateEnable);
+    connect(ui->rBGo, &QRadioButton::toggled, this, &MarkDialog::updateEnable);
+    connect(ui->rBStop, &QRadioButton::toggled, this, &MarkDialog::updateEnable);
+    connect(ui->rBFix, &QRadioButton::toggled, this, &MarkDialog::updateEnable);
 
     keyDialog = new KeyDialog(this);
 }
 //---------------------------------------------------------------------------
-void QMarkDialog::saveClose()
+void MarkDialog::saveClose()
 {
-    if (cBMarkerNameC->isChecked()) {
-        rtksvrmark(&rtksvr, qPrintable(getName()), qPrintable(getComment()));
+    if (ui->cBMarkerNameC->isChecked()) {
         nMark++;
-        lblMarker->setText(QString("%%r=%1").arg(nMark, 3, 10, QLatin1Char('0')));
+        ui->lblMarker->setText(QString("%%r=%1").arg(nMark, 3, 10, QLatin1Char('0')));
     }
+
+    accept();
 }
 //---------------------------------------------------------------------------
-void QMarkDialog::updateEnable(void)
+void MarkDialog::updateEnable()
 {
     int positionMode = getPositionMode();
     bool ena = positionMode == PMODE_STATIC || positionMode == PMODE_PPP_STATIC ||
                positionMode == PMODE_KINEMA || positionMode == PMODE_PPP_KINEMA ||
                positionMode == PMODE_FIXED || positionMode == PMODE_PPP_FIXED;
 
-    rBStop->setEnabled(ena);
-    rBGo->setEnabled(ena);
-    rBFix->setEnabled(ena);
-    gBPositionMode->setEnabled(ena);
-    sBLatitude->setEnabled(rBFix->isChecked());
-    sBLongitude->setEnabled(rBFix->isChecked());
-    sBHeight->setEnabled(rBFix->isChecked());
-    btnPosition->setEnabled(rBFix->isChecked());
-    lblPosition->setEnabled(rBFix->isChecked());
-    cBMarkerName->setEnabled(cBMarkerNameC->isChecked());
+    ui->rBStop->setEnabled(ena);
+    ui->rBGo->setEnabled(ena);
+    ui->rBFix->setEnabled(ena);
+    ui->gBPositionMode->setEnabled(ena);
+    ui->sBLatitude->setEnabled(ui->rBFix->isChecked());
+    ui->sBLongitude->setEnabled(ui->rBFix->isChecked());
+    ui->sBHeight->setEnabled(ui->rBFix->isChecked());
+    ui->btnPosition->setEnabled(ui->rBFix->isChecked());
+    ui->lblPosition->setEnabled(ui->rBFix->isChecked());
+    ui->cBMarkerName->setEnabled(ui->cBMarkerNameC->isChecked());
 }
 //---------------------------------------------------------------------------
-void QMarkDialog::showKeyDialog()
+void MarkDialog::showKeyDialog()
 {
     keyDialog->setWindowTitle(tr("Key Replacement in Marker Name"));
     keyDialog->show();
 }
 //---------------------------------------------------------------------------
-void QMarkDialog::btnPositionClicked()
+void MarkDialog::btnPositionClicked()
 {
     RefDialog *refDialog =  new RefDialog(this);
 
-    refDialog->setRoverPosition(sBLatitude->value(), sBLongitude->value(), sBHeight->value());
+    refDialog->setRoverPosition(ui->sBLatitude->value(), ui->sBLongitude->value(), ui->sBHeight->value());
     refDialog->stationPositionFile = stationPositionFileF;
 
     if (refDialog->result() != QDialog::Accepted) return;
 
-    sBLatitude->setValue(refDialog->getPosition()[0]);
-    sBLongitude->setValue(refDialog->getPosition()[1]);
-    sBHeight->setValue(refDialog->getPosition()[2]);
+    ui->sBLatitude->setValue(refDialog->getPosition()[0]);
+    ui->sBLongitude->setValue(refDialog->getPosition()[1]);
+    ui->sBHeight->setValue(refDialog->getPosition()[2]);
 }
 //---------------------------------------------------------------------------
-void QMarkDialog::setPositionMode(int mode)
+void MarkDialog::setPositionMode(int mode)
 {
     positionMode = mode;
 
     if (positionMode == PMODE_STATIC || positionMode == PMODE_PPP_STATIC) {
-        rBStop->setChecked(true);
+        ui->rBStop->setChecked(true);
     } else if (positionMode == PMODE_KINEMA || positionMode == PMODE_PPP_KINEMA) {
-        rBGo->setChecked(true);
+        ui->rBGo->setChecked(true);
     } else {
-        rBStop->setChecked(false);
-        rBGo->setChecked(false);
+        ui->rBStop->setChecked(false);
+        ui->rBGo->setChecked(false);
     }
+
     updateEnable();
 }
 //---------------------------------------------------------------------------
-int QMarkDialog::getPositionMode()
+int MarkDialog::getPositionMode()
 {
-    if (rBGo->isChecked()) {
+    if (ui->rBGo->isChecked()) {
         if (positionMode == PMODE_STATIC || positionMode == PMODE_FIXED)
             positionMode = PMODE_KINEMA;
         else if (positionMode == PMODE_PPP_STATIC || positionMode == PMODE_PPP_FIXED)
             positionMode = PMODE_PPP_KINEMA;
-    } else if (rBStop->isChecked()) {
+    } else if (ui->rBStop->isChecked()) {
         if (positionMode == PMODE_KINEMA || positionMode == PMODE_FIXED)
             positionMode = PMODE_STATIC;
         else if (positionMode == PMODE_PPP_KINEMA || positionMode == PMODE_PPP_FIXED)
             positionMode = PMODE_PPP_STATIC;
-    } else if (rBFix->isChecked()) {
+    } else if (ui->rBFix->isChecked()) {
         if (positionMode == PMODE_KINEMA || positionMode == PMODE_STATIC) {
             positionMode = PMODE_FIXED;
         }
@@ -118,36 +118,39 @@ int QMarkDialog::getPositionMode()
     return positionMode;
 }
 //---------------------------------------------------------------------------
-void QMarkDialog::setName(const QString &name)
+void MarkDialog::setName(const QString &name)
 {
-    cBMarkerName->setCurrentText(name);
+    ui->cBMarkerName->setCurrentText(name);
 }
 //---------------------------------------------------------------------------
-QString QMarkDialog::getName()
+QString MarkDialog::getName()
 {
-    QString mrkr = cBMarkerName->currentText();
+    QString mrkr = ui->cBMarkerName->currentText();
     char str2[1024];
+
+    if (!ui->cBMarkerNameC->isChecked())
+        return "";
 
     reppath(qPrintable(mrkr), str2, utc2gpst(timeget()), qPrintable(QString("%1").arg(nMark, 3, 10, QChar('0'))), "");
     return mrkr;
 }
 //---------------------------------------------------------------------------
-void QMarkDialog::setComment(const QString &comment)
+void MarkDialog::setComment(const QString &comment)
 {
-    lEMarkerComment->setText(comment);
+    ui->lEMarkerComment->setText(comment);
 }
 //---------------------------------------------------------------------------
-QString QMarkDialog::getComment()
+QString MarkDialog::getComment()
 {
-    return lEMarkerComment->text();
+    return ui->lEMarkerComment->text();
 }
 //---------------------------------------------------------------------------
-void QMarkDialog::setStationPositionFile(const QString &file)
+void MarkDialog::setStationPositionFile(const QString &file)
 {
     stationPositionFileF = file;
 }
 //---------------------------------------------------------------------------
-QString QMarkDialog::getStationPositionFile()
+QString MarkDialog::getStationPositionFile()
 {
     return stationPositionFileF;
 }

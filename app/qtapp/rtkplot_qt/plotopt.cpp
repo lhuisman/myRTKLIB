@@ -15,13 +15,16 @@
 #include <QDebug>
 #include <QFileSystemModel>
 #include <QCompleter>
+#include <QAction>
 
 //---------------------------------------------------------------------------
+#include "ui_plotopt.h"
+
 //---------------------------------------------------------------------------
 PlotOptDialog::PlotOptDialog(QWidget *parent)
-    : QDialog(parent)
+    : QDialog(parent), ui(new Ui::PlotOptDialog)
 {
-    setupUi(this);
+    ui->setupUi(this);
 
     refDialog = new RefDialog(this, 1);
 
@@ -29,234 +32,53 @@ PlotOptDialog::PlotOptDialog(QWidget *parent)
     QFileSystemModel *fileModel = new QFileSystemModel(fileCompleter);
     fileModel->setRootPath("");
     fileCompleter->setModel(fileModel);
-    lETLEFile->setCompleter(fileCompleter);
-    lETLESatelliteFile->setCompleter(fileCompleter);
-    lEShapeFile->setCompleter(fileCompleter);
+    ui->lETLEFile->setCompleter(fileCompleter);
+    ui->lETLESatelliteFile->setCompleter(fileCompleter);
+    ui->lEShapeFile->setCompleter(fileCompleter);
 
-    QAction * acTLEFileOpen = lETLEFile->addAction(QIcon(":/buttons/folder"), QLineEdit::TrailingPosition);
+    QAction * acTLEFileOpen = ui->lETLEFile->addAction(QIcon(":/buttons/folder"), QLineEdit::TrailingPosition);
     acTLEFileOpen->setToolTip(tr("Select TLE file"));
-    QAction * acTLEFileView = lETLEFile->addAction(QIcon(":/buttons/doc"), QLineEdit::TrailingPosition);
+    QAction * acTLEFileView = ui->lETLEFile->addAction(QIcon(":/buttons/doc"), QLineEdit::TrailingPosition);
     acTLEFileView->setToolTip(tr("View TLE file"));
 
-    QAction * acTLESatelliteFileOpen = lETLESatelliteFile->addAction(QIcon(":/buttons/folder"), QLineEdit::TrailingPosition);
+    QAction * acTLESatelliteFileOpen = ui->lETLESatelliteFile->addAction(QIcon(":/buttons/folder"), QLineEdit::TrailingPosition);
     acTLESatelliteFileOpen->setToolTip(tr("Select TLE satellite file"));
-    QAction * acTLESatelliteFileView = lETLESatelliteFile->addAction(QIcon(":/buttons/doc"), QLineEdit::TrailingPosition);
+    QAction * acTLESatelliteFileView = ui->lETLESatelliteFile->addAction(QIcon(":/buttons/doc"), QLineEdit::TrailingPosition);
     acTLESatelliteFileView->setToolTip(tr("View TLE satellite file"));
 
-    QAction * acShapeFileOpen = lEShapeFile->addAction(QIcon(":/buttons/folder"), QLineEdit::TrailingPosition);
+    QAction * acShapeFileOpen = ui->lEShapeFile->addAction(QIcon(":/buttons/folder"), QLineEdit::TrailingPosition);
     acShapeFileOpen->setToolTip(tr("Select shape file"));
 
-    connect(btnCancel, &QPushButton::clicked, this, &PlotOptDialog::reject);
-    connect(btnColor1, &QPushButton::clicked, this, &PlotOptDialog::color1Select);
-    connect(btnColor2, &QPushButton::clicked, this, &PlotOptDialog::color2Select);
-    connect(btnColor3, &QPushButton::clicked, this, &PlotOptDialog::color3Select);
-    connect(btnColor4, &QPushButton::clicked, this, &PlotOptDialog::color4Select);
-    connect(btnFont, &QPushButton::clicked, this, &PlotOptDialog::fontSelect);
-    connect(btnOK, &QPushButton::clicked, this, &PlotOptDialog::btnOKClicked);
-    connect(btnReferencePosition, &QPushButton::clicked, this, &PlotOptDialog::referencePositionSelect);
+
+    connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &PlotOptDialog::accept);
+    connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &PlotOptDialog::reject);
+    connect(ui->btnColor1, &QPushButton::clicked, this, &PlotOptDialog::color1Select);
+    connect(ui->btnColor2, &QPushButton::clicked, this, &PlotOptDialog::color2Select);
+    connect(ui->btnColor3, &QPushButton::clicked, this, &PlotOptDialog::color3Select);
+    connect(ui->btnColor4, &QPushButton::clicked, this, &PlotOptDialog::color4Select);
+    connect(ui->btnFont, &QPushButton::clicked, this, &PlotOptDialog::fontSelect);
+    connect(ui->btnReferencePosition, &QPushButton::clicked, this, &PlotOptDialog::referencePositionSelect);
     connect(acTLEFileOpen, &QAction::triggered, this, &PlotOptDialog::tleFileOpen);
     connect(acTLEFileView, &QAction::triggered, this, &PlotOptDialog::tleFileView);
     connect(acTLESatelliteFileOpen, &QAction::triggered, this, &PlotOptDialog::tleSatelliteFileOpen);
     connect(acTLESatelliteFileView, &QAction::triggered, this, &PlotOptDialog::tleSatelliteFileView);
     connect(acShapeFileOpen, &QAction::triggered, this, &PlotOptDialog::shapeFileOpen);
-    connect(cBOrigin, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &PlotOptDialog::updateEnable);
-    connect(cBAutoScale, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &PlotOptDialog::updateEnable);
-    connect(cBReceiverPosition, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &PlotOptDialog::updateEnable);
-    connect(tBMColor1, &QToolButton::clicked, this, &PlotOptDialog::markerColorSelect);
-    connect(tBMColor2, &QToolButton::clicked, this, &PlotOptDialog::markerColorSelect);
-    connect(tBMColor3, &QToolButton::clicked, this, &PlotOptDialog::markerColorSelect);
-    connect(tBMColor4, &QToolButton::clicked, this, &PlotOptDialog::markerColorSelect);
-    connect(tBMColor5, &QToolButton::clicked, this, &PlotOptDialog::markerColorSelect);
-    connect(tBMColor6, &QToolButton::clicked, this, &PlotOptDialog::markerColorSelect);
-    connect(tBMColor7, &QToolButton::clicked, this, &PlotOptDialog::markerColorSelect);
-    connect(tBMColor8, &QToolButton::clicked, this, &PlotOptDialog::markerColorSelect);
-    connect(tBMColor9, &QToolButton::clicked, this, &PlotOptDialog::markerColorSelect);
-    connect(tBMColor10, &QToolButton::clicked, this, &PlotOptDialog::markerColorSelect);
-    connect(tBMColor11, &QToolButton::clicked, this, &PlotOptDialog::markerColorSelect);
-    connect(tBMColor12, &QToolButton::clicked, this, &PlotOptDialog::markerColorSelect);
-    connect(cBTimeSync, &QCheckBox::clicked, this, &PlotOptDialog::updateEnable);
-}
-//---------------------------------------------------------------------------
-void PlotOptDialog::showEvent(QShowEvent *event)
-{
-    int marks[] = { 1, 2, 3, 4, 5, 10, 15, 20 };
-
-    if (event->spontaneous()) return;
-
-    cBTimeFormat->setCurrentIndex(plot->timeFormat);
-    cBLatLonFormat->setCurrentIndex(plot->latLonFormat);
-    cBAutoScale->setCurrentIndex(plot->autoScale);
-    cBShowStats->setCurrentIndex(plot->showStats);
-    cBShowArrow->setCurrentIndex(plot->showArrow);
-    cBShowSlip->setCurrentIndex(plot->showSlip);
-    cBShowHalfC->setCurrentIndex(plot->showHalfC);
-    cBShowError->setCurrentIndex(plot->showError);
-    cBShowEphemeris->setCurrentIndex(plot->showEphemeris);
-    cBShowLabel->setCurrentIndex(plot->showLabel);
-    cBShowGridLabel->setCurrentIndex(plot->showGridLabel);
-    cBShowScale->setCurrentIndex(plot->showScale);
-    cBShowCompass->setCurrentIndex(plot->showCompass);
-    cBPlotStyle->setCurrentIndex(plot->plotStyle);
-
-    for (int i = 0; i < 8; i++)
-        if (marks[i] == plot->markSize) cBMarkSize->setCurrentIndex(i);
-
-    for (int i = 0; i < 8; i++)
-        for (int j = 0; j < 2; j++)
-            markerColor[j][i] = plot->markerColor[j][i];
-
-    for (int i = 0; i < 4; i++)
-        cColor[i] = plot->cColor[i];
-
-    tBMColor1->setStyleSheet(QString("background-color: %1;").arg(color2String(plot->markerColor[0][1])));
-    tBMColor2->setStyleSheet(QString("background-color: %1;").arg(color2String(plot->markerColor[0][2])));
-    tBMColor3->setStyleSheet(QString("background-color: %1;").arg(color2String(plot->markerColor[0][3])));
-    tBMColor4->setStyleSheet(QString("background-color: %1;").arg(color2String(plot->markerColor[0][4])));
-    tBMColor5->setStyleSheet(QString("background-color: %1;").arg(color2String(plot->markerColor[0][5])));
-    tBMColor6->setStyleSheet(QString("background-color: %1;").arg(color2String(plot->markerColor[0][6])));
-    tBMColor7->setStyleSheet(QString("background-color: %1;").arg(color2String(plot->markerColor[1][1])));
-    tBMColor8->setStyleSheet(QString("background-color: %1;").arg(color2String(plot->markerColor[1][2])));
-    tBMColor9->setStyleSheet(QString("background-color: %1;").arg(color2String(plot->markerColor[1][3])));
-    tBMColor10->setStyleSheet(QString("background-color: %1;").arg(color2String(plot->markerColor[1][4])));
-    tBMColor11->setStyleSheet(QString("background-color: %1;").arg(color2String(plot->markerColor[1][5])));
-    tBMColor12->setStyleSheet(QString("background-color: %1;").arg(color2String(plot->markerColor[1][6])));
-    lblColor1->setStyleSheet(QString("QLabel {background-color: %1;}").arg(color2String(plot->cColor[0])));
-    lblColor2->setStyleSheet(QString("QLabel {background-color: %1;}").arg(color2String(plot->cColor[1])));
-    lblColor3->setStyleSheet(QString("QLabel {background-color: %1;}").arg(color2String(plot->cColor[2])));
-    lblColor4->setStyleSheet(QString("QLabel {background-color: %1;}").arg(color2String(plot->cColor[3])));
-
-    fontOption.setFamily(plot->fontName);
-    fontOption.setPixelSize(plot->fontSize);
-    updateFont();
-
-    cBElevationMask->setCurrentText(QString::number(plot->elevationMask));
-    cBMaxDop->setCurrentText(QString::number(plot->maxDop));
-    cBMaxMP->setCurrentText(QString::number(plot->maxMP));
-    cBOrigin->setCurrentIndex(plot->origin);
-    cBReceiverPosition->setCurrentIndex(plot->receiverPosition);
-    sBReferencePosition1->setValue(plot->ooPosition[0] * R2D);
-    sBReferencePosition2->setValue(plot->ooPosition[1] * R2D);
-    sBReferencePosition3->setValue(plot->ooPosition[2]);
-    cBNavSys1->setChecked(plot->navSys & SYS_GPS);
-    cBNavSys2->setChecked(plot->navSys & SYS_GLO);
-    cBNavSys3->setChecked(plot->navSys & SYS_GAL);
-    cBNavSys4->setChecked(plot->navSys & SYS_QZS);
-    cBNavSys5->setChecked(plot->navSys & SYS_SBS);
-    cBNavSys6->setChecked(plot->navSys & SYS_CMP);
-    cBNavSys7->setChecked(plot->navSys & SYS_IRN);
-    cBAnimationCycle->setCurrentText(QString::number(plot->animationCycle));
-    sBRefreshCycle->setValue(plot->refreshCycle);
-    cBHideLowSatellites->setCurrentIndex(plot->hideLowSatellites);
-    cBElevationMask->setCurrentText(QString::number(plot->elevationMask));
-    lEExcludedSatellites->setText(plot->excludedSatellites);
-    sBBufferSize->setValue(plot->rtBufferSize);
-    cBTimeSync->setChecked(plot->timeSyncOut);
-    sBTimeSync->setValue(plot->timeSyncPort);
-    lERinexOptions->setText(plot->rinexOptions);
-    lEShapeFile->setText(plot->shapeFile);
-    lETLEFile->setText(plot->tleFile);
-    lETLESatelliteFile->setText(plot->tleSatelliteFile);
-
-    for (int i = 0; i < cBYRange->count(); i++) {
-            double range;
-            bool ok;
-            QString unit;
-
-            QString s = cBYRange->itemText(i);
-            QStringList tokens = s.split(' ');
-
-            if (tokens.length() != 2) continue;
-
-            range = tokens.at(0).toInt(&ok);
-            if (!ok) continue;
-
-            unit = tokens.at(1);
-            if (unit == "cm") range *= 0.01;
-            else if (unit == "km") range *= 1000.0;
-
-            if (range == plot->yRange) {
-                cBYRange->setCurrentIndex(i);
-                break;
-            }
-        }
-
-    updateEnable();
-}
-//---------------------------------------------------------------------------
-void PlotOptDialog::btnOKClicked()
-{
-    int marks[] = { 1, 2, 3, 4, 5, 10, 15, 20 };
-
-    plot->timeFormat = cBTimeFormat->currentIndex();
-    plot->latLonFormat = cBLatLonFormat->currentIndex();
-    plot->autoScale = cBAutoScale->currentIndex();
-    plot->showStats = cBShowStats->currentIndex();
-    plot->showArrow = cBShowArrow->currentIndex();
-    plot->showSlip = cBShowSlip->currentIndex();
-    plot->showHalfC = cBShowHalfC->currentIndex();
-    plot->showError = cBShowError->currentIndex();
-    plot->showEphemeris = cBShowEphemeris->currentIndex();
-    plot->showLabel = cBShowLabel->currentIndex();
-    plot->showGridLabel = cBShowGridLabel->currentIndex();
-    plot->showScale = cBShowScale->currentIndex();
-    plot->showCompass = cBShowCompass->currentIndex();
-    plot->plotStyle = cBPlotStyle->currentIndex();
-    plot->markSize = marks[cBMarkSize->currentIndex()];
-
-    for (int i = 0; i < 8; i++)
-        for (int j = 0; j < 2; j++)
-            plot->markerColor[j][i] = markerColor[j][i];
-
-    for (int i = 0; i < 4; i++)
-        plot->cColor[i] = cColor[i];
-
-    plot->fontName=fontOption.family();
-    plot->fontSize=fontOption.pixelSize();
-    plot->font = fontOption;
-
-    plot->elevationMask = cBElevationMask->currentText().toDouble();
-    plot->maxDop = cBMaxDop->currentText().toDouble();
-    plot->maxMP = cBMaxMP->currentText().toDouble();
-    plot->yRange = cBYRange->currentText().toDouble();
-    plot->origin = cBOrigin->currentIndex();
-    plot->receiverPosition = cBReceiverPosition->currentIndex();
-    plot->ooPosition[0] = sBReferencePosition1->value() * D2R;
-    plot->ooPosition[1] = sBReferencePosition2->value() * D2R;
-    plot->ooPosition[2] = sBReferencePosition3->value();
-    plot->navSys = (cBNavSys1->isChecked() ? SYS_GPS : 0) |
-               (cBNavSys2->isChecked() ? SYS_GLO : 0) |
-               (cBNavSys3->isChecked() ? SYS_GAL : 0) |
-               (cBNavSys4->isChecked() ? SYS_QZS : 0) |
-               (cBNavSys5->isChecked() ? SYS_SBS : 0) |
-               (cBNavSys6->isChecked() ? SYS_CMP : 0) |
-               (cBNavSys7->isChecked() ? SYS_IRN : 0);
-    plot->animationCycle = cBAnimationCycle->currentText().toInt();
-    plot->refreshCycle = sBRefreshCycle->value();
-    plot->hideLowSatellites = cBHideLowSatellites->currentIndex();
-    plot->elevationMaskEnabled = cBElevationMask->currentIndex();
-    plot->rtBufferSize = sBBufferSize->value();
-    plot->timeSyncOut = cBTimeSync->isChecked();
-    plot->timeSyncPort = sBTimeSync->value();
-    plot->excludedSatellites = lEExcludedSatellites->text();
-    plot->rinexOptions = lERinexOptions->text();
-    plot->shapeFile = lEShapeFile->text();
-    plot->tleFile = lETLEFile->text();
-    plot->tleSatelliteFile = lETLESatelliteFile->text();
-
-    QStringList tokens = cBYRange->currentText().split(' ');
-    if (tokens.length() == 2) {
-        bool ok;
-        int range = tokens.at(0).toInt(&ok);
-        QString unit = tokens.at(1);
-
-        if (ok) {
-            if (unit == "cm") range *= 0.01;
-            else if (unit == "km") range *= 1000.0;
-            plot->yRange=range;
-        }
-    }
-
-    accept();
+    connect(ui->cBOrigin, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &PlotOptDialog::updateEnable);
+    connect(ui->cBAutoScale, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &PlotOptDialog::updateEnable);
+    connect(ui->cBReceiverPosition, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &PlotOptDialog::updateEnable);
+    connect(ui->tBMColor1, &QToolButton::clicked, this, &PlotOptDialog::markerColorSelect);
+    connect(ui->tBMColor2, &QToolButton::clicked, this, &PlotOptDialog::markerColorSelect);
+    connect(ui->tBMColor3, &QToolButton::clicked, this, &PlotOptDialog::markerColorSelect);
+    connect(ui->tBMColor4, &QToolButton::clicked, this, &PlotOptDialog::markerColorSelect);
+    connect(ui->tBMColor5, &QToolButton::clicked, this, &PlotOptDialog::markerColorSelect);
+    connect(ui->tBMColor6, &QToolButton::clicked, this, &PlotOptDialog::markerColorSelect);
+    connect(ui->tBMColor7, &QToolButton::clicked, this, &PlotOptDialog::markerColorSelect);
+    connect(ui->tBMColor8, &QToolButton::clicked, this, &PlotOptDialog::markerColorSelect);
+    connect(ui->tBMColor9, &QToolButton::clicked, this, &PlotOptDialog::markerColorSelect);
+    connect(ui->tBMColor10, &QToolButton::clicked, this, &PlotOptDialog::markerColorSelect);
+    connect(ui->tBMColor11, &QToolButton::clicked, this, &PlotOptDialog::markerColorSelect);
+    connect(ui->tBMColor12, &QToolButton::clicked, this, &PlotOptDialog::markerColorSelect);
+    connect(ui->cBTimeSync, &QCheckBox::clicked, this, &PlotOptDialog::updateEnable);
 }
 //---------------------------------------------------------------------------
 void PlotOptDialog::markerColorSelect()
@@ -268,18 +90,18 @@ void PlotOptDialog::markerColorSelect()
     QColorDialog dialog(this);
     QColor *current;
 
-    if (button == tBMColor1) current = &markerColor[0][1];
-    else if (button == tBMColor2) current = &markerColor[0][2];
-    else if (button == tBMColor3) current = &markerColor[0][3];
-    else if (button == tBMColor4) current = &markerColor[0][4];
-    else if (button == tBMColor5) current = &markerColor[0][5];
-    else if (button == tBMColor6) current = &markerColor[0][6];
-    else if (button == tBMColor7) current = &markerColor[1][1];
-    else if (button == tBMColor8) current = &markerColor[1][2];
-    else if (button == tBMColor9) current = &markerColor[1][3];
-    else if (button == tBMColor10) current = &markerColor[1][4];
-    else if (button == tBMColor11) current = &markerColor[1][5];
-    else if (button == tBMColor12) current = &markerColor[1][6];
+    if (button == ui->tBMColor1) current = &markerColor[0][1];
+    else if (button == ui->tBMColor2) current = &markerColor[0][2];
+    else if (button == ui->tBMColor3) current = &markerColor[0][3];
+    else if (button == ui->tBMColor4) current = &markerColor[0][4];
+    else if (button == ui->tBMColor5) current = &markerColor[0][5];
+    else if (button == ui->tBMColor6) current = &markerColor[0][6];
+    else if (button == ui->tBMColor7) current = &markerColor[1][1];
+    else if (button == ui->tBMColor8) current = &markerColor[1][2];
+    else if (button == ui->tBMColor9) current = &markerColor[1][3];
+    else if (button == ui->tBMColor10) current = &markerColor[1][4];
+    else if (button == ui->tBMColor11) current = &markerColor[1][5];
+    else if (button == ui->tBMColor12) current = &markerColor[1][6];
     else return;
     dialog.setCurrentColor(*current);
 
@@ -297,7 +119,7 @@ void PlotOptDialog::color1Select()
     dialog.setCurrentColor(cColor[0]);
     dialog.exec();
     if (dialog.result() != QDialog::Accepted) return;
-    lblColor1->setStyleSheet(QString("QLabel {background-color: %1;}").arg(color2String(dialog.currentColor())));
+    ui->lblColor1->setStyleSheet(QString("QLabel {background-color: %1;}").arg(color2String(dialog.currentColor())));
     cColor[0] = dialog.currentColor();
 }
 //---------------------------------------------------------------------------
@@ -308,7 +130,7 @@ void PlotOptDialog::color2Select()
     dialog.setCurrentColor(cColor[1]);
     dialog.exec();
     if (dialog.result() != QDialog::Accepted) return;
-    lblColor2->setStyleSheet(QString("QLabel {background-color: %1;}").arg(color2String(dialog.currentColor())));
+    ui->lblColor2->setStyleSheet(QString("QLabel {background-color: %1;}").arg(color2String(dialog.currentColor())));
     cColor[1] = dialog.currentColor();
 }
 //---------------------------------------------------------------------------
@@ -319,7 +141,7 @@ void PlotOptDialog::color3Select()
     dialog.setCurrentColor(cColor[2]);
     dialog.exec();
     if (dialog.result() != QDialog::Accepted) return;
-    lblColor3->setStyleSheet(QString("QLabel {background-color: %1;}").arg(color2String(dialog.currentColor())));
+    ui->lblColor3->setStyleSheet(QString("QLabel {background-color: %1;}").arg(color2String(dialog.currentColor())));
     cColor[2] = dialog.currentColor();
 }
 //---------------------------------------------------------------------------
@@ -330,7 +152,7 @@ void PlotOptDialog::color4Select()
     dialog.setCurrentColor(cColor[3]);
     dialog.exec();
     if (dialog.result() != QDialog::Accepted) return;
-    lblColor4->setStyleSheet(QString("QLabel {background-color: %1;}").arg(color2String(dialog.currentColor())));
+    ui->lblColor4->setStyleSheet(QString("QLabel {background-color: %1;}").arg(color2String(dialog.currentColor())));
     cColor[3] = dialog.currentColor();
 }
 //---------------------------------------------------------------------------
@@ -349,22 +171,22 @@ void PlotOptDialog::fontSelect()
 //---------------------------------------------------------------------------
 void PlotOptDialog::shapeFileOpen()
 {
-    lEShapeFile->setText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("Open"), lEShapeFile->text())));
+    ui->lEShapeFile->setText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("Open"), ui->lEShapeFile->text())));
 }
 //---------------------------------------------------------------------------
 void PlotOptDialog::tleFileOpen()
 {
-    lETLEFile->setText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("Open"), lETLEFile->text(), tr("Text Files (*.txt);;Position Files (*.pos *.snx);;All (*.*)"))));
+    ui->lETLEFile->setText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("Open"), ui->lETLEFile->text(), tr("Text Files (*.txt);;Position Files (*.pos *.snx);;All (*.*)"))));
 }
 //---------------------------------------------------------------------------
 void PlotOptDialog::tleSatelliteFileOpen()
 {
-    lETLESatelliteFile->setText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("Open"), lETLESatelliteFile->text(), tr("Text Files (*.txt);;Position Files (*.pos *.snx);;All (*.*)"))));
+    ui->lETLESatelliteFile->setText(QDir::toNativeSeparators(QFileDialog::getOpenFileName(this, tr("Open"), ui->lETLESatelliteFile->text(), tr("Text Files (*.txt);;Position Files (*.pos *.snx);;All (*.*)"))));
 }
 //---------------------------------------------------------------------------
 void PlotOptDialog::referencePositionSelect()
 {
-    refDialog->setRoverPosition(sBReferencePosition1->value(), sBReferencePosition2->value(), sBReferencePosition3->value());
+    refDialog->setRoverPosition(ui->sBReferencePosition1->value(), ui->sBReferencePosition2->value(), ui->sBReferencePosition3->value());
 
     refDialog->move(pos().x() + size().width() / 2 - refDialog->size().width() / 2,
             pos().y() + size().height() / 2 - refDialog->size().height() / 2);
@@ -372,31 +194,31 @@ void PlotOptDialog::referencePositionSelect()
     refDialog->exec();
     if (refDialog->result() != QDialog::Accepted) return;
 
-    sBReferencePosition1->setValue(refDialog->getPosition()[0]);
-    sBReferencePosition2->setValue(refDialog->getPosition()[1]);
-    sBReferencePosition3->setValue(refDialog->getPosition()[2]);
+    ui->sBReferencePosition1->setValue(refDialog->getPosition()[0]);
+    ui->sBReferencePosition2->setValue(refDialog->getPosition()[1]);
+    ui->sBReferencePosition3->setValue(refDialog->getPosition()[2]);
 }
 //---------------------------------------------------------------------------
-void PlotOptDialog::updateFont(void)
+void PlotOptDialog::updateFont()
 {
-    lblFontName->setFont(fontOption);
-    lblFontName->setText(fontOption.family() + " " + QString::number(fontOption.pointSize()) + " pt");
+    ui->lblFontName->setFont(fontOption);
+    ui->lblFontName->setText(fontOption.family() + " " + QString::number(fontOption.pointSize()) + " pt");
 }
 //---------------------------------------------------------------------------
-void PlotOptDialog::updateEnable(void)
+void PlotOptDialog::updateEnable()
 {
-    sBReferencePosition1->setEnabled(cBOrigin->currentIndex() == 5 || cBReceiverPosition->currentIndex() == 1);
-    sBReferencePosition2->setEnabled(cBOrigin->currentIndex() == 5 || cBReceiverPosition->currentIndex() == 1);
-    sBReferencePosition3->setEnabled(cBOrigin->currentIndex() == 5 || cBReceiverPosition->currentIndex() == 1);
-    lblReferencePosition->setEnabled(cBOrigin->currentIndex() == 5 || cBOrigin->currentIndex() == 6 || cBReceiverPosition->currentIndex() == 1);
-    btnReferencePosition->setEnabled(cBOrigin->currentIndex() == 5 || cBOrigin->currentIndex() == 6 || cBReceiverPosition->currentIndex() == 1);
-    sBTimeSync->setEnabled(cBTimeSync->isChecked());
+    ui->sBReferencePosition1->setEnabled(ui->cBOrigin->currentIndex() == 5 || ui->cBReceiverPosition->currentIndex() == 1);
+    ui->sBReferencePosition2->setEnabled(ui->cBOrigin->currentIndex() == 5 || ui->cBReceiverPosition->currentIndex() == 1);
+    ui->sBReferencePosition3->setEnabled(ui->cBOrigin->currentIndex() == 5 || ui->cBReceiverPosition->currentIndex() == 1);
+    ui->lblReferencePosition->setEnabled(ui->cBOrigin->currentIndex() == 5 || ui->cBOrigin->currentIndex() == 6 || ui->cBReceiverPosition->currentIndex() == 1);
+    ui->btnReferencePosition->setEnabled(ui->cBOrigin->currentIndex() == 5 || ui->cBOrigin->currentIndex() == 6 || ui->cBReceiverPosition->currentIndex() == 1);
+    ui->sBTimeSyncPort->setEnabled(ui->cBTimeSync->isChecked());
 }
 //---------------------------------------------------------------------------
 void PlotOptDialog::tleFileView()
 {
     TextViewer *viewer;
-    QString file = lETLEFile->text();
+    QString file = ui->lETLEFile->text();
 
     if (file == "") return;
     viewer = new TextViewer(this);
@@ -408,12 +230,429 @@ void PlotOptDialog::tleFileView()
 void PlotOptDialog::tleSatelliteFileView()
 {
     TextViewer *viewer;
-    QString file = lETLESatelliteFile->text();
+    QString file = ui->lETLESatelliteFile->text();
 
     if (file == "") return;
     viewer = new TextViewer(this);
     viewer->setWindowTitle(file);
     viewer->show();
     viewer->read(file);
+}
+//---------------------------------------------------------------------------
+int PlotOptDialog::getTimeFormat()
+{
+    return ui->cBTimeFormat->currentIndex();
+}
+//---------------------------------------------------------------------------
+int PlotOptDialog::getLatLonFormat()
+{
+    return ui->cBLatLonFormat->currentIndex();
+}
+//---------------------------------------------------------------------------
+int PlotOptDialog::getShowStats()
+{
+    return ui->cBShowStats->currentIndex();
+}
+//---------------------------------------------------------------------------
+int PlotOptDialog::getShowSlip()
+{
+    return ui->cBShowSlip->currentIndex();
+}
+//---------------------------------------------------------------------------
+int PlotOptDialog::getShowHalfC(){
+    return ui->cBShowHalfC->currentIndex();
+}
+//---------------------------------------------------------------------------
+int PlotOptDialog::getShowEphemeris()
+{
+    return ui->cBShowEphemeris->currentIndex();
+}
+//---------------------------------------------------------------------------
+double PlotOptDialog::getElevationMask()
+{
+    return ui->cBElevationMask->currentText().toDouble();
+}
+//---------------------------------------------------------------------------
+int PlotOptDialog::getElevationMaskEnabled()
+{
+    return ui->cBElevationMaskPattern->currentIndex();
+}
+//---------------------------------------------------------------------------
+int PlotOptDialog::getHideLowSatellites()
+{
+    return ui->cBHideLowSatellites->currentIndex();
+}
+//---------------------------------------------------------------------------
+double PlotOptDialog::getMaxDop()
+{
+    return ui->cBMaxDop->currentText().toDouble();
+}
+//---------------------------------------------------------------------------
+double PlotOptDialog::getMaxMP()
+{
+    return ui->cBMaxMP->currentText().toDouble();
+}
+//---------------------------------------------------------------------------
+int PlotOptDialog::getNavSys()
+{
+    return (ui->cBNavSys1->isChecked() ? SYS_GPS : 0) |
+           (ui->cBNavSys2->isChecked() ? SYS_GLO : 0) |
+           (ui->cBNavSys3->isChecked() ? SYS_GAL : 0) |
+           (ui->cBNavSys4->isChecked() ? SYS_QZS : 0) |
+           (ui->cBNavSys5->isChecked() ? SYS_SBS : 0) |
+           (ui->cBNavSys6->isChecked() ? SYS_CMP : 0) |
+           (ui->cBNavSys7->isChecked() ? SYS_IRN : 0);
+}
+//---------------------------------------------------------------------------
+QString PlotOptDialog::getExcludedSatellites()
+{
+    return ui->lEExcludedSatellites->text();
+}
+//---------------------------------------------------------------------------
+int PlotOptDialog::getShowError()
+{
+    return ui->cBShowError->currentIndex();
+}
+//---------------------------------------------------------------------------
+int PlotOptDialog::getShowArrow()
+{
+    return ui->cBShowArrow->currentIndex();
+}
+//---------------------------------------------------------------------------
+int PlotOptDialog::getShowGridLabel()
+{
+    return ui->cBShowGridLabel->currentIndex();
+}
+//---------------------------------------------------------------------------
+int PlotOptDialog::getShowLabel()
+{
+    return ui->cBShowLabel->currentIndex();
+}
+//---------------------------------------------------------------------------
+int PlotOptDialog::getShowCompass()
+{
+    return ui->cBShowCompass->currentIndex();
+}
+//---------------------------------------------------------------------------
+int PlotOptDialog::getShowScale()
+{
+    return ui->cBShowScale->currentIndex();
+}
+//---------------------------------------------------------------------------
+int PlotOptDialog::getAutoScale()
+{
+    return ui->cBAutoScale->currentIndex();
+}
+//---------------------------------------------------------------------------
+double PlotOptDialog::getYRange()
+{
+    QStringList tokens = ui->cBYRange->currentText().split(' ');
+    if (tokens.length() == 2) {
+        bool ok;
+        int range = tokens.at(0).toInt(&ok);
+        QString unit = tokens.at(1);
+
+        if (ok) {
+            if (unit == "cm") range *= 0.01;
+            else if (unit == "km") range *= 1000.0;
+            return range;
+        }
+    }
+    return NAN;
+}
+//---------------------------------------------------------------------------
+int PlotOptDialog::getRtBufferSize()
+{
+    return ui->sBBufferSize->value();
+}
+//---------------------------------------------------------------------------
+int PlotOptDialog::getTimeSyncOut()
+{
+    return ui->cBTimeSync->isChecked();
+}
+//---------------------------------------------------------------------------
+int PlotOptDialog::getTimeSyncPort()
+{
+    return ui->sBTimeSyncPort->value();
+}
+//---------------------------------------------------------------------------
+int PlotOptDialog::getOrigin()
+{
+    return ui->cBOrigin->currentIndex();
+}
+//---------------------------------------------------------------------------
+int PlotOptDialog::getReceiverPosition()
+{
+    return ui->cBReceiverPosition->currentIndex();
+}
+//---------------------------------------------------------------------------
+double* PlotOptDialog::getOoPosition()
+{
+    static double ooPos[3];
+
+    ooPos[0] = ui->sBReferencePosition1->value() * D2R;
+    ooPos[1] = ui->sBReferencePosition2->value() * D2R;
+    ooPos[2] = ui->sBReferencePosition3->value();
+
+    return ooPos;
+}
+//---------------------------------------------------------------------------
+int PlotOptDialog::getPlotStyle()
+{
+    return ui->cBPlotStyle->currentIndex();
+}
+//---------------------------------------------------------------------------
+int PlotOptDialog::getMarkSize()
+{
+    int marks[] = { 1, 2, 3, 4, 5, 10, 15, 20 };
+
+    return marks[ui->cBMarkSize->currentIndex()];
+}
+//---------------------------------------------------------------------------
+int PlotOptDialog::getAnimationCycle()
+{
+    return ui->cBAnimationCycle->currentText().toInt();
+}
+//---------------------------------------------------------------------------
+int PlotOptDialog::getRefreshCycle()
+{
+    return ui->sBRefreshCycle->value();
+}
+//---------------------------------------------------------------------------
+QString PlotOptDialog::getShapeFile()
+{
+    return ui->lEShapeFile->text();
+}
+//---------------------------------------------------------------------------
+QString PlotOptDialog::getTleFile()
+{
+    return ui->lETLEFile->text();
+}
+//---------------------------------------------------------------------------
+QString PlotOptDialog::getRinexOptions()
+{
+    return ui->lERinexOptions->text();
+}
+//---------------------------------------------------------------------------
+QString PlotOptDialog::getTleSatelliteFile()
+{
+    return ui->lETLESatelliteFile->text();
+}
+//---------------------------------------------------------------------------
+QFont PlotOptDialog::getFont()
+{
+    return fontOption;
+}
+//---------------------------------------------------------------------------
+QColor PlotOptDialog::getCColor(int i)
+{
+    if ((i >= 0) && (i < 4))
+        return cColor[i];
+    return QColor();
+}
+//---------------------------------------------------------------------------
+QColor PlotOptDialog::getMarkerColor(int i, int j)
+{
+    if ((i >= 0) && (i < 2) && (j >= 0) && (j < 8))
+        return markerColor[i][j];
+    return QColor();
+}
+//---------------------------------------------------------------------------
+void PlotOptDialog::loadOptions(QSettings & settings)
+{
+    int marks[] = { 1, 2, 3, 4, 5, 10, 15, 20 };
+    for (int i = 0; i < 8; i++)
+        if (marks[i] == settings.value("plot/marksize", 2).toInt()) ui->cBMarkSize->setCurrentIndex(i);
+
+    ui->cBTimeFormat->setCurrentIndex(settings.value("plot/timelabel", 1).toInt());
+    ui->cBLatLonFormat->setCurrentIndex(settings.value("plot/latlonfmt", 0).toInt());
+    ui->cBAutoScale->setCurrentIndex(settings.value("plot/autoscale", 1).toInt());
+    ui->cBShowStats->setCurrentIndex(settings.value("plot/showstats", 0).toInt());
+    ui->cBShowArrow->setCurrentIndex(settings.value("plot/showarrow", 0).toInt());
+    ui->cBShowSlip->setCurrentIndex(settings.value("plot/showslip", 0).toInt());
+    ui->cBShowHalfC->setCurrentIndex(settings.value("plot/showhalfc", 0).toInt());
+    ui->cBShowError->setCurrentIndex(settings.value("plot/showerr", 0).toInt());
+    ui->cBShowEphemeris->setCurrentIndex(settings.value("plot/showeph", 0).toInt());
+    ui->cBShowLabel->setCurrentIndex(settings.value("plot/showlabel", 1).toInt());
+    ui->cBShowGridLabel->setCurrentIndex(settings.value("plot/showglabel", 1).toInt());
+    ui->cBShowScale->setCurrentIndex(settings.value("plot/showscale", 1).toInt());
+    ui->cBShowCompass->setCurrentIndex(settings.value("plot/showcompass", 0).toInt());
+    ui->cBPlotStyle->setCurrentIndex(settings.value("plot/plotstyle", 0).toInt());
+
+
+    ui->cBElevationMask->setCurrentText(QString::number(settings.value("plot/elmask", 0.0).toDouble()));
+    ui->cBMaxDop->setCurrentText(QString::number(settings.value("plot/maxdop", 30.0).toDouble()));
+    ui->cBMaxMP->setCurrentText(QString::number(settings.value("plot/maxmp", 10.0).toDouble()));
+    ui->cBOrigin->setCurrentIndex(settings.value("plot/orgin", 2).toInt());
+    ui->cBReceiverPosition->setCurrentIndex(settings.value("plot/rcvpos", 0).toInt());
+    ui->sBReferencePosition1->setValue(settings.value("plot/oopos1", 0).toDouble() * R2D);
+    ui->sBReferencePosition2->setValue(settings.value("plot/oopos2", 0).toDouble() * R2D);
+    ui->sBReferencePosition3->setValue(settings.value("plot/oopos3", 0).toDouble());
+    int navSys = settings.value("plot/navsys", SYS_ALL).toInt();
+    ui->cBNavSys1->setChecked(navSys & SYS_GPS);
+    ui->cBNavSys2->setChecked(navSys & SYS_GLO);
+    ui->cBNavSys3->setChecked(navSys & SYS_GAL);
+    ui->cBNavSys4->setChecked(navSys & SYS_QZS);
+    ui->cBNavSys5->setChecked(navSys & SYS_SBS);
+    ui->cBNavSys6->setChecked(navSys & SYS_CMP);
+    ui->cBNavSys7->setChecked(navSys & SYS_IRN);
+    ui->cBAnimationCycle->setCurrentText(QString::number(settings.value("plot/animcycle", 10).toInt()));
+    ui->sBRefreshCycle->setValue(settings.value("plot/refcycle", 100).toInt());
+    ui->cBHideLowSatellites->setCurrentIndex(settings.value("plot/hidelowsat", 0).toInt());
+    ui->cBElevationMaskPattern->setCurrentText(QString::number(settings.value("plot/elmaskp", 0).toInt()));
+    ui->lEExcludedSatellites->setText(settings.value("plot/exsats", "").toString());
+    ui->sBBufferSize->setValue(settings.value("plot/rtbuffsize", 10800).toInt());
+    ui->cBTimeSync->setChecked(settings.value("plot/timesyncout", 0).toInt());
+    ui->sBTimeSyncPort->setValue(settings.value("plot/timesyncport", 10071).toInt());
+    ui->lERinexOptions->setText(settings.value("plot/rnxopts", "").toString());
+    ui->lEShapeFile->setText(settings.value("plot/shapefile", "").toString());
+    ui->lETLEFile->setText(settings.value("plot/tlefile", "").toString());
+    ui->lETLESatelliteFile->setText(settings.value("plot/tlesatfile", "").toString());
+
+    for (int i = 0; i < ui->cBYRange->count(); i++) {
+        double range;
+        bool ok;
+        QString unit;
+
+        QString s = ui->cBYRange->itemText(i);
+        QStringList tokens = s.split(' ');
+
+        if (tokens.length() != 2) continue;
+
+        range = tokens.at(0).toInt(&ok);
+        if (!ok) continue;
+
+        unit = tokens.at(1);
+        if (unit == "cm") range *= 0.01;
+        else if (unit == "km") range *= 1000.0;
+
+        if (range == settings.value("plot/yrange", 5.0).toDouble()) {
+            ui->cBYRange->setCurrentIndex(i);
+            break;
+        }
+    }
+
+    fontOption.setFamily(settings.value("plot/fontname", "Tahoma").toString());
+    fontOption.setPointSize(settings.value("plot/fontsize", 8).toInt());
+    updateFont();
+
+    markerColor[0][0] = settings.value("plot/mcolor0", QColor(0xc0, 0xc0, 0xc0)).value<QColor>();
+    markerColor[0][1] = settings.value("plot/mcolor1", QColor(Qt::green)).value<QColor>();
+    markerColor[0][2] = settings.value("plot/mcolor2", QColor(0x00, 0xAA, 0xFF)).value<QColor>();
+    markerColor[0][3] = settings.value("plot/mcolor3", QColor(0xff, 0x00, 0xff)).value<QColor>();
+    markerColor[0][4] = settings.value("plot/mcolor4", QColor(Qt::blue)).value<QColor>();
+    markerColor[0][5] = settings.value("plot/mcolor5", QColor(Qt::red)).value<QColor>();
+    markerColor[0][6] = settings.value("plot/mcolor6", QColor(0x80, 0x80, 0x00)).value<QColor>();
+    markerColor[0][7] = settings.value("plot/mcolor7", QColor(Qt::gray)).value<QColor>();
+    markerColor[1][0] = settings.value("plot/mcolor8", QColor(0xc0, 0xc0, 0xc0)).value<QColor>();
+    markerColor[1][1] = settings.value("plot/mcolor9", QColor(0x80, 0x40, 0x00)).value<QColor>();
+    markerColor[1][2] = settings.value("plot/mcolor10", QColor(0x00, 0x80, 0x80)).value<QColor>();
+    markerColor[1][3] = settings.value("plot/mcolor11", QColor(0xFF, 0x00, 0x80)).value<QColor>();
+    markerColor[1][4] = settings.value("plot/mcolor12", QColor(0xFF, 0x80, 0x00)).value<QColor>();
+    markerColor[1][5] = settings.value("plot/mcolor13", QColor(0x80, 0x80, 0xFF)).value<QColor>();
+    markerColor[1][6] = settings.value("plot/mcolor14", QColor(0xFF, 0x80, 0x80)).value<QColor>();
+    markerColor[1][7] = settings.value("plot/mcolor15", QColor(Qt::gray)).value<QColor>();
+
+    ui->tBMColor1->setStyleSheet(QString("background-color: %1;").arg(color2String(markerColor[0][1])));
+    ui->tBMColor2->setStyleSheet(QString("background-color: %1;").arg(color2String(markerColor[0][2])));
+    ui->tBMColor3->setStyleSheet(QString("background-color: %1;").arg(color2String(markerColor[0][3])));
+    ui->tBMColor4->setStyleSheet(QString("background-color: %1;").arg(color2String(markerColor[0][4])));
+    ui->tBMColor5->setStyleSheet(QString("background-color: %1;").arg(color2String(markerColor[0][5])));
+    ui->tBMColor6->setStyleSheet(QString("background-color: %1;").arg(color2String(markerColor[0][6])));
+    ui->tBMColor7->setStyleSheet(QString("background-color: %1;").arg(color2String(markerColor[1][1])));
+    ui->tBMColor8->setStyleSheet(QString("background-color: %1;").arg(color2String(markerColor[1][2])));
+    ui->tBMColor9->setStyleSheet(QString("background-color: %1;").arg(color2String(markerColor[1][3])));
+    ui->tBMColor10->setStyleSheet(QString("background-color: %1;").arg(color2String(markerColor[1][4])));
+    ui->tBMColor11->setStyleSheet(QString("background-color: %1;").arg(color2String(markerColor[1][5])));
+    ui->tBMColor12->setStyleSheet(QString("background-color: %1;").arg(color2String(markerColor[1][6])));
+
+    cColor[0] = settings.value("plot/color1", QColor(Qt::white)).value<QColor>();
+    cColor[1] = settings.value("plot/color2", QColor(0xc0, 0xc0, 0xc0)).value<QColor>();
+    cColor[2] = settings.value("plot/color3", QColor(Qt::black)).value<QColor>();
+    cColor[3] = settings.value("plot/color4", QColor(0xc0, 0xc0, 0xc0)).value<QColor>();
+    ui->lblColor1->setStyleSheet(QString("QLabel {background-color: %1;}").arg(color2String(cColor[0])));
+    ui->lblColor2->setStyleSheet(QString("QLabel {background-color: %1;}").arg(color2String(cColor[1])));
+    ui->lblColor3->setStyleSheet(QString("QLabel {background-color: %1;}").arg(color2String(cColor[2])));
+    ui->lblColor4->setStyleSheet(QString("QLabel {background-color: %1;}").arg(color2String(cColor[3])));
+
+
+    refDialog->stationPositionFile = settings.value("plot/staposfile", "").toString();
+
+    updateEnable();
+}
+//---------------------------------------------------------------------------
+void PlotOptDialog::saveOptions(QSettings & settings)
+{
+
+    settings.setValue("plot/timelabel", ui->cBTimeFormat->currentIndex());
+    settings.setValue("plot/latlonfmt", ui->cBLatLonFormat->currentIndex());
+    settings.setValue("plot/autoscale", ui->cBAutoScale->currentIndex());
+    settings.setValue("plot/showstats", ui->cBShowStats->currentIndex());
+    settings.setValue("plot/showlabel", ui->cBShowLabel->currentIndex());
+    settings.setValue("plot/showglabel", ui->cBShowGridLabel->currentIndex());
+    settings.setValue("plot/showcompass", ui->cBShowCompass->currentIndex());
+    settings.setValue("plot/showscale", ui->cBShowScale->currentIndex());
+    settings.setValue("plot/showarrow", ui->cBShowArrow->currentIndex());
+    settings.setValue("plot/showslip", ui->cBShowSlip->currentIndex());
+    settings.setValue("plot/showhalfc", ui->cBShowHalfC->currentIndex());
+    settings.setValue("plot/showerr", ui->cBShowError->currentIndex());
+    settings.setValue("plot/showeph", ui->cBShowEphemeris->currentIndex());
+    settings.setValue("plot/plotstyle", ui->cBPlotStyle->currentIndex());
+    settings.setValue("plot/marksize", getMarkSize());
+    settings.setValue("plot/navsys", (ui->cBNavSys1->isChecked() ? SYS_GPS : 0) |
+                                     (ui->cBNavSys2->isChecked() ? SYS_GLO : 0) |
+                                     (ui->cBNavSys3->isChecked() ? SYS_GAL : 0) |
+                                     (ui->cBNavSys4->isChecked() ? SYS_QZS : 0) |
+                                     (ui->cBNavSys5->isChecked() ? SYS_SBS : 0) |
+                                     (ui->cBNavSys6->isChecked() ? SYS_CMP : 0) |
+                                     (ui->cBNavSys7->isChecked() ? SYS_IRN : 0));
+    settings.setValue("plot/animcycle", ui->cBAnimationCycle->currentText().toInt());
+    settings.setValue("plot/refcycle", ui->sBRefreshCycle->value());
+    settings.setValue("plot/hidelowsat", ui->cBHideLowSatellites->currentIndex());
+    settings.setValue("plot/exsats", ui->lEExcludedSatellites->text());
+    settings.setValue("plot/timesyncout", ui->cBTimeSync->isChecked());
+    settings.setValue("plot/timesyncport", ui->sBTimeSyncPort->value());
+    settings.setValue("plot/rnxopts", ui->lERinexOptions->text());
+
+    settings.setValue("plot/mcolor0", markerColor[0][0]);
+    settings.setValue("plot/mcolor1", markerColor[0][1]);
+    settings.setValue("plot/mcolor2", markerColor[0][2]);
+    settings.setValue("plot/mcolor3", markerColor[0][3]);
+    settings.setValue("plot/mcolor4", markerColor[0][4]);
+    settings.setValue("plot/mcolor5", markerColor[0][5]);
+    settings.setValue("plot/mcolor6", markerColor[0][6]);
+    settings.setValue("plot/mcolor7", markerColor[0][7]);
+    settings.setValue("plot/mcolor8", markerColor[0][0]);
+    settings.setValue("plot/mcolor9", markerColor[1][1]);
+    settings.setValue("plot/mcolor10", markerColor[1][2]);
+    settings.setValue("plot/mcolor11", markerColor[1][3]);
+    settings.setValue("plot/mcolor12", markerColor[1][4]);
+    settings.setValue("plot/mcolor13", markerColor[1][5]);
+    settings.setValue("plot/mcolor14", markerColor[1][6]);
+    settings.setValue("plot/mcolor15", markerColor[1][7]);
+
+    settings.setValue("plot/color1", cColor[0]);
+    settings.setValue("plot/color2", cColor[1]);
+    settings.setValue("plot/color3", cColor[2]);
+    settings.setValue("plot/color4", cColor[3]);
+
+    settings.setValue("plot/elmask", ui->cBElevationMask->currentText().toDouble());
+    settings.setValue("plot/elmaskp", ui->cBElevationMaskPattern->currentIndex());
+    settings.setValue("plot/rtbuffsize", ui->sBBufferSize->value());
+    settings.setValue("plot/maxdop", ui->cBMaxDop->currentText().toDouble());
+    settings.setValue("plot/maxmp", ui->cBMaxMP->currentText().toDouble());
+    settings.setValue("plot/orgin", ui->cBOrigin->currentIndex());
+    settings.setValue("plot/rcvpos", ui->cBReceiverPosition->currentIndex());
+    settings.setValue("plot/oopos1", ui->sBReferencePosition1->value() * D2R);
+    settings.setValue("plot/oopos2", ui->sBReferencePosition2->value() * D2R);
+    settings.setValue("plot/oopos3", ui->sBReferencePosition3->value());
+    settings.setValue("plot/shapefile", ui->lEShapeFile->text());
+    settings.setValue("plot/tlefile", ui->lETLEFile->text());
+    settings.setValue("plot/tlesatfile", ui->lETLESatelliteFile->text());
+    settings.setValue("plot/fontname", fontOption.family());
+    settings.setValue("plot/fontsize", fontOption.pointSize());
+    settings.setValue("plot/staposfile", refDialog->stationPositionFile);
+
+    settings.setValue("plot/yrange", getYRange());
 }
 //---------------------------------------------------------------------------

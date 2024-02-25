@@ -14,7 +14,7 @@ class ConvDialog : public QDialog
     Q_OBJECT
 
 public slots:
-    void updateEnable(void);
+    void updateEnable();
 
 private:
     Ui::ConvDialog *ui;

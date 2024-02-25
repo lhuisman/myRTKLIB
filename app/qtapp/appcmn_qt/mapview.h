@@ -43,8 +43,8 @@ protected slots:
     void center();
     void pageLoaded(bool);
 
-    void showMapLL(void);
-    void showMapGM(void);
+    void showMapLL();
+    void showMapGM();
     void setView(int map, double lat, double lon, int zoom);
     void showOptionsDialog();
     void selectMapLL();
@@ -73,7 +73,7 @@ private:
 
     MapViewOptDialog *mapViewOptDialog;
 
-    void updateMap(void);
+    void updateMap();
     void selectMap(int map);
     int  setState(int map);
     void execFunction(int map, const QString &func);
