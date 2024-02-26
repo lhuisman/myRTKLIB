@@ -1445,7 +1445,7 @@ static double intpres(gtime_t time, const obsd_t *obs, int n, const nav_t *nav,
                *p=(ttb*(*p)-tt*(*q))/(ttb-tt);
         }
     }
-    return fabs(ttb)>fabs(tt)?ttb:tt;
+    return fabs(ttb)<fabs(tt)?ttb:tt;
 }
 /* index for single to double-difference transformation matrix (D') --------------------*/
 static int ddidx(rtk_t *rtk, int *ix, int gps, int glo, int sbs)
