@@ -8,8 +8,8 @@
    version="1.1"
    id="svg1"
    inkscape:version="1.3.2 (091e20ef0f, 2023-11-25)"
-   sodipodi:docname="rtkpost.svg"
-   inkscape:export-filename="rtkpost.png"
+   sodipodi:docname="rtkplot.svg"
+   inkscape:export-filename="rtkplot.png"
    inkscape:export-xdpi="21.674667"
    inkscape:export-ydpi="21.674667"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
@@ -28,13 +28,13 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
      inkscape:zoom="1.267887"
-     inkscape:cx="298.52818"
-     inkscape:cy="369.90678"
-     inkscape:window-width="1920"
-     inkscape:window-height="1008"
+     inkscape:cx="298.92254"
+     inkscape:cy="334.0203"
+     inkscape:window-width="1441"
+     inkscape:window-height="837"
      inkscape:window-x="0"
      inkscape:window-y="0"
-     inkscape:window-maximized="1"
+     inkscape:window-maximized="0"
      inkscape:current-layer="layer1" />
   <defs
      id="defs1">
@@ -214,32 +214,10 @@
        style="fill:none;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
        d="m 173.80954,218.11093 20.09276,39.39088"
        id="path3-9-8-6" />
-    <g
-       id="g5"
-       transform="translate(2.6607641,1.6770843)">
-      <path
-         style="fill:none;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
-         d="m 116.88806,225.58314 h 30"
-         id="path4" />
-      <path
-         style="fill:none;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
-         d="m 118.38806,220.47388 v 10"
-         id="path5" />
-      <path
-         style="fill:none;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
-         d="m 146.38806,220.47388 v 10"
-         id="path5-9" />
-    </g>
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:70.5556px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:2;stroke-dasharray:none"
-       x="113.90403"
-       y="219.01035"
-       id="text1"><tspan
-         sodipodi:role="line"
-         id="tspan1"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:70.5556px;font-family:'Noto Sans Mono';-inkscape-font-specification:'Noto Sans Mono';fill:#fcff00;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1"
-         x="113.90403"
-         y="219.01035">R</tspan></text>
+    <path
+       style="fill:none;stroke:#ff0000;stroke-width:5.665;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+       d="m 68.557191,192.63105 7.975698,-23.09023 7.480123,40.38228 5.7456,-26.99623 6.736755,12.71478 7.480123,-26.99622 7.23233,17.27178 7.7279,-23.09023 8.71907,38.75494 5.00224,-12.34873 5.00224,10.76179 4.50665,-12.02323 5.25002,15.64429 5.52379,-36.43573 4.97625,32.57027 5.36424,-21.35839 2.63856,13.79559 5.85982,-9.96591 4.1253,10.5406 4.86866,-8.98939 2.63856,6.63459 4.62087,-5.7344 2.88636,5.3326 2.4721,-5.51322"
+       id="path9"
+       sodipodi:nodetypes="cccccccccccccccccccccccc" />
   </g>
 </svg>

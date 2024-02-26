@@ -225,9 +225,9 @@ OptDialog::OptDialog(QWidget *parent, int opts)
         refPosModel->item(5)->setFlags(refPosModel->item(5)->flags() & ~Qt::ItemIsEnabled); // disable "Get from Position File"
         refPosModel->item(6)->setFlags(refPosModel->item(6)->flags() & ~Qt::ItemIsEnabled); // disable "RINEX Header Position"
 
-        rovPosModel->item(4)->setFlags(rovPosModel->item(4)->flags() & ~Qt::ItemIsEnabled); // disable "Average of Single Pos"
-        rovPosModel->item(5)->setFlags(rovPosModel->item(5)->flags() & ~Qt::ItemIsEnabled); // disable "Get from Position File"
-        rovPosModel->item(6)->setFlags(rovPosModel->item(6)->flags() & ~Qt::ItemIsEnabled); // disable "RINEX Header Position"
+        rovPosModel->item(3)->setFlags(rovPosModel->item(3)->flags() & ~Qt::ItemIsEnabled); // disable "Average of Single Pos"
+        rovPosModel->item(4)->setFlags(rovPosModel->item(4)->flags() & ~Qt::ItemIsEnabled); // disable "Get from Position File"
+        rovPosModel->item(5)->setFlags(rovPosModel->item(5)->flags() & ~Qt::ItemIsEnabled); // disable "RINEX Header Position"
     }
 
 

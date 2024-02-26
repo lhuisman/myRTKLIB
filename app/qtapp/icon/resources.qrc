@@ -1,9 +1,9 @@
 <RCC>
     <qresource prefix="/icons">
         <file alias="rtkpost">rtkpost.png</file>
-        <file alias="rtkplot">rtkplot.bmp</file>
+        <file alias="rtkplot">rtkplot.png</file>
         <file alias="rtkconv">rtkconv.png</file>
-        <file alias="rtk4">../icon/rtk4.bmp</file>
+        <file alias="rtklib">rtklib.pnp</file>
         <file alias="rtknavi">rtknavi.png</file>
         <file alias="strsvr">strsvr.png</file>
         <file alias="srctblbrows">srctblbrows.png</file>
@@ -11,10 +11,10 @@
         <file alias="rtkget_tray">rtkget_tray.ico</file>
         <file alias="rtk9">../icon/rtk9.bmp</file>
         <file alias="point.ico">../icon/point.ico</file>
-        <file alias="point">../icon/point.svg</file>
-        <file alias="tray0">../icon/tray0.svg</file>
-        <file alias="tray1">../icon/tray1.svg</file>
-        <file alias="tray2">../icon/tray2.svg</file>
+        <file alias="point">point.svg</file>
+        <file alias="tray0">tray0.svg</file>
+        <file alias="tray1">tray1.svg</file>
+        <file alias="tray2">tray2.svg</file>
         <file alias="rtkconv_Icon.ico">rtkconv_Icon.ico</file>
         <file alias="rtkget_Icon.ico">rtkget_Icon.ico</file>
         <file alias="rtklaunch_Icon.ico">rtklaunch_Icon.ico</file>
