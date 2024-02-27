@@ -16,11 +16,14 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QTabWidget" name="tWOptions">
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Minimum ambiguities required to enable exclusion of a single satellite from ambiguity resolution each epoch (option: &lt;span style=&quot; font-style:italic;&quot;&gt;pos2-mindropsats&lt;/span&gt;).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
      <property name="tabPosition">
       <enum>QTabWidget::North</enum>
      </property>
      <property name="currentIndex">
-      <number>4</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tabSettings1">
       <attribute name="title">
@@ -665,6 +668,9 @@
       <layout class="QGridLayout" name="gridLayout_2">
        <item row="2" column="4">
         <widget class="QDoubleSpinBox" name="sBValidThresARMax">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the nominal integer ambiguity validation threshold for ʺratio‐testʺ, which uses the ratio of squared residuals of the best integer vector to the second‐best vector. (option: &lt;span style=&quot; font-style:italic;&quot;&gt;pos2-arthres6&lt;/span&gt;).&lt;/p&gt;&lt;p&gt;If min and max values are set equal to the nominal value then the ratio is fixed, else the ratio will be adjusted by the number of satellites. The nominal value is used for 8 satellite pairs and is adjusted lower as the number of satellites increases and higher as it decreases .&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
          <property name="decimals">
           <number>3</number>
          </property>
@@ -719,7 +725,7 @@
        <item row="2" column="0">
         <widget class="QLabel" name="LabelRatio">
          <property name="text">
-          <string>Min Ratio to Fix Ambiguity (Min/Nom/Max)</string>
+          <string>Ratio to Fix Ambiguity (Min/Nom/Max)</string>
          </property>
          <property name="buddy">
           <cstring>sBValidThresARMin</cstring>
@@ -728,6 +734,9 @@
        </item>
        <item row="18" column="1" colspan="2">
         <widget class="QDoubleSpinBox" name="sBMaxPositionVarAR">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Maximum position variance for ambiguity resolution (option: &lt;span style=&quot; font-style:italic;&quot;&gt;pos2-arthres1&lt;/span&gt;).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
          <property name="suffix">
           <string> m</string>
          </property>
@@ -776,7 +785,14 @@
         </widget>
        </item>
        <item row="17" column="1" colspan="2">
-        <widget class="QSpinBox" name="sBMinFixSats"/>
+        <widget class="QSpinBox" name="sBMinFixSats">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Minimum ambiguities required for fix (option: &lt;span style=&quot; font-style:italic;&quot;&gt;pos2-minfixsats&lt;/span&gt;).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="suffix">
+          <string> epochs</string>
+         </property>
+        </widget>
        </item>
        <item row="16" column="1">
         <widget class="QDoubleSpinBox" name="sBBaselineLen">
@@ -905,10 +921,18 @@
            <string>Auto Calibration</string>
           </property>
          </item>
+         <item>
+          <property name="text">
+           <string>Fix and Hold</string>
+          </property>
+         </item>
         </widget>
        </item>
        <item row="9" column="1" colspan="2">
         <widget class="QDoubleSpinBox" name="sBDopplerThreshold">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the cycle-slip threshold (Hz) of difference between doppler and carrier phase difference between epochs, 0 = disabled (option: &lt;span style=&quot; font-style:italic;&quot;&gt;pos2-dopthres).&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
          <property name="suffix">
           <string> Hz</string>
          </property>
@@ -919,6 +943,9 @@
        </item>
        <item row="21" column="1" colspan="4">
         <widget class="QDoubleSpinBox" name="sBGlonassHwBias">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set relative GLONASS hardware bias in meters per frequency slot. Used only when pos2-gloarmode is&lt;/p&gt;&lt;p&gt;set to “autocal” and is used to specify the interchannel bias between two different receiver manufacturers  (option: &lt;span style=&quot; font-style:italic;&quot;&gt;pos2-arthres2&lt;/span&gt;).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
          <property name="suffix">
           <string> m</string>
          </property>
@@ -1016,7 +1043,7 @@
        <item row="9" column="0">
         <widget class="QLabel" name="Label22">
          <property name="text">
-          <string>Slip Threshs: Doppler / Geometry-Free</string>
+          <string>Slip Threshold: Doppler / Geometry-Free</string>
          </property>
          <property name="buddy">
           <cstring>sBDopplerThreshold</cstring>
@@ -1053,12 +1080,19 @@
         </widget>
        </item>
        <item row="17" column="3" colspan="2">
-        <widget class="QSpinBox" name="sBMinHoldSats"/>
+        <widget class="QSpinBox" name="sBMinHoldSats">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Minimum ambiguities required for hold (option: &lt;span style=&quot; font-style:italic;&quot;&gt;pos2-minholdsats&lt;/span&gt;).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="suffix">
+          <string> epochs</string>
+         </property>
+        </widget>
        </item>
        <item row="2" column="2" colspan="2">
         <widget class="QDoubleSpinBox" name="sBValidThresAR">
          <property name="toolTip">
-          <string>Set the integer ambiguity validation threshold for ʺratio‐testʺ, which uses the ratio of squared residuals of the best integer vector to the second‐best vector. (option: pos2-arthres)</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the nominal integer ambiguity validation threshold for ʺratio‐testʺ, which uses the ratio of squared residuals of the best integer vector to the second‐best vector. (option: &lt;span style=&quot; font-style:italic;&quot;&gt;pos2-arthres&lt;/span&gt;).&lt;/p&gt;&lt;p&gt;If min and max values are set equal to the nominal value then the ratio is fixed, else the ratio will be adjusted by the number of satellites. The nominal value is used for 8 satellite pairs and is adjusted lower as the number of satellites increases and higher as it decreases .&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="decimals">
           <number>3</number>
@@ -1115,6 +1149,9 @@
        </item>
        <item row="2" column="1">
         <widget class="QDoubleSpinBox" name="sBValidThresARMin">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the nominal integer ambiguity validation threshold for ʺratio‐testʺ, which uses the ratio of squared residuals of the best integer vector to the second‐best vector. (option: &lt;span style=&quot; font-style:italic;&quot;&gt;pos2-arthres5&lt;/span&gt;).&lt;/p&gt;&lt;p&gt;If min and max values are set equal to the nominal value then the ratio is fixed, else the ratio will be adjusted by the number of satellites. The nominal value is used for 8 satellite pairs and is adjusted lower as the number of satellites increases and higher as it decreases .&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
          <property name="decimals">
           <number>3</number>
          </property>
@@ -1145,8 +1182,11 @@
        </item>
        <item row="11" column="3" colspan="2">
         <widget class="QSpinBox" name="sBOutageCountResetAmbiguity">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the outage count to reset ambiguity. If the data outage count is over the value, the estimated ambiguity is reset to the initial value (option &lt;span style=&quot; font-style:italic;&quot;&gt;pos2-aroutcnt).&lt;/span&gt;&lt;span style=&quot; font-family:'monospace';&quot;&gt;&lt;br/&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
          <property name="suffix">
-          <string> s</string>
+          <string> epochs</string>
          </property>
         </widget>
        </item>
@@ -1161,10 +1201,17 @@
         </widget>
        </item>
        <item row="19" column="1" colspan="4">
-        <widget class="QSpinBox" name="sBMinDropSats"/>
+        <widget class="QSpinBox" name="sBMinDropSats">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Minimum ambiguities required to enable exclusion of a single satellite from ambiguity resolution each epoch (option: &lt;span style=&quot; font-style:italic;&quot;&gt;pos2-mindropsats&lt;/span&gt;).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+        </widget>
        </item>
        <item row="20" column="1" colspan="2">
         <widget class="QDoubleSpinBox" name="sBVarHoldAmb">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set variance for ambiguity hold feedback. Acts asinverse ambiguity tracking gain (option: &lt;span style=&quot; font-style:italic;&quot;&gt;pos2-varholdamb&lt;/span&gt;).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
          <property name="suffix">
           <string> m</string>
          </property>
@@ -1175,6 +1222,9 @@
        </item>
        <item row="20" column="3" colspan="2">
         <widget class="QDoubleSpinBox" name="sBGainHoldAmb">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Gain for GLONASS IF bias nulls when using GLONASS “Fix and Hold” AR mode (option: &lt;span style=&quot; font-style:italic;&quot;&gt;pos2-gainholdamb&lt;/span&gt;).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
          <property name="decimals">
           <number>4</number>
          </property>
@@ -1182,6 +1232,9 @@
        </item>
        <item row="18" column="3" colspan="2">
         <widget class="QComboBox" name="cBARFilter">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Require AR qualification of new or returning satellites after cycle slip (option: &lt;span style=&quot; font-style:italic;&quot;&gt;pos2-arfilter&lt;/span&gt;).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
          <item>
           <property name="text">
            <string>OFF</string>

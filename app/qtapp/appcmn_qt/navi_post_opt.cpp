@@ -769,9 +769,9 @@ void OptDialog::load(const QString &file)
     memset(&filopt, 0, sizeof(filopt_t));
 
 	resetsysopts();
-    if (!loadopts(qPrintable(file), sysopts) ||
-        !loadopts(qPrintable(file), appOptions) ||
-        !loadopts(qPrintable(file), naviopts)) return;
+    if (!loadopts(qPrintable(file), sysopts)) return;
+    if (appOptions && !loadopts(qPrintable(file), appOptions)) return;
+    if (!loadopts(qPrintable(file), naviopts)) return;
     getsysopts(&prcopt, &solopt, &filopt);
     proxyAddress = proxyaddr;
 
