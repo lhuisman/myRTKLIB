@@ -1020,6 +1020,24 @@ extern double *eye(int n)
     if ((p=zeros(n,n))) for (i=0;i<n;i++) p[i+i*n]=1.0;
     return p;
 }
+
+/* dot product -----------------------------------------------------------------
+ * inner product of vectors of size 2
+ * args   : double *a,*b     I   vectors a and b
+ * return : a'*b
+ *-----------------------------------------------------------------------------*/
+extern double dot2(const double* a, const double* b) { return a[0] * b[0] + a[1] * b[1]; }
+
+/* dot product -----------------------------------------------------------------
+ * inner product of vectors of size 3
+ * args   : double *a,*b     I   vectors a and b
+ * return : a'*b
+ *-----------------------------------------------------------------------------*/
+extern double dot3(const double* a, const double* b)
+{
+  return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+}
+
 /* inner product ---------------------------------------------------------------
 * inner product of vectors
 * args   : double *a,*b     I   vector a,b (n x 1)
@@ -1033,6 +1051,7 @@ extern double dot(const double *a, const double *b, int n)
     while (--n>=0) c+=a[n]*b[n];
     return c;
 }
+
 /* euclid norm -----------------------------------------------------------------
 * euclid norm of vector
 * args   : double *a        I   vector a (n x 1)
@@ -1244,6 +1263,7 @@ extern int solve(const char *tr, const double *A, const double *Y, int n,
     return info;
 }
 #endif
+
 /* end of matrix routines ----------------------------------------------------*/
 
 /* least square estimation -----------------------------------------------------
@@ -1945,7 +1965,7 @@ extern double dms2deg(const double *dms)
 *-----------------------------------------------------------------------------*/
 extern void ecef2pos(const double *r, double *pos)
 {
-    double e2=FE_WGS84*(2.0-FE_WGS84),r2=dot(r,r,2),z,zk,v=RE_WGS84,sinp;
+    double e2=FE_WGS84*(2.0-FE_WGS84),r2=dot2(r,r),z,zk,v=RE_WGS84,sinp;
     
     for (z=r[2],zk=0.0;fabs(z-zk)>=1E-4;) {
         zk=z;
@@ -3566,7 +3586,7 @@ extern double satazel(const double *pos, const double *e, double *azel)
     
     if (pos[2]>-RE_WGS84) {
         ecef2enu(pos,e,enu);
-        az=dot(enu,enu,2)<1E-12?0.0:atan2(enu[0],enu[1]);
+        az=dot2(enu,enu)<1E-12?0.0:atan2(enu[0],enu[1]);
         if (az<0.0) az+=2*PI;
         el=asin(enu[2]);
     }
@@ -3875,7 +3895,7 @@ extern void antmodel(const pcv_t *pcv, const double *del, const double *azel,
     for (i=0;i<NFREQ;i++) {
         for (j=0;j<3;j++) off[j]=pcv->off[i][j]+del[j];
         
-        dant[i]=-dot(off,e,3)+(opt?interpvar(90.0-azel[1]*R2D,pcv->var[i]):0.0);
+        dant[i]=-dot3(off,e)+(opt?interpvar(90.0-azel[1]*R2D,pcv->var[i]):0.0);
     }
     trace(4,"antmodel: dant=%6.3f %6.3f\n",dant[0],dant[1]);
 }

@@ -582,8 +582,8 @@ static int resdop(const obsd_t *obs, int n, const double *rs, const double *dts,
             vs[j]=rs[j+3+i*6]-x[j];
         }
         /* range rate with earth rotation correction */
-        rate=dot(vs,e,3)+OMGE/CLIGHT*(rs[4+i*6]*rr[0]+rs[1+i*6]*x[0]-
-                                      rs[3+i*6]*rr[1]-rs[  i*6]*x[1]);
+        rate=dot3(vs,e)+OMGE/CLIGHT*(rs[4+i*6]*rr[0]+rs[1+i*6]*x[0]-
+                                     rs[3+i*6]*rr[1]-rs[  i*6]*x[1]);
         
         /* Std of range rate error (m/s) */
         sig=(err<=0.0)?1.0:err*CLIGHT/freq;
