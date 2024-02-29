@@ -10,6 +10,7 @@
 #include "plotmain.h"
 
 #include "rtklib.h"
+#include "trace.h"
 
 QString color2String(const QColor &c)
 {

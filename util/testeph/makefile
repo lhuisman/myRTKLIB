@@ -6,12 +6,14 @@ LDFLAGS = -lm
 
 all        : diffeph dumpssr
 
-diffeph    : rtkcmn.o ephemeris.o sbas.o rinex.o preceph.o rtcm.o rtcm2.o rtcm3.o
+diffeph    : rtkcmn.o trace.o ephemeris.o sbas.o rinex.o preceph.o rtcm.o rtcm2.o rtcm3.o
 diffeph    : ionex.o pntpos.o ppp.o ppp_ar.o stec.o qzslex.o
-dumpssr    : rtkcmn.o preceph.o rtcm.o rtcm2.o rtcm3.o
+dumpssr    : rtkcmn.o trace.o preceph.o rtcm.o rtcm2.o rtcm3.o
 
 rtkcmn.o   : $(SRC)/rtklib.h $(SRC)/rtkcmn.c
 	$(CC) -c $(CFLAGS) $(SRC)/rtkcmn.c
+trace.o   : $(SRC)/trace.h $(SRC)/trace.c
+	$(CC) -c $(CFLAGS) $(SRC)/trace.c
 ephemeris.o: $(SRC)/rtklib.h $(SRC)/ephemeris.c
 	$(CC) -c $(CFLAGS) $(SRC)/ephemeris.c
 sbas.o     : $(SRC)/rtklib.h $(SRC)/sbas.c

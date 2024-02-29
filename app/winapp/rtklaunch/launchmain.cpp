@@ -23,6 +23,7 @@
 #pragma hdrstop
 
 #include "rtklib.h"
+#include "trace.h"
 #include "launchmain.h"
 #include "launchoptdlg.h"
 

@@ -63,6 +63,7 @@
 
 #define INHIBIT_RTL_LOCK_MACROS
 #include "rtklib.h"
+#include "trace.h"
 #include "plotmain.h"
 #include "plotopt.h"
 #include "refdlg.h"

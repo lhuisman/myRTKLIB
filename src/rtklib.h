@@ -1445,22 +1445,6 @@ EXPORT int  readblq(const char *file, const char *sta, double *odisp);
 EXPORT int  readerp(const char *file, erp_t *erp);
 EXPORT int  geterp (const erp_t *erp, gtime_t time, double *val);
 
-/* debug trace functions -----------------------------------------------------*/
-EXPORT void traceopen(const char *file);
-EXPORT void traceclose(void);
-EXPORT void tracelevel(int level);
-EXPORT void trace    (int level, const char *format, ...);
-EXPORT void tracet   (int level, const char *format, ...);
-EXPORT void tracemat (int level, const double *A, int n, int m, int p, int q);
-EXPORT void traceobs (int level, const obsd_t *obs, int n);
-EXPORT void tracenav (int level, const nav_t *nav);
-EXPORT void tracegnav(int level, const nav_t *nav);
-EXPORT void tracehnav(int level, const nav_t *nav);
-EXPORT void tracepeph(int level, const nav_t *nav);
-EXPORT void tracepclk(int level, const nav_t *nav);
-EXPORT void traceb   (int level, const uint8_t *p, int n);
-EXPORT int gettracelevel(void);
-
 /* platform dependent functions ----------------------------------------------*/
 EXPORT int execcmd(const char *cmd);
 EXPORT int expath (const char *path, char *paths[], int nmax);

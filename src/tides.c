@@ -22,6 +22,7 @@
 *           2017/04/11 1.2  fix bug on calling geterp() in timdedisp()
 *-----------------------------------------------------------------------------*/
 #include "rtklib.h"
+#include "trace.h"
 
 #define SQR(x)      ((x)*(x))
 

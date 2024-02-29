@@ -15,6 +15,7 @@
 *           2020/11/30 1.3  use integer types in stdint.h
 *-----------------------------------------------------------------------------*/
 #include "rtklib.h"
+#include "trace.h"
 
 static const double range[4];       /* embedded geoid area range {W,E,S,N} (deg) */
 static const float geoid[361][181]; /* embedded geoid heights (m) (lon x lat) */

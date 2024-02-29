@@ -50,6 +50,7 @@
 *                           fix bug on reading SP3 file extension
 *-----------------------------------------------------------------------------*/
 #include "rtklib.h"
+#include "trace.h"
 
 #define SQR(x)      ((x)*(x))
 

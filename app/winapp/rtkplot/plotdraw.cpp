@@ -3,6 +3,7 @@
 //---------------------------------------------------------------------------
 #include <vcl.h>
 #include "rtklib.h"
+#include "trace.h"
 #include "plotmain.h"
 #include "graph.h"
 #include "refdlg.h"

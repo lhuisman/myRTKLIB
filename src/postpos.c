@@ -45,6 +45,7 @@
 *                            writing solution file in binary mode
 *-----------------------------------------------------------------------------*/
 #include "rtklib.h"
+#include "trace.h"
 
 #define MIN(x,y)    ((x)<(y)?(x):(y))
 #define SQRT(x)     ((x)<=0.0||(x)!=(x)?0.0:sqrt(x))

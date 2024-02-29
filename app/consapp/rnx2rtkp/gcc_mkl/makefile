@@ -25,7 +25,7 @@ CFLAGS  = -O2 -ansi -pedantic -Wno-unused-but-set-variable -I$(SRC) $(OPTS) -DMK
 LDLIBS  = -L$(MKLDIR)/intel64 -lmkl_intel_lp64 -lmkl_core -lmkl_gnu_thread -lpthread -lgomp -lm -lrt
 
 all        : rnx2rtkp
-rnx2rtkp   : rnx2rtkp.o rtkcmn.o rinex.o rtkpos.o postpos.o solution.o
+rnx2rtkp   : rnx2rtkp.o rtkcmn.o trace.o rinex.o rtkpos.o postpos.o solution.o
 rnx2rtkp   : lambda.o geoid.o sbas.o preceph.o pntpos.o ephemeris.o options.o
 rnx2rtkp   : ppp.o ppp_ar.o ppp_corr.o rtcm.o rtcm2.o rtcm3.o rtcm3e.o ionex.o tides.o qzslex.o
 
@@ -33,6 +33,8 @@ rnx2rtkp.o : ../rnx2rtkp.c
 	$(CC) -c $(CFLAGS) ../rnx2rtkp.c
 rtkcmn.o   : $(SRC)/rtkcmn.c
 	$(CC) -c $(CFLAGS) $(SRC)/rtkcmn.c
+trace.o   : $(SRC)/trace.c
+	$(CC) -c $(CFLAGS) $(SRC)/trace.c
 rinex.o    : $(SRC)/rinex.c
 	$(CC) -c $(CFLAGS) $(SRC)/rinex.c
 rtkpos.o   : $(SRC)/rtkpos.c

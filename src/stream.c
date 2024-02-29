@@ -77,6 +77,7 @@
 *-----------------------------------------------------------------------------*/
 #include <ctype.h>
 #include "rtklib.h"
+#include "trace.h"
 #ifndef WIN32
 #include <fcntl.h>
 #include <unistd.h>

@@ -25,6 +25,7 @@
 *                           add output of velocity estimation error in estvel()
 *-----------------------------------------------------------------------------*/
 #include "rtklib.h"
+#include "trace.h"
 
 /* constants/macros ----------------------------------------------------------*/
 

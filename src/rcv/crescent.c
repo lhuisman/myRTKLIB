@@ -29,6 +29,7 @@
 *                           udpate reference [3]
 *-----------------------------------------------------------------------------*/
 #include "rtklib.h"
+#include "trace.h"
 
 #define CRESSYNC    "$BIN"      /* hemis bin sync code */
 
