@@ -28,6 +28,7 @@ SOURCES += \
     ../appcmn_qt/refdlg.cpp \
     ../appcmn_qt/mntpoptdlg.cpp \
     ../appcmn_qt/keydlg.cpp \
+    ../appcmn_qt/helper.cpp \
     mondlg.cpp
 
 HEADERS  += \ 
@@ -44,6 +45,7 @@ HEADERS  += \
     ../appcmn_qt/refdlg.h \
     ../appcmn_qt/mntpoptdlg.h \
     ../appcmn_qt/keydlg.h \
+    ../appcmn_qt/helper.h \
     mondlg.h
 
 FORMS    += \ 
@@ -62,7 +64,8 @@ FORMS    += \
     ../appcmn_qt/keydlg.ui \
     mondlg.ui
 
-RESOURCES +=  \
-    strsvr_qt.qrc
+RESOURCES += \
+    ../appcmn_qt/appcmn_qt.qrc \
+    ../icon/resources.qrc
 
 RC_FILE = strsvr_qt.rc
