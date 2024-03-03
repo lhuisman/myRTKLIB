@@ -62,3 +62,8 @@ icons.path   = $$INSTALLROOT/share/pixmaps/
 icons.files += ../icon/srctblbrows.png
 INSTALLS    += icons
 
+win32 {
+CONFIG(release,debug|release) {
+QMAKE_POST_LINK += $$QMAKE_COPY $$shell_path($$OUT_PWD/release/$${TARGET}.exe) $$shell_path($$PKGDIR/packages/com.rtklib.$${TARGET}/data)
+}
+}
