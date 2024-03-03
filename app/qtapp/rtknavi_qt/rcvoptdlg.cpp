@@ -1,8 +1,7 @@
 //---------------------------------------------------------------------------
-// ported to Qt5 by Jens Reimann
-#include "rcvoptdlg.h"
-
+// ported to Qt by Jens Reimann
 #include <QShowEvent>
+#include "rcvoptdlg.h"
 
 #include <ui_rcvoptdlg.h>
 

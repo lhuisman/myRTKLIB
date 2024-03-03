@@ -1,14 +1,4 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2016-02-09T19:09:57
-#
-#-------------------------------------------------
-
 QT += core gui widgets concurrent
-
-greaterThan(QT_MAJOR_VERSION, 5) {  # QT 6
-    QT += quickwidgets
-}
 
 include(../qtapp.pri)
 
@@ -20,6 +10,9 @@ qtHaveModule(webenginewidgets) {
 INCLUDEPATH += ../../../src/ ../appcmn_qt
 
 TEMPLATE = app
+TARGET = srctblbrows_qt
+target.path = $$INSTALLROOT/bin
+INSTALLS += target
 
 SOURCES += \ 
     browsmain.cpp \
@@ -60,3 +53,12 @@ RESOURCES += \
     ../icon/resources.qrc
 
 RC_FILE = srctblbrows_qt.rc
+
+desktop.path   = $$INSTALLROOT/share/applications/
+desktop.files += srctblbrows_qt.desktop
+INSTALLS      += desktop
+
+icons.path   = $$INSTALLROOT/share/pixmaps/
+icons.files += ../icon/srctblbrows.png
+INSTALLS    += icons
+

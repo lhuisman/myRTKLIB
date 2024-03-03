@@ -1,5 +1,4 @@
 //---------------------------------------------------------------------------
-
 #include <QShowEvent>
 #include <QFile>
 #include <QAction>

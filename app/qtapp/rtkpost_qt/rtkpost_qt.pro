@@ -1,15 +1,11 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2016-01-30T18:29:59
-#
-#-------------------------------------------------
-
-QT       += widgets core gui
+QT += widgets core gui
 
 include(../qtapp.pri)
 
-TARGET = rtkpost_qt
 TEMPLATE = app
+TARGET = rtkpost_qt
+target.path = $$INSTALLROOT/bin
+INSTALLS += target
 
 INCLUDEPATH += ../../../src/ ../appcmn_qt ../widgets_qt
 
@@ -65,3 +61,11 @@ RESOURCES += \
     ../icon/resources.qrc
 
 RC_FILE = rtkpost_qt.rc
+
+desktop.path   = $$INSTALLROOT/share/applications/
+desktop.files += rtkpost_qt.desktop
+INSTALLS      += desktop
+
+icons.path   = $$INSTALLROOT/share/pixmaps/
+icons.files += ../icon/rtkpost.png
+INSTALLS    += icons

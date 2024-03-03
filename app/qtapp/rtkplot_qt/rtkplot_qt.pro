@@ -1,10 +1,4 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2016-01-30T18:29:59
-#
-#-------------------------------------------------
-
-QT       += widgets core gui xml serialport
+QT += widgets core gui xml serialport
 
 qtHaveModule(webenginewidgets) {
     QT += webenginewidgets
@@ -17,8 +11,10 @@ qtHaveModule(webenginewidgets) {
 }
 include(../qtapp.pri)
 
-TARGET = rtkplot_qt
 TEMPLATE = app
+TARGET = rtkplot_qt
+target.path = $$INSTALLROOT/bin
+INSTALLS += target
 
 INCLUDEPATH += ../../../src/ ../appcmn_qt
 
@@ -114,3 +110,11 @@ RESOURCES += \
     ../icon/resources.qrc
 
 RC_FILE = rtkplot_qt.rc
+
+desktop.path   = $$INSTALLROOT/share/applications/
+desktop.files += rtkplot_qt.desktop
+INSTALLS      += desktop
+
+icons.path   = $$INSTALLROOT/share/pixmaps/
+icons.files += ../icon/rtkplot.png
+INSTALLS    += icons

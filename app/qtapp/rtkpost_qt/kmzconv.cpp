@@ -1,12 +1,4 @@
 //---------------------------------------------------------------------------
-#include <string.h>
-
-#include "postmain.h"
-#include "kmzconv.h"
-#include "rtklib.h"
-#include "viewer.h"
-#include "helper.h"
-
 #include <QShowEvent>
 #include <QFileDialog>
 #include <QFileInfo>
@@ -16,7 +8,16 @@
 #include <QCompleter>
 #include <QAction>
 
+#include <string.h>
+
+#include "postmain.h"
+#include "viewer.h"
+#include "helper.h"
+#include "kmzconv.h"
+
 #include "ui_kmzconv.h"
+
+#include "rtklib.h"
 
 #ifdef Q_OS_WIN
 #define GOOGLE_EARTH "C:\\Program Files\\Google\\Google Earth Pro\\client\\googleearth.exe"

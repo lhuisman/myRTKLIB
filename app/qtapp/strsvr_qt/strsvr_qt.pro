@@ -1,17 +1,13 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2016-02-09T19:09:57
-#
-#-------------------------------------------------
-
-QT       += core gui widgets serialport
+QT += core gui widgets serialport
 
 include(../qtapp.pri)
 
 INCLUDEPATH += ../../../src/ ../appcmn_qt
 
-TARGET = strsvr_qt
 TEMPLATE = app
+TARGET = strsvr_qt
+target.path = $$INSTALLROOT/bin
+INSTALLS += target
 
 SOURCES += \  
     convdlg.cpp \
@@ -69,3 +65,12 @@ RESOURCES += \
     ../icon/resources.qrc
 
 RC_FILE = strsvr_qt.rc
+
+desktop.path   = $$INSTALLROOT/share/applications/
+desktop.files += strsvr_qt.desktop
+INSTALLS      += desktop
+
+icons.path   = $$INSTALLROOT/share/pixmaps/
+icons.files += ../icon/strsvr.png
+INSTALLS    += icons
+

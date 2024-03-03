@@ -1,13 +1,11 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2016-01-30T18:29:59
-#
-#-------------------------------------------------
+QT += widgets core gui
 
-QT       += widgets core gui
+include(../../../RTKLib.pri)
 
-TARGET = rtklaunch_qt
 TEMPLATE = app
+TARGET = rtklaunch_qt
+target.path = $$INSTALLROOT/bin
+INSTALLS += target
 
 INCLUDEPATH += ../../../src/
 
@@ -28,4 +26,12 @@ RESOURCES += \
     ../appcmn_qt/appcmn_qt.qrc \
     ../icon/resources.qrc
 
-CONFIG += c++11
+CONFIG += c++11 debug
+
+desktop.path   = $$INSTALLROOT/share/applications/
+desktop.files += rtklaunch_qt.desktop
+INSTALLS      += desktop
+
+icons.path   = $$INSTALLROOT/share/pixmaps/
+icons.files += ../icon/rtklaunch.png
+INSTALLS    += icons
