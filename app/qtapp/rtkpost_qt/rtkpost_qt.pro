@@ -12,7 +12,6 @@ INCLUDEPATH += ../../../src/ ../appcmn_qt ../widgets_qt
 SOURCES += \
     kmzconv.cpp \
     postmain.cpp \
-    #postopt.cpp \
     rtkpost.cpp \
     ../widgets_qt/scientificspinbox.cpp \
     ../appcmn_qt/navi_post_opt.cpp \
@@ -29,7 +28,6 @@ SOURCES += \
 HEADERS  += \
     kmzconv.h \
     postmain.h \
-    #postopt.h \
     ../widgets_qt/scientificspinbox.h \
     ../appcmn_qt/navi_post_opt.h \
     ../appcmn_qt/keydlg.h \
@@ -45,7 +43,6 @@ HEADERS  += \
 FORMS    += \ 
     kmzconv.ui \
     postmain.ui \
-    #postopt.ui \
     ../appcmn_qt/navi_post_opt.ui \
     ../appcmn_qt/keydlg.ui \
     ../appcmn_qt/freqdlg.ui \
@@ -69,3 +66,9 @@ INSTALLS      += desktop
 icons.path   = $$INSTALLROOT/share/pixmaps/
 icons.files += ../icon/rtkpost.png
 INSTALLS    += icons
+
+win32 {
+CONFIG(release,debug|release) {
+QMAKE_POST_LINK += $$QMAKE_COPY $$shell_path($$OUT_PWD/release/$${TARGET}.exe) $$shell_path($$PKGDIR/packages/com.rtklib.$${TARGET}/data)
+}
+}

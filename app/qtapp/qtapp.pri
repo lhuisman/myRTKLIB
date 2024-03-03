@@ -24,5 +24,3 @@ localbuild {
 }
 
 PRE_TARGETDEPS = $${ROOT_DIRECTORY}/src/rtklib.h
-
-CONFIG += debug
