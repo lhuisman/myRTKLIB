@@ -16,7 +16,6 @@ IERS_MODEL {
 
 win* {
     LIBS += -lws2_32 -lwinmm
-    PKGDIR = $$ROOT_DIRECTORY/app/qtapp/packaging/
 }
 
 

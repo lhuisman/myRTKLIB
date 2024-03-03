@@ -6,8 +6,8 @@
     <Publisher>RtkLib</Publisher>
     <ProductUrl>https://www.rtklib.com/</ProductUrl>
     <StartMenuDir>RtkLib</StartMenuDir>
-    <InstallerApplicationIcon>rktlib_icon</InstallerApplicationIcon>
-    <InstallerWindowIcon>rtklib</InstallerWindowIcon>
-    <Logo>rtklib_logo</Logo>
+    <InstallerApplicationIcon>rtklib_icon</InstallerApplicationIcon>
+    <InstallerWindowIcon>rtklib.png</InstallerWindowIcon>
+    <Logo>rtklib_logo.png</Logo>
     <!--<TargetDir>@HomeDir@/</TargetDir>-->
 </Installer>
