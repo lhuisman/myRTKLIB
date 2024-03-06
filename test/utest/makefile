@@ -1,8 +1,8 @@
 # makefile for rtklib unit test
 
 SRC    = ../../src
-#CFLAGS = -Wall -O3 -ansi -pedantic -I$(SRC) -DENAGLO
-CFLAGS = -Wall -O3 -ansi -pedantic -I$(SRC) -DTRACE -DENAGLO -DENAGAL -DENAQZS
+#CFLAGS = -std=c99 -Wall -O3 -pedantic -I$(SRC) -DENAGLO
+CFLAGS = -std=c99 -Wall -O3 -pedantic -I$(SRC) -DTRACE -DENAGLO -DENAGAL -DENAQZS
 LDLIBS = -lm -llapack -lblas
 CC = gcc
 

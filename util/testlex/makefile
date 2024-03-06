@@ -1,8 +1,8 @@
 # makefile for testlex
 
 SRC    = ../../src
-#CFLAGS = -Wall -O3 -ansi -pedantic -I$(SRC) -DTRACE -DENAQZS -DENAGLO -DENALEX
-CFLAGS = -Wall -O3 -ansi -pedantic -I$(SRC) -DTRACE -DENAQZS -DENAGLO
+#CFLAGS = -std=c99 -Wall -O3 -pedantic -I$(SRC) -DTRACE -DENAQZS -DENAGLO -DENALEX
+CFLAGS = -std=c99 -Wall -O3 -pedantic -I$(SRC) -DTRACE -DENAQZS -DENAGLO
 LDFLAGS= -lm -lrt
 
 all        : convlex dumplex dumpssr outlexion

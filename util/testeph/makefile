@@ -1,7 +1,7 @@
 # makefile for diffeph dumpssr
 
 SRC    = ../../src
-CFLAGS = -Wall -O3 -ansi -pedantic -I$(SRC) -DTRACE -DENAQZS -DENAGLO -DEXTLEX
+CFLAGS = -std=c99 -Wall -O3 -pedantic -I$(SRC) -DTRACE -DENAQZS -DENAGLO -DEXTLEX
 LDFLAGS = -lm
 
 all        : diffeph dumpssr
