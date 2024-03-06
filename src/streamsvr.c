@@ -33,6 +33,7 @@
 *                           use integer types in stdint.h
 *-----------------------------------------------------------------------------*/
 #include "rtklib.h"
+#include "trace.h"
 
 /* test observation data message ---------------------------------------------*/
 static int is_obsmsg(int msg)

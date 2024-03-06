@@ -2,6 +2,7 @@
 // plotcmn.c: rtkplot common functions
 //---------------------------------------------------------------------------
 #include "rtklib.h"
+#include "trace.h"
 #include "plotmain.h"
 
 #define SQR(x)  ((x)*(x))

@@ -11,6 +11,7 @@
  * history : 2017/01/30  1.0  begin writing
   *-----------------------------------------------------------------------------*/
 #include "rtklib.h"
+#include "trace.h"
 
 #include <math.h>
 #include <stdint.h>

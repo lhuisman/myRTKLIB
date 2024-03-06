@@ -11,6 +11,7 @@
 *           2016/07/31 1.1  add boundary of polyline and polygon
 *-----------------------------------------------------------------------------*/
 #include "rtklib.h"
+#include "trace.h"
 
 #define SHAPE_CODE  9994        /* shapefile code */
 

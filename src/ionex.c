@@ -17,6 +17,7 @@
 *           2014/02/22 1.2 fix problem on compiled as C++
 *-----------------------------------------------------------------------------*/
 #include "rtklib.h"
+#include "trace.h"
 
 #define SQR(x)      ((x)*(x))
 #define VAR_NOTEC   SQR(30.0)   /* variance of no tec */

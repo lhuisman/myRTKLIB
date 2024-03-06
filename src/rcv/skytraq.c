@@ -45,6 +45,7 @@
 *                           suppress warnings
 *-----------------------------------------------------------------------------*/
 #include "rtklib.h"
+#include "trace.h"
 
 #define STQSYNC1    0xA0        /* skytraq binary sync code 1 */
 #define STQSYNC2    0xA1        /* skytraq binary sync code 2 */

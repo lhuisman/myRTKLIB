@@ -38,6 +38,7 @@
 *           2020/11/30  1.11 rewritten from scratch to support mosaic-X5 [1]
 *-----------------------------------------------------------------------------*/
 #include "rtklib.h"
+#include "trace.h"
 
 #define SBF_SYNC1       0x24    /* SBF block header 1 */
 #define SBF_SYNC2       0x40    /* SBF block header 2 */

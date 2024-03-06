@@ -14,7 +14,7 @@ DEFINES -= UNICODE TRACE
 include(../RTKLib.pri)
 
 *g++* {
-    QMAKE_CFLAGS += -Wall -ansi -pedantic -Wno-unused-but-set-variable -g
+    QMAKE_CFLAGS += -std=c99 -Wall -pedantic -Wno-unused-but-set-variable -g
 }
 
 win* {
@@ -33,6 +33,7 @@ macx {
 DESTDIR = ../lib
 
 SOURCES += rtkcmn.c \
+    trace.c \
     convkml.c \
     convrnx.c \
     convgpx.c \
@@ -74,7 +75,7 @@ SOURCES += rtkcmn.c \
     rcv/swiftnav.c \
     rcv/ublox.c 
 
-HEADERS += rtklib.h
+HEADERS += rtklib.h trace.h
 
 unix {
     target.path = /usr/lib

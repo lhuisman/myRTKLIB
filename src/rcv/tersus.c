@@ -12,6 +12,7 @@
 *           2019/05/10 1.1  save galileo E5b data to obs index 2
 *-----------------------------------------------------------------------------*/
 #include "rtklib.h"
+#include "trace.h"
 
 #define TERSUSSYNC1 0xAA        /* tersus message start sync code 1 */
 #define TERSUSSYNC2 0x44        /* tersus message start sync code 2 */

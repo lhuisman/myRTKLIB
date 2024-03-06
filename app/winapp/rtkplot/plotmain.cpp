@@ -43,6 +43,7 @@
 #pragma resource "*.dfm"
 
 #include "rtklib.h"
+#include "trace.h"
 #include "plotmain.h"
 #include "plotopt.h"
 #include "refdlg.h"

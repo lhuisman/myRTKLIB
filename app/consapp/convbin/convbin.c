@@ -50,6 +50,7 @@
 #include <stdarg.h>
 #include <sys/stat.h>
 #include "rtklib.h"
+#include "trace.h"
 
 #define PRGNAME   "CONVBIN"
 #define TRACEFILE "convbin.trace"
