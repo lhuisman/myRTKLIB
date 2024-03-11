@@ -611,6 +611,7 @@ static void *rtksvrthread(void *arg)
             else {
                 /* decode receiver raw/rtcm data */
                 fobs[i]=decoderaw(svr,i);
+                if (1==i&&svr->rtcm[1].staid>0) sol.refstationid=svr->rtcm[1].staid; 
             }
         }
         /* averaging single base pos */

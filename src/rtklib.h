@@ -879,9 +879,10 @@ typedef struct {        /* solution type */
     uint8_t ns;         /* number of valid satellites */
     float age;          /* age of differential (s) */
     float ratio;        /* AR ratio factor for validation */
-    float prev_ratio1;   /* previous initial AR ratio factor for validation */
-    float prev_ratio2;   /* previous final AR ratio factor for validation */
+    float prev_ratio1;  /* previous initial AR ratio factor for validation */
+    float prev_ratio2;  /* previous final AR ratio factor for validation */
     float thres;        /* AR ratio threshold for validation */
+    int refstationid;   /* ref station ID */
 } sol_t;
 
 typedef struct {        /* solution buffer type */
