@@ -62,7 +62,7 @@ static void tide_pl(const double *eu, const double *rp, double GMp,
     p=(3.0*sinl*sinl-1.0)/2.0;
     H2=0.6078-0.0006*p;
     L2=0.0847+0.0002*p;
-    a=dot(ep,eu,3);
+    a=dot3(ep,eu);
     dp=K2*3.0*L2*a;
     du=K2*(H2*(1.5*a*a-0.5)-3.0*L2*a*a);
     

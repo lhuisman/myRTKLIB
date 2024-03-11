@@ -1363,6 +1363,8 @@ EXPORT double *mat  (int n, int m);
 EXPORT int    *imat (int n, int m);
 EXPORT double *zeros(int n, int m);
 EXPORT double *eye  (int n);
+EXPORT double dot2(const double *a, const double *b);
+EXPORT double dot3(const double *a, const double *b);
 EXPORT double dot (const double *a, const double *b, int n);
 EXPORT double norm(const double *a, int n);
 EXPORT void cross3(const double *a, const double *b, double *c);

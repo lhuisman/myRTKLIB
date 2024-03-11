@@ -805,7 +805,7 @@ extern int peph2pos(gtime_t time, int sat, const nav_t *nav, int opt,
     }
     /* relativistic effect correction */
     if (dtss[0]!=0.0) {
-        dts[0]=dtss[0]-2.0*dot(rs,rs+3,3)/CLIGHT/CLIGHT;
+        dts[0]=dtss[0]-2.0*dot3(rs,rs+3)/CLIGHT/CLIGHT;
         dts[1]=(dtst[0]-dtss[0])/tt;
     }
     else { /* no precise clock */

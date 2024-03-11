@@ -220,7 +220,7 @@ static void testeclipse(const obsd_t *obs, int n, const nav_t *nav, double *rs)
         if (*type&&!strstr(type,"BLOCK IIA")) continue;
 
         /* sun-earth-satellite angle */
-        cosa=dot(rs+i*6,esun,3)/r;
+        cosa=dot3(rs+i*6,esun)/r;
         cosa=cosa<-1.0?-1.0:(cosa>1.0?1.0:cosa);
         ang=acos(cosa);
 
@@ -264,9 +264,9 @@ static int sat_yaw(gtime_t time, int sat, const char *type, int opt,
     cross3(rsun,n,p);
     if (!normv3(rs,es)||!normv3(rsun,esun)||!normv3(n,en)||
         !normv3(p,ep)) return 0;
-    beta=PI/2.0-acos(dot(esun,en,3));
-    E=acos(dot(es,ep,3));
-    mu=PI/2.0+(dot(es,esun,3)<=0?-E:E);
+    beta=PI/2.0-acos(dot3(esun,en));
+    E=acos(dot3(es,ep));
+    mu=PI/2.0+(dot3(es,esun)<=0?-E:E);
     if      (mu<-PI/2.0) mu+=2.0*PI;
     else if (mu>=PI/2.0) mu-=2.0*PI;
 
@@ -310,15 +310,15 @@ static int model_phw(gtime_t time, int sat, const char *type, int opt,
     cross3(ek,eys,eks);
     cross3(ek,eyr,ekr);
     for (i=0;i<3;i++) {
-        ds[i]=exs[i]-ek[i]*dot(ek,exs,3)-eks[i];
-        dr[i]=exr[i]-ek[i]*dot(ek,exr,3)+ekr[i];
+        ds[i]=exs[i]-ek[i]*dot3(ek,exs)-eks[i];
+        dr[i]=exr[i]-ek[i]*dot3(ek,exr)+ekr[i];
     }
-    cosp=dot(ds,dr,3)/norm(ds,3)/norm(dr,3);
+    cosp=dot3(ds,dr)/norm(ds,3)/norm(dr,3);
     if      (cosp<-1.0) cosp=-1.0;
     else if (cosp> 1.0) cosp= 1.0;
     ph=acos(cosp)/2.0/PI;
     cross3(ds,dr,drs);
-    if (dot(ek,drs,3)<0.0) ph=-ph;
+    if (dot3(ek,drs)<0.0) ph=-ph;
 
     *phw=ph+floor(*phw-ph+0.5); /* in cycle */
     return 1;
@@ -842,7 +842,7 @@ static void satantpcv(const double *rs, const double *rr, const pcv_t *pcv,
     }
     if (!normv3(ru,eu)||!normv3(rz,ez)) return;
 
-    cosa=dot(eu,ez,3);
+    cosa=dot3(eu,ez);
     cosa=cosa<-1.0?-1.0:(cosa>1.0?1.0:cosa);
     nadir=acos(cosa);
 
