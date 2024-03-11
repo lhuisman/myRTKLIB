@@ -1,8 +1,12 @@
-#ifndef RTKLIB_TRACE_H
-#define RTKLIB_TRACE_H
+/* temporarily move contents of this file to rtklib.h until build issues for
+   RTKCONV and RTKNAVI resolved */
+
+/* #ifndef RTKLIB_TRACE_H
+#define RTKLIB_TRACE_H   */
 
 /* debug trace functions -----------------------------------------------------*/
-#ifdef TRACE
+
+/* #ifdef TRACE
 #include "rtklib.h"
 
 #define trace(level, ...) do { if (level <= gettracelevel()) trace_impl(level, __VA_ARGS__); } while (0)
@@ -49,8 +53,9 @@ EXPORT void traceb_impl   (int level, const uint8_t *p, int n);
 #define tracehnav(level, ...) ((void)0)
 #define tracepeph(level, ...) ((void)0)
 #define tracepclk(level, ...) ((void)0)
-#define traceb(level, ...)    ((void)0)
+#define traceb(level, ...)    ((void)0)    */
 
-#endif /* TRACE */
+/* #endif  */ /* TRACE */
 
-#endif /* RTKLIB_TRACE_H */
+/* #endif  */ /* RTKLIB_TRACE_H */
+

@@ -31,6 +31,7 @@
 #include "keydlg.h"
 #include "convopt.h"
 #include "viewer.h"
+#include "trace.h"
 #include "rtklib.h"
 
 //---------------------------------------------------------------------------

@@ -18,6 +18,7 @@
 #include <inifiles.hpp>
 #endif
 
+#include "trace.h"
 #include "rtklib.h"
 //---------------------------------------------------------------------------
 class TMainWindow : public TForm
