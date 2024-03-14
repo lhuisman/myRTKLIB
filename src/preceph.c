@@ -67,7 +67,7 @@ static int8_t code_bias_ix[MAX_BIAS_SYS][MAXCODE];
 *        0 = reference code (0 bias)
 *        1-3 = table index for code
 * ----------------------------------------------------------------------------*/
-static void init_bias_ix() {
+static void init_bias_ix(void) {
     int i,j;
 
     for (i=0;i<MAX_BIAS_SYS;i++) for (j=0;j<MAXCODE;j++)
