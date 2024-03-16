@@ -361,8 +361,8 @@ static void outsolstat(rtk_t *rtk,const nav_t *nav)
                     week,tow,id,j+1,ssat->azel[0]*R2D,ssat->azel[1]*R2D,
                     ssat->resp[j],ssat->resc[j],ssat->vsat[j],ssat->snr_rover[j]*SNR_UNIT,
                     ssat->fix[j],ssat->slip[j]&3,ssat->lock[j],ssat->outc[j],
-                    ssat->slipc[j],ssat->rejc[j],rtk->x[k],
-                    rtk->P[k+k*rtk->nx],ssat->icbias[j]);
+                    ssat->slipc[j],ssat->rejc[j],k<rtk->nx?rtk->x[k]:0,
+                    k<rtk->nx?rtk->P[k+k*rtk->nx]:0,ssat->icbias[j]);
         }
     }
 }
