@@ -4,6 +4,10 @@
 /* #ifndef RTKLIB_TRACE_H
 #define RTKLIB_TRACE_H   */
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* debug trace functions -----------------------------------------------------*/
 
 /* #ifdef TRACE
@@ -57,5 +61,9 @@ EXPORT void traceb_impl   (int level, const uint8_t *p, int n);
 
 /* #endif  */ /* TRACE */
 
+#ifdef __cplusplus
+}
+#endif
+  
 /* #endif  */ /* RTKLIB_TRACE_H */
 
