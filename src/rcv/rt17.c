@@ -246,7 +246,6 @@
 
 /* Included files: */
 #include "rtklib.h"
-#include "trace.h"
 
 /* General purpose flag bits masks: */
 #define M_BIT0 (1 << 0)

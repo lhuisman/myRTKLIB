@@ -72,6 +72,7 @@ str2str.o  : $(SRC)/rtklib.h
 stream.o   : $(SRC)/rtklib.h
 streamsvr.o: $(SRC)/rtklib.h
 rtkcmn.o   : $(SRC)/rtklib.h
+trace.o    : $(SRC)/rtklib.h
 solution.o : $(SRC)/rtklib.h
 sbas.o     : $(SRC)/rtklib.h
 geoid.o    : $(SRC)/rtklib.h

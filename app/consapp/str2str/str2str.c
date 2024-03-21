@@ -32,7 +32,6 @@
 #include <signal.h>
 #include <unistd.h>
 #include "rtklib.h"
-#include "trace.h"
 
 #define PRGNAME     "str2str"          /* program name */
 #define MAXSTR      5                  /* max number of streams */

@@ -7,7 +7,6 @@
 * history : 2012/12/12  1.0 new
 *-----------------------------------------------------------------------------*/
 #include "rtklib.h"
-#include "trace.h"
 
 static const char rcsid[]="$Id:$";
 

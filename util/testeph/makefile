@@ -12,7 +12,7 @@ dumpssr    : rtkcmn.o trace.o preceph.o rtcm.o rtcm2.o rtcm3.o
 
 rtkcmn.o   : $(SRC)/rtklib.h $(SRC)/rtkcmn.c
 	$(CC) -c $(CFLAGS) $(SRC)/rtkcmn.c
-trace.o   : $(SRC)/trace.h $(SRC)/trace.c
+trace.o   : $(SRC)/rtklib.h $(SRC)/trace.c
 	$(CC) -c $(CFLAGS) $(SRC)/trace.c
 ephemeris.o: $(SRC)/rtklib.h $(SRC)/ephemeris.c
 	$(CC) -c $(CFLAGS) $(SRC)/ephemeris.c

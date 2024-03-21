@@ -75,6 +75,7 @@ tides.o    : $(SRC)/tides.c
 
 rnx2rtkp.o : $(SRC)/rtklib.h
 rtkcmn.o   : $(SRC)/rtklib.h
+trace.o    : $(SRC)/rtklib.h
 rinex.o    : $(SRC)/rtklib.h
 rtkpos.o   : $(SRC)/rtklib.h
 postpos.o  : $(SRC)/rtklib.h

@@ -13,7 +13,6 @@
 #include <QFileInfo>
 
 #include "rtklib.h"
-#include "trace.h"
 #include "plotmain.h"
 #include "mapoptdlg.h"
 #include "pntdlg.h"

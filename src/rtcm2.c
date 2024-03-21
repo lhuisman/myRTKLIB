@@ -11,7 +11,6 @@
 *           2014/10/21 1.1  fix problem on week rollover in rtcm 2 type 14
 *-----------------------------------------------------------------------------*/
 #include "rtklib.h"
-#include "trace.h"
 
 /* adjust hourly rollover of rtcm 2 time -------------------------------------*/
 static void adjhour(rtcm_t *rtcm, double zcnt)

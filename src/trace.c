@@ -1,6 +1,5 @@
 /* debug trace functions -----------------------------------------------------*/
 #ifdef TRACE
-#include "trace.h"
 #include "rtklib.h"
 
 static FILE *fp_trace = NULL;    /* file pointer of trace */

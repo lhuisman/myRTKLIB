@@ -50,7 +50,6 @@
 #include <netdb.h>
 #include <errno.h>
 #include "rtklib.h"
-#include "trace.h"
 #include "vt.h"
 
 #define PRGNAME     "rtkrcv"            /* program name */

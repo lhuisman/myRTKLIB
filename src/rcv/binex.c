@@ -32,7 +32,6 @@
 *                           use integer types in stdint.h
 *-----------------------------------------------------------------------------*/
 #include "rtklib.h"
-#include "trace.h"
 
 #define BNXSYNC1    0xC2    /* BINEX sync (little-endian,regular-crc) */
 #define BNXSYNC2    0xE2    /* BINEX sync (big-endian   ,regular-crc) */

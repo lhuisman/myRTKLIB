@@ -29,7 +29,6 @@
 *                             pos2-gloarmode,
 *-----------------------------------------------------------------------------*/
 #include "rtklib.h"
-#include "trace.h"
 
 /* system options buffer -----------------------------------------------------*/
 static prcopt_t prcopt_;

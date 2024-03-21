@@ -11,7 +11,6 @@
 
 *-----------------------------------------------------------------------------*/
 #include "rtklib.h"
-#include "trace.h"
 
 #define CNAVSYNC1   0xAA        /* cnav message start sync code 1 */
 #define CNAVSYNC2   0x44        /* cnav message start sync code 2 */

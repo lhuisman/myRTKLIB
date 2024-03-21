@@ -22,7 +22,6 @@
 *           2020/11/30 1.9  use integer type in stdint.h
 *-----------------------------------------------------------------------------*/
 #include "rtklib.h"
-#include "trace.h"
 
 #define NVSSYNC     0x10        /* nvs message sync code 1 */
 #define NVSENDMSG   0x03        /* nvs message sync code 1 */

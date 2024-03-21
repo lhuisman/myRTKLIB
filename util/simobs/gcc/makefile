@@ -27,7 +27,7 @@ rinex.o     : $(SRC)/rinex.c
 	$(CC) -c $(CFLAGS) $(SRC)/rinex.c
 rtkcmn.o    : $(SRC)/rtkcmn.c
 	$(CC) -c $(CFLAGS) $(SRC)/rtkcmn.c
-trace.o   : $(SRC)/trace.h $(SRC)/trace.c
+trace.o   : $(SRC)/rtklib.h $(SRC)/trace.c
 	$(CC) -c $(CFLAGS) $(SRC)/trace.c
 sbas.o      : $(SRC)/sbas.c
 	$(CC) -c $(CFLAGS) $(SRC)/sbas.c

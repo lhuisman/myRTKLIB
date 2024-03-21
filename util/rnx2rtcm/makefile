@@ -11,7 +11,7 @@ rnx2rtcm.o : rnx2rtcm.c
 	$(CC) -c $(CFLAGS) rnx2rtcm.c
 rtkcmn.o   : $(SRC)/rtkcmn.c
 	$(CC) -c $(CFLAGS) $(SRC)/rtkcmn.c
-trace.o   : $(SRC)/trace.h $(SRC)/trace.c
+trace.o   : $(SRC)/rtklib.h $(SRC)/trace.c
 	$(CC) -c $(CFLAGS) $(SRC)/trace.c
 rinex.o    : $(SRC)/rinex.c
 	$(CC) -c $(CFLAGS) $(SRC)/rinex.c

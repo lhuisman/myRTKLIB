@@ -30,6 +30,7 @@ convgpx.o  : $(SRC)/rtklib.h
 solution.o : $(SRC)/rtklib.h
 geoid.o    : $(SRC)/rtklib.h
 rtkcmn.o   : $(SRC)/rtklib.h
+trace.o    : $(SRC)/rtklib.h
 preceph.o  : $(SRC)/rtklib.h
 
 install:

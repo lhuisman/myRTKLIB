@@ -18,7 +18,7 @@ t_lambda   : t_lambda.o rtkcmn.o trace.o lambda.o preceph.o
 t_atmos    : t_atmos.o rtkcmn.o trace.o preceph.o
 t_misc     : t_misc.o rtkcmn.o trace.o preceph.o
 t_preceph  : t_preceph.o rtkcmn.o trace.o preceph.o rinex.o ephemeris.o sbas.o
-t_gloeph   : t_gloeph.o rtkcmn.o trace.o rinex.o ephemeris.o sbas.o preceph.o 
+t_gloeph   : t_gloeph.o rtkcmn.o trace.o rinex.o ephemeris.o sbas.o preceph.o
 t_geoid    : t_geoid.o rtkcmn.o trace.o preceph.o geoid.o
 t_ppp      : t_ppp.o rtkcmn.o trace.o ephemeris.o preceph.o sbas.o ionex.o pntpos.o ppp.o ppp_ar.o
 t_ppp      : lambda.o tides.o
@@ -27,7 +27,7 @@ t_tle      : t_tle.o rtkcmn.o trace.o rinex.o ephemeris.o sbas.o preceph.o tle.o
 
 rtkcmn.o   : $(SRC)/rtklib.h $(SRC)/rtkcmn.c
 	$(CC) -c $(CFLAGS) $(SRC)/rtkcmn.c
-trace.o   : $(SRC)/trace.c
+trace.o   : $(SRC)/rtklib.h $(SRC)/trace.c
 	$(CC) -c $(CFLAGS) $(SRC)/trace.c
 rinex.o    : $(SRC)/rtklib.h $(SRC)/rinex.c
 	$(CC) -c $(CFLAGS) $(SRC)/rinex.c

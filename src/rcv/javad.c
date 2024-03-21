@@ -53,7 +53,6 @@
 *                           use integer types in stdint.h
 *-----------------------------------------------------------------------------*/
 #include "rtklib.h"
-#include "trace.h"
 
 #define PREAMB_CNAV 0x8B
 

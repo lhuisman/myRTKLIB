@@ -6,7 +6,6 @@
 *-----------------------------------------------------------------------------*/
 #include <stdio.h>
 #include "rtklib.h"
-#include "trace.h"
 
 static const char *usage[]={
 "Synopsis",

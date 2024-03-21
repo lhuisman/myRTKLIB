@@ -19,7 +19,6 @@
 #include <sys/types.h>
 
 #include "rtklib.h"
-#include "trace.h"
 
 #define FTP_CMD     "wget"          /* FTP/HTTP command */
 #define FTP_TIMEOUT 60              /* FTP/HTTP timeout (s) */

@@ -17,7 +17,6 @@
 *           2020/11/30 1.3  fix problem on duplicated names in a satellite
 *-----------------------------------------------------------------------------*/
 #include "rtklib.h"
-#include "trace.h"
 
 /* SGP4 model propagator by STR#3 (ref [1] sec.6,11) -------------------------*/
 

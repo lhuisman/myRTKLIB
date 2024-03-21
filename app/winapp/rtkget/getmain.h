@@ -19,7 +19,6 @@
 #endif
 #include "viewer.h"
 #include "rtklib.h"
-#include "trace.h"
 
 //---------------------------------------------------------------------------
 class TMainForm : public TForm

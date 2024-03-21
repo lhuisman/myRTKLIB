@@ -75,7 +75,7 @@ SOURCES += rtkcmn.c \
     rcv/swiftnav.c \
     rcv/ublox.c 
 
-HEADERS += rtklib.h trace.h
+HEADERS += rtklib.h
 
 unix {
     target.path = /usr/lib

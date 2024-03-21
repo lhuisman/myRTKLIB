@@ -77,7 +77,6 @@
 *                           use integer types in stdint.h
 *-----------------------------------------------------------------------------*/
 #include "rtklib.h"
-#include "trace.h"
 
 #define UBXSYNC1    0xB5        /* ubx message sync code 1 */
 #define UBXSYNC2    0x62        /* ubx message sync code 2 */

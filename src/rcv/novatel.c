@@ -75,7 +75,6 @@
 *                           use integer types in stdint.h
 *-----------------------------------------------------------------------------*/
 #include "rtklib.h"
-#include "trace.h"
 
 #define OEM4SYNC1       0xAA    /* oem7/6/4 message start sync code 1 */
 #define OEM4SYNC2       0x44    /* oem7/6/4 message start sync code 2 */
