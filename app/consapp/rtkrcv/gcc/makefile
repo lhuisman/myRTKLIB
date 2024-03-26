@@ -91,6 +91,7 @@ septentrio.o: $(SRC)/rcv/septentrio.c
 
 rtkrcv.o   : $(SRC)/rtklib.h ../vt.h
 rtkcmn.o   : $(SRC)/rtklib.h
+trace.o    : $(SRC)/rtklib.h
 rtksvr.o   : $(SRC)/rtklib.h
 rtkpos.o   : $(SRC)/rtklib.h
 geoid.o    : $(SRC)/rtklib.h

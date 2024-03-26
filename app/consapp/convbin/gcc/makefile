@@ -75,6 +75,7 @@ swiftnav.o: $(SRC)/rcv/septentrio.c
 
 convbin.o  : $(SRC)/rtklib.h
 rtkcmn.o   : $(SRC)/rtklib.h
+trace.o    : $(SRC)/rtklib.h
 rinex.o    : $(SRC)/rtklib.h
 sbas.o     : $(SRC)/rtklib.h
 preceph.o  : $(SRC)/rtklib.h

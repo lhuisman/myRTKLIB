@@ -46,7 +46,6 @@
 #include "convopt.h"
 #include "viewer.h"
 #include "rtklib.h"
-#include "trace.h"
 
 //---------------------------------------------------------------------------
 

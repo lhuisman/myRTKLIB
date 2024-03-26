@@ -13,7 +13,7 @@ genstec    : genstec.o rtkcmn.o trace.o ephemeris.o preceph.o sbas.o rinex.o
 
 rtkcmn.o   : $(RTKLIBDIR)/rtklib.h $(RTKLIBDIR)/rtkcmn.c
 	$(CC) -c $(CFLAGS) $(RTKLIBDIR)/rtkcmn.c
-trace.o   : $(SRC)/trace.h $(SRC)/trace.c
+trace.o   : $(SRC)/rtklib.h $(SRC)/trace.c
 	$(CC) -c $(CFLAGS) $(SRC)/trace.c
 ephemeris.o: $(RTKLIBDIR)/ephemeris.c
 	$(CC) -c $(CFLAGS) $(RTKLIBDIR)/ephemeris.c

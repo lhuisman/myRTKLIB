@@ -8,7 +8,6 @@
  *           2023/09/26  Major revision
  *-----------------------------------------------------------------------------*/
 #include "rtklib.h"
-#include "trace.h"
 
 #define PROGNAME    "SIMOBS"            /* program name */
 

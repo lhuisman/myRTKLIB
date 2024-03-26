@@ -46,7 +46,6 @@
 *                           use integer types in stdint.h
 *-----------------------------------------------------------------------------*/
 #include "rtklib.h"
-#include "trace.h"
 
 /* function prototypes -------------------------------------------------------*/
 extern int decode_rtcm2(rtcm_t *rtcm);

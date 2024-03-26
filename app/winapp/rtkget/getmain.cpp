@@ -16,7 +16,6 @@
 #pragma hdrstop
 
 #include "rtklib.h"
-#include "trace.h"
 #include "timedlg.h"
 #include "keydlg.h"
 #include "aboutdlg.h"

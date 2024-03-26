@@ -14,7 +14,7 @@ outlexion  : rtkcmn.o trace.o preceph.o qzslex.o
 
 rtkcmn.o   : $(SRC)/rtklib.h $(SRC)/rtkcmn.c
 	$(CC) -c $(CFLAGS) $(SRC)/rtkcmn.c
-trace.o   : $(SRC)/trace.h $(SRC)/trace.c
+trace.o   : $(SRC)/rtklib.h $(SRC)/trace.c
 	$(CC) -c $(CFLAGS) $(SRC)/trace.c
 preceph.o  : $(SRC)/rtklib.h $(SRC)/preceph.c
 	$(CC) -c $(CFLAGS) $(SRC)/preceph.c

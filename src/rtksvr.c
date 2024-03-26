@@ -44,7 +44,6 @@
 *                            use integer types in stdint.h
 *-----------------------------------------------------------------------------*/
 #include "rtklib.h"
-#include "trace.h"
 
 #define MIN_INT_RESET   30000   /* mininum interval of reset command (ms) */
 

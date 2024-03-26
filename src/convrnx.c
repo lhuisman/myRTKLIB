@@ -45,7 +45,6 @@
 *                           use integer types in stdint.h
 *-----------------------------------------------------------------------------*/
 #include "rtklib.h"
-#include "trace.h"
 
 #define NOUTFILE        9       /* number of output files */
 #define NSATSYS         7       /* number of satellite systems */

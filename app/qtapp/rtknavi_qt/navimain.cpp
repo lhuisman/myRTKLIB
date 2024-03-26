@@ -47,7 +47,6 @@
 #include <QCommandLineParser>
 
 #include "rtklib.h"
-#include "trace.h"
 #include "instrdlg.h"
 #include "outstrdlg.h"
 #include "logstrdlg.h"

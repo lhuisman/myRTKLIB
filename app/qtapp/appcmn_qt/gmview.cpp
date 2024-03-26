@@ -16,7 +16,6 @@
 
 #include "gmview.h"
 #include "rtklib.h"
-#include "trace.h"
 
 #include "gm_template.h"
 

@@ -155,7 +155,6 @@
 #include <sys/types.h>
 #endif
 #include "rtklib.h"
-#include "trace.h"
 
 /* constants -----------------------------------------------------------------*/
 
