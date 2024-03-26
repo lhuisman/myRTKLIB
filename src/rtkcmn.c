@@ -1418,13 +1418,20 @@ extern void matprint(const double A[], int n, int m, int p, int q)
 *-----------------------------------------------------------------------------*/
 extern double str2num(const char *s, int i, int n)
 {
-    double value;
     char str[256],*p=str;
-    
-    if (i<0||(int)strlen(s)<i||(int)sizeof(str)-1<n) return 0.0;
-    for (s+=i;*s&&--n>=0;s++) *p++=*s=='d'||*s=='D'?'E':*s;
+
+    if (i<0||(int)sizeof(str)-1<n) return 0.0;
+    /* Special case i==0, skipping the strlen check.
+     * Note: Could usefully use strnlen(s,i) here */
+    if (i>0&&(int)strlen(s)<i) return 0.0;
+
+    for (s+=i;--n>=0;s++) {
+        char c=*s;
+        if (!c) break;
+        *p++=((c|0x20)=='d')?'E':c;
+    }
     *p='\0';
-    return sscanf(str,"%lf",&value)==1?value:0.0;
+    return strtod(str,NULL);
 }
 /* string to time --------------------------------------------------------------
 * convert substring in string to gtime_t struct
