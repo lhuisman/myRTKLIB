@@ -228,7 +228,7 @@ static int decode_nmearmc(char **val, int n, sol_t *sol)
     sol->stat=mode=='D'?SOLQ_DGPS:SOLQ_SINGLE;
     sol->ns=0;
     
-    sol->type=0; /* postion type = xyz */
+    sol->type=0; /* position type = xyz */
     
     trace(5,"decode_nmearmc: %s rr=%.3f %.3f %.3f stat=%d ns=%d vel=%.2f dir=%.0f ang=%.0f mew=%c mode=%c\n",
           time_str(sol->time,0),sol->rr[0],sol->rr[1],sol->rr[2],sol->stat,sol->ns,
@@ -312,7 +312,7 @@ static int decode_nmeagga(char **val, int n, sol_t *sol)
     sol->ns=nrcv;
     sol->age=(float)age;
     
-    sol->type=0; /* postion type = xyz */
+    sol->type=0; /* position type = xyz */
     
     trace(5,"decode_nmeagga: %s rr=%.3f %.3f %.3f stat=%d ns=%d hdop=%.1f ua=%c um=%c\n",
           time_str(sol->time,0),sol->rr[0],sol->rr[1],sol->rr[2],sol->stat,sol->ns,
@@ -470,7 +470,7 @@ static int decode_solxyz(char *buff, const solopt_t *opt, sol_t *sol)
         }
         covtosol_vel(P,sol);
     }
-    sol->type=0; /* postion type = xyz */
+    sol->type=0; /* position type = xyz */
     
     if (MAXSOLQ<sol->stat) sol->stat=SOLQ_NONE;
     return 1;
@@ -536,7 +536,7 @@ static int decode_solllh(char *buff, const solopt_t *opt, sol_t *sol)
         covecef(pos,Q,P);
         covtosol_vel(P,sol);
     }
-    sol->type=0; /* postion type = xyz */
+    sol->type=0; /* position type = xyz */
     
     if (MAXSOLQ<sol->stat) sol->stat=SOLQ_NONE;
     return 1;
@@ -588,7 +588,7 @@ static int decode_solenu(char *buff, const solopt_t *opt, sol_t *sol)
         }
         covtosol_vel(Q,sol);
     }
-    sol->type=1; /* postion type = enu */
+    sol->type=1; /* position type = enu */
     
     if (MAXSOLQ<sol->stat) sol->stat=SOLQ_NONE;
     return 1;
@@ -1317,7 +1317,7 @@ extern int outnmea_gga(uint8_t *buff, const sol_t *sol)
 {
     gtime_t time;
     double h,ep[6],pos[3],dms1[3],dms2[3],dop=1.0;
-    int solq,refid=0;
+    int solq;
     char *p=(char *)buff,*q,sum;
     
     trace(3,"outnmea_gga:\n");
@@ -1341,7 +1341,7 @@ extern int outnmea_gga(uint8_t *buff, const sol_t *sol)
                "%d,%02d,%.1f,%.3f,M,%.3f,M,%.1f,%04d",
                NMEA_TID,ep[3],ep[4],ep[5],dms1[0],dms1[1]+dms1[2]/60.0,
                pos[0]>=0?"N":"S",dms2[0],dms2[1]+dms2[2]/60.0,pos[1]>=0?"E":"W",
-               solq,sol->ns,dop,pos[2]-h,h,sol->age,refid);
+               solq,sol->ns,dop,pos[2]-h,h,sol->age,sol->refstationid);
     for (q=(char *)buff+1,sum=0;*q;q++) sum^=*q; /* check-sum */
     p+=sprintf(p,"*%02X\r\n",sum);
     return (int)(p-(char *)buff);

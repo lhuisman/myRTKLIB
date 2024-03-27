@@ -219,7 +219,7 @@ static void testeclipse(const obsd_t *obs, int n, const nav_t *nav, double *rs)
         if (*type&&!strstr(type,"BLOCK IIA")) continue;
 
         /* sun-earth-satellite angle */
-        cosa=dot(rs+i*6,esun,3)/r;
+        cosa=dot3(rs+i*6,esun)/r;
         cosa=cosa<-1.0?-1.0:(cosa>1.0?1.0:cosa);
         ang=acos(cosa);
 
@@ -263,9 +263,9 @@ static int sat_yaw(gtime_t time, int sat, const char *type, int opt,
     cross3(rsun,n,p);
     if (!normv3(rs,es)||!normv3(rsun,esun)||!normv3(n,en)||
         !normv3(p,ep)) return 0;
-    beta=PI/2.0-acos(dot(esun,en,3));
-    E=acos(dot(es,ep,3));
-    mu=PI/2.0+(dot(es,esun,3)<=0?-E:E);
+    beta=PI/2.0-acos(dot3(esun,en));
+    E=acos(dot3(es,ep));
+    mu=PI/2.0+(dot3(es,esun)<=0?-E:E);
     if      (mu<-PI/2.0) mu+=2.0*PI;
     else if (mu>=PI/2.0) mu-=2.0*PI;
 
@@ -309,15 +309,15 @@ static int model_phw(gtime_t time, int sat, const char *type, int opt,
     cross3(ek,eys,eks);
     cross3(ek,eyr,ekr);
     for (i=0;i<3;i++) {
-        ds[i]=exs[i]-ek[i]*dot(ek,exs,3)-eks[i];
-        dr[i]=exr[i]-ek[i]*dot(ek,exr,3)+ekr[i];
+        ds[i]=exs[i]-ek[i]*dot3(ek,exs)-eks[i];
+        dr[i]=exr[i]-ek[i]*dot3(ek,exr)+ekr[i];
     }
-    cosp=dot(ds,dr,3)/norm(ds,3)/norm(dr,3);
+    cosp=dot3(ds,dr)/norm(ds,3)/norm(dr,3);
     if      (cosp<-1.0) cosp=-1.0;
     else if (cosp> 1.0) cosp= 1.0;
     ph=acos(cosp)/2.0/PI;
     cross3(ds,dr,drs);
-    if (dot(ek,drs,3)<0.0) ph=-ph;
+    if (dot3(ek,drs)<0.0) ph=-ph;
 
     *phw=ph+floor(*phw-ph+0.5); /* in cycle */
     return 1;
@@ -368,13 +368,13 @@ static double varerr(int sat, int sys, double el, double snr_rover,
     return var;
 }
 /* initialize state and covariance -------------------------------------------*/
-static void initx(rtk_t *rtk, double xi, double var, int i)
+static inline void initx(rtk_t *rtk, double xi, double var, int i)
 {
     int j;
     rtk->x[i]=xi;
-    for (j=0;j<rtk->nx;j++) {
-        rtk->P[i+j*rtk->nx]=rtk->P[j+i*rtk->nx]=i==j?var:0.0;
-    }
+    for (j=0;j<rtk->nx;j++) rtk->P[i+j*rtk->nx]=0.0;
+    for (j=0;j<rtk->nx;j++) rtk->P[j+i*rtk->nx]=0.0;
+    rtk->P[i+i*rtk->nx]=var;
 }
 /* geometry-free phase measurement -------------------------------------------*/
 static double gfmeas(const obsd_t *obs, const nav_t *nav)
@@ -841,7 +841,7 @@ static void satantpcv(const double *rs, const double *rr, const pcv_t *pcv,
     }
     if (!normv3(ru,eu)||!normv3(rz,ez)) return;
 
-    cosa=dot(eu,ez,3);
+    cosa=dot3(eu,ez);
     cosa=cosa<-1.0?-1.0:(cosa>1.0?1.0:cosa);
     nadir=acos(cosa);
 
@@ -995,7 +995,10 @@ static int ppp_res(int post, const obsd_t *obs, int n, const double *rs,
                 if ((freq=sat2freq(sat,obs[i].code[frq],nav))==0.0) continue;
                 C=SQR(FREQL1/freq)*ionmapf(pos,azel+i*2)*(code==0?-1.0:1.0);
             }
-            for (k=0;k<nx;k++) H[k+nx*nv]=k<3?-e[k]:0.0;
+            if (H) {
+                for (k=0;k<nx;k++) H[k+nx*nv]=0.0;
+                for (k=0;k<3;k++) H[k+nx*nv]=-e[k];
+            }
 
             /* receiver clock */
             switch (sys) {
@@ -1006,30 +1009,33 @@ static int ppp_res(int post, const obsd_t *obs, int n, const double *rs,
                 default:      k=0; break;
             }
             cdtr=x[IC(k,opt)];
-            H[IC(k,opt)+nx*nv]=1.0;
+            if (H) {
+                H[IC(k,opt)+nx*nv]=1.0;
 
-            if (opt->tropopt==TROPOPT_EST||opt->tropopt==TROPOPT_ESTG) {
-                for (k=0;k<(opt->tropopt>=TROPOPT_ESTG?3:1);k++) {
-                    H[IT(opt)+k+nx*nv]=dtdx[k];
+                if (opt->tropopt==TROPOPT_EST||opt->tropopt==TROPOPT_ESTG) {
+                    for (k=0;k<(opt->tropopt>=TROPOPT_ESTG?3:1);k++) {
+                        H[IT(opt)+k+nx*nv]=dtdx[k];
+                    }
                 }
             }
             if (opt->ionoopt==IONOOPT_EST) {
                 if (rtk->x[II(sat,opt)]==0.0) continue;
-                H[II(sat,opt)+nx*nv]=C;
+                if (H) H[II(sat,opt)+nx*nv]=C;
             }
             if (frq==2&&code==1) { /* L5-receiver-dcb */
                 dcb+=rtk->x[ID(opt)];
-                H[ID(opt)+nx*nv]=1.0;
+                if (H) H[ID(opt)+nx*nv]=1.0;
             }
             if (code==0) { /* phase bias */
                 if ((bias=x[IB(sat,frq,opt)])==0.0) continue;
-                H[IB(sat,frq,opt)+nx*nv]=1.0;
+                if (H) H[IB(sat,frq,opt)+nx*nv]=1.0;
             }
             /* residual */
-            v[nv]=y-(r+cdtr-CLIGHT*dts[i*2]+dtrp+C*dion+dcb+bias);
+            double res=y-(r+cdtr-CLIGHT*dts[i*2]+dtrp+C*dion+dcb+bias);
+            if (v) v[nv]=res;
 
-            if (code==0) rtk->ssat[sat-1].resc[frq]=v[nv];  /* carrier phase */
-            else        rtk->ssat[sat-1].resp[frq]=v[nv];   /* pseudorange */
+            if (code==0) rtk->ssat[sat-1].resc[frq]=res;  /* carrier phase */
+            else         rtk->ssat[sat-1].resp[frq]=res;  /* pseudorange */
 
             /* variance */
             var[nv]=varerr(sat,sys,azel[1+i*2],
@@ -1039,18 +1045,18 @@ static int ppp_res(int post, const obsd_t *obs, int n, const double *rs,
             if (sys==SYS_GLO&&code==1) var[nv]+=VAR_GLO_IFB;
 
             trace(3,"%s sat=%2d %s%d res=%9.4f sig=%9.4f el=%4.1f\n",str,sat,
-                  code?"P":"L",frq+1,v[nv],sqrt(var[nv]),azel[1+i*2]*R2D);
+                  code?"P":"L",frq+1,res,sqrt(var[nv]),azel[1+i*2]*R2D);
 
             /* reject satellite by pre-fit residuals */
-            if (!post&&opt->maxinno[code]>0.0&&fabs(v[nv])>opt->maxinno[code]) {
+            if (!post&&opt->maxinno[code]>0.0&&fabs(res)>opt->maxinno[code]) {
                 trace(2,"outlier (%d) rejected %s sat=%2d %s%d res=%9.4f el=%4.1f\n",
-                      post,str,sat,code?"P":"L",frq+1,v[nv],azel[1+i*2]*R2D);
+                      post,str,sat,code?"P":"L",frq+1,res,azel[1+i*2]*R2D);
                 exc[i]=1; rtk->ssat[sat-1].rejc[frq]++;
                 continue;
             }
             /* record large post-fit residuals */
-            if (post&&fabs(v[nv])>sqrt(var[nv])*THRES_REJECT) {
-                obsi[ne]=i; frqi[ne]=j; ve[ne]=v[nv]; ne++;
+            if (post&&fabs(res)>sqrt(var[nv])*THRES_REJECT) {
+                obsi[ne]=i; frqi[ne]=j; ve[ne]=res; ne++;
             }
             if (code==0) rtk->ssat[sat-1].vsat[frq]=1;
             nv++;
@@ -1069,8 +1075,9 @@ static int ppp_res(int post, const obsd_t *obs, int n, const double *rs,
         exc[maxobs]=1; rtk->ssat[sat-1].rejc[maxfrq%2]++; stat=0;
         ve[rej]=0;
     }
-    for (i=0;i<nv;i++) for (j=0;j<nv;j++) {
-        R[i+j*nv]=i==j?var[i]:0.0;
+    if (R) {
+        for (j=0;j<nv;j++) for (i=0;i<nv;i++) R[i+j*nv]=0.0;
+        for (i=0;i<nv;i++) R[i+i*nv]=var[i];
     }
     return post?stat:nv;
 }
@@ -1217,7 +1224,7 @@ extern void pppos(rtk_t *rtk, const obsd_t *obs, int n, const nav_t *nav)
             break;
         }
         /* postfit residuals */
-        if (ppp_res(i+1,obs,n,rs,dts,var,svh,dr,exc,nav,xp,rtk,v,H,R,azel)) {
+        if (ppp_res(i+1,obs,n,rs,dts,var,svh,dr,exc,nav,xp,rtk,NULL,NULL,NULL,azel)) {
             matcpy(rtk->x,xp,rtk->nx,1);
             matcpy(rtk->P,Pp,rtk->nx,rtk->nx);
             stat=SOLQ_PPP;
@@ -1230,7 +1237,7 @@ extern void pppos(rtk_t *rtk, const obsd_t *obs, int n, const nav_t *nav)
     if (stat==SOLQ_PPP) {
 
         if (ppp_ar(rtk,obs,n,exc,nav,azel,xp,Pp)&&
-            ppp_res(9,obs,n,rs,dts,var,svh,dr,exc,nav,xp,rtk,v,H,R,azel)) {
+            ppp_res(9,obs,n,rs,dts,var,svh,dr,exc,nav,xp,rtk,NULL,NULL,NULL,azel)) {
 
             matcpy(rtk->xa,xp,rtk->nx,1);
             matcpy(rtk->Pa,Pp,rtk->nx,rtk->nx);

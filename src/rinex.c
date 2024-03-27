@@ -817,7 +817,7 @@ static int decode_obsdata(FILE *fp, char *buff, double ver, int mask,
     /* assign position in observation data */
     for (i=n=m=q=0;i<ind->n;i++) {
         
-        p[i]=ind->idx[i];
+        p[i]=(ver<=2.11)?ind->idx[i]:ind->pos[i];
         
         if (ind->type[i]==0&&p[i]==0) k[n++]=i; /* C1? index */
         if (ind->type[i]==0&&p[i]==1) l[m++]=i; /* C2? index */
@@ -825,68 +825,71 @@ static int decode_obsdata(FILE *fp, char *buff, double ver, int mask,
     }
         
     /* if multiple codes (C1/P1,C2/P2), select higher priority */
-    if (n>=2) {
-        if (val[k[0]]==0.0&&val[k[1]]==0.0) {
-            p[k[0]]=-1; p[k[1]]=-1;
+    if (ver<=2.11) {
+        if (n>=2) {
+            if (val[k[0]]==0.0&&val[k[1]]==0.0) {
+                p[k[0]]=-1; p[k[1]]=-1;
+            }
+            else if (val[k[0]]!=0.0&&val[k[1]]==0.0) {
+                p[k[0]]=0; p[k[1]]=-1;
+            }
+            else if (val[k[0]]==0.0&&val[k[1]]!=0.0) {
+                p[k[0]]=-1; p[k[1]]=0;
+            }
+            else if (ind->pri[k[1]]>ind->pri[k[0]]) {
+                p[k[1]]=0; p[k[0]]=NEXOBS<1?-1:NFREQ;
+            }
+            else {
+                p[k[0]]=0; p[k[1]]=NEXOBS<1?-1:NFREQ;
+            }
         }
-        else if (val[k[0]]!=0.0&&val[k[1]]==0.0) {
-            p[k[0]]=0; p[k[1]]=-1;
+        if (m>=2) {
+            if (val[l[0]]==0.0&&val[l[1]]==0.0) {
+                p[l[0]]=-1; p[l[1]]=-1;
+            }
+            else if (val[l[0]]!=0.0&&val[l[1]]==0.0) {
+                p[l[0]]=1; p[l[1]]=-1;
+            }
+            else if (val[l[0]]==0.0&&val[l[1]]!=0.0) {
+                p[l[0]]=-1; p[l[1]]=1; 
+            }
+            else if (ind->pri[l[1]]>ind->pri[l[0]]) {
+                p[l[1]]=1; p[l[0]]=NEXOBS<2?-1:NFREQ+1;
+            }
+            else {
+                p[l[0]]=1; p[l[1]]=NEXOBS<2?-1:NFREQ+1;
+            }
         }
-        else if (val[k[0]]==0.0&&val[k[1]]!=0.0) {
-            p[k[0]]=-1; p[k[1]]=0;
-        }
-        else if (ind->pri[k[1]]>ind->pri[k[0]]) {
-            p[k[1]]=0; p[k[0]]=NEXOBS<1?-1:NFREQ;
-        }
-        else {
-            p[k[0]]=0; p[k[1]]=NEXOBS<1?-1:NFREQ;
+        if (q>=2) {
+            if (val[r[0]]==0.0&&val[r[1]]==0.0) {
+                p[r[0]]=-1; p[r[1]]=-1;
+            }
+            else if (val[r[0]]!=0.0&&val[r[1]]==0.0) {
+                p[r[0]]=2; p[r[1]]=-1;
+            }
+            else if (val[r[0]]==0.0&&val[r[1]]!=0.0) {
+                p[r[0]]=-1; p[r[1]]=2;
+            }
+            else if (ind->pri[r[1]]>ind->pri[r[0]]) {
+                p[r[1]]=2; p[r[0]]=NEXOBS<3?-1:NFREQ+2;
+            }
+            else {
+                p[r[0]]=2; p[r[1]]=NEXOBS<3?-1:NFREQ+2;
+            }
         }
     }
-    if (m>=2) {
-        if (val[l[0]]==0.0&&val[l[1]]==0.0) {
-            p[l[0]]=-1; p[l[1]]=-1;
-        }
-        else if (val[l[0]]!=0.0&&val[l[1]]==0.0) {
-            p[l[0]]=1; p[l[1]]=-1;
-        }
-        else if (val[l[0]]==0.0&&val[l[1]]!=0.0) {
-            p[l[0]]=-1; p[l[1]]=1; 
-        }
-        else if (ind->pri[l[1]]>ind->pri[l[0]]) {
-            p[l[1]]=1; p[l[0]]=NEXOBS<2?-1:NFREQ+1;
-        }
-        else {
-            p[l[0]]=1; p[l[1]]=NEXOBS<2?-1:NFREQ+1;
-        }
-    }
-    if (q>=2) {
-        if (val[r[0]]==0.0&&val[r[1]]==0.0) {
-            p[r[0]]=-1; p[r[1]]=-1;
-        }
-        else if (val[r[0]]!=0.0&&val[r[1]]==0.0) {
-            p[r[0]]=2; p[r[1]]=-1;
-        }
-        else if (val[r[0]]==0.0&&val[r[1]]!=0.0) {
-            p[r[0]]=-1; p[r[1]]=2;
-        }
-        else if (ind->pri[r[1]]>ind->pri[r[0]]) {
-            p[r[1]]=2; p[r[0]]=NEXOBS<3?-1:NFREQ+2;
-        }
-        else {
-            p[r[0]]=2; p[r[1]]=NEXOBS<3?-1:NFREQ+2;
-        }
-    }
+    
     /* save observation data */
     for (i=0;i<ind->n;i++) {
         if (p[i]<0||(val[i]==0.0&&lli[i]==0)) continue;
         switch (ind->type[i]) {
             case 0: obs->P[p[i]]=val[i];
                     obs->code[p[i]]=ind->code[i];
-                    obs->Pstd[p[i]]=std[i]>0?std[i]:1;
+                    obs->Pstd[p[i]]=std[i]>0?std[i]:0;
                     break;
             case 1: obs->L[p[i]]=val[i];
                     obs->LLI[p[i]]=lli[i];
-                    obs->Lstd[p[i]]=std[i]>0?std[i]:1;
+                    obs->Lstd[p[i]]=std[i]>0?std[i]:0;
                     break;
             case 2: obs->D[p[i]]=(float)val[i];                     break;
             case 3: obs->SNR[p[i]]=(uint16_t)(val[i]/SNR_UNIT+0.5); break;
@@ -1682,7 +1685,7 @@ extern int readrnxt(const char *file, int rcv, gtime_t ts, gtime_t te,
     }
     /* if station name empty, set 4-char name from file head */
     if (type=='O'&&sta) {
-        if (!(p=strrchr(file,FILEPATHSEP))) p=file-1;
+        if (!(p=strrchr(file,RTKLIB_FILEPATHSEP))) p=file-1;
         if (!*sta->name) setstr(sta->name,p+1,4);
     }
     for (i=0;i<MAXEXFILE;i++) free(files[i]);
