@@ -127,13 +127,15 @@ static gtime_t time_stat={0};    /* rtk status file time */
 *          velef/velnf/veluf : velocity e/n/u (m/s) fixed
 *          accef/accnf/accuf : acceleration e/n/u (m/s^2) fixed
 *
-*   $CLK,week,tow,stat,clk1,clk2,clk3,clk4
+*   $CLK,week,tow,stat,clk1,clk2,clk3,clk4,clk5,clk6
 *          week/tow : gps week no/time of week (s)
 *          stat     : solution status
 *          clk1     : receiver clock bias GPS (ns)
 *          clk2     : receiver clock bias GLO-GPS (ns)
 *          clk3     : receiver clock bias GAL-GPS (ns)
 *          clk4     : receiver clock bias BDS-GPS (ns)
+*          clk5     : receiver clock bias IRN-GPS (ns)
+*          clk6     : receiver clock bias QZS-GPS (ns)
 *
 *   $ION,week,tow,stat,sat,az,el,ion,ion-fixed
 *          week/tow : gps week no/time of week (s)
@@ -261,9 +263,10 @@ extern int rtkoutstat(rtk_t *rtk, char *buff)
                    0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0);
     }
     /* receiver clocks */
-    p+=sprintf(p,"$CLK,%d,%.3f,%d,%d,%.3f,%.3f,%.3f,%.3f\n",
+    p+=sprintf(p,"$CLK,%d,%.3f,%d,%d,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f\n",
                week,tow,rtk->sol.stat,1,rtk->sol.dtr[0]*1E9,rtk->sol.dtr[1]*1E9,
-               rtk->sol.dtr[2]*1E9,rtk->sol.dtr[3]*1E9);
+               rtk->sol.dtr[2]*1E9,rtk->sol.dtr[3]*1E9,
+               rtk->sol.dtr[4]*1E9,rtk->sol.dtr[5]*1E9);
 
     /* ionospheric parameters */
     if (est&&rtk->opt.ionoopt==IONOOPT_EST) {
@@ -357,8 +360,8 @@ static void outsolstat(rtk_t *rtk,const nav_t *nav)
                     week,tow,id,j+1,ssat->azel[0]*R2D,ssat->azel[1]*R2D,
                     ssat->resp[j],ssat->resc[j],ssat->vsat[j],ssat->snr_rover[j]*SNR_UNIT,
                     ssat->fix[j],ssat->slip[j]&3,ssat->lock[j],ssat->outc[j],
-                    ssat->slipc[j],ssat->rejc[j],rtk->x[k],
-                    rtk->P[k+k*rtk->nx],ssat->icbias[j]);
+                    ssat->slipc[j],ssat->rejc[j],k<rtk->nx?rtk->x[k]:0,
+                    k<rtk->nx?rtk->P[k+k*rtk->nx]:0,ssat->icbias[j]);
         }
     }
 }
@@ -452,13 +455,13 @@ static double baseline(const double *ru, const double *rb, double *dr)
     return norm(dr,3);
 }
 /* initialize state and covariance -------------------------------------------*/
-static void initx(rtk_t *rtk, double xi, double var, int i)
+static inline void initx(rtk_t *rtk, double xi, double var, int i)
 {
     int j;
     rtk->x[i]=xi;
-    for (j=0;j<rtk->nx;j++) {
-        rtk->P[i+j*rtk->nx]=rtk->P[j+i*rtk->nx]=i==j?var:0.0;
-    }
+    for (j=0;j<rtk->nx;j++) rtk->P[i+j*rtk->nx]=0.0;
+    for (j=0;j<rtk->nx;j++) rtk->P[j+i*rtk->nx]=0.0;
+    rtk->P[i+i*rtk->nx]=var;
 }
 /* select common satellites between rover and reference station --------------*/
 static int selsat(const obsd_t *obs, double *azel, int nu, int nr,
@@ -1185,7 +1188,7 @@ static int ddres(rtk_t *rtk, const nav_t *nav, const obsd_t *obs, double dt, con
     prcopt_t *opt=&rtk->opt;
     double bl,dr[3],posu[3],posr[3],didxi=0.0,didxj=0.0,*im,icb,threshadj;
     double *tropr,*tropu,*dtdxr,*dtdxu,*Ri,*Rj,freqi,freqj,*Hi=NULL,df;
-    int i,j,k,m,f,nv=0,nb[NFREQ*4*2+2]={0},b=0,sysi,sysj,nf=NF(opt);
+    int i,j,k,m,f,nv=0,nb[NFREQ*NSYS*2+2]={0},b=0,sysi,sysj,nf=NF(opt);
     int ii,jj,frq,code;
 
     trace(3,"ddres   : dt=%.4f ns=%d\n",dt,ns);
@@ -1445,10 +1448,7 @@ static double intpres(gtime_t time, const obsd_t *obs, int n, const nav_t *nav,
                *p=(ttb*(*p)-tt*(*q))/(ttb-tt);
         }
     }
-    if (fabs(tt)<fabs(ttb)) {
-        nb=n;for (i=0;i<n;i++) obsb[i]=obs[i];  /* copy obs to previous base obs */
-        return tt;
-    } else return ttb;
+    return fabs(ttb)<fabs(tt)?ttb:tt;
 }
 /* index for single to double-difference transformation matrix (D') --------------------*/
 static int ddidx(rtk_t *rtk, int *ix, int gps, int glo, int sbs)
