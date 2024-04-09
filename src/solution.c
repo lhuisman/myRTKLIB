@@ -751,7 +751,7 @@ static void decode_solopt(char *buff, solopt_t *opt)
         strncpy(opt->sep,p+13,1);
         opt->sep[1]='\0';
     }
-    else if ((p=strstr(buff,"+SITE/INF"))) { /* gsi f2/f3 solution */
+    else if (strstr(buff,"+SITE/INF")) { /* gsi f2/f3 solution */
         opt->times=TIMES_GPST;
         opt->posf=SOLF_GSIF;
         opt->degf=0;
