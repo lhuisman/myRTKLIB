@@ -3971,7 +3971,7 @@ extern int rtk_uncompress(const char *file, char *uncfile)
                 dir,fname);
 #else
         if ((p=strrchr(buff,'/'))) {
-            *p='\0'; dir=fname; fname=p+1;
+            *p='\0'; dir=fname;
         }
         sprintf(cmd,"tar -C \"%s\" -xf \"%s\"",dir,tmpfile);
 #endif
