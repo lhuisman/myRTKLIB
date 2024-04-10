@@ -66,7 +66,7 @@ static int8_t code_bias_ix[MAX_BIAS_SYS][MAXCODE];
 *        0 = reference code (0 bias)
 *        1-3 = table index for code
 * ----------------------------------------------------------------------------*/
-static void init_bias_ix() {
+static void init_bias_ix(void) {
     int i,j;
 
     for (i=0;i<MAX_BIAS_SYS;i++) for (j=0;j<MAXCODE;j++)
@@ -452,8 +452,6 @@ static int readbiaf(const char *file, nav_t *nav)
 
     trace(3,"readbiaf: file=%s\n",file);
 
-    init_bias_ix(); /* init translation table from code to table column */
-
     if (!(fp=fopen(file,"r"))) {
         trace(2,"dcb parameters file open error: %s\n",file);
         return 0;
@@ -461,7 +459,7 @@ static int readbiaf(const char *file, nav_t *nav)
     while (fgets(buff,sizeof(buff),fp)) {
         if (sscanf(buff,"%4s %5s %4s %4s %4s",bias,svn,prn,obs1,obs2)<5) continue;
         if (obs1[0]!='C') continue;  /* skip phase biases for now */
-        if ((cbias=str2num(buff,82,10))==0.0) continue;
+        if ((cbias=str2num(buff,70,21))==0.0) continue;
         sat=satid2no(prn);
         sys=satsys(sat,NULL);
         /* other code biases are L1/L2, Galileo is L1/L5 */
@@ -516,6 +514,8 @@ extern int readdcb(const char *file, nav_t *nav, const sta_t *sta)
     char *efiles[MAXEXFILE]={0};
 
     trace(3,"readdcb : file=%s\n",file);
+
+    init_bias_ix(); /* init translation table from code to table column */
 
     for (i=0;i<MAXSAT;i++) for (j=0;j<MAX_CODE_BIAS_FREQS;j++) for (k=0;k<MAX_CODE_BIASES;k++) {
         nav->cbias[i][j][k]=0.0;
@@ -804,7 +804,7 @@ extern int peph2pos(gtime_t time, int sat, const nav_t *nav, int opt,
     }
     /* relativistic effect correction */
     if (dtss[0]!=0.0) {
-        dts[0]=dtss[0]-2.0*dot(rs,rs+3,3)/CLIGHT/CLIGHT;
+        dts[0]=dtss[0]-2.0*dot3(rs,rs+3)/CLIGHT/CLIGHT;
         dts[1]=(dtst[0]-dtss[0])/tt;
     }
     else { /* no precise clock */
