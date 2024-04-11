@@ -492,7 +492,7 @@ void MainForm::startServer()
             cmds_periodic[i] = new char[1024];
             if (commandsEnabled[i][0]) strncpy(cmds[i], qPrintable(commands[i][0]), 1023);
             if (commandsEnabled[i][2]) strncpy(cmds_periodic[i], qPrintable(commands[i][2]), 1023);
-        } else if (streamTypes[i] == STR_TCPCLI || streamTypes[i] == STR_NTRIPCLI) {
+        } else if (streamTypes[i] == STR_TCPCLI || streamTypes[i] == STR_NTRIPCLI || streamTypes[i] == STR_TCPSVR) {
             cmds[i] = new char[1024];
             cmds_periodic[i] = new char[1024];
             if (commandsEnabledTcp[i][0]) strncpy(cmds[i], qPrintable(commandsTcp[i][0]), 1023);
@@ -589,20 +589,20 @@ void MainForm::stopServer()
         STR_NONE, STR_SERIAL, STR_TCPCLI, STR_TCPSVR, STR_NTRIPSVR, STR_NTRIPCAS,
         STR_FILE
     };
-    int strs[MAXSTR];
+    int streamTypes[MAXSTR];
 
-    strs[0] = inputTypes[ui->cBInput->currentIndex()];
+    streamTypes[0] = inputTypes[ui->cBInput->currentIndex()];
     for (int i = 1; i < MAXSTR; i++) {
-        strs[1] = outputTypes[type[i]->currentIndex()];
+        streamTypes[1] = outputTypes[type[i]->currentIndex()];
     }
 
     // get stop commands
     for (int i = 0; i < MAXSTR; i++) {
         cmds[i] = NULL;
-        if (strs[i] == STR_SERIAL) {
+        if (streamTypes[i] == STR_SERIAL) {
             cmds[i] = new char[1024];
             if (commandsEnabled[i][1]) strncpy(cmds[i], qPrintable(commands[i][1]), 1023);
-        } else if (strs[i] == STR_TCPCLI || strs[i] == STR_NTRIPCLI) {
+        } else if (streamTypes[i] == STR_TCPCLI || streamTypes[i] == STR_NTRIPCLI || streamTypes[i] == STR_TCPSVR) {
             cmds[i] = new char[1024];
             if (commandsEnabledTcp[i][1]) strncpy(cmds[i], qPrintable(commandsTcp[i][1]), 1023);
         }
@@ -794,7 +794,7 @@ void MainForm::updateEnable()
     QPushButton *btnConv[MAXSTR - 1] = {ui->btnConv1, ui->btnConv2, ui->btnConv3, ui->btnConv4, ui->btnConv5, ui->btnConv6};
     QPushButton *btnLog[MAXSTR - 1] = {ui->btnLog1, ui->btnLog2, ui->btnLog3, ui->btnLog4, ui->btnLog5, ui->btnLog6};
 
-    ui->btnCmd->setEnabled(ui->cBInput->currentIndex() < 2 || ui->cBInput->currentIndex() == 3);
+    ui->btnCmd->setEnabled(ui->cBInput->currentIndex() <= 3);
 
     for (int i = 0; i < MAXSTR - 1; i++) {
         lblOutput[i]->setEnabled(type[i]->currentIndex() > 0);

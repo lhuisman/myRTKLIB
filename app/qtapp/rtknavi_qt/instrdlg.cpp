@@ -7,7 +7,6 @@
 #include <QFileSystemModel>
 #include <QCompleter>
 
-#include "rtklib.h"
 #include "refdlg.h"
 #include "navimain.h"
 #include "serioptdlg.h"
@@ -19,6 +18,7 @@
 
 #include "ui_instrdlg.h"
 
+#include "rtklib.h"
 
 //---------------------------------------------------------------------------
 InputStrDialog::InputStrDialog(QWidget *parent)

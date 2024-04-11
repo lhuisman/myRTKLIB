@@ -1,22 +1,17 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2016-01-30T18:29:59
-#
-#-------------------------------------------------
-
-QT       += widgets core gui
+QT += widgets core gui
 
 include(../qtapp.pri)
 
-TARGET = rtkpost_qt
 TEMPLATE = app
+TARGET = rtkpost_qt
+target.path = $$INSTALLROOT/bin
+INSTALLS += target
 
 INCLUDEPATH += ../../../src/ ../appcmn_qt ../widgets_qt
 
 SOURCES += \
     kmzconv.cpp \
     postmain.cpp \
-    #postopt.cpp \
     rtkpost.cpp \
     ../widgets_qt/scientificspinbox.cpp \
     ../appcmn_qt/navi_post_opt.cpp \
@@ -33,7 +28,6 @@ SOURCES += \
 HEADERS  += \
     kmzconv.h \
     postmain.h \
-    #postopt.h \
     ../widgets_qt/scientificspinbox.h \
     ../appcmn_qt/navi_post_opt.h \
     ../appcmn_qt/keydlg.h \
@@ -49,7 +43,6 @@ HEADERS  += \
 FORMS    += \ 
     kmzconv.ui \
     postmain.ui \
-    #postopt.ui \
     ../appcmn_qt/navi_post_opt.ui \
     ../appcmn_qt/keydlg.ui \
     ../appcmn_qt/freqdlg.ui \
@@ -65,3 +58,17 @@ RESOURCES += \
     ../icon/resources.qrc
 
 RC_FILE = rtkpost_qt.rc
+
+desktop.path   = $$INSTALLROOT/share/applications/
+desktop.files += rtkpost_qt.desktop
+INSTALLS      += desktop
+
+icons.path   = $$INSTALLROOT/share/pixmaps/
+icons.files += ../icon/rtkpost.png
+INSTALLS    += icons
+
+win32 {
+CONFIG(release,debug|release) {
+QMAKE_POST_LINK += $$QMAKE_COPY $$shell_path($$OUT_PWD/release/$${TARGET}.exe) $$shell_path($$PKGDIR/packages/com.rtklib.$${TARGET}/data)
+}
+}

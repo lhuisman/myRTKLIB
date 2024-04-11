@@ -1068,7 +1068,7 @@ void MainWindow::serverStart()
     double pos[3], nmeapos[3];
     int itype[] = {STR_SERIAL, STR_TCPCLI, STR_TCPSVR, STR_NTRIPCLI, STR_FILE, STR_FTP, STR_HTTP};
     int otype[] = {STR_SERIAL, STR_TCPCLI, STR_TCPSVR, STR_NTRIPSVR, STR_NTRIPCAS, STR_FILE};
-    int i, j, strs[MAXSTRRTK] = {0}, stropt[8] = {0};
+    int i, j, streamTypes[MAXSTRRTK] = {0}, stropt[8] = {0};
     char *serverPaths[8], *cmds[3] = {0}, *cmds_periodic[3] = {0}, *rcvopts[3] = {0};
     char errmsg[20148];
     gtime_t time = timeget();
@@ -1098,17 +1098,17 @@ void MainWindow::serverStart()
         free(pcvs.pcv);
     }
 
-    for (i = 0; i < 3; i++) strs[i] = streamEnabled[i] ? itype[streamType[i]] : STR_NONE;  // input stream
-    for (i = 3; i < 5; i++) strs[i] = streamEnabled[i] ? otype[streamType[i]] : STR_NONE;  // output stream
-    for (i = 5; i < 8; i++) strs[i] = streamEnabled[i] ? otype[streamType[i]] : STR_NONE;  // log streams
+    for (i = 0; i < 3; i++) streamTypes[i] = streamEnabled[i] ? itype[streamType[i]] : STR_NONE;  // input stream
+    for (i = 3; i < 5; i++) streamTypes[i] = streamEnabled[i] ? otype[streamType[i]] : STR_NONE;  // output stream
+    for (i = 5; i < 8; i++) streamTypes[i] = streamEnabled[i] ? otype[streamType[i]] : STR_NONE;  // log streams
 
     for (i = 0; i < 8; i++) {
         serverPaths[i] = new char[1024];
         serverPaths[i][0] = '\0';
-        if (strs[i] == STR_NONE) strncpy(serverPaths[i], "", 1023);
-        else if (strs[i] == STR_SERIAL) strncpy(serverPaths[i], qPrintable(paths[i][0]), 1023);
-        else if (strs[i] == STR_FILE) strncpy(serverPaths[i], qPrintable(paths[i][2]), 1023);
-        else if (strs[i] == STR_FTP || strs[i] == STR_HTTP) strncpy(serverPaths[i], qPrintable(paths[i][3]), 1023);
+        if (streamTypes[i] == STR_NONE) strncpy(serverPaths[i], "", 1023);
+        else if (streamTypes[i] == STR_SERIAL) strncpy(serverPaths[i], qPrintable(paths[i][0]), 1023);
+        else if (streamTypes[i] == STR_FILE) strncpy(serverPaths[i], qPrintable(paths[i][2]), 1023);
+        else if (streamTypes[i] == STR_FTP || streamTypes[i] == STR_HTTP) strncpy(serverPaths[i], qPrintable(paths[i][3]), 1023);
         else strncpy(serverPaths[i], qPrintable(paths[i][1]), 1023);
     }
 
@@ -1116,13 +1116,12 @@ void MainWindow::serverStart()
         rcvopts[i] = new char[1024];
         cmds[i] = cmds_periodic[i] = NULL;
 
-        if (strs[i] == STR_SERIAL) {
+        if (streamTypes[i] == STR_SERIAL) {
             cmds[i] = new char[1024];
             cmds_periodic[i] = new char[1024];
             if (commandEnabled[i][0]) strncpy(cmds[i], qPrintable(commands[i][0]), 1023);
             if (commandEnabled[i][2]) strncpy(cmds_periodic[i], qPrintable(commands[i][2]), 1023);
-        } else if (strs[i] == STR_TCPCLI || strs[i] == STR_TCPSVR ||
-               strs[i] == STR_NTRIPCLI) {
+        } else if (streamTypes[i] == STR_TCPCLI || streamTypes[i] == STR_TCPSVR || streamTypes[i] == STR_NTRIPCLI) {
             cmds[i] = new char[1024];
             cmds_periodic[i] = new char[1024];
             if (commandEnableTcp[i][0]) strncpy(cmds[i], qPrintable(commandsTcp[i][0]), 1023);
@@ -1139,7 +1138,7 @@ void MainWindow::serverStart()
     strsetproxy(qPrintable(optDialog->proxyAddress));
 
     for (i = 3; i < 8; i++)
-        if (strs[i] == STR_FILE && !confirmOverwrite(serverPaths[i])) {
+        if (streamTypes[i] == STR_FILE && !confirmOverwrite(serverPaths[i])) {
             for (j = 0; j < 8; j++) delete[] serverPaths[j];
             for (j = 0; j < 3; j++) delete[] rcvopts[j];
             for (j = 0; j < 3; j++)
@@ -1170,7 +1169,7 @@ void MainWindow::serverStart()
     rtksvr.bl_reset = maxBaseLine;
 
     // start rtk server
-    if (!rtksvrstart(&rtksvr, optDialog->serverCycle, optDialog->serverBufferSize, strs, serverPaths, inputFormat, optDialog->navSelect,
+    if (!rtksvrstart(&rtksvr, optDialog->serverCycle, optDialog->serverBufferSize, streamTypes, serverPaths, inputFormat, optDialog->navSelect,
                      cmds, cmds_periodic, rcvopts, optDialog->nmeaCycle, nmeaRequestType, nmeapos,
                      &optDialog->processingOptions, solopt, &monistr, errmsg)) {
 
@@ -1221,18 +1220,18 @@ void MainWindow::serverStart()
 void MainWindow::serverStop()
 {
     char *cmds[3] = { 0 };
-    int i, n, m, str;
+    int i, n, m, streamTypes;
 
     trace(3, "serverStop\n");
 
     for (i = 0; i < 3; i++) {
         cmds[i] = NULL;
-        str = rtksvr.stream[i].type;
+        streamTypes = rtksvr.stream[i].type;
 
-        if (str == STR_SERIAL) {
+        if (streamTypes == STR_SERIAL) {
             cmds[i] = new char[1024];
             if (commandEnabled[i][1]) strncpy(cmds[i], qPrintable(commands[i][1]), 1023);
-        } else if (str == STR_TCPCLI || str == STR_TCPSVR || str == STR_NTRIPCLI) {
+        } else if (streamTypes == STR_TCPCLI || streamTypes == STR_TCPSVR || streamTypes == STR_NTRIPCLI) {
             cmds[i] = new char[1024];
             if (commandEnableTcp[i][1]) strncpy(cmds[i], qPrintable(commandsTcp[i][1]), 1023);
         }
