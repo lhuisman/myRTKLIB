@@ -54,8 +54,6 @@ public:
     void setHistory(int i, const QString &history);
     const QString &getHistory(int i);
 
-    //QString path, paths1[4], paths2[4];
-
 protected slots:
     void selectOptionsStream1();
     void selectOptionsStream2();

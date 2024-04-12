@@ -1,15 +1,11 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2016-01-30T18:29:59
-#
-#-------------------------------------------------
-
-QT       += widgets core gui serialport
+QT += widgets core gui serialport
 
 include(../qtapp.pri)
 
-TARGET = rtknavi_qt
 TEMPLATE = app
+TARGET = rtknavi_qt
+target.path = $$INSTALLROOT/bin
+INSTALLS += target
 
 INCLUDEPATH += ../../../src/ ../appcmn_qt ../widgets_qt
 
@@ -100,3 +96,17 @@ RESOURCES += \
     ../icon/resources.qrc
 
 RC_FILE = rtknavi_qt.rc
+
+desktop.path   = $$INSTALLROOT/share/applications/
+desktop.files += rtknavi_qt.desktop
+INSTALLS      += desktop
+
+icons.path   = $$INSTALLROOT/share/pixmaps/
+icons.files += ../icon/rtknavi.png
+INSTALLS    += icons
+
+win32 {
+CONFIG(release,debug|release) {
+QMAKE_POST_LINK += $$QMAKE_COPY $$shell_path($$OUT_PWD/release/$${TARGET}.exe) $$shell_path($$PKGDIR/packages/com.rtklib.$${TARGET}/data)
+}
+}

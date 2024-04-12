@@ -12,9 +12,6 @@
 // version : $Revision:$ $Date:$
 // history : 2012/12/28  1.0 new
 //---------------------------------------------------------------------------
-#include <clocale>
-#include <cstdio>
-
 #include <QShowEvent>
 #include <QDesktopServices>
 #include <QCloseEvent>
@@ -33,10 +30,8 @@
 #include <QStringList>
 
 //---------------------------------------------------------------------------
-#include "rtklib.h"
 #include "keydlg.h"
 #include "aboutdlg.h"
-#include "getmain.h"
 #include "getoptdlg.h"
 #include "staoptdlg.h"
 #include "timedlg.h"
@@ -44,6 +39,12 @@
 #include "helper.h"
 
 #include "ui_getmain.h"
+
+#include "getmain.h"
+#include "rtklib.h"
+
+#include <clocale>
+#include <cstdio>
 
 #define PRGNAME     "RtkGet Qt"  // program name
 
