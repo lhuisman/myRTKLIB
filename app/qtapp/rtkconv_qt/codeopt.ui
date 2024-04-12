@@ -6,25 +6,16 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>507</width>
-    <height>592</height>
+    <width>510</width>
+    <height>650</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Signal Mask</string>
   </property>
-  <property name="toolTip">
-   <string/>
-  </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="spacing">
-    <number>0</number>
-   </property>
    <item>
-    <widget class="QGroupBox" name="GroupBox1">
-     <property name="toolTip">
-      <string/>
-     </property>
+    <widget class="QGroupBox" name="groupBox1">
      <property name="title">
       <string>GPS</string>
      </property>
@@ -39,9 +30,6 @@
        <number>0</number>
       </property>
       <property name="bottomMargin">
-       <number>0</number>
-      </property>
-      <property name="spacing">
        <number>0</number>
       </property>
       <item row="0" column="0">
@@ -321,10 +309,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="GroupBox2">
-     <property name="toolTip">
-      <string/>
-     </property>
+    <widget class="QGroupBox" name="groupBox2">
      <property name="title">
       <string>GLONASS</string>
      </property>
@@ -339,9 +324,6 @@
        <number>0</number>
       </property>
       <property name="bottomMargin">
-       <number>0</number>
-      </property>
-      <property name="spacing">
        <number>0</number>
       </property>
       <item row="0" column="5">
@@ -517,10 +499,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="GroupBox3">
-     <property name="toolTip">
-      <string/>
-     </property>
+    <widget class="QGroupBox" name="groupBox3">
      <property name="title">
       <string>Galileo</string>
      </property>
@@ -528,13 +507,13 @@
       <property name="leftMargin">
        <number>0</number>
       </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
       <property name="rightMargin">
        <number>0</number>
       </property>
       <property name="bottomMargin">
-       <number>0</number>
-      </property>
-      <property name="spacing">
        <number>0</number>
       </property>
       <item row="0" column="0">
@@ -788,10 +767,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="GroupBox4">
-     <property name="toolTip">
-      <string/>
-     </property>
+    <widget class="QGroupBox" name="groupBox4">
      <property name="title">
       <string>QZSS</string>
      </property>
@@ -806,9 +782,6 @@
        <number>0</number>
       </property>
       <property name="bottomMargin">
-       <number>0</number>
-      </property>
-      <property name="spacing">
        <number>0</number>
       </property>
       <item row="0" column="9">
@@ -1062,10 +1035,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="GroupBox6">
-     <property name="toolTip">
-      <string/>
-     </property>
+    <widget class="QGroupBox" name="groupBox6">
      <property name="title">
       <string>BDS</string>
      </property>
@@ -1080,9 +1050,6 @@
        <number>0</number>
       </property>
       <property name="bottomMargin">
-       <number>0</number>
-      </property>
-      <property name="spacing">
        <number>0</number>
       </property>
       <item row="1" column="6">
@@ -1418,9 +1385,6 @@
       <property name="bottomMargin">
        <number>0</number>
       </property>
-      <property name="spacing">
-       <number>0</number>
-      </property>
       <item row="1" column="2">
        <widget class="QCheckBox" name="I51">
         <property name="text">
@@ -1481,10 +1445,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="GroupBox5">
-     <property name="toolTip">
-      <string/>
-     </property>
+    <widget class="QGroupBox" name="groupBox5">
      <property name="title">
       <string>SBAS</string>
      </property>
@@ -1499,9 +1460,6 @@
        <number>0</number>
       </property>
       <property name="bottomMargin">
-       <number>0</number>
-      </property>
-      <property name="spacing">
        <number>0</number>
       </property>
       <item row="0" column="1">
@@ -1575,10 +1533,7 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="QPushButton" name="BtnSetAll">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
+       <widget class="QPushButton" name="btnSetAll">
         <property name="toolTip">
          <string/>
         </property>
@@ -1588,34 +1543,9 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="BtnOk">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="toolTip">
-         <string/>
-        </property>
-        <property name="text">
-         <string>&amp;OK</string>
-        </property>
-        <property name="autoDefault">
-         <bool>true</bool>
-        </property>
-        <property name="default">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="BtnCancel">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="toolTip">
-         <string/>
-        </property>
-        <property name="text">
-         <string>&amp;Cancel</string>
+       <widget class="QDialogButtonBox" name="buttonBox">
+        <property name="standardButtons">
+         <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
         </property>
        </widget>
       </item>

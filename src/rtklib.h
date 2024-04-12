@@ -555,7 +555,7 @@ typedef struct {        /* observation data record */
     double L[NFREQ+NEXOBS]; /* observation data carrier-phase (cycle) */
     double P[NFREQ+NEXOBS]; /* observation data pseudorange (m) */
     float  D[NFREQ+NEXOBS]; /* observation data doppler frequency (Hz) */
-    
+
     int timevalid;      /* time is valid (Valid GNSS fix) for time mark */
     gtime_t eventime;   /* time of event (GPST) */
     uint8_t Lstd[NFREQ+NEXOBS]; /* stdev of carrier phase (0.004 cycles)  */
@@ -938,8 +938,8 @@ typedef struct {        /* RTCM control struct type */
     uint16_t lock[MAXSAT][NFREQ+NEXOBS]; /* lock time */
     uint16_t loss[MAXSAT][NFREQ+NEXOBS]; /* loss of lock count */
     gtime_t lltime[MAXSAT][NFREQ+NEXOBS]; /* last lock time */
-    int nbyte;          /* number of bytes in message buffer */ 
-    int nbit;           /* number of bits in word buffer */ 
+    int nbyte;          /* number of bytes in message buffer */
+    int nbit;           /* number of bits in word buffer */
     int len;            /* message length (bytes) */
     uint8_t buff[1200]; /* message buffer */
     uint32_t word;      /* word buffer for rtcm 2 */
@@ -1026,10 +1026,10 @@ typedef struct {        /* processing options type */
     double elmaskhold;  /* elevation mask to hold ambiguity (deg) */
     double thresslip;   /* slip threshold of geometry-free phase (m) */
     double thresdop;    /* slip threshold of doppler (m) */
-    double varholdamb;  /* variance for fix-and-hold psuedo measurements (cycle^2) */
+    double varholdamb;  /* variance for fix-and-hold pseudo measurements (cycle^2) */
     double gainholdamb; /* gain used for GLO and SBAS sats to adjust ambiguity */
     double maxtdiff;    /* max difference of time (sec) */
-    double maxinno[2];  /* reject threshold of innovation for code and phase (m) */
+    double maxinno[2];  /* reject threshold of innovation for phase and code (m) */
     double baseline[2]; /* baseline length constraint {const,sigma} (m) */
     double ru[3];       /* rover position for fixed mode {x,y,z} (ecef) (m) */
     double rb[3];       /* base position for relative mode {x,y,z} (ecef) (m) */
@@ -1197,7 +1197,7 @@ typedef struct {        /* receiver raw data control type */
     double prCA[MAXSAT],dpCA[MAXSAT]; /* L1/CA pseudorange/doppler for javad */
     uint8_t halfc[MAXSAT][NFREQ+NEXOBS]; /* half-cycle resolved */
     char freqn[MAXOBS]; /* frequency number for javad */
-    int nbyte;          /* number of bytes in message buffer */ 
+    int nbyte;          /* number of bytes in message buffer */
     int len;            /* message length (bytes) */
     int iod;            /* issue of data */
     int tod;            /* time of day (ms) */
@@ -1606,7 +1606,7 @@ EXPORT void readsp3(const char *file, nav_t *nav, int opt);
 EXPORT int  readsap(const char *file, gtime_t time, nav_t *nav);
 EXPORT int  readdcb(const char *file, nav_t *nav, const sta_t *sta);
 EXPORT int code2bias_ix(const int sys,const int code);
-EXPORT int  readfcb(const char *file, nav_t *nav);
+/*EXPORT int  readfcb(const char *file, nav_t *nav);*/
 EXPORT void alm2pos(gtime_t time, const alm_t *alm, double *rs, double *dts);
 
 EXPORT int tle_read(const char *file, tle_t *tle);

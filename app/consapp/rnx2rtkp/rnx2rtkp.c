@@ -37,7 +37,7 @@ static const char *help[]={
 " the path in the files. The extension of the SP3 file shall be .sp3 or .eph.",
 " All of the input file paths can include wild-cards (*). To avoid command",
 " line deployment of wild-cards, use \"...\" for paths with wild-cards.",
-" Command line options are as follows ([]:default). A maximum number of", 
+" Command line options are as follows ([]:default). A maximum number of",
 " input files is currently set to 16. With -k option, the",
 " processing options are input from the configuration file. In this case,",
 " command line options precede options in the configuration file.",
@@ -102,7 +102,7 @@ int main(int argc, char **argv)
     double tint=0.0,es[]={2000,1,1,0,0,0},ee[]={2000,12,31,23,59,59},pos[3];
     int i,j,n,ret;
     char *infile[MAXFILE],*outfile="",*p;
-    
+
     prcopt.mode  =PMODE_KINEMA;
     prcopt.navsys=0;
     prcopt.refpos=1;
@@ -110,7 +110,7 @@ int main(int argc, char **argv)
     solopt.timef=0;
     sprintf(solopt.prog ,"%s ver.%s %s",PROGNAME,VER_RTKLIB,PATCH_LEVEL);
     sprintf(filopt.trace,"%s.trace",PROGNAME);
-    
+
     /* load options from configuration file */
     for (i=1;i<argc;i++) {
         if (!strcmp(argv[i],"-k")&&i+1<argc) {
@@ -191,7 +191,7 @@ int main(int argc, char **argv)
         return -2;
     }
     ret=postpos(ts,te,tint,0.0,&prcopt,&solopt,&filopt,infile,n,outfile,"","");
-    
+
     if (!ret) fprintf(stderr,"%40s\r","");
     return ret;
 }

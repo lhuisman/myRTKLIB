@@ -6,8 +6,8 @@
 
 QT       -= core gui
 
-TARGET = RTKLib
 TEMPLATE = lib
+TARGET = RTKLib
 
 DEFINES -= UNICODE TRACE
 
@@ -15,6 +15,7 @@ include(../RTKLib.pri)
 
 *g++* {
     QMAKE_CFLAGS += -std=c99 -Wall -pedantic -Wno-unused-but-set-variable -g
+    QMAKE_LFLAGS += -Wl,-z,undefs
 }
 
 win* {

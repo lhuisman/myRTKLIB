@@ -3,30 +3,31 @@
 #include "timedlg.h"
 #include <QShowEvent>
 
+#include "ui_timedlg.h"
+
 //---------------------------------------------------------------------------
 TimeDialog::TimeDialog(QWidget *parent)
-    : QDialog(parent)
+    : QDialog(parent), ui(new Ui::TimeDialog)
 {
-    setupUi(this);
+    ui->setupUi(this);
 
-    connect(BtnOk, SIGNAL(clicked(bool)), this, SLOT(close()));
+    connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &TimeDialog::close);
 }
 //---------------------------------------------------------------------------
-void TimeDialog::showEvent(QShowEvent *event)
+void TimeDialog::setTime(const gtime_t &time)
 {
-    if (event->spontaneous()) return;
+    QString msg;
 
-	gtime_t utc;
+    gtime_t utc;
     double tow, doy;
 	int week;
-    QString msg;
     char s1[64], s2[64];
 
-    utc = gpst2utc(Time);
-    time2str(Time, s1, 0);
+    utc = gpst2utc(time);
+    time2str(time, s1, 0);
     time2str(utc, s2, 0);
-    tow = time2gpst(Time, &week);
-    doy = time2doy(Time);
+    tow = time2gpst(time, &week);
+    doy = time2doy(time);
 
     msg += QString(tr("%1 GPST\n")).arg(s1);
     msg += QString(tr("%1 UTC\n\n")).arg(s2);
@@ -35,8 +36,8 @@ void TimeDialog::showEvent(QShowEvent *event)
     msg += QString(tr("Day of Year: %1\n")).arg((int)floor(doy), 3);
     msg += QString(tr("Day of Week: %1\n")).arg((int)floor(tow / 86400.0));
     msg += QString(tr("Time of Day: %1 s\n")).arg(fmod(tow, 86400.0), 0, 'f', 0);
-    msg += QString(tr("Leap Seconds: %1 s\n")).arg(timediff(Time, utc), 0, 'f', 0);
+    msg += QString(tr("Leap Seconds: %1 s\n")).arg(timediff(time, utc), 0, 'f', 0);
 
-    Message->setText(msg);
+    ui->message->setText(msg);
 }
 //---------------------------------------------------------------------------
