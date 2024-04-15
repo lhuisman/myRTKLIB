@@ -549,9 +549,9 @@ static void udpos(rtk_t *rtk, double tt)
         }
     }
     /* x=F*x, P=F*P*F' */
-    matmul("NN",nx,1,nx,1.0,F,x,0.0,xp);
-    matmul("NN",nx,nx,nx,1.0,F,P,0.0,FP);
-    matmul("NT",nx,nx,nx,1.0,FP,F,0.0,P);
+    matmul("NN",nx,1,nx,F,x,xp);
+    matmul("NN",nx,nx,nx,F,P,FP);
+    matmul("NT",nx,nx,nx,FP,F,P);
 
     for (i=0;i<nx;i++) {
         rtk->x[ix[i]]=xp[i];
@@ -1166,7 +1166,6 @@ static int test_sys(int sys, int m)
         O rtk->ssat[i].resp[j] = residual pseudorange error
         O rtk->ssat[i].resc[j] = residual carrier phase error
         I rtk->rb= base location
-        I nav  = sat nav data
         I dt = time diff between base and rover observations
         I x = rover pos & vel and sat phase biases (float solution)
         I P = error covariance matrix of float states
@@ -1180,7 +1179,7 @@ static int test_sys(int sys, int m)
         O H = linearized translation from innovations to states (az/el to sats)
         O R = measurement error covariances
         O vflg = bit encoded list of sats used for each double diff  */
-static int ddres(rtk_t *rtk, const nav_t *nav, const obsd_t *obs, double dt, const double *x,
+static int ddres(rtk_t *rtk, const obsd_t *obs, double dt, const double *x,
                  const double *P, const int *sat, double *y, double *e,
                  double *azel, double *freq, const int *iu, const int *ir,
                  int ns, double *v, double *H, double *R, int *vflg)
@@ -1552,8 +1551,8 @@ static void holdamb(rtk_t *rtk, const double *xa)
 {
     double *v,*H,*R;
     int i,j,n,m,f,info,index[MAXSAT],nb=rtk->nx-rtk->na,nv=0,nf=NF(&rtk->opt);
-    double dd,sum;
-
+    double dd;
+    
     trace(3,"holdamb :\n");
 
     v=mat(nb,1); H=zeros(nb,rtk->nx);
@@ -1602,7 +1601,7 @@ static void holdamb(rtk_t *rtk, const double *xa)
 
     /* Move fractional part of bias from phase-bias into ic bias for GLONASS sats (both in cycles) */
     for (f=0;f<nf;f++) {
-        i=-1;sum=0;
+        i=-1;
         for (j=nv=0;j<MAXSAT;j++) {
             /* check if valid GLONASS sat */
             if (test_sys(rtk->ssat[j].sys,1)&&rtk->ssat[j].vsat[f]&&rtk->ssat[j].lock[f]>=0) {
@@ -1616,7 +1615,6 @@ static void holdamb(rtk_t *rtk, const double *xa)
                     dd=rtk->opt.gainholdamb*(dd-ROUND(dd));  /* throwout integer part of answer and multiply by filter gain */
                     rtk->x[IB(j+1,f,&rtk->opt)]-=dd;  /* remove fractional part from phase bias */
                     rtk->ssat[j].icbias[f]+=dd;       /* and move to IC bias */
-                    sum+=dd;
                     index[nv++]=j;
                 }
             }
@@ -1624,7 +1622,7 @@ static void holdamb(rtk_t *rtk, const double *xa)
     }
     /* Move fractional part of bias from phase-bias into ic bias for SBAS sats (both in cycles) */
     for (f=0;f<nf;f++) {
-        i=-1;sum=0;
+        i=-1;
         for (j=nv=0;j<MAXSAT;j++) {
             /* check if valid GPS/SBS sat */
             if (test_sys(rtk->ssat[j].sys,0)&&rtk->ssat[j].vsat[f]&&rtk->ssat[j].lock[f]>=0) {
@@ -1639,7 +1637,6 @@ static void holdamb(rtk_t *rtk, const double *xa)
                     dd=rtk->opt.gainholdamb*(dd-ROUND(dd));  /* throwout integer part of answer and multiply by filter gain */
                     rtk->x[IB(j+1,f,&rtk->opt)]-=dd;  /* remove fractional part from phase bias diff */
                     rtk->ssat[j].icbias[f]+=dd;       /* and move to IC bias */
-                    sum+=dd;
                     index[nv++]=j;
                 }
             }
@@ -1737,13 +1734,13 @@ static int resamb_LAMBDA(rtk_t *rtk, double *bias, double *xa,int gps,int glo,in
             /* adjust non phase-bias states and covariances using fixed solution values */
             if (!matinv(Qb,nb)) {  /* returns 0 if inverse successful */
                 /* rtk->xa = rtk->x-Qab*Qb^-1*(b0-b) */
-                matmul("NN",nb,1,nb, 1.0,Qb ,y,0.0,db); /* db = Qb^-1*(b0-b) */
-                matmul("NN",na,1,nb,-1.0,Qab,db,1.0,rtk->xa); /* rtk->xa = rtk->x-Qab*db */
+                matmul("NN",nb,1,nb,Qb ,y,db); /* db = Qb^-1*(b0-b) */
+                matmulm("NN",na,1,nb,Qab,db,rtk->xa); /* rtk->xa = rtk->x-Qab*db */
 
                 /* rtk->Pa=rtk->P-Qab*Qb^-1*Qab') */
                 /* covariance of fixed solution (Qa=Qa-Qab*Qb^-1*Qab') */
-                matmul("NN",na,nb,nb, 1.0,Qab,Qb ,0.0,QQ);  /* QQ = Qab*Qb^-1 */
-                matmul("NT",na,na,nb,-1.0,QQ ,Qab,1.0,rtk->Pa); /* rtk->Pa = rtk->P-QQ*Qab' */
+                matmul("NN",na,nb,nb,Qab,Qb ,QQ);  /* QQ = Qab*Qb^-1 */
+                matmulm("NT",na,na,nb,QQ ,Qab,rtk->Pa); /* rtk->Pa = rtk->P-QQ*Qab' */
 
                 trace(3,"resamb : validation ok (nb=%d ratio=%.2f thresh=%.2f s=%.2f/%.2f)\n",
                       nb,s[0]==0.0?0.0:s[1]/s[0],rtk->sol.thres,s[0],s[1]);
@@ -2013,7 +2010,7 @@ static int relpos(rtk_t *rtk, const obsd_t *obs, int nu, int nr,
                 O H = partial derivatives
                 O R = double diff measurement error covariances
                 O vflg = list of sats used for dd  */
-        if ((nv=ddres(rtk,nav,obs,dt,xp,Pp,sat,y,e,azel,freq,iu,ir,ns,v,H,R,vflg))<4) {
+        if ((nv=ddres(rtk,obs,dt,xp,Pp,sat,y,e,azel,freq,iu,ir,ns,v,H,R,vflg))<4) {
             errmsg(rtk,"not enough double-differenced residual, n=%d\n", nv);
             stat=SOLQ_NONE;
             break;
@@ -2035,7 +2032,7 @@ static int relpos(rtk_t *rtk, const obsd_t *obs, int nu, int nr,
     if (stat!=SOLQ_NONE&&zdres(0,obs,nu,rs,dts,var,svh,nav,xp,opt,y,e,azel,freq)) {
 
         /* calc double diff residuals again after kalman filter update for float solution */
-        nv=ddres(rtk,nav,obs,dt,xp,Pp,sat,y,e,azel,freq,iu,ir,ns,v,NULL,R,vflg);
+        nv=ddres(rtk,obs,dt,xp,Pp,sat,y,e,azel,freq,iu,ir,ns,v,NULL,R,vflg);
 
         /* validation of float solution, always returns 1, msg to trace file if large residual */
         if (valpos(rtk,v,R,vflg,nv,4.0)) {
@@ -2065,8 +2062,7 @@ static int relpos(rtk_t *rtk, const obsd_t *obs, int nu, int nr,
             if (zdres(0,obs,nu,rs,dts,var,svh,nav,xa,opt,y,e,azel,freq)) {
 
                 /* post-fit residuals for fixed solution (xa includes fixed phase biases, rtk->xa does not) */
-                nv=ddres(rtk,nav,obs,dt,xa,Pp,sat,y,e,azel,freq,iu,ir,ns,v,NULL,R,
-                         vflg);
+                nv=ddres(rtk,obs,dt,xa,Pp,sat,y,e,azel,freq,iu,ir,ns,v,NULL,R,vflg);
 
                 /* validation of fixed solution, always returns valid */
                 if (valpos(rtk,v,R,vflg,nv,4.0)) {
