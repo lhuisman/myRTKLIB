@@ -1334,7 +1334,6 @@ void Plot::drawSky(QPainter &c, int level)
     double x, y, xp, yp, xs, ys, dt, dx, dy, xl[2], yl[2], radius;
     int i, j, freq, ind = observationIndex;
     int hh = (int)(QFontMetrics(plotOptDialog->getFont()).height() * 1.5);
-    char satId[8];
 
     trace(3, "drawSky: level=%d\n", level);
 

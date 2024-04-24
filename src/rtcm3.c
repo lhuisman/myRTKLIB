@@ -268,7 +268,7 @@ static int test_staid(rtcm_t *rtcm, int staid)
 static int decode_head1001(rtcm_t *rtcm, int *sync)
 {
     double tow;
-    char *msg,tstr[64];
+    char *msg,tstr[40];
     int i=24,staid,nsat,type;
     
     type=getbitu(rtcm->buff,i,12); i+=12;
@@ -576,7 +576,7 @@ static int decode_type1008(rtcm_t *rtcm)
 static int decode_head1009(rtcm_t *rtcm, int *sync)
 {
     double tod;
-    char *msg,tstr[64];
+    char *msg,tstr[40];
     int i=24,staid,nsat,type;
     
     type=getbitu(rtcm->buff,i,12); i+=12;
@@ -1460,7 +1460,7 @@ static int decode_ssr_epoch(rtcm_t *rtcm, int sys, int subtype)
 static int decode_ssr1_head(rtcm_t *rtcm, int sys, int subtype, int *sync,
                             int *iod, double *udint, int *refd, int *hsize)
 {
-    char *msg,tstr[64];
+    char *msg,tstr[40];
     int i=24+12,nsat,udi,provid=0,solid=0,ns;
     
     if (subtype==0) { /* RTCM SSR */
@@ -1502,7 +1502,7 @@ static int decode_ssr1_head(rtcm_t *rtcm, int sys, int subtype, int *sync,
 static int decode_ssr2_head(rtcm_t *rtcm, int sys, int subtype, int *sync,
                             int *iod, double *udint, int *hsize)
 {
-    char *msg,tstr[64];
+    char *msg,tstr[40];
     int i=24+12,nsat,udi,provid=0,solid=0,ns;
     
     if (subtype==0) { /* RTCM SSR */
@@ -1844,7 +1844,7 @@ static int decode_ssr7_head(rtcm_t *rtcm, int sys, int subtype, int *sync,
                             int *iod, double *udint, int *dispe, int *mw,
                             int *hsize)
 {
-    char *msg,tstr[64];
+    char *msg,tstr[40];
     int i=24+12,nsat,udi,provid=0,solid=0,ns;
     
     if (subtype==0) { /* RTCM SSR */
@@ -2104,7 +2104,7 @@ static int decode_msm_head(rtcm_t *rtcm, int sys, int *sync, int *iod,
 {
     msm_h_t h0={0};
     double tow,tod;
-    char *msg,tstr[64];
+    char *msg,tstr[40];
     int i=24,j,dow,mask,staid,type,ncell=0;
     
     type=getbitu(rtcm->buff,i,12); i+=12;
