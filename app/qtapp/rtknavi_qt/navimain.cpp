@@ -1117,12 +1117,16 @@ void MainWindow::serverStart()
 
         if (streamTypes[i] == STR_SERIAL) {
             cmds[i] = new char[1024];
+            cmds[i][0] = '\0';
             cmds_periodic[i] = new char[1024];
+            cmds_periodic[i][0] = '\0';
             if (commandEnabled[i][0]) strncpy(cmds[i], qPrintable(commands[i][0]), 1023);
             if (commandEnabled[i][2]) strncpy(cmds_periodic[i], qPrintable(commands[i][2]), 1023);
         } else if (streamTypes[i] == STR_TCPCLI || streamTypes[i] == STR_TCPSVR || streamTypes[i] == STR_NTRIPCLI) {
             cmds[i] = new char[1024];
+            cmds[i][0] = '\0';
             cmds_periodic[i] = new char[1024];
+            cmds_periodic[i][0] = '\0';
             if (commandEnableTcp[i][0]) strncpy(cmds[i], qPrintable(commandsTcp[i][0]), 1023);
             if (commandEnabled[i][2]) strncpy(cmds_periodic[i], qPrintable(commandsTcp[i][2]), 1023);
         };
@@ -1229,9 +1233,11 @@ void MainWindow::serverStop()
 
         if (streamTypes == STR_SERIAL) {
             cmds[i] = new char[1024];
+            cmds[i][0] = '\0';
             if (commandEnabled[i][1]) strncpy(cmds[i], qPrintable(commands[i][1]), 1023);
         } else if (streamTypes == STR_TCPCLI || streamTypes == STR_TCPSVR || streamTypes == STR_NTRIPCLI) {
             cmds[i] = new char[1024];
+            cmds[i][0] = '\0';
             if (commandEnableTcp[i][1]) strncpy(cmds[i], qPrintable(commandsTcp[i][1]), 1023);
         }
     }
