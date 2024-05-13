@@ -684,13 +684,13 @@ void OptDialog::saveClose()
         QMessageBox::warning(this, tr("Error"), tr("Antenna file read error: \"%1\"").arg(fileOptions.rcvantp));
         return;
     }
-    if (ui->cBRoverAntennaPcv->isChecked()) {
+    if (ui->cBRoverAntennaPcv->isChecked() && (processingOptions.anttype[0] != QStringLiteral("*"))) {
         if ((pcv = searchpcv(0, processingOptions.anttype[0], time, &pcvr)))
             processingOptions.pcvr[0] = *pcv;
         else
             QMessageBox::warning(this, tr("Error"), tr("No rover antenna PCV: \"%1\"").arg(processingOptions.anttype[0]));
     }
-    if (ui->cBReferenceAntennaPcv->isChecked()) {
+    if (ui->cBReferenceAntennaPcv->isChecked()&& (processingOptions.anttype[0] != QStringLiteral("*"))) {
         if ((pcv = searchpcv(0, processingOptions.anttype[1], time, &pcvr)))
             processingOptions.pcvr[1] = *pcv;
         else
@@ -1551,7 +1551,8 @@ void OptDialog::updateEnable()
     ui->sBFixCountHoldAmbiguity->setEnabled(ar && ui->cBAmbiguityResolutionGPS->currentIndex() == 3);
     //sBARIter->setEnabled(ppp);
 
-    ui->cBDynamicModel->setEnabled(rel);
+    ui->cBDynamicModel->setEnabled(ui->cBPositionMode->currentIndex() == PMODE_KINEMA ||
+                                   ui->cBPositionMode->currentIndex() == PMODE_PPP_KINEMA);
     ui->cBTideCorrection->setEnabled(rel || ppp);
     ui->sBNumIteration->setEnabled(rel || ppp);
 
@@ -1639,8 +1640,6 @@ void OptDialog::getPosition(int type, QLineEdit **edit, double *pos)
 {
     double p[3] = { 0 }, dms1[3] = { 0 }, dms2[3] = { 0 };
 
-    printf("%s %s %s\n", qPrintable(edit[0]->text()), qPrintable(edit[1]->text()), qPrintable(edit[2]->text()));
-
     if (type == 1) { /* lat/lon/height dms/m */
         auto lat = regExDMS.match(edit[0]->text());
         auto lon = regExDMS.match(edit[1]->text());
@@ -1662,22 +1661,25 @@ void OptDialog::getPosition(int type, QLineEdit **edit, double *pos)
         auto y = regExDistance.match(edit[1]->text());
         auto z = regExDistance.match(edit[2]->text());
 
-        if (x.hasMatch() && y.hasMatch() && z.hasMatch()) {
-            pos[0] = x.captured(1).toDouble();
-            pos[1] = y.captured(1).toDouble();
-            pos[2] = z.captured(1).toDouble();
-        }
+        if (x.hasMatch()) pos[0] = x.captured(1).toDouble();
+        else pos[0] = 0;
+        if (y.hasMatch()) pos[1] = y.captured(1).toDouble();
+        else pos[1] = 0;
+        if (z.hasMatch()) pos[2] = z.captured(1).toDouble();
+        else pos[2] = 0;
     } else {   /* lat/lon/hight decimal */
         auto lat = regExLat.match(edit[0]->text());
         auto lon = regExLon.match(edit[1]->text());
         auto height = regExDistance.match(edit[2]->text());
 
-        if (lat.hasMatch() && lon.hasMatch() && height.hasMatch()) {
-            p[0] = lat.captured(1).toDouble() * D2R;
-            p[1] = lon.captured(1).toDouble() * D2R;
-            p[2] = height.captured(1).toDouble();
-            pos2ecef(p, pos);
-        }
+        if (lat.hasMatch()) p[0] = lat.captured(1).toDouble() * D2R;
+        else p[0] = 0;
+        if (lon.hasMatch()) p[1] = lon.captured(1).toDouble() * D2R;
+        else p[1] = 0;
+        if (height.hasMatch()) p[2] = height.captured(1).toDouble();
+        else p[0] = 0;
+
+        pos2ecef(p, pos);
     }
 }
 //---------------------------------------------------------------------------
