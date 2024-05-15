@@ -50,6 +50,18 @@ OptDialog::OptDialog(QWidget *parent, int opts)
 
     processingOptions = prcopt_default;
     solutionOptions = solopt_default;
+    fileOptions.blq[0] = '\0';
+    fileOptions.dcb[0] = '\0';
+    fileOptions.eop[0] = '\0';
+    fileOptions.geexe[0] = '\0';
+    fileOptions.geoid[0] = '\0';
+    fileOptions.iono[0] = '\0';
+    fileOptions.rcvantp[0] = '\0';
+    fileOptions.satantp[0] = '\0';
+    fileOptions.solstat[0] = '\0';
+    fileOptions.stapos[0] = '\0';
+    fileOptions.tempdir[0] = '\0';
+    fileOptions.trace[0] = '\0';
 
     appOptions = nullptr;
 

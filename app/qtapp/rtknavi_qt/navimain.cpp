@@ -96,7 +96,7 @@ static int strfmt[] = {                         /* stream formats */
 #define FLGOPT  "0:off,1:std+2:age/ratio/ns"
 #define ISTOPT  "0:off,1:serial,2:file,3:tcpsvr,4:tcpcli,6:ntripcli,7:ftp,8:http"
 #define OSTOPT  "0:off,1:serial,2:file,3:tcpsvr,4:tcpcli,5:ntripsvr,9:ntripcas"
-#define FMTOPT  "0:rtcm2,1:rtcm3,2:oem4,3:oem3,4:ubx,5:swift,6:hemis,7:skytraq,8:javad,9:nvs,10:binex,11:rt17,12:sbf,14,15:sp3"
+#define FMTOPT  "0:rtcm2,1:rtcm3,2:oem4,3:oem3,4:ubx,5:ss2,6:hemis,7:skytraq,8:javad,9:nvs,10:binex,11:rt17,12:sbf,13:tersus,14:rinex,15:sp3,16:clk,17:sbas,18:nmea"
 #define NMEOPT  "0:off,1:latlon,2:single"
 #define SOLOPT  "0:llh,1:xyz,2:enu,3:nmea,4:stat"
 
@@ -2355,6 +2355,7 @@ void MainWindow::saveNavigation(nav_t *nav)
     trace(3, "saveNavigation\n");
 
     if (nav == NULL) return;
+    if (nav->eph == NULL) return;
 
     for (i = 0; i < MAXSAT*2; i++) {
         if (nav->eph[i].ttr.time == 0) continue;

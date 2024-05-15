@@ -214,9 +214,16 @@ void LogStrDialog::setPath(int stream, int type, const QString &path)
     QLineEdit *edits[] = {ui->lEFilePath1, ui->lEFilePath2, ui->lEFilePath3};
     if (stream > 3) return;
     paths[stream][type] = path;
+    ui->cBTimeTag->setChecked(path.contains("::T"));
+    if (path.contains("::S="))
+    {
+        int startPos = path.indexOf("::S=")+4;
+        QString startTime = path.mid(startPos, path.indexOf("::", startPos)-startPos);
+        ui->cBSwapInterval->setCurrentText(startTime);
+    };
     if (type == 2)
     {
-        edits[stream]->setText(path);
+        edits[stream]->setText(path.mid(0, path.indexOf("::")));
     };
 }
 //---------------------------------------------------------------------------
@@ -241,7 +248,8 @@ bool LogStrDialog::getLogTimeTagEnabled(){
 //---------------------------------------------------------------------------
 void LogStrDialog::setSwapInterval(const QString & swapInterval)
 {
-    QString interval_str = swapInterval + " h";
+    QString interval_str = swapInterval;
+    if (!interval_str.isEmpty()) interval_str += " h";
     if (ui->cBSwapInterval->findText(interval_str) == -1)
         ui->cBSwapInterval->insertItem(0, interval_str);
     ui->cBSwapInterval->setCurrentText(interval_str);

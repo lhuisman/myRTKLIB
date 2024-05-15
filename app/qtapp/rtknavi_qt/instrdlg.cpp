@@ -301,9 +301,23 @@ void InputStrDialog::setPath(int stream, int type, const QString & path)
 {
     QLineEdit *edits[] = {ui->lEFilePath1, ui->lEFilePath2, ui->lEFilePath3};
     paths[stream][type] = path;
+    ui->cBTimeTag->setChecked(path.contains("::T"));
+    ui->cB64Bit->setChecked(path.contains("::P=8"));
+    if (path.contains("::+"))
+    {
+        int startPos = path.indexOf("::+")+3;
+        QString startTime = path.mid(startPos, path.indexOf("::", startPos)-startPos);
+        ui->sBTimeStart->setValue(startTime.toInt());
+    };
+    if (path.contains("::x"))
+    {
+        int startPos = path.indexOf("::x")+3;
+        QString speed = path.mid(startPos, path.indexOf("::", startPos)-startPos);
+        ui->cBTimeSpeed->setCurrentText(speed);
+    }
     if (type == 2)
     {
-        edits[stream]->setText(path);
+        edits[stream]->setText(path.mid(0, path.indexOf("::")));
     };
 }
 //---------------------------------------------------------------------------
@@ -311,17 +325,17 @@ QString InputStrDialog::getPath(int stream, int type)
 {
     QLineEdit *edits[] = {ui->lEFilePath1, ui->lEFilePath2, ui->lEFilePath3};
     if (type == 2)
-        return setFilePath(edits[stream]->text());
+        return makePath(edits[stream]->text());
 
     return paths[stream][type];
 }
 //---------------------------------------------------------------------------
-QString InputStrDialog::getFilePath(const QString &path)
+QString InputStrDialog::extractFilePath(const QString &path)
 {
     return path.mid(0, path.indexOf("::"));
 }
 //---------------------------------------------------------------------------
-QString InputStrDialog::setFilePath(const QString &p)
+QString InputStrDialog::makePath(const QString &p)
 {
     QString path = p;
 
