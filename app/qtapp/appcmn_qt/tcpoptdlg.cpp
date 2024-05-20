@@ -87,6 +87,7 @@ QString* TcpOptDialog::getHistory()
 void TcpOptDialog::setPath(QString path)
 {
     int index = path.lastIndexOf("@");
+    QString mountpoint_str;
 
     QStringList tokens = path.mid(0, index).split(':'); // split user name and password
     if (tokens.size() == 2)
@@ -96,20 +97,23 @@ void TcpOptDialog::setPath(QString path)
     } else if (tokens.size() == 1)
         ui->lEUser->setText(tokens.at(0));
 
-    QString url_str = path.mid(index); // use the rest
+    QString url_str = path.mid(index+1); // use the rest
 
-    QUrl url(QString("ftp://") + url_str.mid(0,index));
+    // "ftp" is just a dummy need for QUrl to parse correctly
+    // split away mount point data (see getPath())
+    QUrl url(QString("ftp://") + url_str.left(url_str.lastIndexOf(":")));
 
     ui->cBAddress->insertItem(0, url.host());
     ui->cBAddress->setCurrentText(url.host());
     addHistory(ui->cBAddress, history);
 
     ui->sBPort->setValue(url.port());
-    if (showOptions == 2 || showOptions == 4) {
+    if (showOptions == OPT_NTRIP_SERVER || showOptions == OPT_NTRIP_CASTER_CLIENT) {
         index = url_str.lastIndexOf(":");   // split "str" prefix
-        ui->cBMountPoint->insertItem(0, url.path().mid(1),  url_str.mid(index + 1));
-        ui->cBMountPoint->setCurrentText(url.path().mid(1));
+        mountpoint_str = url_str.mid(index + 1);
     }
+    ui->cBMountPoint->insertItem(0, url.path().mid(1), mountpoint_str);
+    ui->cBMountPoint->setCurrentText(url.path().mid(1));
 }
 //---------------------------------------------------------------------------
 QString TcpOptDialog::getPath()

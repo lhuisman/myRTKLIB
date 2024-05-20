@@ -133,8 +133,8 @@ QString LogStrDialog::setFilePath(const QString &p)
 //---------------------------------------------------------------------------
 void LogStrDialog::showSerialOptions(int index, int opt)
 {
-    serialOptDialog->setPath(paths[index][0]);
     serialOptDialog->setOptions(opt);
+    serialOptDialog->setPath(paths[index][0]);
 
     serialOptDialog->exec();
     if (serialOptDialog->result() != QDialog::Accepted) return;
@@ -144,9 +144,9 @@ void LogStrDialog::showSerialOptions(int index, int opt)
 //---------------------------------------------------------------------------
 void LogStrDialog::showTcpOptions(int index, int opt)
 {
-    tcpOptDialog->setPath(paths[index][1]);
     tcpOptDialog->setOptions(opt);
     tcpOptDialog->setHistory(history, 10);
+    tcpOptDialog->setPath(paths[index][1]);
 
     tcpOptDialog->exec();
     if (tcpOptDialog->result() != QDialog::Accepted) return;

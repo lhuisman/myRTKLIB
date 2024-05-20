@@ -483,8 +483,8 @@ void InputStrDialog::selectFile3()
 //---------------------------------------------------------------------------
 void InputStrDialog::showSerialOptionsDialog(int index, int opt)
 {
-    serialOptDialog->setPath(getPath(index, 0));
     serialOptDialog->setOptions(opt);
+    serialOptDialog->setPath(getPath(index, 0));
 
     serialOptDialog->exec();
     if (serialOptDialog->result() != QDialog::Accepted) return;
@@ -494,9 +494,9 @@ void InputStrDialog::showSerialOptionsDialog(int index, int opt)
 //---------------------------------------------------------------------------
 void InputStrDialog::showTcpOptionsDialog(int index, int opt)
 {
-    tcpOptDialog->setPath(getPath(index,1));
     tcpOptDialog->setOptions(opt);
     tcpOptDialog->setHistory(history, 10);
+    tcpOptDialog->setPath(getPath(index, 1));
 
     tcpOptDialog->exec();
     if (tcpOptDialog->result() != QDialog::Accepted) return;
@@ -509,8 +509,8 @@ void InputStrDialog::showTcpOptionsDialog(int index, int opt)
 //---------------------------------------------------------------------------
 void InputStrDialog::showFtpOptionsDialog(int index, int opt)
 {
-    ftpOptDialog->setPath(getPath(index, 3));
     ftpOptDialog->setOptions(opt);
+    ftpOptDialog->setPath(getPath(index, 3));
 
     ftpOptDialog->exec();
     if (ftpOptDialog->result() != QDialog::Accepted) return;

@@ -115,8 +115,8 @@ QString OutputStrDialog::setFilePath(const QString &p)
 //---------------------------------------------------------------------------
 void OutputStrDialog::showSerialOptions(int index, int opt)
 {
-    serialOptDialog->setPath(paths[index][0]);
     serialOptDialog->setOptions(opt);
+    serialOptDialog->setPath(paths[index][0]);
 
     serialOptDialog->exec();
     if (serialOptDialog->result() != QDialog::Accepted) return;
@@ -126,12 +126,12 @@ void OutputStrDialog::showSerialOptions(int index, int opt)
 //---------------------------------------------------------------------------
 void OutputStrDialog::showTcpOptions(int index, int opt)
 {
-    tcpOptDialog->setPath(paths[index][1]);
     tcpOptDialog->setOptions(opt);
     tcpOptDialog->setHistory(history, 10);
+    tcpOptDialog->setPath(paths[index][1]);
 
     tcpOptDialog->exec();
-    if (tcpOptDialog->exec() != QDialog::Accepted) return;
+    if (tcpOptDialog->result() != QDialog::Accepted) return;
 
     paths[index][1] = tcpOptDialog->getPath();
     for (int i = 0; i < 10; i++) {
