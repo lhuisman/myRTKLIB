@@ -1,8 +1,8 @@
-include(../../RTKLib.pri)
-
 # save root directory
 ROOT_DIRECTORY = $${PWD}/../..
 OUTPUT_DIRECTORY = $${OUT_PWD}
+
+include(../../RTKLib.pri)
 
 QMAKE_LIBDIR += ../../../lib
 QMAKE_LIBDIR += $${ROOT_DIRECTORY}/lib 
