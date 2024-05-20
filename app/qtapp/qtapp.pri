@@ -19,7 +19,7 @@ win* {
 }
 
 
-localbuild {
+!packaging {
     QMAKE_RPATHDIR *= $${ROOT_DIRECTORY}/lib
 }
 
