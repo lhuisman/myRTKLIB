@@ -51,7 +51,7 @@ void Plot::ReadSol(const QStringList &files, int sel)
     ShowMsg(tr("reading %1...").arg(paths[0]));
     ShowLegend(NULL);
 
-    if (!readsolt(paths, n, ts, te, tint, 0, &sol)) {
+    if (!readsolt(paths, n, ts, te, tint, SOLQ_NONE, &sol)) {
         ShowMsg(tr("no solution data : %1...").arg(paths[0]));
         ShowLegend(NULL);
         ReadWaitEnd();

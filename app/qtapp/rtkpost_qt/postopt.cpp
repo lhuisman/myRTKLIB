@@ -876,7 +876,7 @@ void OptDialog::SaveOpt(const QString &file)
 	}
     solopt.posf = SolFormat->currentIndex();
     solopt.timef = TimeFormat->currentIndex() == 0 ? 0 : 1;
-    solopt.times = TimeFormat->currentIndex() == 0 ? 0 : TimeFormat->currentIndex() - 1;
+    solopt.times = TimeFormat->currentIndex() == 0 ? TIMES_GPST : (TimeFormat->currentIndex() - 1);
     solopt.timeu = TimeDecimal->value();
     solopt.degf = LatLonFormat->currentIndex();
     strcpy(solopt.sep, qPrintable(FieldSep_Text));
