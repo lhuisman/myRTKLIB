@@ -43,10 +43,14 @@ OptDialog::OptDialog(QWidget *parent, int opts)
 
     // inspired by https://stackoverflow.com/questions/18321779/degrees-minutes-and-seconds-regex
     // and https://stackoverflow.com/questions/3518504/regular-expression-for-matching-latitude-longitude-coordinates
-    regExDMS = QRegularExpression("^([-+]?[0-8]?[0-9]|90)°\\s([0-5]?[0-9])'?\\s(([0-5]\\d|\\d)([\\.|,]\\d{1,20}))?\"$");
-    regExLat = QRegularExpression("^([-+]?[1-8]?\\d([\\.|,]\\d+)?|90([\\.|,]0+)?)\\s°$");
-    regExLon = QRegularExpression("([-+]?180([\\.|,]0+)?|([-+]?(1[0-7]\\d)|([-+]?[1-9]?\\d))([\\.|,]\\d+)?)\\s°");
-    regExDistance = QRegularExpression("^([-+]?\\d+([\\.|,]\\d*)?)\\sm$");
+
+    regExDMSLat = QRegularExpression("^\\s*(?:(?<deg1>[-+]?90)[°\\s]\\s*(?<min1>0{1,2})['\\s]\\s*(?<sec1>0{1,2}(?:[\\.,]0*)?)\"?\\s*)|(?:(?<deg2>[-+]?(?:[1-8][0-9]|[0-9]))[°\\s]\\s*(?<min2>(?:[0-5][0-9]|[0-9]))['\\s]\\s*(?<sec2>(?:[0-5][0-9]|[0-9])(?:[\\.,][0-9]*)?)\"?)\\s*$");
+    regExDMSLon = QRegularExpression("^\\s*(?:(?<deg1>[-+]?180)[°\\s]\\s*(?<min1>0{1,2})['\\s]\\s*(?<sec1>0{1,2}(?:[\\.,]0*)?)\"?\\s*)|(?:(?<deg2>[-+]?(?:1[0-7][0-9]|[0-9][0-9]|[0-9]))[°\\s]\\s*(?<min2>(?:[0-5][0-9]|[0-9]))['\\s]\\s*(?<sec2>(?:[0-5][0-9]|[0-9])(?:[\\.,][0-9]*)?)\"?)\\s*$");
+
+    regExLat = QRegularExpression("^\\s*((?:\\+|-)?(?:90(?:(?:[\\.,]0*)?)|(?:[0-9]|[1-8][0-9])(?:(?:[\\.,][0-9]*)?)))(?:\\s+°)?\\s*$");
+    regExLon = QRegularExpression("^\\s*((\\+|-)?(?:180(?:(?:[\\.,]0*)?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:[\\.,][0-9]*)?)))(?:\\s+°)?\\s*$");
+
+    regExDistance = QRegularExpression("^\\s*([-+]?[0-9]+(?:[\\.,][0-9]*)?)(?:\\s*m)?\\s*?$");
 
     processingOptions = prcopt_default;
     solutionOptions = solopt_default;
@@ -1661,23 +1665,45 @@ void OptDialog::updateEnable()
 //---------------------------------------------------------------------------
 void OptDialog::getPosition(int type, QLineEdit **edit, double *pos)
 {
-    double p[3] = { 0 }, dms1[3] = { 0 }, dms2[3] = { 0 };
+    double p[3] = { 0 };
 
     if (type == 1) { /* lat/lon/height dms/m */
-        auto lat = regExDMS.match(edit[0]->text());
-        auto lon = regExDMS.match(edit[1]->text());
+        auto lat = regExDMSLat.match(edit[0]->text());
+        if (lat.hasMatch()) {
+          double deg1 = lat.captured("deg1").toDouble();
+          double min1 = lat.captured("min1").toDouble();
+          double sec1 = lat.captured("sec1").toDouble();
+          double deg2 = lat.captured("deg2").toDouble();
+          double min2 = lat.captured("min2").toDouble();
+          double sec2 = lat.captured("sec2").toDouble();
+          if (fabs(fabs(deg1) - 90) < 1e-12 && fabs(min1) < 1e-12 && fabs(sec1) < 1e-12)
+            p[0] = (deg1 < 0 ? -1 : 1) * fabs(deg1) * D2R;
+          else
+            p[0] = (deg2 < 0 ? -1 : 1) * (fabs(deg2) + min2 / 60 + sec2 / 3600) * D2R;
+        } else
+          p[0] = 0;
+
+        auto lon = regExDMSLon.match(edit[1]->text());
+        if (lon.hasMatch()) {
+          double deg1 = lon.captured("deg1").toDouble();
+          double min1 = lon.captured("min1").toDouble();
+          double sec1 = lon.captured("sec1").toDouble();
+          double deg2 = lon.captured("deg2").toDouble();
+          double min2 = lon.captured("min2").toDouble();
+          double sec2 = lon.captured("sec2").toDouble();
+          if (fabs(fabs(deg1) - 180) < 1e-12 && fabs(min1) < 1e-12 && fabs(sec1) < 1e-12)
+            p[1] = (deg1 < 0 ? -1 : 1) * fabs(deg1) * D2R;
+          else
+            p[1] = (deg2 < 0 ? -1 : 1) * (fabs(deg2) + min2 / 60 + sec2 / 3600) * D2R;
+        } else
+          p[1] = 0;
+
         auto height = regExDistance.match(edit[2]->text());
-        auto a= lat.captured(2);
+        if (height.hasMatch()) {
+          p[2] = height.captured(1).toDouble();
+        } else
+          p[2] = 0;
 
-        for (int i = 0; i < 3; i++)
-            dms1[i] = lat.captured(i+1).toDouble();
-
-        for (int i = 0; i < 3; i++)
-            dms2[i] = lon.captured(i+1).toDouble();
-
-        p[0] = (dms1[0] < 0 ? -1 : 1) * (fabs(dms1[0]) + dms1[1] / 60 + dms1[2] / 3600) * D2R;
-        p[1] = (dms2[0] < 0 ? -1 : 1) * (fabs(dms2[0]) + dms2[1] / 60 + dms2[2] / 3600) * D2R;
-        p[2] = height.captured(1).toDouble();
         pos2ecef(p, pos);
     } else if (type == 2) { /* x/y/z-ecef */
         auto x = regExDistance.match(edit[0]->text());
@@ -1721,8 +1747,8 @@ void OptDialog::setPosition(int type, QLineEdit **edit, double *pos)
         dms2[0] = floor(p[1]); p[1] = (p[1] - dms2[0]) * 60.0;
         dms2[1] = floor(p[1]); dms2[2] = (p[1] - dms2[1]) * 60.0;
 
-        edit[0]->setValidator(new QRegularExpressionValidator(regExDMS, this));
-        edit[1]->setValidator(new QRegularExpressionValidator(regExDMS, this));
+        edit[0]->setValidator(new QRegularExpressionValidator(regExDMSLat, this));
+        edit[1]->setValidator(new QRegularExpressionValidator(regExDMSLon, this));
         edit[2]->setValidator(new QRegularExpressionValidator(regExDistance, this));
 
         edit[0]->setText(QString("%1° %2' %3\"").arg(s1 * dms1[0], 0, 'f', 0).arg(dms1[1], 2, 'f', 0, '0').arg(dms1[2], 9, 'f', 6, '0'));

@@ -59,7 +59,8 @@ protected:
 
     TextViewer *textViewer;
     FreqDialog * freqDialog;
-    QRegularExpression regExDMS;
+    QRegularExpression regExDMSLat;
+    QRegularExpression regExDMSLon;
     QRegularExpression regExLat;
     QRegularExpression regExLon;
     QRegularExpression regExDistance;
