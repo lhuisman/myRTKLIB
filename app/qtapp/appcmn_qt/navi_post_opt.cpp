@@ -614,6 +614,9 @@ void OptDialog::saveClose()
     processingOptions.err[2] = ui->sBMeasurementError3->value();
     processingOptions.err[3] = ui->sBMeasurementError4->value();
     processingOptions.err[4] = ui->sBMeasurementError5->value();
+    processingOptions.err[5] = ui->sBMeasurementErrorSNR_Max->value();
+    processingOptions.err[6] = ui->sBMeasurementErrorSNR->value();
+    processingOptions.err[7] = ui->sBMeasurementErrorReceiver->value();
     // std
     processingOptions.prn[0] = ui->sBProcessNoise1->value();
     processingOptions.prn[1] = ui->sBProcessNoise2->value();
@@ -849,6 +852,9 @@ void OptDialog::load(const QString &file)
     ui->sBMeasurementError3->setValue(prcopt.err[2]);
     ui->sBMeasurementError4->setValue(prcopt.err[3]);
     ui->sBMeasurementError5->setValue(prcopt.err[4]);
+    ui->sBMeasurementErrorSNR_Max->setValue(prcopt.err[5]);
+    ui->sBMeasurementErrorSNR->setValue(prcopt.err[6]);
+    ui->sBMeasurementErrorReceiver->setValue(prcopt.err[7]);
     // std
     ui->sBProcessNoise1->setValue(prcopt.prn[0]);
     ui->sBProcessNoise2->setValue(prcopt.prn[1]);
@@ -1019,6 +1025,9 @@ void OptDialog::save(const QString &file)
     procOpts.err[2] = ui->sBMeasurementError3->value();
     procOpts.err[3] = ui->sBMeasurementError4->value();
     procOpts.err[4] = ui->sBMeasurementError5->value();
+    procOpts.err[5] = ui->sBMeasurementErrorSNR_Max->value();
+    procOpts.err[6] = ui->sBMeasurementErrorSNR->value();
+    procOpts.err[7] = ui->sBMeasurementErrorReceiver->value();
     // std
     procOpts.prn[0] = ui->sBProcessNoise1->value();
     procOpts.prn[1] = ui->sBProcessNoise2->value();
@@ -1086,7 +1095,7 @@ void OptDialog::save(const QString &file)
     solOpts.datum = ui->cBOutputDatum->currentIndex();
     solOpts.height = ui->cBOutputHeight->currentIndex();
     solOpts.geoid = ui->cBOutputGeoid->currentIndex();
-    solOpts.solstatic = ui->cBSolutionFormat->currentIndex();
+    solOpts.solstatic = ui->cBSolutionStatic->currentIndex();
     solOpts.trace = ui->cBDebugTrace->currentIndex();
     solOpts.sstat = ui->cBDebugStatus->currentIndex();
     solOpts.nmeaintv[0] = ui->sBNmeaInterval1->value();
@@ -1174,8 +1183,8 @@ void OptDialog::saveOptions(QSettings &settings)
 
     settings.setValue("setting/rovpostype", ui->cBRoverPositionType->currentIndex());
     settings.setValue("setting/refpostype", ui->cBReferencePositionType->currentIndex());
-    if (ui->cBRoverPositionType->currentIndex() < 3) getPosition(ui->cBRoverPositionType->currentIndex(), editu, refPos);
-    if (ui->cBReferencePositionType->currentIndex() < 3) getPosition(ui->cBReferencePositionType->currentIndex(), editr, rovPos);
+    if (ui->cBRoverPositionType->currentIndex() < 3) getPosition(ui->cBRoverPositionType->currentIndex(), editu, rovPos);
+    if (ui->cBReferencePositionType->currentIndex() < 3) getPosition(ui->cBReferencePositionType->currentIndex(), editr, refPos);
 
     for (int i = 0; i < 3; i++) {
         settings.setValue(QString("setting/rovpos_%1").arg(i), rovPos[i]);
@@ -1188,9 +1197,9 @@ void OptDialog::saveOptions(QSettings &settings)
     settings.setValue("prcopt/err2", ui->sBMeasurementError3->value());
     settings.setValue("prcopt/err3", ui->sBMeasurementError4->value());
     settings.setValue("prcopt/err4", ui->sBMeasurementError5->value());
-    // settings.setValue("prcopt/err5", ui->sBMeasurementError6->value());
-    // settings.setValue("prcopt/err6", ui->sBMeasurementError7->value());
-    // settings.setValue("prcopt/err7", ui->sBMeasurementError8->value());
+    settings.setValue("prcopt/err5", ui->sBMeasurementErrorSNR_Max->value());
+    settings.setValue("prcopt/err6", ui->sBMeasurementErrorSNR->value());
+    settings.setValue("prcopt/err7", ui->sBMeasurementErrorReceiver->value());
     // std
     settings.setValue("prcopt/prn0", ui->sBProcessNoise1->value());
     settings.setValue("prcopt/prn1", ui->sBProcessNoise2->value());
@@ -1385,9 +1394,9 @@ void OptDialog::loadOptions(QSettings &settings)
     ui->sBMeasurementError3->setValue(settings.value("prcopt/err2", 0.003).toDouble());
     ui->sBMeasurementError4->setValue(settings.value("prcopt/err3", 0.0).toDouble());
     ui->sBMeasurementError5->setValue(settings.value("prcopt/err4", 1.0).toDouble());
-    // ui->sBMeasurementError6->setValue(settings.value("prcopt/err5", 1.0).toDouble());
-    // ui->sBMeasurementError7->setValue(settings.value("prcopt/err6", 1.0).toDouble());
-    // ui->sBMeasurementError8->setValue(settings.value("prcopt/err7", 1.0).toDouble());
+    ui->sBMeasurementErrorSNR_Max->setValue(settings.value("prcopt/err5", 1.0).toDouble());
+    ui->sBMeasurementErrorSNR->setValue(settings.value("prcopt/err6", 1.0).toDouble());
+    ui->sBMeasurementErrorReceiver->setValue(settings.value("prcopt/err7", 1.0).toDouble());
     // std
     ui->sBProcessNoise1->setValue(settings.value("prcopt/prn0", 1E-4).toDouble());
     ui->sBProcessNoise2->setValue(settings.value("prcopt/prn1", 1E-3).toDouble());
@@ -1625,6 +1634,8 @@ void OptDialog::updateEnable()
     ui->cBOutputDatum->setEnabled(ui->cBSolutionFormat->currentIndex() == 0);
     ui->cBOutputHeight->setEnabled(ui->cBSolutionFormat->currentIndex() == 0);
     ui->cBOutputGeoid->setEnabled(ui->cBSolutionFormat->currentIndex() == 0 && ui->cBOutputHeight->currentIndex() == 1);
+    ui->Label21->setEnabled(ui->cBPositionMode->currentIndex() == PMODE_STATIC ||
+                            ui->cBPositionMode->currentIndex() == PMODE_PPP_STATIC);
     ui->cBSolutionStatic->setEnabled(ui->cBPositionMode->currentIndex() == PMODE_STATIC ||
                                      ui->cBPositionMode->currentIndex() == PMODE_PPP_STATIC);
 

@@ -597,6 +597,11 @@
            <string>Combined</string>
           </property>
          </item>
+         <item>
+          <property name="text">
+           <string>Combined - no phase reset</string>
+          </property>
+         </item>
         </widget>
        </item>
        <item row="4" column="0" colspan="2">

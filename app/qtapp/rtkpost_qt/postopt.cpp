@@ -899,7 +899,7 @@ void OptDialog::save(const QString &file)
     solopt.datum = cBOutputDatum->currentIndex();
     solopt.height = cBOutputHeight->currentIndex();
     solopt.geoid = cBOutputGeoid->currentIndex();
-    solopt.solstatic = cBSolutionFormat->currentIndex();
+    solopt.solstatic = cBSolutionStatic->currentIndex();
     solopt.nmeaintv[0] = sBNmeaInterval1->value();
     solopt.nmeaintv[1] = sBNmeaInterval2->value();
     solopt.trace = cBDebugTrace->currentIndex();
