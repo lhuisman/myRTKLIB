@@ -1365,7 +1365,7 @@
        <item row="0" column="1" colspan="3">
         <widget class="QComboBox" name="cBSolutionFormat">
          <property name="enabled">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
          <property name="toolTip">
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Output format for the solution (option: &lt;span style=&quot; font-style:italic;&quot;&gt;out-solformat&lt;/span&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
