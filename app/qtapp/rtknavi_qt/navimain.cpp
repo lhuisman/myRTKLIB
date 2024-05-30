@@ -470,12 +470,12 @@ void MainWindow::showOptionsDialog()
     for (int i = 0; i < 8; i++) {
         int stype = streamType[i];
         if (i < 3) {
-            if (stype >= 0 && stype < sizeof(itype) / sizeof(int))
+            if (stype >= 0 && stype < (int)(sizeof(itype) / sizeof(int)))
                 strtype[i] = itype[stype];
             else
                 strtype[i] = STR_NONE;
         } else {
-            if (stype >= 0 && stype < sizeof(otype) / sizeof(int))
+            if (stype >= 0 && stype < (int)(sizeof(otype) / sizeof(int)))
                 strtype[i] = otype[stype];
             else
                 strtype[i] = STR_NONE;
@@ -556,7 +556,7 @@ void MainWindow::showOptionsDialog()
         bool found = false;
         if (i < 3) {
             // Input
-            for (int j = 0; j < sizeof(itype) / sizeof(int); j++) {
+            for (int j = 0; j < (int)(sizeof(itype) / sizeof(int)); j++) {
                 if (strtype[i] != itype[j]) continue;
                 streamType[i] = j;
                 found = true;
@@ -564,7 +564,7 @@ void MainWindow::showOptionsDialog()
             }
         } else {
             // Output or log
-            for (int j = 0; j < sizeof(otype) / sizeof(int); j++) {
+            for (int j = 0; j < (int)(sizeof(otype) / sizeof(int)); j++) {
                 if (strtype[i] != otype[j]) continue;
                 streamType[i] = j;
                 found = true;
