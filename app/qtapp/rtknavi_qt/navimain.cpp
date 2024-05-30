@@ -468,6 +468,19 @@ void MainWindow::showOptionsDialog()
     trace(3, "showOptionsDialog\n");
 
     for (int i = 0; i < 8; i++) {
+        int stype = streamType[i];
+        if (i < 3) {
+            if (stype >= 0 && stype < sizeof(itype) / sizeof(int))
+                strtype[i] = itype[stype];
+            else
+                strtype[i] = STR_NONE;
+        } else {
+            if (stype >= 0 && stype < sizeof(otype) / sizeof(int))
+                strtype[i] = otype[stype];
+            else
+                strtype[i] = STR_NONE;
+        }
+
         strtype[i] = i < 3 ? itype[streamType[i]] : otype[streamType[i]];
         strfmt[i] = inputFormat[i];
 
@@ -539,13 +552,27 @@ void MainWindow::showOptionsDialog()
     if (optDialog->result() != QDialog::Accepted) return;
 
     for (int i = 0; i < 8; i++) {
-        streamEnabled[i] = strtype[i] != STR_NONE;
-        streamType[i] = STR_NONE;
-        for (int j = 0; j < (i < 3 ? 7 : 5); j++) {
-            if (strtype[i] != (i < 3 ? itype[j] : otype[j])) continue;
-            streamType[i] = j;
-            break;
+        streamType[i] = 0; // Default to serial
+        bool found = false;
+        if (i < 3) {
+            // Input
+            for (int j = 0; j < sizeof(itype) / sizeof(int); j++) {
+                if (strtype[i] != itype[j]) continue;
+                streamType[i] = j;
+                found = true;
+                break;
+            }
+        } else {
+            // Output or log
+            for (int j = 0; j < sizeof(otype) / sizeof(int); j++) {
+                if (strtype[i] != otype[j]) continue;
+                streamType[i] = j;
+                found = true;
+                break;
+            }
         }
+        // Disable if the stream type is not found.
+        if (found == false) streamEnabled[i] = false;
         if (i < 5) inputFormat[i] = strfmt[i];
 
         if (strtype[i] == STR_SERIAL)
@@ -557,7 +584,6 @@ void MainWindow::showOptionsDialog()
         else if (strtype[i] <= STR_HTTP)
             paths[i][3] = strpath[i];
     }
-
 
     if (solutionBufferSize_old != optDialog->solutionBufferSize) {
         initSolutionBuffer();
