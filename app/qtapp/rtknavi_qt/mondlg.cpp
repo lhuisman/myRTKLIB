@@ -209,11 +209,28 @@ void MonitorDialog::showBuffers()
     rtksvrlock(rtksvr);
 
     if (displayType == 16) { // input buffer
-        len = rtksvr->npb[inputStream];
-        if (len > 0 && (msg = (uint8_t *)malloc(size_t(len)))) {
-            memcpy(msg, rtksvr->pbuf[inputStream], size_t(len));
-            rtksvr->npb[inputStream] = 0;
-		}
+        if (inputStream >= 3) {
+            // Combined
+            len = 0;
+            for (int i = 0; i < 3; i++)
+                len += rtksvr->npb[i];
+            if (len > 0 && (msg = (uint8_t *)malloc(size_t(len)))) {
+                for (int i = 0, j = 0; i < 3; i++) {
+                    int ilen = rtksvr->npb[i];
+                    if (ilen > 0) {
+                        memcpy(msg + j, rtksvr->pbuf[i], size_t(ilen));
+                        rtksvr->npb[i] = 0;
+                        j += ilen;
+                    }
+                }
+            }
+        } else {
+            len = rtksvr->npb[inputStream];
+            if (len > 0 && (msg = (uint8_t *)malloc(size_t(len)))) {
+                memcpy(msg, rtksvr->pbuf[inputStream], size_t(len));
+                rtksvr->npb[inputStream] = 0;
+            }
+        }
     } else if (displayType == 17) { // solution buffer
         len = rtksvr->nsb[solutionStream];
         if (len > 0 && (msg = (uint8_t*)malloc(size_t(len)))) {
