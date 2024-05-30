@@ -14,6 +14,8 @@
 
 #include "ui_logstrdlg.h"
 
+#include "rtklib.h"
+
 
 //---------------------------------------------------------------------------
 LogStrDialog::LogStrDialog(QWidget *parent)
@@ -133,6 +135,8 @@ QString LogStrDialog::setFilePath(const QString &p)
 //---------------------------------------------------------------------------
 void LogStrDialog::showSerialOptions(int index, int opt)
 {
+    if ((index < 0) || (index > 2)) return;
+
     serialOptDialog->setOptions(opt);
     serialOptDialog->setPath(paths[index][0]);
 
@@ -144,6 +148,8 @@ void LogStrDialog::showSerialOptions(int index, int opt)
 //---------------------------------------------------------------------------
 void LogStrDialog::showTcpOptions(int index, int opt)
 {
+    if ((index < 0) || (index > 2)) return;
+
     tcpOptDialog->setOptions(opt);
     tcpOptDialog->setHistory(history, 10);
     tcpOptDialog->setPath(paths[index][1]);
@@ -182,7 +188,8 @@ void LogStrDialog::updateEnable()
 void LogStrDialog::setStreamEnabled(int stream, int enabled)
 {
     QCheckBox *cBStreamC[] = {ui->cBStream1C, ui->cBStream2C, ui->cBStream3C};
-    if (stream > 3) return;
+    if ((stream < 0 ) || (stream > 2)) return;
+
     cBStreamC[stream]->setChecked(enabled);
     updateEnable();
 }
@@ -190,29 +197,35 @@ void LogStrDialog::setStreamEnabled(int stream, int enabled)
 int LogStrDialog::getStreamEnabled(int stream)
 {
     QCheckBox *cBStreamC[] = {ui->cBStream1C, ui->cBStream2C, ui->cBStream3C};
-    if (stream > 3) return -1;
+    if ((stream < 0 ) || (stream > 2)) return false;
+
     return cBStreamC[stream]->isChecked();
 }
 //---------------------------------------------------------------------------
 void LogStrDialog::setStreamType(int stream, int type)
 {
     QComboBox *cBStream[] = {ui->cBStream1, ui->cBStream2, ui->cBStream3};
-    if (stream > 3) return;
+    if ((stream < 0 ) || (stream > 2)) return;
+
     cBStream[stream]->setCurrentIndex(type);
+
     updateEnable();
 }
 //---------------------------------------------------------------------------
 int LogStrDialog::getStreamType(int stream)
 {
     QComboBox *cBStream[] = {ui->cBStream1, ui->cBStream2, ui->cBStream3};
-    if (stream > 3) return -1;
+    if ((stream < 0 ) || (stream > 2)) return STR_NONE;
+
     return cBStream[stream]->currentIndex();
 };
 //---------------------------------------------------------------------------
 void LogStrDialog::setPath(int stream, int type, const QString &path)
 {
     QLineEdit *edits[] = {ui->lEFilePath1, ui->lEFilePath2, ui->lEFilePath3};
-    if (stream > 3) return;
+    if ((stream < 0 ) || (stream > 2)) return;
+    if ((type < 0 ) || (type > 4)) return;
+
     paths[stream][type] = path;
     ui->cBTimeTag->setChecked(path.contains("::T"));
     if (path.contains("::S="))
@@ -230,7 +243,9 @@ void LogStrDialog::setPath(int stream, int type, const QString &path)
 QString LogStrDialog::getPath(int stream, int type)
 {
     QLineEdit *edits[] = {ui->lEFilePath1, ui->lEFilePath2, ui->lEFilePath3};
-    if (stream > 3) return "";
+    if ((stream < 0 ) || (stream > 2)) return "";
+    if ((type < 0 ) || (type > 4)) return "";
+
     if (type == 2)
         return setFilePath(edits[stream]->text());
 
@@ -262,11 +277,15 @@ QString LogStrDialog::getSwapInterval()
 //---------------------------------------------------------------------------
 void LogStrDialog::setHistory(int i, const QString &history)
 {
+    if ((i < 0) || (i > 9)) return;
+
     this->history[i] = history;
 }
 //---------------------------------------------------------------------------
-const QString &LogStrDialog::getHistory(int i)
+const QString LogStrDialog::getHistory(int i)
 {
+    if ((i < 0) || (i > 9)) return QStringLiteral("");
+
     return history[i];
 }
 //---------------------------------------------------------------------------

@@ -13,6 +13,8 @@
 
 #include "ui_outstrdlg.h"
 
+#include "rtklib.h"
+
 
 //---------------------------------------------------------------------------
 OutputStrDialog::OutputStrDialog(QWidget *parent)
@@ -115,6 +117,8 @@ QString OutputStrDialog::setFilePath(const QString &p)
 //---------------------------------------------------------------------------
 void OutputStrDialog::showSerialOptions(int index, int opt)
 {
+    if ((index < 0) || (index > 1)) return;
+
     serialOptDialog->setOptions(opt);
     serialOptDialog->setPath(paths[index][0]);
 
@@ -126,6 +130,8 @@ void OutputStrDialog::showSerialOptions(int index, int opt)
 //---------------------------------------------------------------------------
 void OutputStrDialog::showTcpOptions(int index, int opt)
 {
+    if ((index < 0) || (index > 1)) return;
+
     tcpOptDialog->setOptions(opt);
     tcpOptDialog->setHistory(history, 10);
     tcpOptDialog->setPath(paths[index][1]);
@@ -161,7 +167,8 @@ void OutputStrDialog::updateEnable()
 void OutputStrDialog::setStreamEnabled(int stream, int enabled)
 {
     QCheckBox *cBStreamC[] = {ui->cBStream1C, ui->cBStream2C};
-    if (stream > 2) return;
+    if ((stream < 0 ) || (stream > 1)) return;
+
     cBStreamC[stream]->setChecked(enabled);
 
     updateEnable();
@@ -170,14 +177,16 @@ void OutputStrDialog::setStreamEnabled(int stream, int enabled)
 int OutputStrDialog::getStreamEnabled(int stream)
 {
     QCheckBox *cBStreamC[] = {ui->cBStream1C, ui->cBStream2C};
-    if (stream > 2) return -1;
+    if ((stream < 0 ) || (stream > 1)) return false;
+
     return cBStreamC[stream]->isChecked();
 }
 //---------------------------------------------------------------------------
 void OutputStrDialog::setStreamType(int stream, int type)
 {
     QComboBox *cBStream[] = {ui->cBStream1, ui->cBStream2};
-    if (stream > 2) return;
+    if ((stream < 0 ) || (stream > 1)) return;
+
     cBStream[stream]->setCurrentIndex(type);
 
     updateEnable();
@@ -186,7 +195,8 @@ void OutputStrDialog::setStreamType(int stream, int type)
 void OutputStrDialog::setStreamFormat(int stream, int format)
 {
     QComboBox *cBFormat[] = {ui->cBFormat1, ui->cBFormat2};
-    if (stream > 2) return;
+    if ((stream < 0 ) || (stream > 1)) return;
+
     cBFormat[stream]->setCurrentIndex(format);
     updateEnable();
 }
@@ -194,7 +204,8 @@ void OutputStrDialog::setStreamFormat(int stream, int format)
 int OutputStrDialog::getStreamFormat(int stream)
 {
     QComboBox *cBFormat[] = {ui->cBFormat1, ui->cBFormat2};
-    if (stream > 2) return -1;
+    if ((stream < 0 ) || (stream > 1)) return STRFMT_RTCM2;
+
     return cBFormat[stream]->currentIndex();
 }
 
@@ -202,14 +213,17 @@ int OutputStrDialog::getStreamFormat(int stream)
 int OutputStrDialog::getStreamType(int stream)
 {
     QComboBox *cBStream[] = {ui->cBStream1, ui->cBStream2};
-    if (stream > 2) return -1;
+    if ((stream < 0 ) || (stream > 1)) return STR_NONE;
+
     return cBStream[stream]->currentIndex();
 };
 //---------------------------------------------------------------------------
 void OutputStrDialog::setPath(int stream, int type, const QString &path)
 {
     QLineEdit *edits[] = {ui->lEFilePath1, ui->lEFilePath2};
-    if (stream > 2) return;
+    if ((stream < 0 ) || (stream > 1)) return;
+    if ((type < 0) || (type > 3)) return;
+
     paths[stream][type] = path;
     ui->cBTimeTag->setChecked(path.contains("::T"));
     if (path.contains("::S="))
@@ -228,7 +242,9 @@ void OutputStrDialog::setPath(int stream, int type, const QString &path)
 QString OutputStrDialog::getPath(int stream, int type)
 {
     QLineEdit *edits[] = {ui->lEFilePath1, ui->lEFilePath2};
-    if (stream > 2) return "";
+    if ((stream < 0 ) || (stream > 1)) return "";
+    if ((type < 0) || (type > 3)) return "";
+
     if (type == 2)
         return setFilePath(edits[stream]->text());
 
@@ -263,11 +279,15 @@ QString OutputStrDialog::getSwapInterval()
 //---------------------------------------------------------------------------
 void OutputStrDialog::setHistory(int i, const QString &history)
 {
+    if ((i < 0) || (i > 9)) return;
+
     this->history[i] = history;
 }
 //---------------------------------------------------------------------------
-const QString &OutputStrDialog::getHistory(int i)
+const QString OutputStrDialog::getHistory(int i)
 {
+    if ((i < 0) || (i > 9)) return "";
+
     return history[i];
 }
 //---------------------------------------------------------------------------
