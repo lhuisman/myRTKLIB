@@ -1428,8 +1428,8 @@ void MonitorDialog::showStream()
         tr("UDP Client"), tr("")
 	};
     const QString outformat[] = {
-        tr("Lat/Lon/Height"), tr("X/Y/Z-ECEF"), tr("E/N/U-Baseline"), tr("NMEA-0183")
-	};
+        tr("Lat/Lon/Height"), tr("X/Y/Z-ECEF"), tr("E/N/U-Baseline"), tr("NMEA-0183"),
+        tr("Solution stats"), tr("GSI F1/F2")};
     const QString state[] = {tr("Error"), tr("-"), tr("OK")};
     QString mode, form;
 	stream_t stream[9];
