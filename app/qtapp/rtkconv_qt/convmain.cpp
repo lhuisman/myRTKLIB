@@ -908,7 +908,11 @@ void MainWindow::ConvertFile(void)
     conversionThread->rnxopt.obstype = ObsType;
     conversionThread->rnxopt.freqtype = FreqType;
     for (i=0;i<2;i++) sprintf(conversionThread->rnxopt.comment[i],"%.63s",qPrintable(Comment[i]));
-    for (i = 0; i < 7; i++) strcpy(conversionThread->rnxopt.mask[i], qPrintable(CodeMask[i]));
+    for (i = 0; i < 7; i++) {
+        /* strncpy is appropriate here, the elements are accessed randomly */
+        strncpy(conversionThread->rnxopt.mask[i], qPrintable(convOptDialog->codeMask[i]), sizeof(conversionThread->rnxopt.mask[i]));
+        conversionThread->rnxopt.mask[i][MAXCODE] = '\0';
+    }
     conversionThread->rnxopt.autopos = AutoPos;
     conversionThread->rnxopt.phshift = PhaseShift;
     conversionThread->rnxopt.halfcyc = HalfCyc;
