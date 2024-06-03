@@ -1742,9 +1742,11 @@ void MonitorDialog::showRtcm()
     QString mstr1, mstr2;
     char tstr[64] = "-";
 
+    int effectiveStream = (inputStream < 0 || inputStream > 2) ? 0 : inputStream;
+
     rtksvrlock(rtksvr);
-    format = rtksvr->format[inputStream];
-    rtcm = rtksvr->rtcm[inputStream];
+    format = rtksvr->format[effectiveStream];
+    rtcm = rtksvr->rtcm[effectiveStream];
     rtksvrunlock(rtksvr);
 
     if (rtcm.time.time) time2str(rtcm.time, tstr, 3);
@@ -1887,11 +1889,13 @@ void MonitorDialog::showRtcmSsr()
     char tstr[64], id[32];
     QString s;
 
+    int effectiveStream = (inputStream < 0 || inputStream > 2) ? 0 : inputStream;
+
     rtksvrlock(rtksvr);
     time = rtksvr->rtk.sol.time;
     for (i = n= 0; i < MAXSAT; i++) {
         if (!(satsys(i + 1, NULL) & sys)) continue;
-        ssr[n] = rtksvr->rtcm[inputStream].ssr[i];
+        ssr[n] = rtksvr->rtcm[effectiveStream].ssr[i];
         sat[n++] = i + 1;
     }
     rtksvrunlock(rtksvr);
@@ -1954,15 +1958,17 @@ void MonitorDialog::showReferenceStation()
     int i = 0, format;
     char tstr[64] = "-";
 
+    int effectiveStream = (inputStream < 0 || inputStream > 2) ? 0 : inputStream;
+
     rtksvrlock(rtksvr);
-    format = rtksvr->format[inputStream];
+    format = rtksvr->format[effectiveStream];
     if (format == STRFMT_RTCM2 || format == STRFMT_RTCM3) {
-        time = rtksvr->rtcm[inputStream].time;
-        sta = rtksvr->rtcm[inputStream].sta;
+        time = rtksvr->rtcm[effectiveStream].time;
+        sta = rtksvr->rtcm[effectiveStream].sta;
     }
     else {
-        time = rtksvr->raw[inputStream].time;
-        sta = rtksvr->raw[inputStream].sta;
+        time = rtksvr->raw[effectiveStream].time;
+        sta = rtksvr->raw[effectiveStream].sta;
     }
     rtksvrunlock(rtksvr);
 
