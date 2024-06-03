@@ -751,7 +751,7 @@ void OptDialog::saveClose()
 
     // solution options
     solutionOptions.posf = ui->cBSolutionFormat->currentIndex();
-    solutionOptions.times = ui->cBTimeFormat->currentIndex() == 0 ? 0 : ui->cBTimeFormat->currentIndex() - 1;
+    solutionOptions.times = ui->cBTimeFormat->currentIndex() == 0 ? TIMES_GPST : ui->cBTimeFormat->currentIndex() - 1;
     solutionOptions.timef = ui->cBTimeFormat->currentIndex() == 0 ? 0 : 1;
     solutionOptions.timeu = static_cast<int>(ui->sBTimeDecimal->value());
     solutionOptions.degf = ui->cBLatLonFormat->currentIndex();
@@ -1100,7 +1100,7 @@ void OptDialog::save(const QString &file)
         strncpy(procOpts.pppopt, qPrintable(ui->lEPPPOptions->text()), 255);
 
     solOpts.posf = ui->cBSolutionFormat->currentIndex();
-    solOpts.times = ui->cBTimeFormat->currentIndex() == 0 ? 0 : ui->cBTimeFormat->currentIndex() - 1;
+    solOpts.times = ui->cBTimeFormat->currentIndex() == 0 ? TIMES_GPST : ui->cBTimeFormat->currentIndex() - 1;
     solOpts.timef = ui->cBTimeFormat->currentIndex() == 0 ? 0 : 1;
     solOpts.timeu = ui->sBTimeDecimal->value();
     solOpts.degf = ui->cBLatLonFormat->currentIndex();
