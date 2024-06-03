@@ -1483,7 +1483,7 @@ void OptDialog::loadOptions(QSettings &settings)
     ui->cBTimeFormat->setCurrentIndex(settings.value("solopt/timef", 1).toInt() == 0 ? 0 : settings.value("solopt/times", 0).toInt() + 1);
     ui->sBTimeDecimal->setValue(settings.value("solopt/timeu", 3).toInt());
     ui->cBLatLonFormat->setCurrentIndex(settings.value("solopt/degf", 0).toInt());
-    ui->cBOutputHeader->setCurrentIndex(settings.value("solop/outhead", 0).toInt());
+    ui->cBOutputHeader->setCurrentIndex(settings.value("solopt/outhead", 0).toInt());
     ui->cBOutputOptions->setCurrentIndex(settings.value("solopt/outopt", 0).toInt());
     ui->cBOutputVelocity->setCurrentIndex(settings.value("solopt/outvel", 0).toInt());
     ui->cBOutputDatum->setCurrentIndex(settings.value("solopt/datum", 0).toInt());
