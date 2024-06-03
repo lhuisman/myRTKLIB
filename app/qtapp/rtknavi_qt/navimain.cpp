@@ -481,7 +481,6 @@ void MainWindow::showOptionsDialog()
                 strtype[i] = STR_NONE;
         }
 
-        strtype[i] = i < 3 ? itype[streamType[i]] : otype[streamType[i]];
         strfmt[i] = inputFormat[i];
 
         if (!streamEnabled[i]) {
