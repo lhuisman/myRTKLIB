@@ -553,7 +553,7 @@ void OptDialog::saveClose()
     gtime_t time = timeget();
 
     memset(&pcvr, 0, sizeof(pcvs_t));
-    memset(&pcv0, 1, sizeof(pcv_t));
+    memset(&pcv0, 0, sizeof(pcv_t));
 
     // file options
     strncpy(fileOptions.satantp, qPrintable(ui->lESatellitePcvFile->text()), MAXSTRPATH-1);
