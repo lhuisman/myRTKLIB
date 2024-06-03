@@ -690,13 +690,24 @@ void OptDialog::saveClose()
         processingOptions.antdel[0][0] = ui->sBRoverAntennaE->value();
         processingOptions.antdel[0][1] = ui->sBRoverAntennaN->value();
         processingOptions.antdel[0][2] = ui->sBRoverAntennaU->value();
+    } else {
+        strncpy(processingOptions.anttype[0], "", sizeof(processingOptions.anttype[0]) - 1);
+        processingOptions.antdel[0][0] = 0;
+        processingOptions.antdel[0][1] = 0;
+        processingOptions.antdel[0][2] = 0;
     }
+
     if (ui->cBReferenceAntennaPcv->isChecked()) {
         strncpy(processingOptions.anttype[1], qPrintable(ui->cBReferenceAntenna->currentText()), 63);
         processingOptions.antdel[1][0] = ui->sBReferenceAntennaE->value();
         processingOptions.antdel[1][1] = ui->sBReferenceAntennaN->value();
         processingOptions.antdel[1][2] = ui->sBReferenceAntennaU->value();
-    };
+    } else {
+        strncpy(processingOptions.anttype[1], "", sizeof(processingOptions.anttype[1]) - 1);
+        processingOptions.antdel[1][0] = 0;
+        processingOptions.antdel[1][1] = 0;
+        processingOptions.antdel[1][2] = 0;
+    }
 
     processingOptions.pcvr[0] = processingOptions.pcvr[1] = pcv0; // initialize antenna PCV
     if ((ui->cBRoverAntennaPcv->isChecked() || ui->cBReferenceAntennaPcv->isChecked()) && !readpcv(fileOptions.rcvantp, &pcvr)) {
