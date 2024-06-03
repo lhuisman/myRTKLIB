@@ -3,6 +3,8 @@
 #include <math.h>
 
 #include <QLabel>
+#include <QComboBox>
+#include <QStandardItemModel>
 
 
 //---------------------------------------------------------------------------
@@ -47,4 +49,16 @@ void degtodms(double deg, double *dms)
     dms[1] = floor((deg - dms[0]) * 60.0);
     dms[2] = (deg - dms[0] - dms[1] / 60.0) * 3600;
     dms[0] *= sgn;
+}
+
+void setComboBoxItemEnabled(QComboBox * comboBox, int index, bool enabled)
+{
+    auto * model = qobject_cast<QStandardItemModel*>(comboBox->model());
+    assert(model);
+    if(!model) return;
+
+    auto * item = model->item(index);
+    assert(item);
+    if(!item) return;
+    item->setEnabled(enabled);
 }

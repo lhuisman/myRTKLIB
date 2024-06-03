@@ -41,9 +41,90 @@ OptDialog::OptDialog(QWidget *parent, int opts)
 
     ui->setupUi(this);
 
+    // add tooltips to items of combo boxes
+    ui->cBPositionMode->setItemData(PMODE_SINGLE, "Single point positioning or SBAS DGPS", Qt::ToolTipRole);
+    ui->cBPositionMode->setItemData(PMODE_DGPS, "Code-based differential GPS", Qt::ToolTipRole);
+    ui->cBPositionMode->setItemData(PMODE_KINEMA, "Carrier-based Kinematic positioning", Qt::ToolTipRole);
+    ui->cBPositionMode->setItemData(PMODE_STATIC, "Carrier-based Static positioning", Qt::ToolTipRole);
+    ui->cBPositionMode->setItemData(PMODE_STATIC_START, "Static till first fix, then Kinematic", Qt::ToolTipRole);
+    ui->cBPositionMode->setItemData(PMODE_MOVEB, "Moving baseline", Qt::ToolTipRole);
+    ui->cBPositionMode->setItemData(PMODE_FIXED, "Rover receiver position fixed (for residual analysis)", Qt::ToolTipRole);
+    ui->cBPositionMode->setItemData(PMODE_PPP_KINEMA, "Precise Point Positioning with kinematic mode", Qt::ToolTipRole);
+    ui->cBPositionMode->setItemData(PMODE_PPP_STATIC, "Precise Point Positioning with static mode", Qt::ToolTipRole);
+    ui->cBPositionMode->setItemData(PMODE_PPP_FIXED, "Rover receiver position is fixed with PPP mode (for residual analysis)", Qt::ToolTipRole);
+
+    ui->cBSolution->setItemData(SOLTYPE_FORWARD, "Forward filter solution", Qt::ToolTipRole);
+    ui->cBSolution->setItemData(SOLTYPE_BACKWARD, "Backward filter solution", Qt::ToolTipRole);
+    ui->cBSolution->setItemData(SOLTYPE_COMBINED, "Smoother combined solution with forward and backward filter solutions, \n"
+                                                  "phase bias states reset between forward and backward solutions", Qt::ToolTipRole);
+    ui->cBSolution->setItemData(SOLTYPE_COMBINED_NORESET, "Smoother combined solution with forward and backward filter solutions, \n"
+                                                          "phase bias states not reset between forward and backward solutions.", Qt::ToolTipRole);
+
+    ui->cBDynamicModel->setItemData(0, "Dynamics is not used", Qt::ToolTipRole);
+    ui->cBDynamicModel->setItemData(1, "Receiver velocity and acceleration are estimated", Qt::ToolTipRole);
+
+    ui->cBTideCorrection->setItemData(0, "Not apply earth tides correction", Qt::ToolTipRole);
+    ui->cBTideCorrection->setItemData(1, "Apply solid earth tides correction", Qt::ToolTipRole);
+    ui->cBTideCorrection->setItemData(2, "Apply solid earth tides, OTL (ocean tide loading) and pole tide corrections", Qt::ToolTipRole);
+
+    ui->cBIonosphereOption->setItemData(IONOOPT_OFF, "Not apply ionospheric correction", Qt::ToolTipRole);
+    ui->cBIonosphereOption->setItemData(IONOOPT_BRDC, "Apply broadcast ionospheric model", Qt::ToolTipRole);
+    ui->cBIonosphereOption->setItemData(IONOOPT_SBAS, "Apply SBAS ionospheric model", Qt::ToolTipRole);
+    ui->cBIonosphereOption->setItemData(IONOOPT_IFLC, "Ionosphere-free linear combination with dual frequency (L1-L2 for GPS/ GLONASS/QZSS \n"
+                                                      "or L1-L5 for Galileo) measurements is used for ionospheric correction", Qt::ToolTipRole);
+    ui->cBIonosphereOption->setItemData(IONOOPT_EST, "Estimate ionospheric parameter STEC (slant total electron content)", Qt::ToolTipRole);
+    ui->cBIonosphereOption->setItemData(IONOOPT_TEC, "Use IONEX TEC grid data", Qt::ToolTipRole);
+    ui->cBIonosphereOption->setItemData(IONOOPT_QZS, "Apply broadcast ionosphere model provided by QZSS", Qt::ToolTipRole);
+
+    ui->cBTroposphereOption->setItemData(TROPOPT_OFF, "Not apply troposphere correction", Qt::ToolTipRole);
+    ui->cBTroposphereOption->setItemData(TROPOPT_SAAS, "Apply Saastamoinen model", Qt::ToolTipRole);
+    ui->cBTroposphereOption->setItemData(TROPOPT_SBAS, "Apply SBAS tropospheric model (MOPS)", Qt::ToolTipRole);
+    ui->cBTroposphereOption->setItemData(TROPOPT_EST, "Estimate ZTD (zenith total delay) parameters as EKF states", Qt::ToolTipRole);
+    ui->cBTroposphereOption->setItemData(TROPOPT_ESTG, "ZTD and horizontal gradient parameters as EKF states", Qt::ToolTipRole);
+    ui->cBTroposphereOption->setItemData(TROPOPT_ESTG, "ZTD and horizontal gradient parameters as EKF states", Qt::ToolTipRole);
+
+    ui->cBSatelliteEphemeris->setItemData(EPHOPT_BRDC, "Use broadcast ephemeris", Qt::ToolTipRole);
+    ui->cBSatelliteEphemeris->setItemData(EPHOPT_PREC, "Use precise ephemeris", Qt::ToolTipRole);
+    ui->cBSatelliteEphemeris->setItemData(EPHOPT_SBAS, " Broadcast ephemeris with SBAS long-term and fast correction", Qt::ToolTipRole);
+    ui->cBSatelliteEphemeris->setItemData(EPHOPT_SSRAPC, "Broadcast ephemeris with RTCM SSR correction (antenna phase center value)", Qt::ToolTipRole);
+    ui->cBSatelliteEphemeris->setItemData(EPHOPT_SSRCOM, "Broadcast ephemeris with RTCM SSR correction (satellite center of mass value)", Qt::ToolTipRole);
+
+    ui->cBAmbiguityResolutionGPS->setItemData(0, "No ambiguity resolution", Qt::ToolTipRole);
+    ui->cBAmbiguityResolutionGPS->setItemData(1, "Continuously static integer ambiguities are estimated and resolved", Qt::ToolTipRole);
+    ui->cBAmbiguityResolutionGPS->setItemData(2, "Integer ambiguity is estimated and resolved by epoch-by-epoch basis", Qt::ToolTipRole);
+    ui->cBAmbiguityResolutionGPS->setItemData(3, "Continuously static integer ambiguities are estimated and resolved.\n"
+                                                 "If the validation OK, the ambiguities are constrained to the resolved values.", Qt::ToolTipRole);
+
+    ui->cBAmbiguityResolutionGLO->setItemData(0, "No ambiguity resolution", Qt::ToolTipRole);
+    ui->cBAmbiguityResolutionGLO->setItemData(1, "Ambiguities are fixed. Usually the ambiguity of only the same types receiver pair for the rover and\n"
+                                                 "the base station can be fixed. If he different receiver types have IFB (inter-frequency bias),\n"
+                                                 "they cannot be canceled by DD.", Qt::ToolTipRole);
+    ui->cBAmbiguityResolutionGLO->setItemData(2, "Nulls out inter-frequency biases after first fix-and-hold of GPS satellites", Qt::ToolTipRole);
+    ui->cBAmbiguityResolutionGLO->setItemData(3, "Receiver inter-frequency biases auto-calibrate but require\n"
+                                                 "reasonably accurate initial estimates (see GLO HW Bias)", Qt::ToolTipRole);
+
+    ui->cBSolutionFormat->setItemData(0, "Latitude, longitude and height", Qt::ToolTipRole);
+    ui->cBSolutionFormat->setItemData(1, "X/Y/Z components of ECEF coordinates", Qt::ToolTipRole);
+    ui->cBSolutionFormat->setItemData(2, "E/N/U components of baseline vector", Qt::ToolTipRole);
+    ui->cBSolutionFormat->setItemData(3, "NMEA GPRMC, GPGGA, GPGSA, GLGSA, GAGSA, GPGSV, GLGSV and GAGSV", Qt::ToolTipRole);
+
+    ui->cBOutputGeoid->setItemData(0, "Internal geoid model", Qt::ToolTipRole);
+    ui->cBOutputGeoid->setItemData(1, "EGM96 (15\" x 15\" grid)", Qt::ToolTipRole);
+    ui->cBOutputGeoid->setItemData(2, "EGM2008 (2.5\" x 2.5\" grid)", Qt::ToolTipRole);
+    ui->cBOutputGeoid->setItemData(3, "EGM2008 (1\" x 1\" grid)", Qt::ToolTipRole);
+    ui->cBOutputGeoid->setItemData(4, "GSI2000 (1\"x1.5\" grid)", Qt::ToolTipRole);
+
+    ui->cBReferencePositionType->setItemData(0, "Latitude/longitude/height in degree and m", Qt::ToolTipRole);
+    ui->cBReferencePositionType->setItemData(1, "Latitude/longitude/height in degree/minute/second and m", Qt::ToolTipRole);
+    ui->cBReferencePositionType->setItemData(2, "X/Y/Z components in ECEF frame.", Qt::ToolTipRole);
+    ui->cBReferencePositionType->setItemData(3, "Use the antenna position included in RTCM messages", Qt::ToolTipRole);
+    ui->cBReferencePositionType->setItemData(4, "Use the average of single point solutions", Qt::ToolTipRole);
+    ui->cBReferencePositionType->setItemData(5, "Use the position in the position file. The station is searched by using the\n"
+                                                "head 4-character ID of the rover observation data file path", Qt::ToolTipRole);
+    ui->cBReferencePositionType->setItemData(6, "Use the approximate position in RINEX OBS header", Qt::ToolTipRole);
+
     // inspired by https://stackoverflow.com/questions/18321779/degrees-minutes-and-seconds-regex
     // and https://stackoverflow.com/questions/3518504/regular-expression-for-matching-latitude-longitude-coordinates
-
     regExDMSLat = QRegularExpression("^\\s*(?:(?<deg1>[-+]?90)[°\\s]\\s*(?<min1>0{1,2})['\\s]\\s*(?<sec1>0{1,2}(?:[\\.,]0*)?)\"?\\s*)|(?:(?<deg2>[-+]?(?:[1-8][0-9]|[0-9]))[°\\s]\\s*(?<min2>(?:[0-5][0-9]|[0-9]))['\\s]\\s*(?<sec2>(?:[0-5][0-9]|[0-9])(?:[\\.,][0-9]*)?)\"?)\\s*$");
     regExDMSLon = QRegularExpression("^\\s*(?:(?<deg1>[-+]?180)[°\\s]\\s*(?<min1>0{1,2})['\\s]\\s*(?<sec1>0{1,2}(?:[\\.,]0*)?)\"?\\s*)|(?:(?<deg2>[-+]?(?:1[0-7][0-9]|[0-9][0-9]|[0-9]))[°\\s]\\s*(?<min2>(?:[0-5][0-9]|[0-9]))['\\s]\\s*(?<sec2>(?:[0-5][0-9]|[0-9])(?:[\\.,][0-9]*)?)\"?)\\s*$");
 
@@ -99,9 +180,12 @@ OptDialog::OptDialog(QWidget *parent, int opts)
     textViewer = new TextViewer(this);
     freqDialog = new FreqDialog(this);
     
+    QStringList freq_tooltips = {"Single Frequency", "L1 and L2 Dual-Frequency", "L1, L2 and L5 Triple-Frequency", "Experimental, not fully supported"};
+
     for (int i = 0; i < NFREQ; i++) {
         label = label + (i > 0 ? "+" : "") + QString("L%1").arg(freq[i]);
         ui->cBFrequencies->addItem(label, i);
+        ui->cBFrequencies->setItemData(i, freq_tooltips.at(i) , Qt::ToolTipRole);
 	}
 
     // set up completers
@@ -254,7 +338,6 @@ OptDialog::OptDialog(QWidget *parent, int opts)
         rovPosModel->item(4)->setFlags(rovPosModel->item(4)->flags() & ~Qt::ItemIsEnabled); // disable "Get from Position File"
         rovPosModel->item(5)->setFlags(rovPosModel->item(5)->flags() & ~Qt::ItemIsEnabled); // disable "RINEX Header Position"
     }
-
 
     if (MAXPRNGPS <= 0) ui->cBNavSys1->setEnabled(false);
     if (MAXPRNGLO <= 0) ui->cBNavSys2->setEnabled(false);
@@ -574,7 +657,7 @@ void OptDialog::saveClose()
 
     processingOptions.mode = ui->cBPositionMode->currentIndex();
     processingOptions.soltype = ui->cBSolution->currentIndex();
-    processingOptions.nf = ui->cBFrequencies->currentIndex() + 1;
+    processingOptions.nf = ui->cBFrequencies->currentIndex() + 1 > NFREQ ? NFREQ : ui->cBFrequencies->currentIndex() + 1;
     processingOptions.navsys = 0;
     if (ui->cBNavSys1->isChecked()) processingOptions.navsys |= SYS_GPS;
     if (ui->cBNavSys2->isChecked()) processingOptions.navsys |= SYS_GLO;
@@ -988,7 +1071,7 @@ void OptDialog::save(const QString &file)
 
     procOpts.mode = ui->cBPositionMode->currentIndex();
     procOpts.soltype = ui->cBSolution->currentIndex();
-    procOpts.nf = ui->cBFrequencies->currentIndex() + 1;
+    procOpts.nf = ui->cBFrequencies->currentIndex() + 1 > NFREQ ? NFREQ : ui->cBFrequencies->currentIndex() + 1;
     procOpts.navsys = (ui->cBNavSys1->isChecked() ? SYS_GPS : 0) |
                       (ui->cBNavSys2->isChecked() ? SYS_GLO : 0) |
                       (ui->cBNavSys3->isChecked() ? SYS_GAL : 0) |
@@ -1568,11 +1651,11 @@ void OptDialog::updateEnable()
     // processing options
     ui->cBSolution->setEnabled(options == PostOptions ? rel || ppp : false);
     ui->cBFrequencies->setEnabled(rel || ppp);
-    ui->cBPositionOption1->setEnabled(ppp);
-    ui->cBPositionOption2->setEnabled(ppp);
+    ui->cBPositionOption1->setEnabled(ui->cBPositionMode->currentIndex() != PMODE_SINGLE);
+    ui->cBPositionOption2->setEnabled(ui->cBPositionMode->currentIndex() != PMODE_SINGLE);
     ui->cBPositionOption3->setEnabled(ppp);
     ui->cBPositionOption4->setEnabled(ppp);
-    ui->cBPositionOption5->setEnabled(ppp);
+    ui->cBPositionOption5->setEnabled(true);
     ui->cBPositionOption6->setEnabled(ppp);
 
     ui->cBAmbiguityResolutionGPS->setEnabled(ar);
@@ -1589,7 +1672,15 @@ void OptDialog::updateEnable()
 
     ui->cBDynamicModel->setEnabled(ui->cBPositionMode->currentIndex() == PMODE_KINEMA ||
                                    ui->cBPositionMode->currentIndex() == PMODE_PPP_KINEMA);
-    ui->cBTideCorrection->setEnabled(rel || ppp);
+    ui->cBTideCorrection->setEnabled(options != NaviOptions && ui->cBPositionMode->currentIndex() != PMODE_SINGLE);
+    if (options == NaviOptions)
+        setComboBoxItemEnabled(ui->cBTideCorrection, 2, false);  // OTL option is not available in RtkNavi
+
+    setComboBoxItemEnabled(ui->cBIonosphereOption, IONOOPT_EST, rel);
+    setComboBoxItemEnabled(ui->cBTroposphereOption, TROPOPT_EST, ui->cBPositionMode->currentIndex() != PMODE_SINGLE);
+    setComboBoxItemEnabled(ui->cBTroposphereOption, TROPOPT_ESTG, ui->cBPositionMode->currentIndex() != PMODE_SINGLE);
+    setComboBoxItemEnabled(ui->cBSatelliteEphemeris, EPHOPT_PREC, options != NaviOptions);
+
     ui->sBNumIteration->setEnabled(rel || ppp);
 
     ui->sBValidThresAR->setEnabled(ar && ui->cBAmbiguityResolutionGPS->currentIndex() >= 1 && ui->cBAmbiguityResolutionGPS->currentIndex() < 4);
@@ -1617,6 +1708,10 @@ void OptDialog::updateEnable()
     ui->btnRoverPosition->setEnabled(ui->cBRoverPositionType->isEnabled() && ui->cBRoverPositionType->currentIndex() <= 2);
 
     ui->cBReferencePositionType->setEnabled(rel && ui->cBPositionMode->currentIndex() != PMODE_MOVEB);
+    setComboBoxItemEnabled(ui->cBReferencePositionType, 3, options == NaviOptions);
+    setComboBoxItemEnabled(ui->cBReferencePositionType, 4, options == PostOptions);
+    setComboBoxItemEnabled(ui->cBReferencePositionType, 5, options == PostOptions);
+    setComboBoxItemEnabled(ui->cBReferencePositionType, 6, options == PostOptions);
     ui->lEReferencePosition1->setEnabled(ui->cBReferencePositionType->isEnabled() && ui->cBReferencePositionType->currentIndex() <= 2);
     ui->lEReferencePosition2->setEnabled(ui->cBReferencePositionType->isEnabled() && ui->cBReferencePositionType->currentIndex() <= 2);
     ui->lEReferencePosition3->setEnabled(ui->cBReferencePositionType->isEnabled() && ui->cBReferencePositionType->currentIndex() <= 2);
