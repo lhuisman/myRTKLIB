@@ -878,8 +878,8 @@ void OptDialog::load(const QString &file)
     ui->sBVarHoldAmb->setValue(prcopt.varholdamb);
     ui->sBGainHoldAmb->setValue(prcopt.gainholdamb);
     ui->sBMaxAgeDifferences->setValue(prcopt.maxtdiff);
-    ui->sBRejectCode->setValue(prcopt.maxinno[0]);
-    ui->sBRejectPhase->setValue(prcopt.maxinno[1]);
+    ui->sBRejectPhase->setValue(prcopt.maxinno[0]);
+    ui->sBRejectCode->setValue(prcopt.maxinno[1]);
     ui->sBBaselineLen->setValue(prcopt.baseline[0]);
     ui->sBBaselineSig->setValue(prcopt.baseline[1]);
     ui->cBBaselineConstrain->setChecked(prcopt.baseline[0] > 0.0);
@@ -1051,8 +1051,8 @@ void OptDialog::save(const QString &file)
     procOpts.varholdamb = ui->sBVarHoldAmb->value();
     procOpts.gainholdamb = ui->sBGainHoldAmb->value();
     procOpts.maxtdiff = ui->sBMaxAgeDifferences->value();
-    procOpts.maxinno[0] = ui->sBRejectCode->value();
-    procOpts.maxinno[1] = ui->sBRejectPhase->value();
+    procOpts.maxinno[0] = ui->sBRejectPhase->value();
+    procOpts.maxinno[1] = ui->sBRejectCode->value();
     if (procOpts.mode == PMODE_MOVEB && ui->cBBaselineConstrain->isChecked()) {
         procOpts.baseline[0] = ui->sBBaselineLen->value();
         procOpts.baseline[1] = ui->sBBaselineSig->value();
@@ -1223,8 +1223,8 @@ void OptDialog::saveOptions(QSettings &settings)
     settings.setValue("prcopt/varholdamb", ui->sBVarHoldAmb->value());
     settings.setValue("prcopt/gainholdamb", ui->sBGainHoldAmb->value());
     settings.setValue("prcopt/maxtdiff", ui->sBMaxAgeDifferences->value());
-    settings.setValue("prcopt/maxinno1", ui->sBRejectCode->value());
-    settings.setValue("prcopt/maxinno2", ui->sBRejectPhase->value());
+    settings.setValue("prcopt/maxinno1", ui->sBRejectPhase->value());
+    settings.setValue("prcopt/maxinno2", ui->sBRejectCode->value());
     settings.setValue("prcopt/baselinec", ui->cBBaselineConstrain->isChecked());
     settings.setValue("prcopt/baseline1", ui->sBBaselineLen->value());
     settings.setValue("prcopt/baseline2", ui->sBBaselineSig->value());
@@ -1420,8 +1420,8 @@ void OptDialog::loadOptions(QSettings &settings)
     ui->sBVarHoldAmb->setValue(settings.value("prcopt/varholdamb", 0.1).toDouble());
     ui->sBGainHoldAmb->setValue(settings.value("prcopt/gainholdamb", 0.01).toDouble());
     ui->sBMaxAgeDifferences->setValue(settings.value("prcopt/maxtdiff", 30.0).toDouble());
-    ui->sBRejectCode->setValue(settings.value("prcopt/maxinno1", 30.0).toDouble());
-    ui->sBRejectPhase->setValue(settings.value("prcopt/maxinno2", 30.0).toDouble());
+    ui->sBRejectPhase->setValue(settings.value("prcopt/maxinno1", 30.0).toDouble());
+    ui->sBRejectCode->setValue(settings.value("prcopt/maxinno2", 30.0).toDouble());
     ui->cBBaselineConstrain->setChecked(settings.value("prcopt/baselinec", 0).toInt());
     ui->sBBaselineLen->setValue(settings.value("prcopt/baseline1", 0.0).toDouble());
     ui->sBBaselineSig->setValue(settings.value("prcopt/baseline2", 0.0).toDouble());
