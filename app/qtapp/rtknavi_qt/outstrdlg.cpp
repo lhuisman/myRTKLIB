@@ -22,6 +22,18 @@ OutputStrDialog::OutputStrDialog(QWidget *parent)
 {
     ui->setupUi(this);
 
+    ui->cBFormat1->setItemData(0, "Latitude, longitude and height", Qt::ToolTipRole);
+    ui->cBFormat1->setItemData(1, "X/Y/Z components of ECEF coordinates", Qt::ToolTipRole);
+    ui->cBFormat1->setItemData(2, "E/N/U components of baseline vector", Qt::ToolTipRole);
+    ui->cBFormat1->setItemData(3, "NMEA GPRMC, GPGGA, GPGSA, GLGSA, GAGSA, GPGSV, GLGSV and GAGSV", Qt::ToolTipRole);
+    ui->cBFormat1->setItemData(4, "Solution status", Qt::ToolTipRole);
+
+    ui->cBFormat2->setItemData(0, "Latitude, longitude and height", Qt::ToolTipRole);
+    ui->cBFormat2->setItemData(1, "X/Y/Z components of ECEF coordinates", Qt::ToolTipRole);
+    ui->cBFormat2->setItemData(2, "E/N/U components of baseline vector", Qt::ToolTipRole);
+    ui->cBFormat2->setItemData(3, "NMEA GPRMC, GPGGA, GPGSA, GLGSA, GAGSA, GPGSV, GLGSV and GAGSV", Qt::ToolTipRole);
+    ui->cBFormat2->setItemData(4, "Solution status", Qt::ToolTipRole);
+
     keyDialog = new KeyDialog(this);
     serialOptDialog = new SerialOptDialog(this);
     tcpOptDialog = new TcpOptDialog(this);

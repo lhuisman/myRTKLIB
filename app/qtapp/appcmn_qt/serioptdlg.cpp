@@ -18,7 +18,6 @@ SerialOptDialog::SerialOptDialog(QWidget *parent, int options)
     connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &SerialOptDialog::reject);
     connect(ui->cBOutputTcpPort, &QCheckBox::clicked, this, &SerialOptDialog::updateEnable);
 
-
     updateEnable();
     setOptions(options);
 }
