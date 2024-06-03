@@ -1836,7 +1836,7 @@ void MainWindow::drawSnr(QPainter &c, int w, int h, int x0, int y0,
     for (i = j = 0; i < 7; i++) {
         if (!sysMask[i]) continue;
         sprintf(id, "%c", sys[i]);
-        drawText(c, x0 + w - topMargin*3/2 + fm.averageCharWidth()*9/8 * (j++ - numSystems), y0 + topMargin, id, color[i], 0, 2);
+        drawText(c, x0 + w - topMargin*3/2 + fm.averageCharWidth()*9/8 * (j++ - numSystems), y0, id, color[i], 0, 2);
     }
 }
 // draw satellites in skyplot -----------------------------------------------
