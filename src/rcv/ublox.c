@@ -357,7 +357,7 @@ static int decode_rxmrawx(raw_t *raw)
     gtime_t time;
     char *q,tstr[64];
     double tow,P,L,D,tn,tadj=0.0,toff=0.0;
-    int i,j,k,idx,sys,prn,sat,code,slip,halfv,halfc,LLI,n=0,cpstd_valid,cpstd_slip;
+    int i,j,k,idx,sys,prn,sat,code,slip,halfv,halfc,LLI,n=0;
     int week,nmeas,ver,gnss,svid,sigid,frqid,lockt,cn0,cpstd=0,prstd=0,tstat;
     int multicode=0, rcvstds=0;
 
@@ -392,16 +392,19 @@ static int decode_rxmrawx(raw_t *raw)
         sscanf(q,"-TADJ=%lf",&tadj);
     }
     /* max valid std-dev of carrier-phase (-MAX_STD_CP) */
-    if ((q=strstr(raw->opt,"-MAX_STD_CP="))) {
-        sscanf(q,"-MAX_STD_CP=%d",&cpstd_valid);
-    }
-    else if (raw->rcvtype==1) cpstd_valid=MAX_CPSTD_VALID_GEN9;  /* F9P */
-    else cpstd_valid=MAX_CPSTD_VALID_GEN8;  /* M8T, M8P */
+    int cpstd_valid;
+    if (raw->rcvtype == 1)
+        cpstd_valid = MAX_CPSTD_VALID_GEN9; /* F9P */
+    else
+        cpstd_valid = MAX_CPSTD_VALID_GEN8; /* M8T, M8P */
+    q = strstr(raw->opt, "-MAX_STD_CP=");
+    if (q) sscanf(q, "-MAX_STD_CP=%d", &cpstd_valid);
 
     /* slip threshold of std-dev of carrier-phase (-STD_SLIP) */
-    if ((q=strstr(raw->opt,"-STD_SLIP="))) {
-        sscanf(q,"-STD_SLIP=%d",&cpstd_slip);
-    } else cpstd_slip=CPSTD_SLIP;
+    int cpstd_slip = CPSTD_SLIP;
+    q = strstr(raw->opt, "-STD_SLIP=");
+    if (q) sscanf(q, "-STD_SLIP=%d", &cpstd_slip);
+
     /* use multiple codes for each freq (-MULTICODE) */
     if ((q=strstr(raw->opt,"-MULTICODE"))) multicode=1;
     /* write rcvr stdevs to unused rinex fields */
@@ -481,13 +484,13 @@ static int decode_rxmrawx(raw_t *raw)
         if (cpstd>=cpstd_slip) slip=LLI_SLIP;
         if (slip) raw->lockflag[sat-1][idx]=slip;
         raw->lockt[sat-1][idx]=lockt*1E-3;
-        raw->halfc[sat-1][idx]=halfc;
         /* LLI: bit0=slip,bit1=half-cycle-unresolved */
         LLI=!halfv&&L!=0.0?LLI_HALFC:0;
         /* half cycle adjusted */
         LLI|=halfc?LLI_HALFA:0; 
         /* set cycle slip if half cycle subtract bit changed state */
         LLI|=halfc!=raw->halfc[sat-1][idx]?LLI_SLIP:0;
+        raw->halfc[sat-1][idx]=halfc;
         /* set cycle slip flag if first valid phase since slip */
         if (L!=0.0) LLI|=raw->lockflag[sat-1][idx]>0.0?LLI_SLIP:0;
 
@@ -1314,7 +1317,7 @@ static int sync_ubx(uint8_t *buff, uint8_t data)
 *          -INVCP     : invert polarity of carrier-phase
 *          -TADJ=tint : adjust time tags to multiples of tint (sec)
 *          -STD_SLIP=std: slip by std-dev of carrier phase under std
-*          -MAX_CP_STD=std: max std-dev of carrier phase
+*          -MAX_STD_CP=std: max std-dev of carrier phase
 *          -MULTICODE :  preserve multiple signal codes for single freq
 *          -RCVSTDS :  save receiver stdevs to unused rinex fields
 

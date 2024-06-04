@@ -635,7 +635,7 @@ extern int strsvrstart(strsvr_t *svr, int *opts, int *strs, char **paths,
                        char **logs, strconv_t **conv, char **cmds,
                        char **cmds_periodic, const double *nmeapos)
 {
-    int i,rw,stropt[5]={0};
+    int i,rw,stropt[8]={0};
     char file1[MAXSTRPATH],file2[MAXSTRPATH],*p;
     
     tracet(3,"strsvrstart:\n");
@@ -659,7 +659,8 @@ extern int strsvrstart(strsvr_t *svr, int *opts, int *strs, char **paths,
     
     if (!(svr->buff=(uint8_t *)malloc(svr->buffsize))||
         !(svr->pbuf=(uint8_t *)malloc(svr->buffsize))) {
-        free(svr->buff); free(svr->pbuf);
+        free(svr->buff);
+        svr->buff = svr->pbuf = NULL;
         return 0;
     }
     /* open streams */
@@ -669,6 +670,8 @@ extern int strsvrstart(strsvr_t *svr, int *opts, int *strs, char **paths,
         if (i>0&&*file1&&!strcmp(file1,file2)) {
             sprintf(svr->stream[i].msg,"output path error: %-512.512s",file2);
             for (i--;i>=0;i--) strclose(svr->stream+i);
+            free(svr->buff); free(svr->pbuf);
+            svr->buff = svr->pbuf = NULL;
             return 0;
         }
         if (strs[i]==STR_FILE) {
@@ -679,6 +682,8 @@ extern int strsvrstart(strsvr_t *svr, int *opts, int *strs, char **paths,
         }
         if (stropen(svr->stream+i,strs[i],rw,paths[i])) continue;
         for (i--;i>=0;i--) strclose(svr->stream+i);
+        free(svr->buff); free(svr->pbuf);
+        svr->buff = svr->pbuf = NULL;
         return 0;
     }
     /* open log streams */
@@ -703,12 +708,14 @@ extern int strsvrstart(strsvr_t *svr, int *opts, int *strs, char **paths,
 #endif
         for (i=0;i<svr->nstr;i++) strclose(svr->stream+i);
         svr->state=0;
+        free(svr->buff); free(svr->pbuf);
+        svr->buff = svr->pbuf = NULL;
         return 0;
     }
     return 1;
 }
 /* stop stream server ----------------------------------------------------------
-* start stream server
+* stop stream server
 * args   : strsvr_t *svr    IO  stream server struct
 *          char  **cmds     I   stop commands (NULL: no cmd)
 *              cmds[0]= input stream command

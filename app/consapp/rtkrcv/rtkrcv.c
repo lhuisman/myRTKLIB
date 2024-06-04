@@ -909,7 +909,7 @@ static void prnavidata(vt_t *vt)
     }
     vt_printf(vt,"ION: %9.2E %9.2E %9.2E %9.2E %9.2E %9.2E %9.2E %9.2E\n",
             ion[0],ion[1],ion[2],ion[3],ion[4],ion[5],ion[6],ion[7]);
-    vt_printf(vt,"UTC: %9.2E %9.2E %9.2E %9.2E  LEAPS: %d\n",utc[0],utc[1],utc[2],
+    vt_printf(vt,"UTC: %9.2E %9.2E %9.2E %9.2E  LEAPS: %.0f\n",utc[0],utc[1],utc[2],
             utc[3],utc[4]);
 }
 /* print error/warning messages ----------------------------------------------*/
@@ -1361,12 +1361,12 @@ static void *con_thread(void *arg)
     if (!login(con->vt)) {
         vt_close(con->vt);
         con->state=0;
-        return 0;
+        return NULL;
     }
  
     /* auto start if option set */
     if (start&1) { /* start with console */
-        cmd_start(args,narg,con->vt);
+        cmd_start(NULL,0,con->vt);
         start=0;
     }
     
@@ -1428,7 +1428,7 @@ static void *con_thread(void *arg)
         }
     }
     vt_close(con->vt);
-    return 0;
+    return NULL;
 }
 /* open console --------------------------------------------------------------*/
 static con_t *con_open(int sock, const char *dev)
@@ -1683,7 +1683,7 @@ int main(int argc, char **argv)
             if (moniport>0) closemoni();
             if (outstat>0) rtkclosestat();
             traceclose();
-            return -1;
+            return EXIT_FAILURE;
         }
     } else if (start&2) { /* start without console */
         startsvr(NULL); 
@@ -1694,7 +1694,7 @@ int main(int argc, char **argv)
             if (moniport>0) closemoni();
             if (outstat>0) rtkclosestat();
             traceclose();
-            return -1;
+            return EXIT_FAILURE;
         }
     }
     signal(SIGINT, sigshut); /* keyboard interrupt */

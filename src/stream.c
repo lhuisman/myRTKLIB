@@ -377,7 +377,7 @@ static serial_t *openserial(const char *path, int mode, char *msg)
     
     if ((p=strchr(path,':'))) {
         strncpy(port,path,p-path); port[p-path]='\0';
-        sscanf(p,":%d:%d:%c:%d:%s",&brate,&bsize,&parity,&stopb,fctr);
+        sscanf(p,":%d:%d:%c:%d:%63s",&brate,&bsize,&parity,&stopb,fctr);
     }
     else strcpy(port,path);
     
@@ -385,7 +385,7 @@ static serial_t *openserial(const char *path, int mode, char *msg)
         sscanf(p,"#%d",&tcp_port);
     }
     for (i=0;i<13;i++) if (br[i]==brate) break;
-    if (i>=14) {
+    if (i>=13) {
         sprintf(msg,"bitrate error (%d)",brate);
         tracet(1,"openserial: %s path=%s\n",msg,path);
         free(serial);
@@ -525,6 +525,7 @@ static int readserial(serial_t *serial, uint8_t *buff, int n, char *msg)
     
     /* write received stream to tcp server port */
     if (serial->tcpsvr&&nr>0) {
+        /* TODO handle no-blocking write ? */
         writetcpsvr(serial->tcpsvr,buff,(int)nr,msg_tcp);
     }
     return nr;
@@ -540,7 +541,12 @@ static int writeserial(serial_t *serial, uint8_t *buff, int n, char *msg)
 #ifdef WIN32
     if ((ns=writeseribuff(serial,buff,n))<n) serial->error=1;
 #else
-    if (write(serial->dev,buff,n)<n) {
+    ns=write(serial->dev,buff,n);
+    if (ns<0) {
+        if (errno==EAGAIN) {
+            /* TODO ?? */
+        }
+        ns = 0;
         serial->error=1;
     }
 #endif
@@ -1576,7 +1582,7 @@ static int rspntrip_s(ntrip_t *ntrip, char *msg)
     char *p,*q;
     
     tracet(3,"rspntrip_s: state=%d nb=%d\n",ntrip->state,ntrip->nb);
-    ntrip->buff[ntrip->nb]='0';
+    ntrip->buff[ntrip->nb]='\0';
     tracet(5,"rspntrip_s: n=%d buff=\n%s\n",ntrip->nb,ntrip->buff);
     
     if ((p=strstr((char *)ntrip->buff,NTRIP_RSP_OK_SVR))) { /* ok */
@@ -1617,7 +1623,7 @@ static int rspntrip_c(ntrip_t *ntrip, char *msg)
     char *p,*q;
     
     tracet(3,"rspntrip_c: state=%d nb=%d\n",ntrip->state,ntrip->nb);
-    ntrip->buff[ntrip->nb]='0';
+    ntrip->buff[ntrip->nb]='\0';
     tracet(5,"rspntrip_c: n=%d buff=\n%s\n",ntrip->nb,ntrip->buff);
     
     if ((p=strstr((char *)ntrip->buff,NTRIP_RSP_OK_CLI))) { /* ok */
@@ -2071,6 +2077,7 @@ static udp_t *genudp(int type, int port, const char *saddr, char *msg)
     strcpy(udp->saddr,saddr);
     
     if ((udp->sock=socket(AF_INET,SOCK_DGRAM,0))==(socket_t)-1) {
+        free(udp);
         sprintf(msg,"socket error (%d)",errsock());
         return NULL;
     }
@@ -2258,7 +2265,7 @@ static void decodeftppath(const char *path, char *addr, char *file, char *user,
         if ((q=strchr(buff,':'))) {
              *q='\0'; if (passwd) strcpy(passwd,q+1);
         }
-        *q='\0'; if (user) strcpy(user,buff); 
+        if (user) strcpy(user,buff);
     }
     else p=buff;
     

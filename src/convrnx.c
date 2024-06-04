@@ -47,7 +47,6 @@
 #include "rtklib.h"
 
 #define NOUTFILE        9       /* number of output files */
-#define NSATSYS         7       /* number of satellite systems */
 #define TSTARTMARGIN    60.0    /* time margin for file name replacement */
 
 #define EVENT_STARTMOVE 2       /* rinex event start moving antenna */
@@ -89,8 +88,8 @@ typedef struct {                /* stream file type */
 } strfile_t;
 
 /* global variables ----------------------------------------------------------*/
-static const int navsys[]={     /* system codes */
-    SYS_GPS,SYS_GLO,SYS_GAL,SYS_QZS,SYS_SBS,SYS_CMP,SYS_IRN,0
+static const int navsys[RNX_NUMSYS]={     /* system codes */
+    SYS_GPS,SYS_GLO,SYS_GAL,SYS_QZS,SYS_SBS,SYS_CMP,SYS_IRN
 };
 static const char vercode[][MAXCODE]={ /* supported obs-type by RINEX version */
   /* 0........1.........2.........3.........4.........5.........6........          */
@@ -161,8 +160,9 @@ static strfile_t *gen_strfile(int format, const char *opt)
     
     if (format==STRFMT_RTCM2||format==STRFMT_RTCM3) {
         if (!init_rtcm(&str->rtcm)) {
+            free(str);
             showmsg("init rtcm error");
-            return 0;
+            return NULL;
         }
         str->rtcm.time=time0;
         str->obs=&str->rtcm.obs;
@@ -172,8 +172,9 @@ static strfile_t *gen_strfile(int format, const char *opt)
     }
     else if (format<=MAXRCVFMT) {
         if (!init_raw(&str->raw,format)) {
+            free(str);
             showmsg("init raw error");
-            return 0;
+            return NULL;
         }
         str->raw.time=time0;
         str->obs=&str->raw.obs;
@@ -183,8 +184,9 @@ static strfile_t *gen_strfile(int format, const char *opt)
     }
     else if (format==STRFMT_RINEX) {
         if (!init_rnxctr(&str->rnx)) {
+            free(str);
             showmsg("init rnx error");
-            return 0;
+            return NULL;
         }
         str->rnx.time=time0;
         str->obs=&str->rnx.obs;
@@ -192,7 +194,10 @@ static strfile_t *gen_strfile(int format, const char *opt)
         str->sta=&str->rnx.sta;
         strcpy(str->rnx.opt,opt);
     }
-    else return 0;
+    else {
+        free(str);
+        return NULL;
+    }
 
     str->stas=NULL;
     for (i=0;i<MAXSAT;i++) for (j=0;j<NFREQ+NEXOBS;j++) {
@@ -435,7 +440,7 @@ static void setopt_phshift(rnxopt_t *opt)
     uint8_t code;
     int i,j;
     
-    for (i=0;i<NSATSYS;i++) for (j=0;j<opt->nobs[i];j++) {
+    for (i=0;i<RNX_NUMSYS;i++) for (j=0;j<opt->nobs[i];j++) {
         if (opt->tobs[i][j][0]!='L') continue;
         code=obs2code(opt->tobs[i][j]+1);
 
@@ -498,6 +503,7 @@ static void setopt_sta_list(const strfile_t *str, rnxopt_t *opt)
     for (i=0;i<MAXCOMMENT;i++) {
         if (!*opt->comment[i]) break;
     }
+    if (i>=MAXCOMMENT) return;
     sprintf(opt->comment[i++],"%5s  %22s  %22s","STAID","TIME OF FIRST OBS",
             "TIME OF LAST OBS");
     
@@ -557,7 +563,7 @@ static void setopt_sta(const strfile_t *str, rnxopt_t *opt)
         ;
     }
     else if (norm(sta->del,3)>0.0) {
-        if (!sta->deltype&&norm(sta->del,3)>0.0) { /* enu */
+        if (!sta->deltype) { /* enu */
             opt->antdel[0]=sta->del[2]; /* h */
             opt->antdel[1]=sta->del[0]; /* e */
             opt->antdel[2]=sta->del[1]; /* n */
@@ -568,6 +574,8 @@ static void setopt_sta(const strfile_t *str, rnxopt_t *opt)
             opt->antdel[0]=enu[2]; /* h */
             opt->antdel[1]=enu[0]; /* e */
             opt->antdel[2]=enu[1]; /* n */
+        } else {
+            trace(2,"failed to update RINEX option antenna delta from xyz due to no station position\n");
         }
     }
     else {
@@ -609,7 +617,7 @@ static void dump_stas(const strfile_t *str)
 
     trace(2,"# STATION LIST\n");
     trace(2,"# %17s %19s %5s %6s %16s %16s %12s %13s %9s %2s %6s %6s %6s\n",
-          "TIME","STAID","MARKER","ANTENNA","RECEIVER","LATITUDE","LONGITUDE",
+          "START","END","STAID","MARKER","ANTENNA","RECEIVER","LATITUDE","LONGITUDE",
           "HIGHT","DT","DEL1","DEL2","DEL3");
     
     for (p=str->stas;p;p=p->next) {
@@ -729,10 +737,10 @@ static int scan_file(char **files, int nf, rnxopt_t *opt, strfile_t *str,
     eph_t  eph0 ={0,-1,-1};
     geph_t geph0={0,-1};
     seph_t seph0={0};
-    uint8_t codes[NSATSYS][33]={{0}};
-    uint8_t types[NSATSYS][33]={{0}};
+    uint8_t codes[RNX_NUMSYS][33]={{0}};
+    uint8_t types[RNX_NUMSYS][33]={{0}};
     char msg[128];
-    int i,j,k,l,m,c=0,type,sys,prn,abort=0,n[NSATSYS]={0};
+    int i,j,k,l,m,c=0,type,sys,prn,abort=0,n[RNX_NUMSYS]={0};
     
     trace(3,"scan_file: nf=%d\n",nf);
     
@@ -750,18 +758,20 @@ static int scan_file(char **files, int nf, rnxopt_t *opt, strfile_t *str,
                 for (i=0;i<str->obs->n;i++) {
                     sys=satsys(str->obs->data[i].sat,NULL);
                     if (!(sys&opt->navsys)) continue;
-                    for (l=0;navsys[l];l++) if (navsys[l]==sys) break;
-                    if (!navsys[l]) continue;
+                    /* Mapping from SYS_ to RNX_SYS_ */
+                    for (l=0;l<RNX_NUMSYS;l++) if (navsys[l]==sys) break;
+                    if (l>=RNX_NUMSYS) continue;
                     
                     /* update obs-types */
                     for (j=0;j<NFREQ+NEXOBS;j++) {
-                        if (!str->obs->data[i].code[j]) continue;
+                        int c=str->obs->data[i].code[j];
+                        if (c==CODE_NONE) continue;
                         
                         for (k=0;k<n[l];k++) {
-                            if (codes[l][k]==str->obs->data[i].code[j]) break;
+                            if (codes[l][k]==c) break;
                         }
                         if (k>=n[l]&&n[l]<32) {
-                            codes[l][n[l]++]=str->obs->data[i].code[j];
+                            codes[l][n[l]++]=c;
                         }
                         if (k<n[l]) {
                             if (str->obs->data[i].P[j]!=0.0) types[l][k]|=1;
@@ -797,12 +807,12 @@ static int scan_file(char **files, int nf, rnxopt_t *opt, strfile_t *str,
         trace(2,"aborted in scan\n");
         return 0;
     }
-    for (i=0;i<NSATSYS;i++) for (j=0;j<n[i];j++) {
+    for (i=0;i<RNX_NUMSYS;i++) for (j=0;j<n[i];j++) {
         trace(2,"scan_file: sys=%d code=%s type=%d\n",i,code2obs(codes[i][j]),
               types[i][j]);
     }
     /* sort and set obs-types in RINEX options */
-    for (i=0;i<NSATSYS;i++) {
+    for (i=0;i<RNX_NUMSYS;i++) {
         sort_obstype(codes[i],types[i],n[i],i);
         setopt_obstype(codes[i],types[i],i,opt);
         
@@ -931,7 +941,7 @@ static void outrnxevent(FILE *fp, const rnxopt_t *opt, gtime_t time, int event,
         
         /* antenna delta */
         if (norm(p->sta.del,3)>0.0) {
-            if (!p->sta.deltype&&norm(p->sta.del,3)>0.0) { /* enu */
+            if (!p->sta.deltype) { /* enu */
                 del[0]=p->sta.del[2]; /* h */
                 del[1]=p->sta.del[0]; /* e */
                 del[2]=p->sta.del[1]; /* n */
@@ -942,6 +952,9 @@ static void outrnxevent(FILE *fp, const rnxopt_t *opt, gtime_t time, int event,
                 del[0]=enu[2]; /* h */
                 del[1]=enu[0]; /* e */
                 del[2]=enu[1]; /* n */
+            } else {
+                trace(2,"failed to output RINEX option antenna delta from xyz due to no station position\n");
+                del[0]=del[1]=del[2]=0.0;
             }
         }
         else {

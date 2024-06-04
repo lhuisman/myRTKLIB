@@ -110,6 +110,18 @@ static const char *help[]={
 " -t  level         trace level [0]",
 " -fl file          log file [str2str.trace]",
 " -h                print help",
+"",
+"  command file cheat sheet:",
+"    - # begins a comment, empty lines are ignored",
+"    - @ separates sections: first startup commands, then stop commands, then periodic commands",
+"    - binary commands begin with !",
+"      - WAIT sleep for milliseconds (max 3 seconds)",
+"      - BRATE set the bitrate, defaults to 115200",
+"      - UBX send a UBX command (space separated; messages like CFG-MSG, followed by integer decimal (not hex) arguments)",
+"      - STQ send Skytraq commands",
+"      - NVS send Nvs commands",
+"      - HEX send hex messages",
+"    - other string lines (like NMEA commands) are send as is",
 };
 /* print help ----------------------------------------------------------------*/
 static void printhelp(void)
@@ -224,10 +236,10 @@ int main(int argc, char **argv)
     }
     for (i=1;i<argc;i++) {
         if (!strcmp(argv[i],"-in")&&i+1<argc) {
-            if (!decodepath(argv[++i],types,paths[0],fmts)) return -1;
+            if (!decodepath(argv[++i],types,paths[0],fmts)) return EXIT_FAILURE;
         }
         else if (!strcmp(argv[i],"-out")&&i+1<argc&&n<MAXSTR-1) {
-            if (!decodepath(argv[++i],types+n+1,paths[n+1],fmts+n+1)) return -1;
+            if (!decodepath(argv[++i],types+n+1,paths[n+1],fmts+n+1)) return EXIT_FAILURE;
             n++;
         }
         else if (!strcmp(argv[i],"-p")&&i+3<argc) {
@@ -274,15 +286,15 @@ int main(int argc, char **argv)
         if (fmts[i+1]<=0) continue;
         if (fmts[i+1]!=STRFMT_RTCM3) {
             fprintf(stderr,"unsupported output format\n");
-            return -1;
+            return EXIT_FAILURE;
         }
         if (fmts[0]<0) {
             fprintf(stderr,"specify input format\n");
-            return -1;
+            return EXIT_FAILURE;
         }
         if (!(conv[i]=strconvnew(fmts[0],fmts[i+1],msg,sta,sta!=0,opt))) {
             fprintf(stderr,"stream conversion error\n");
-            return -1;
+            return EXIT_FAILURE;
         }
         strcpy(buff,antinfo);
         for (p=strtok(buff,","),j=0;p&&j<3;p=strtok(NULL,",")) ant[j++]=p;
@@ -321,7 +333,7 @@ int main(int argc, char **argv)
     if (!strsvrstart(&strsvr,opts,types,paths,logs,conv,cmds,cmds_periodic,
                      stapos)) {
         fprintf(stderr,"stream server start error\n");
-        return -1;
+        return EXIT_FAILURE;
     }
     for (intrflg=0;!intrflg;) {
         
