@@ -278,6 +278,10 @@ int main(int argc, char **argv)
         else if (!strcmp(argv[i],"-b"  )&&i+1<argc) opts[7]=atoi(argv[++i]);
         else if (!strcmp(argv[i],"-fl" )&&i+1<argc) logfile=argv[++i];
         else if (!strcmp(argv[i],"-t"  )&&i+1<argc) trlevel=atoi(argv[++i]);
+        else if (!strcmp(argv[i], "--version")) {
+            fprintf(stderr, "str2str RTKLIB %s %s\n", VER_RTKLIB, PATCH_LEVEL);
+            exit(0);
+        }
         else if (*argv[i]=='-') printhelp();
     }
     if (n<=0) n=1; /* stdout */
