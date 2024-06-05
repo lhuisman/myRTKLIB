@@ -1384,6 +1384,7 @@ void OptDialog::saveOptions(QSettings &settings)
     settings.setValue("setting/dcbfile", ui->lEDCBFile->text());
     settings.setValue("setting/eopfile", ui->lEEOPFile->text());
     settings.setValue("setting/blqfile", ui->lEBLQFile->text());
+    settings.setValue("setting/localdirectory", ui->lELocalDirectory->text());
 
     if (options == NaviOptions) {
         settings.setValue("setting/svrcycle", ui->sBServerCycle->value());
@@ -1587,7 +1588,8 @@ void OptDialog::loadOptions(QSettings &settings)
     ui->lEDCBFile->setText(settings.value("setting/dcbfile", "").toString());
     ui->lEEOPFile->setText(settings.value("setting/eopfile", "").toString());
     ui->lEBLQFile->setText(settings.value("setting/blqfile", "").toString());
-    ui->lELocalDirectory->setText(settings.value("setting/localdirectory", "C:\\Temp").toString());
+    if (options == NaviOptions)
+        ui->lELocalDirectory->setText(settings.value("setting/localdirectory", QDir::tempPath()).toString());
 
     if (options == NaviOptions) {
         ui->sBServerCycle->setValue(settings.value("setting/svrcycle", 10).toInt());
