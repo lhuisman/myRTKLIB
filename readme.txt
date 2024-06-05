@@ -25,9 +25,14 @@ CUIs:
 1) cd app/consapp/<appName>/gcc
 2) make
 
-GUIs (Qt based: beta version now available on the qt_gui branch with significant improvements from Jens Reimann):
+GUIs (Qt based - Beta):
 1) cd app/qtapp
 2) qmake
 3) make
 4) ./install_qtapp
-Note that the install process for the QT GUIs isn't quite sorted out yet, so you may need to manually set the LD_LIBRARY_PATH environment variable to point to the shared libraries.
+
+Windows binaries can be found on the release page.
+Pre-complied linux packages are available at https://build.opensuse.org/package/show/home:ReimannJens/rtklib-qt.
+
+The last step will copy the compiled executables into a new directory RTKLIB_bin next to the rtklib source directory.
+

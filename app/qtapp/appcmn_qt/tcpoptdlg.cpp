@@ -3,14 +3,15 @@
 
 #include <stdio.h>
 
-#include <QShowEvent>
 #include <QProcess>
-#include <QIntValidator>
 #include <QUrl>
 
-#include "rtklib.h"
 #include "tcpoptdlg.h"
 #include "mntpoptdlg.h"
+
+#include "ui_tcpoptdlg.h"
+
+#include "rtklib.h"
 
 //---------------------------------------------------------------------------
 
@@ -21,158 +22,189 @@
 #define MAXLINE                 1024                    // max line size (byte)
 
 //---------------------------------------------------------------------------
-TcpOptDialog::TcpOptDialog(QWidget *parent)
-    : QDialog(parent)
+TcpOptDialog::TcpOptDialog(QWidget *parent, int options)
+    : QDialog(parent), ui(new Ui::TcpOptDialog)
 {
-    setupUi(this);
+    ui->setupUi(this);
+
     mntpOptDialog = new MntpOptDialog(this);
 
-    connect(BtnOk, SIGNAL(clicked(bool)), this, SLOT(BtnOkClick()));
-    connect(BtnNtrip, SIGNAL(clicked(bool)), this, SLOT(BtnNtripClick()));
-    connect(BtnCancel, SIGNAL(clicked(bool)), this, SLOT(reject()));
+    connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &TcpOptDialog::btnOkClicked);
+    connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &TcpOptDialog::reject);
+    connect(ui->btnNtrip, &QPushButton::clicked, this, &TcpOptDialog::btnNtripClicked);
+    connect(ui->btnMountpointOptions, &QPushButton::clicked, this, &TcpOptDialog::btnMountpointClicked);
+
+    setOptions(options);
 }
 //---------------------------------------------------------------------------
-void TcpOptDialog::showEvent(QShowEvent *event)
+void TcpOptDialog::setOptions(int options)
 {
-    QString ti[] = { tr("TCP Server Options "),  tr("TCP Client Options"),
-             tr("NTRIP Server Options"), tr("NTRIP Client Options"),
-                "NTRIP Caster Client Options",
-                "NTRIP Caster Server Options", "UDP Server Options",
-                "UDP Client Options"};
+    QString ti[] = {tr("TCP Server Options "),
+                    tr("TCP Client Options"),
+                    tr("NTRIP Server Options"),
+                    tr("NTRIP Client Options"),
+                    tr("NTRIP Caster Client Options"),
+                    tr("NTRIP Caster Server Options"),
+                    tr("UDP Server Options"),
+                    tr("UDP Client Options")};
 
-    if (event->spontaneous()) return;
+    ui->lblAddress->setText((options >= 2 && options <= 5) ? tr("NTRIP Caster Address") : tr("Server Address"));
+    ui->lblAddress->setEnabled((options >= 1 && options <= 3) || options == 7);
 
-    Addr->clear();
-    MntPnt->clear();
+    ui->cBAddress->setEnabled((options >= 1 && options <= 3) || options == 7);
+    ui->lblMountPoint->setEnabled(options >= 2 && options <= 4);
+    ui->cBMountPoint->setEnabled(options >= 2 && options <= 4);
+    ui->lblUser->setEnabled(options >= 3 && options <= 4);
+    ui->lEUser->setEnabled(options >= 3 && options <= 4);
+    ui->lblPassword->setEnabled(options >= 2 && options <= 5);
+    ui->lEPassword->setEnabled(options >= 2 && options <= 5);
+    ui->btnNtrip->setVisible((options == 3));
+    ui->btnBrowse->setVisible((options == 3));
+    ui->btnMountpointOptions->setVisible((options >= 2 && options <= 4));
+    ui->btnNtrip->setVisible(options == 2 || options == 3);
+    setWindowTitle(ti[options]);
 
-    for (int i = 0; i < MAXHIST; i++)
-        if (History[i] != "") Addr->addItem(History[i]);
+    showOptions = options;
+}
 
-    int index = Path.lastIndexOf("@");
+//---------------------------------------------------------------------------
+void TcpOptDialog::setHistory(QString tcpHistory[], int size)
+{
+    ui->cBAddress->clear();
 
-    QStringList tokens= Path.mid(0,index).split(':'); // separate user and password
+    for (int i = 0; i < qMin(size, MAXHIST); i++) {
+        this->history[i] = tcpHistory[i];
+        if (!history[i].isEmpty())
+            ui->cBAddress->addItem(history[i]);
+    }
+}
+//---------------------------------------------------------------------------
+QString* TcpOptDialog::getHistory()
+{
+    return history;
+}
+//---------------------------------------------------------------------------
+void TcpOptDialog::setPath(QString path)
+{
+    int index = path.lastIndexOf("@");
+    QString mountpoint_str;
+
+    QStringList tokens = path.mid(0, index).split(':'); // split user name and password
     if (tokens.size() == 2)
     {
-        User->setText(tokens.at(0));
-        Passwd->setText(tokens.at(1));
+        ui->lEUser->setText(tokens.at(0));
+        ui->lEPassword->setText(tokens.at(1));
     } else if (tokens.size() == 1)
-        User->setText(tokens.at(0));
+        ui->lEUser->setText(tokens.at(0));
 
-    QString url_str = Path.mid(index); // use the rest
+    QString url_str = path.mid(index+1); // use the rest
 
-    index = url_str.lastIndexOf(":"); // separate "str"
-    MntpStr=url_str.mid(index + 1);
+    // "ftp" is just a dummy need for QUrl to parse correctly
+    // split away mount point data (see getPath())
+    QUrl url(QString("ftp://") + url_str.left(url_str.lastIndexOf(":")));
 
-    QUrl url(QString("ftp://") + url_str.mid(0,index));
+    ui->cBAddress->insertItem(0, url.host());
+    ui->cBAddress->setCurrentText(url.host());
+    addHistory(ui->cBAddress, history);
 
-    Addr->insertItem(0, url.host()); Addr->setCurrentText(url.host());
-    Port->setValue(url.port());
-    if (Opt==2||Opt==4) {
-        MntPnt->insertItem(0, url.path().mid(1)); MntPnt->setCurrentText(url.path().mid(1));
+    ui->sBPort->setValue(url.port());
+    if (showOptions == OPT_NTRIP_SERVER || showOptions == OPT_NTRIP_CASTER_CLIENT) {
+        index = url_str.lastIndexOf(":");   // split "str" prefix
+        mountpoint_str = url_str.mid(index + 1);
     }
-
-    setWindowTitle(ti[Opt]);
-    LabelAddr  ->setText((Opt>=2&&Opt<=5)?"NTRIP Caster Address":"Server Address");
-    LabelAddr  ->setEnabled((Opt>=1&&Opt<=3)||Opt==7);
-
-    Addr->setEnabled((Opt >= 1 && Opt <= 3) || Opt == 7);
-    LabelMntPnt->setEnabled(Opt >= 2 && Opt <= 4);
-    MntPnt->setEnabled(Opt >= 2 && Opt <= 4);
-    LabelUser->setEnabled(Opt >= 3 && Opt <= 4);
-    User->setEnabled(Opt >= 3 && Opt <= 4);
-    LabelPasswd->setEnabled(Opt >= 2 && Opt <= 5);
-    Passwd->setEnabled(Opt >= 2 && Opt <= 5);
-    BtnNtrip   ->setVisible((Opt==3));
-    BtnBrows   ->setVisible((Opt==3));
-    BtnMountp  ->setVisible((Opt==2||Opt==4));
-
-    setWindowTitle(ti[Opt]);
-
-    BtnNtrip->setVisible(Opt == 2 || Opt == 3);
+    ui->cBMountPoint->insertItem(0, url.path().mid(1), mountpoint_str);
+    ui->cBMountPoint->setCurrentText(url.path().mid(1));
 }
 //---------------------------------------------------------------------------
-void TcpOptDialog::BtnOkClick()
+QString TcpOptDialog::getPath()
 {
-    QString User_Text = User->text(), Passwd_Text = Passwd->text();
-    QString Addr_Text = Addr->currentText(), Port_Text = Port->text();
-    QString MntPnt_Text = MntPnt->currentText();
+    return QString("%1:%2@%3:%4/%5:%6").arg(ui->lEUser->text(),
+                                            ui->lEPassword->text(),
+                                            ui->cBAddress->currentText(),
+                                            ui->sBPort->text(),
+                                            ui->cBMountPoint->currentText(),
+                                            ui->cBMountPoint->currentData().toString());
+}
 
-    Path = QString("%1:%2@%3:%4/%5:%6").arg(User_Text).arg(Passwd_Text)
-           .arg(Addr_Text).arg(Port_Text).arg(MntPnt_Text)
-           .arg(MntpStr);
-
-    AddHist(Addr, History);
+//---------------------------------------------------------------------------
+void TcpOptDialog::btnOkClicked()
+{
+    addHistory(ui->cBAddress, history);
 
     accept();
 }
 //---------------------------------------------------------------------------
-void TcpOptDialog::AddHist(QComboBox *list, QString *hist)
+void TcpOptDialog::addHistory(QComboBox *list, QString *hist)
 {
     for (int i = 0; i < MAXHIST; i++) {
         if (list->currentText() != hist[i]) continue;
-        for (int j = i + 1; j < MAXHIST; j++) hist[j - 1] = hist[j];
+        for (int j = i + 1; j < MAXHIST; j++)
+            hist[j - 1] = hist[j];
         hist[MAXHIST - 1] = "";
 	}
-    for (int i = MAXHIST - 1; i > 0; i--) hist[i] = hist[i - 1];
+    for (int i = MAXHIST - 1; i > 0; i--)
+        hist[i] = hist[i - 1];
     hist[0] = list->currentText();
 
     list->clear();
     for (int i = 0; i < MAXHIST; i++)
-        if (hist[i] != "") list->addItem(hist[i]);
+        if (!hist[i].isEmpty()) list->addItem(hist[i]);
 }
 //---------------------------------------------------------------------------
-void TcpOptDialog::BtnNtripClick()
+void TcpOptDialog::btnNtripClicked()
 {
-    QPushButton *btn=(QPushButton *)sender();
-    QString path=Addr->currentText()+":"+Port->text();
+    QPushButton *btn = (QPushButton *)sender();
+    QString path = ui->cBAddress->currentText() + ":" + ui->sBPort->text();
     stream_t str;
-    uint32_t tick=tickget();
+    uint32_t tick = tickget();
     static char buff[MAXSRCTBL];
-    char *p=buff,mntpnt[256];
+    char *p = buff, mntpnt[256];
 
     strinit(&str);
-    if (!stropen(&str,STR_NTRIPCLI,STR_MODE_R,qPrintable(path))) return;
+    if (!stropen(&str, STR_NTRIPCLI, STR_MODE_R, qPrintable(path))) return;
 
     btn->setEnabled(false);
-    *p='\0';
-    while (p<buff+MAXSRCTBL-1) {
-        p+=strread(&str,(uint8_t *)p,buff+MAXSRCTBL-p-1);
-        *p='\0';
+    *p = '\0';
+    while (p < buff + MAXSRCTBL - 1) {
+        p += strread(&str, (uint8_t *)p, buff + MAXSRCTBL - p - 1);
+        *p = '\0';
         sleepms(NTRIP_CYCLE);
-        if (strstr(buff,ENDSRCTBL)) break;
-        if ((int)(tickget()-tick)>NTRIP_TIMEOUT) break;
+        if (strstr(buff, ENDSRCTBL)) break;
+        if ((int)(tickget() - tick) > NTRIP_TIMEOUT) break;
     }
     strclose(&str);
 
-    MntPnt->clear();
-    for (p=buff;(p=strstr(p,"STR;"));p+=4) {
-        if (sscanf(p,"STR;%255[^;]",mntpnt)==1) {
-            MntPnt->addItem(mntpnt);
+    ui->cBMountPoint->clear();
+    for (p = buff; (p  = strstr(p, "STR;")); p+=4) {
+        if (sscanf(p, "STR;%255[^;]", mntpnt) == 1) {
+            ui->cBMountPoint->addItem(mntpnt, QString(p).split('\n', Qt::SkipEmptyParts).first());
         }
     }
     btn->setEnabled(true);
 }
 //---------------------------------------------------------------------------
-void TcpOptDialog::BtnBrowsClick()
+void TcpOptDialog::btnBrowseClicked()
 {
-    QString Addr_Text = Addr->currentText();
-    QString Port_Text = Port->text();
+    QString addrText = ui->cBAddress->currentText();
+    QString portText = ui->sBPort->text();
 
-    if (Port_Text!="") Addr_Text+=":"+Port_Text;
-    ExecCmd("srctblbrows_qt ", QStringList(Addr_Text), 1);
+    if (!portText.isEmpty()) addrText += ":" + portText;
+    execCommand("srctblbrows_qt", QStringList(addrText), 1);
 }
 //---------------------------------------------------------------------------
-void TcpOptDialog::BtnMountpClick()
+void TcpOptDialog::btnMountpointClicked()
 {
-    mntpOptDialog->MntPnt=MntPnt->currentText();
-    mntpOptDialog->MntpStr=MntpStr;
+    mntpOptDialog->setMountPoint(ui->cBMountPoint->currentText());
+    mntpOptDialog->setMountPointString(ui->cBMountPoint->currentData().toString());
+
     mntpOptDialog->exec();
     if (mntpOptDialog->result()!=QDialog::Accepted) return;
-    MntPnt->setCurrentText(mntpOptDialog->MntPnt);
-    MntpStr=mntpOptDialog->MntpStr;
+
+    ui->cBMountPoint->setCurrentText(mntpOptDialog->getMountPoint());
+    ui->cBMountPoint->setItemData(ui->cBMountPoint->currentIndex(), mntpOptDialog->getMountPointString());
 }
 //---------------------------------------------------------------------------
-int TcpOptDialog::ExecCmd(const QString &cmd, const QStringList &opt, int show)
+int TcpOptDialog::execCommand(const QString &cmd, const QStringList &opt, int show)
 {
     QProcess prog;
 
