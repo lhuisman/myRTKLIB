@@ -535,6 +535,10 @@ static int cmdopts(int argc, char **argv, rnxopt_t *opt, char **ifile,
         else if (!strcmp(argv[i],"-trace" )&&i+1<argc) {
             *trace=atoi(argv[++i]);
         }
+        else if (!strcmp(argv[i], "--version")) {
+            fprintf(stderr, "convbin RTKLIB %s %s\n", VER_RTKLIB, PATCH_LEVEL);
+            exit(0);
+        }
         else if (!strncmp(argv[i],"-",1)) printhelp();
         
         else *ifile=argv[i];
