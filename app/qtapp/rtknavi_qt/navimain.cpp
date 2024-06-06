@@ -1865,7 +1865,7 @@ void MainWindow::drawSatellites(QPainter &c, int w, int h, int x0, int y0,
                 snr[0] = snr[j + 1]; // max snr
             }
         }
-        if (validSatellites[index][k] && (snr[freq] > 0 || freq > NFREQ)) {
+        if (validSatellites[index][k] && (freq > NFREQ || snr[freq] > 0)) {
             azel[nsats * 2] = satellitesAzimuth[index][k];
             azel[nsats * 2 + 1] = satellitesElevation[index][k];
             nsats++;

@@ -1882,7 +1882,7 @@ void __fastcall TMainForm::DrawSat(TCanvas *c, int w, int h, int x0, int y0,
                 snr[0]=snr[j+1]; // max snr
             }
         }
-        if (Vsat[index][k]&&(snr[freq]>0||freq>NFREQ)) {
+        if (Vsat[index][k]&&(freq>NFREQ||snr[freq]>0)) {
             azel[ns*2]=Az[index][k]; azel[1+ns*2]=El[index][k];
             ns++;
         }
