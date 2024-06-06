@@ -697,9 +697,9 @@ void MainForm::tcpServerOptions(int index, int path)
 // set tcp client options ---------------------------------------------------
 void MainForm::tcpClientOptions(int index, int path)
 {
+    tcpOptDialog->setHistory(tcpHistory, MAXHIST);
     tcpOptDialog->setPath(paths[index][path]);
     tcpOptDialog->setOptions(1);  // 1: TCP Client
-    tcpOptDialog->setHistory(tcpHistory, MAXHIST);
 
     tcpOptDialog->exec();
     if (tcpOptDialog->result() != QDialog::Accepted) return;
@@ -711,9 +711,9 @@ void MainForm::tcpClientOptions(int index, int path)
 // set ntrip server options ---------------------------------------------------------
 void MainForm::ntripServerOptions(int index, int path)
 {
+    tcpOptDialog->setHistory(tcpHistory, MAXHIST);
     tcpOptDialog->setPath(paths[index][path]);
     tcpOptDialog->setOptions(2);  // 2: Ntrip Server
-    tcpOptDialog->setHistory(tcpHistory, MAXHIST);
 
     tcpOptDialog->exec();
     if (tcpOptDialog->result() != QDialog::Accepted) return;
@@ -725,10 +725,9 @@ void MainForm::ntripServerOptions(int index, int path)
 // set ntrip client options ---------------------------------------------------------
 void MainForm::ntripClientOptions(int index, int path)
 {
+    tcpOptDialog->setHistory(tcpHistory, MAXHIST);
     tcpOptDialog->setPath(paths[index][path]);
     tcpOptDialog->setOptions(3);  // Ntrip Client
-    for (int i = 0; i < MAXHIST; i++)
-        tcpOptDialog->setHistory(tcpHistory, MAXHIST);
 
     tcpOptDialog->exec();
     if (tcpOptDialog->result() != QDialog::Accepted) return;
