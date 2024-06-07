@@ -16,7 +16,7 @@ MarkDialog::MarkDialog(QWidget *parent)
     ui->setupUi(this);
 
     nMark = 1;
-    ui->lblMarker->setText(QString("%%r=%1").arg(nMark, 3, 10, QLatin1Char('0')));
+    ui->lblMarker->setText(QString("%r=%1").arg(nMark, 3, 10, QLatin1Char('0')));
 
     connect(ui->btnKeyDlg, &QPushButton::clicked, this, &MarkDialog::showKeyDialog);
     connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &MarkDialog::saveClose);
@@ -34,7 +34,7 @@ void MarkDialog::saveClose()
 {
     if (ui->cBMarkerNameC->isChecked()) {
         nMark++;
-        ui->lblMarker->setText(QString("%%r=%1").arg(nMark, 3, 10, QLatin1Char('0')));
+        ui->lblMarker->setText(QString("%r=%1").arg(nMark, 3, 10, QLatin1Char('0')));
     }
 
     accept();
@@ -72,6 +72,7 @@ void MarkDialog::btnPositionClicked()
     refDialog->setRoverPosition(ui->sBLatitude->value(), ui->sBLongitude->value(), ui->sBHeight->value());
     refDialog->stationPositionFile = stationPositionFileF;
 
+    refDialog->exec();
     if (refDialog->result() != QDialog::Accepted) return;
 
     ui->sBLatitude->setValue(refDialog->getPosition()[0]);
