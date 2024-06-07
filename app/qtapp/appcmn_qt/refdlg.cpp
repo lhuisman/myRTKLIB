@@ -37,7 +37,7 @@ void RefDialog::showEvent(QShowEvent *event)
     ui->btnLoad->setVisible(options);
 
     QStringList columns;
-    columns << tr("No") << tr("Latitude(%1)").arg(degreeChar) << tr("Longitude(%1)").arg(degreeChar) << tr("Height(m)") << tr("Id") << tr("Name") << tr("Distance(km)");
+    columns << tr("No") << tr("Latitude (%1)").arg(degreeChar) << tr("Longitude (%1)").arg(degreeChar) << tr("Height (m)") << tr("Id") << tr("Name") << tr("Distance (km)");
     ui->tWStationList->setColumnCount(columns.size());
     ui->tWStationList->setRowCount(1);
     ui->tWStationList->setHorizontalHeaderLabels(columns);

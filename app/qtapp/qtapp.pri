@@ -20,7 +20,7 @@ win* {
 
 
 !packaging {
-    QMAKE_RPATHDIR *= $${ROOT_DIRECTORY}/lib
+    QMAKE_RPATHDIR *= ../lib
 }
 
 PRE_TARGETDEPS = $${ROOT_DIRECTORY}/src/rtklib.h
