@@ -177,7 +177,7 @@ MainWindow::MainWindow(QWidget *parent)
     rtksvrinit(&rtksvr);
     strinit(&monistr);
 
-    setWindowTitle(QString(tr("%1 ver. %2 %3")).arg(PRGNAME).arg(VER_RTKLIB, PATCH_LEVEL));
+    setWindowTitle(tr("%1 ver. %2 %3").arg(PRGNAME).arg(VER_RTKLIB, PATCH_LEVEL));
     setWindowIcon(QIcon(":/icons/rtknavi_Icon.ico"));
 
     panelMode = 0;
@@ -456,7 +456,7 @@ void MainWindow::showRtkPlot()
                 .arg(windowTitle(), QString(": %1").arg(PRGNAME));
 
     if (!execCommand(cmd[0], opts, 1) && !execCommand(cmd[1], opts, 1) && !execCommand(cmd[2], opts, 1))
-        QMessageBox::critical(this, tr("Error"), tr("Error: rtkplot could not be executed"));
+        QMessageBox::critical(this, tr("Error"), tr("Error: rtkplot_qt could not be executed"));
 }
 // callback on button-options -----------------------------------------------
 void MainWindow::showOptionsDialog()
@@ -697,7 +697,7 @@ int MainWindow::confirmOverwrite(const QString &path)
         streamFilename = streamFilename.mid(streamFilename.indexOf("::"));
 
         if (filename == streamFilename) {
-            ui->lblMessage->setText(QString(tr("Invalid output %1")).arg(filename));
+            ui->lblMessage->setText(tr("Invalid output %1").arg(filename));
             return 0;
         }
     }
@@ -1112,7 +1112,7 @@ void MainWindow::serverStart()
 
     if (optDialog->processingOptions.sateph == EPHOPT_PREC || optDialog->processingOptions.sateph == EPHOPT_SSRCOM) {
         if (!readpcv(optDialog->fileOptions.satantp, &pcvs)) {
-            ui->lblMessage->setText(QString(tr("Satellite antenna file read error: %1")).arg(optDialog->fileOptions.satantp));
+            ui->lblMessage->setText(tr("Satellite antenna file read error: %1").arg(optDialog->fileOptions.satantp));
             return;
         }
         for (i = 0; i < MAXSAT; i++) {
@@ -1501,10 +1501,10 @@ void MainWindow::updatePosition()
         s[0] = pos[0] < 0 ? tr("S:") : tr("N:");
         s[1] = pos[1] < 0 ? tr("W:") : tr("E:");
         s[2] = optDialog->solutionOptions.height == 1 ? tr("H:") : tr("He:");
-        s[3] = QString("%1%2 %3' %4\"").arg(fabs(dms1[0]), 0, 'f', 0).arg(degreeChar).arg(dms1[1], 2, 'f', 0, '0').arg(dms1[2], 7, 'f', 4, '0');
-        s[4] = QString("%1%2 %3' %4\"").arg(fabs(dms2[0]), 0, 'f', 0).arg(degreeChar).arg(dms2[1], 2, 'f', 0, '0').arg(dms2[2], 7, 'f', 4, '0');
-        s[5] = QString("%1 m").arg(pos[2], 0, 'f', 3);
-        s[6] = QString(tr("N:%1 E:%2 U:%3 m")).arg(SQRT(Qe[4]), 6, 'f', 3).arg(SQRT(Qe[0]), 6, 'f', 3).arg(SQRT(Qe[8]), 6, 'f', 3);
+        s[3] = tr("%1%2 %3' %4\"").arg(fabs(dms1[0]), 0, 'f', 0).arg(degreeChar).arg(dms1[1], 2, 'f', 0, '0').arg(dms1[2], 7, 'f', 4, '0');
+        s[4] = tr("%1%2 %3' %4\"").arg(fabs(dms2[0]), 0, 'f', 0).arg(degreeChar).arg(dms2[1], 2, 'f', 0, '0').arg(dms2[2], 7, 'f', 4, '0');
+        s[5] = tr("%1 m").arg(pos[2], 0, 'f', 3);
+        s[6] = tr("N: %1, E: %2, U: %3 m").arg(SQRT(Qe[4]), 6, 'f', 3).arg(SQRT(Qe[0]), 6, 'f', 3).arg(SQRT(Qe[8]), 6, 'f', 3);
     } else if (solutionType == 1) {  // deg
         if (norm(rrover, 3) > 0.0) {
             ecef2pos(rrover, pos); covenu(pos, qrover, Qe);
@@ -1516,15 +1516,15 @@ void MainWindow::updatePosition()
         s[3] = QString("%1 %2").arg(fabs(pos[0]) * R2D, 0, 'f', 8).arg(degreeChar);
         s[4] = QString("%1 %2").arg(fabs(pos[1]) * R2D, 0, 'f', 8).arg(degreeChar);
         s[5] = QString("%1").arg(pos[2], 0, 'f', 3);
-        s[6] = QString(tr("N:%1 E:%2 U:%3 m")).arg(SQRT(Qe[4]), 6, 'f', 3).arg(SQRT(Qe[0]), 6, 'f', 3).arg(SQRT(Qe[8]), 6, 'f', 3);
+        s[6] = tr("N: %1, E: %2, U: %3, m").arg(SQRT(Qe[4]), 6, 'f', 3).arg(SQRT(Qe[0]), 6, 'f', 3).arg(SQRT(Qe[8]), 6, 'f', 3);
     } else if (solutionType == 2) {  // XYZ
         s[0] = "X:";
         s[1] = "Y:";
         s[2] = "Z:";
-        s[3] = QString("%1 m").arg(rrover[0], 0, 'f', 3);
-        s[4] = QString("%1 m").arg(rrover[1], 0, 'f', 3);
-        s[5] = QString("%1 m").arg(rrover[2], 0, 'f', 3);
-        s[6] = QString("X:%1 Y:%2 Z:%3 m").arg(SQRT(qrover[0]), 6, 'f', 3).arg(SQRT(qrover[4]), 6, 'f', 3).arg(SQRT(qrover[8]), 6, 'f', 3);
+        s[3] = tr("%1 m").arg(rrover[0], 0, 'f', 3);
+        s[4] = tr("%1 m").arg(rrover[1], 0, 'f', 3);
+        s[5] = tr("%1 m").arg(rrover[2], 0, 'f', 3);
+        s[6] = tr("X: %1, Y: %2, Z: %3 m").arg(SQRT(qrover[0]), 6, 'f', 3).arg(SQRT(qrover[4]), 6, 'f', 3).arg(SQRT(qrover[8]), 6, 'f', 3);
     } else if (solutionType == 3) {  // ENU
         if (len > 0.0) {
             ecef2pos(rbase, pos);
@@ -1532,10 +1532,10 @@ void MainWindow::updatePosition()
             covenu(pos, qrover, Qe);
         }
         s[0] = "E:"; s[1] = "N:"; s[2] = "U:";
-        s[3] = QString("%1 m").arg(enu[0], 0, 'f', 3);
-        s[4] = QString("%1 m").arg(enu[1], 0, 'f', 3);
-        s[5] = QString("%1 m").arg(enu[2], 0, 'f', 3);
-        s[6] = QString(tr("N:%1 E:%2 U:%3 m")).arg(SQRT(Qe[4]), 6, 'f', 3).arg(SQRT(Qe[0]), 6, 'f', 3).arg(SQRT(Qe[8]), 6, 'f', 3);
+        s[3] = tr("%1 m").arg(enu[0], 0, 'f', 3);
+        s[4] = tr("%1 m").arg(enu[1], 0, 'f', 3);
+        s[5] = tr("%1 m").arg(enu[2], 0, 'f', 3);
+        s[6] = tr("N: %1, E: %2, U: %3 m").arg(SQRT(Qe[4]), 6, 'f', 3).arg(SQRT(Qe[0]), 6, 'f', 3).arg(SQRT(Qe[8]), 6, 'f', 3);
     } else {  // pitch/yaw/len
         if (len > 0.0) {
             ecef2pos(rbase, pos);
@@ -1549,13 +1549,13 @@ void MainWindow::updatePosition()
         s[2] = tr("L:");
         s[3] = QString("%1 %2").arg(pitch * R2D, 0, 'f', 3).arg(degreeChar);
         s[4] = QString("%1 %2").arg(yaw * R2D, 0, 'f', 3).arg(degreeChar);
-        s[5] = QString("%1 m").arg(len, 0, 'f', 3);
-        s[6] = QString(tr("N:%1 E:%2 U:%3 m")).arg(SQRT(Qe[4]), 6, 'f', 3).arg(SQRT(Qe[0]), 6, 'f', 3).arg(SQRT(Qe[8]), 6, 'f', 3);
+        s[5] = tr("%1 m").arg(len, 0, 'f', 3);
+        s[6] = tr("N: %1, E: %2, U: %3 m").arg(SQRT(Qe[4]), 6, 'f', 3).arg(SQRT(Qe[0]), 6, 'f', 3).arg(SQRT(Qe[8]), 6, 'f', 3);
     }
-    s[7] = QString(tr("Age:%1 s Ratio:%2 #Sat:%3")).arg(ages[solutionsCurrent], 4, 'f', 1).arg(ratioAR[solutionsCurrent], 4, 'f', 1).arg(numValidSatellites[solutionsCurrent], 2);
+    s[7] = tr("Age: %1 s, Ratio: %2, #Sat: %3").arg(ages[solutionsCurrent], 4, 'f', 1).arg(ratioAR[solutionsCurrent], 4, 'f', 1).arg(numValidSatellites[solutionsCurrent], 2);
 
     if (ratioAR[solutionsCurrent] > 0.0)
-        s[8] = QString(" R:%1").arg(ratioAR[solutionsCurrent], 4, 'f', 1);
+        s[8] = tr(" R: %1").arg(ratioAR[solutionsCurrent], 4, 'f', 1);
 
     for (i = 0; i < 8; i++)
         label[i]->setText(s[i]);
@@ -1891,8 +1891,8 @@ void MainWindow::drawSatellites(QPainter &c, int w, int h, int x0, int y0,
 
     // draw annotations
     dops(nsats, azel, 0.0, dop);
-    drawText(c, x0 + 3, y0 + h, QString(tr("# Sat: %1/%2")).arg(nsats,2).arg(numSatellites[index], 2), Qt::gray, 1, 1);
-    drawText(c, x0 + w - 3, y0 + h, QString(tr("GDOP: %1")).arg(dop[0], 0, 'f', 1), Qt::gray, 2, 1);
+    drawText(c, x0 + 3, y0 + h, tr("# Sat: %1/%2").arg(nsats,2).arg(numSatellites[index], 2), Qt::gray, 1, 1);
+    drawText(c, x0 + w - 3, y0 + h, tr("GDOP: %1").arg(dop[0], 0, 'f', 1), Qt::gray, 2, 1);
 }
 // draw baseline plot -------------------------------------------------------
 void MainWindow::drawBaseline(QPainter &c, int id, int w, int h)
@@ -1984,7 +1984,7 @@ void MainWindow::drawBaseline(QPainter &c, int id, int w, int h)
     // draw annotations
     c.setBrush(Qt::white);
     digit = len < 1000.0 ? 3 : (len < 10000.0 ? 2 : (len < 100000.0 ? 1 : 0));
-    drawText(c, center.x(), center.y(), QString("%1 m").arg(len, 0, 'f', digit), Qt::gray, 0, 0);
+    drawText(c, center.x(), center.y(), tr("%1 m").arg(len, 0, 'f', digit), Qt::gray, 0, 0);
     drawText(c, 3, h, tr("Y: %1%2").arg(yaw * R2D, 0, 'f', 1).arg(degreeChar), Qt::gray, 1, 1);
     drawText(c, w - 3, h, tr("P: %1%2").arg(pitch * R2D, 0, 'f', 1).arg(degreeChar), Qt::gray, 2, 1);
 }
@@ -2076,20 +2076,20 @@ void MainWindow::drawTrack(QPainter &c, int id, QPaintDevice *plot)
     // scale text
     p2.ry() -= 2;
     if (xt < 0.01)
-        label = QString("%1 mm").arg(xt * 1000.0, 0, 'f', 0);
+        label = tr("%1 mm").arg(xt * 1000.0, 0, 'f', 0);
     else if (xt < 1.0)
-        label = QString("%1 cm").arg(xt * 100.0, 0, 'f', 0);
+        label = tr("%1 cm").arg(xt * 100.0, 0, 'f', 0);
     else if (xt < 1000.0)
-        label = QString("%1 m").arg(xt, 0, 'f', 0);
+        label = tr("%1 m").arg(xt, 0, 'f', 0);
     else
-        label = QString("%1 km").arg(xt / 1000.0, 0, 'f', 0);
+        label = tr("%1 km").arg(xt / 1000.0, 0, 'f', 0);
     graph->drawText(c, p2, label, Qt::gray, Qt::white, 0, 1, 0);
 
     // reference position
     if (norm(ref, 3) > 1E-6) {
         p1.rx() += 2;
         p1.ry() = p2.y() + 11;
-        label = QString("%1° %2°").arg(pos[0] * R2D, 0, 'f', 9).arg(pos[1] * R2D, 0, 'f', 9);
+        label = tr("%1° %2°").arg(pos[0] * R2D, 0, 'f', 9).arg(pos[1] * R2D, 0, 'f', 9);
         graph->drawText(c, p1, label, Qt::gray, Qt::white, 1, 1, 0);
     }
 
@@ -2191,12 +2191,12 @@ void MainWindow::openMonitorPort(int port)
         if (stropen(&monistr, STR_TCPSVR, STR_MODE_RW, qPrintable(QString(":%1").arg(port + i)))) {
             strsettimeout(&monistr, optDialog->timeoutTime, optDialog->reconnectTime);
             if (i > 0)
-                setWindowTitle(QString(tr("%1 ver.%2 (%3)")).arg(PRGNAME, VER_RTKLIB).arg(i + 1));
+                setWindowTitle(tr("%1 ver. %2 (%3)").arg(PRGNAME, VER_RTKLIB).arg(i + 1));
             monitorPortOpen = port + i;
             return;
         }
     }
-    QMessageBox::critical(this, tr("Error"), QString(tr("Could not open any monitor port betwenn %1-%2")).arg(port).arg(port + MAX_PORT_OFFSET));
+    QMessageBox::critical(this, tr("Error"), tr("Could not open any monitor port betwenn %1-%2").arg(port).arg(port + MAX_PORT_OFFSET));
     monitorPortOpen = 0;
 }
 // initialize solution buffer -----------------------------------------------
@@ -2275,7 +2275,7 @@ void MainWindow::saveLogs()
     if (optDialog->solutionOptions.outhead) {
         QString data;
 
-        data = QString(tr("%% program : %1 ver.%2 %3\n")).arg(PRGNAME, VER_RTKLIB, PATCH_LEVEL);
+        data = QString(tr("%% program : %1 ver. %2 %3\n")).arg(PRGNAME, VER_RTKLIB, PATCH_LEVEL);
         str << data;
         if (optDialog->processingOptions.mode == PMODE_DGPS || optDialog->processingOptions.mode == PMODE_KINEMA ||
             optDialog->processingOptions.mode == PMODE_STATIC) {
