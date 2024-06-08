@@ -1578,25 +1578,23 @@ static int reqntrip_c(ntrip_t *ntrip, char *msg)
 /* test ntrip server response ------------------------------------------------*/
 static int rspntrip_s(ntrip_t *ntrip, char *msg)
 {
-    int i,nb;
-    char *p,*q;
-    
     tracet(3,"rspntrip_s: state=%d nb=%d\n",ntrip->state,ntrip->nb);
     ntrip->buff[ntrip->nb]='\0';
     tracet(5,"rspntrip_s: n=%d buff=\n%s\n",ntrip->nb,ntrip->buff);
     
+    char *p;
     if ((p=strstr((char *)ntrip->buff,NTRIP_RSP_OK_SVR))) { /* ok */
-        q=(char *)ntrip->buff;
         p+=strlen(NTRIP_RSP_OK_SVR);
-        ntrip->nb-=p-q;
-        for (i=0;i<ntrip->nb;i++) *q++=*p++;
+        ntrip->nb-=p-(char *)ntrip->buff;
+        /* Discard all buffer content before the OK. */
+        memmove(ntrip->buff, p, ntrip->nb);
         ntrip->state=2;
         sprintf(msg,"%s/%s",ntrip->tcp->svr.saddr,ntrip->mntpnt);
         tracet(3,"rspntrip_s: response ok nb=%d\n",ntrip->nb);
         return 1;
     }
-    else if ((p=strstr((char *)ntrip->buff,NTRIP_RSP_ERROR))) { /* error */
-        nb=ntrip->nb<MAXSTATMSG?ntrip->nb:MAXSTATMSG;
+    else if (strstr((char *)ntrip->buff,NTRIP_RSP_ERROR)) { /* error */
+        int nb=ntrip->nb<MAXSTATMSG?ntrip->nb:MAXSTATMSG;
         sprintf(msg,"%.*s",nb,(char *)ntrip->buff);
         if ((p=strchr(msg,'\r'))) *p='\0';
         tracet(3,"rspntrip_s: %s nb=%d\n",msg,ntrip->nb);
@@ -1619,25 +1617,23 @@ static int rspntrip_s(ntrip_t *ntrip, char *msg)
 /* test ntrip client response ------------------------------------------------*/
 static int rspntrip_c(ntrip_t *ntrip, char *msg)
 {
-    int i;
-    char *p,*q;
-    
     tracet(3,"rspntrip_c: state=%d nb=%d\n",ntrip->state,ntrip->nb);
     ntrip->buff[ntrip->nb]='\0';
     tracet(5,"rspntrip_c: n=%d buff=\n%s\n",ntrip->nb,ntrip->buff);
     
+    char *p;
     if ((p=strstr((char *)ntrip->buff,NTRIP_RSP_OK_CLI))) { /* ok */
-        q=(char *)ntrip->buff;
         p+=strlen(NTRIP_RSP_OK_CLI);
-        ntrip->nb-=p-q;
-        for (i=0;i<ntrip->nb;i++) *q++=*p++;
+        ntrip->nb-=p-(char *)ntrip->buff;
+        /* Discard all buffer content before the OK. */
+        memmove(ntrip->buff, p, ntrip->nb);
         ntrip->state=2;
         sprintf(msg,"%s/%s",ntrip->tcp->svr.saddr,ntrip->mntpnt);
         tracet(3,"rspntrip_c: response ok nb=%d\n",ntrip->nb);
         ntrip->tcp->tirecon=ticonnect;
         return 1;
     }
-    if ((p=strstr((char *)ntrip->buff,NTRIP_RSP_SRCTBL))) { /* source table */
+    if (strstr((char *)ntrip->buff,NTRIP_RSP_SRCTBL)) { /* source table */
         if (!*ntrip->mntpnt) { /* source table request */
             ntrip->state=2;
             sprintf(msg,"source table received");
@@ -1655,6 +1651,7 @@ static int rspntrip_c(ntrip_t *ntrip, char *msg)
         discontcp(&ntrip->tcp->svr,ntrip->tcp->tirecon);
     }
     else if ((p=strstr((char *)ntrip->buff,NTRIP_RSP_HTTP))) { /* http response */
+        char *q;
         if ((q=strchr(p,'\r'))) *q='\0'; else ntrip->buff[128]='\0';
         strcpy(msg,p);
         tracet(3,"rspntrip_s: %s nb=%d\n",msg,ntrip->nb);
@@ -1757,17 +1754,24 @@ static void closentrip(ntrip_t *ntrip)
 /* read ntrip ----------------------------------------------------------------*/
 static int readntrip(ntrip_t *ntrip, uint8_t *buff, int n, char *msg)
 {
-    int nb;
-    
     tracet(4,"readntrip:\n");
     
     if (!waitntrip(ntrip,msg)) return 0;
     
-    if (ntrip->nb>0) { /* read response buffer first */
-        nb=ntrip->nb<=n?ntrip->nb:n;
-        memcpy(buff,ntrip->buff+ntrip->nb-nb,nb);
-        ntrip->nb=0;
-        return nb;
+    if (ntrip->nb>0) {
+        /* Read from the response buffer first */
+        if (ntrip->nb <= n) {
+            /* Empty the buffer. */
+            int nb=ntrip->nb;
+            memcpy(buff,ntrip->buff,nb);
+            ntrip->nb=0;
+            return nb;
+        }
+        /* Partial use of the response buffer */
+        memcpy(buff,ntrip->buff,n);
+        memmove(ntrip->buff,ntrip->buff+n,ntrip->nb-n);
+        ntrip->nb-=n;
+        return n;
     }
     return readtcpcli(ntrip->tcp,buff,n,msg);
 }
