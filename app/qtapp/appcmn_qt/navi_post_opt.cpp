@@ -626,7 +626,7 @@ void OptDialog::selectSolutionFont()
     setWidgetTextColor(ui->fontLabelSolution, positionFontColor);
 }
 //---------------------------------------------------------------------------
-void OptDialog::saveClose()
+void OptDialog::updateOptions()
 {
     double rovPos[3], refPos[3];
     QLineEdit *editu[] = {ui->lERoverPosition1, ui->lERoverPosition2, ui->lERoverPosition3 };
@@ -875,8 +875,12 @@ void OptDialog::saveClose()
         roverList = ui->tERoverList->toPlainText();
         baseList = ui->tEBaseList->toPlainText();
     }
+}
 
-
+//---------------------------------------------------------------------------
+void OptDialog::saveClose()
+{
+    updateOptions();
     accept();
 }
 //---------------------------------------------------------------------------
@@ -1637,7 +1641,7 @@ void OptDialog::loadOptions(QSettings &settings)
         ui->tEBaseList->setPlainText(refList);
     }
 
-
+    updateOptions();
     updateEnable();
 }
 //---------------------------------------------------------------------------
