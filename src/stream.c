@@ -2648,8 +2648,8 @@ extern void strinit(stream_t *stream)
 *                                 STR_UDPSVR   = UDP server (read only)
 *                                 STR_UDPCLI   = UDP client (write only)
 *                                 STR_MEMBUF   = memory buffer (FIFO)
-*                                 STR_FTP      = download by FTP (raed only)
-*                                 STR_HTTP     = download by HTTP (raed only)
+*                                 STR_FTP      = download by FTP (read only)
+*                                 STR_HTTP     = download by HTTP (read only)
 *          int mode         I   stream mode (STR_MODE_???)
 *                                 STR_MODE_R   = read only
 *                                 STR_MODE_W   = write only
