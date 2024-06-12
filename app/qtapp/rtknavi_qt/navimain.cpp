@@ -1235,6 +1235,7 @@ void MainWindow::serverStart()
     ui->btnOptions->setEnabled(false);
     ui->btnExit->setEnabled(false);
     ui->btnInputStream->setEnabled(false);
+    ui->btnSave->setEnabled(false);
     menuStartAction->setEnabled(false);
     menuExitAction->setEnabled(false);
     ui->sBSolution->setEnabled(false);
@@ -1274,6 +1275,7 @@ void MainWindow::serverStop()
     ui->btnOptions->setEnabled(true);
     ui->btnExit->setEnabled(true);
     ui->btnInputStream->setEnabled(true);
+    ui->btnSave->setEnabled(true);
     menuStartAction->setEnabled(true);
     menuExitAction->setEnabled(true);
     ui->sBSolution->setEnabled(true);
@@ -1352,7 +1354,7 @@ void MainWindow::updateServer()
 // update time-system -------------------------------------------------------
 void MainWindow::updateTimeSystem()
 {
-    static QString label[] = {tr("GPST"), tr("UTC"), tr("LT"), tr("GPST")};
+    static const QString label[] = {tr("GPST"), tr("UTC"), tr("LT"), tr("GPST")};
 
     trace(3, "updateTimeSystem\n");
 
@@ -1363,7 +1365,7 @@ void MainWindow::updateTimeSystem()
 // update solution type -----------------------------------------------------
 void MainWindow::updateSolutionType()
 {
-    static QString label[] = {
+    static const QString label[] = {
         tr("Lat/Lon/Height"), tr("Lat/Lon/Height"), tr("X/Y/Z-ECEF"), tr("E/N/U-Baseline"),
         tr("Pitch/Yaw/Length-Baseline"), ""
     };
@@ -1443,8 +1445,10 @@ void MainWindow::updateTime()
 
     if (timeSystem == 0) {  // GPST
         time2str(time, tstr, 1);
+        str = tstr;
     } else if (timeSystem == 1) {  // UTC
         time2str(gpst2utc(time), tstr, 1);
+        str = tstr;
     } else if (timeSystem == 2) {  // local time
         time = gpst2utc(time);
         if (!(t = localtime(&time.time))) str = "2000/01/01 00:00:00.0";
@@ -1462,9 +1466,9 @@ void MainWindow::updatePosition()
 {
     QLabel *label[] = {ui->lblPositionText1, ui->lblPositionText2, ui->lblPositionText3,
                        ui->lblPosition1, ui->lblPosition2, ui->lblPosition3, ui->lblStd, ui->lblNSatellites};
-    static QString sol[] = {tr("----"), tr("FIX"), tr("FLOAT"), tr("SBAS"), tr("DGPS"), tr("SINGLE"), tr("PPP")};
+    static const QString sol[] = {tr("----"), tr("FIX"), tr("FLOAT"), tr("SBAS"), tr("DGPS"), tr("SINGLE"), tr("PPP")};
     QString s[9], ext;
-    static QColor color[] = {QColor(QColorConstants::Svg::silver), QColor(Qt::green), Color::Orange, Color::Fuchsia, QColor(Qt::blue), QColor(Qt::red), Color::Teal};
+    static const QColor color[] = {QColor(QColorConstants::Svg::silver), QColor(Qt::green), Color::Orange, Color::Fuchsia, QColor(Qt::blue), QColor(Qt::red), Color::Teal};
     double *rrover = solutionRover + solutionsCurrent * 3;
     double *rbase = solutionReference + solutionsCurrent * 3;
     double *qrover = solutionQr + solutionsCurrent * 9;
@@ -1513,9 +1517,9 @@ void MainWindow::updatePosition()
         s[0] = pos[0] < 0 ? tr("S:") : tr("N:");
         s[1] = pos[1] < 0 ? tr("W:") : tr("E:");
         s[2] = optDialog->solutionOptions.height == 1 ? tr("H:") : tr("He:");
-        s[3] = QString("%1 %2").arg(fabs(pos[0]) * R2D, 0, 'f', 8).arg(degreeChar);
-        s[4] = QString("%1 %2").arg(fabs(pos[1]) * R2D, 0, 'f', 8).arg(degreeChar);
-        s[5] = QString("%1").arg(pos[2], 0, 'f', 3);
+        s[3] = QStringLiteral("%1 %2").arg(fabs(pos[0]) * R2D, 0, 'f', 8).arg(degreeChar);
+        s[4] = QStringLiteral("%1 %2").arg(fabs(pos[1]) * R2D, 0, 'f', 8).arg(degreeChar);
+        s[5] = QStringLiteral("%1").arg(pos[2], 0, 'f', 3);
         s[6] = tr("N: %1, E: %2, U: %3, m").arg(SQRT(Qe[4]), 6, 'f', 3).arg(SQRT(Qe[0]), 6, 'f', 3).arg(SQRT(Qe[8]), 6, 'f', 3);
     } else if (solutionType == 2) {  // XYZ
         s[0] = "X:";
@@ -1547,8 +1551,8 @@ void MainWindow::updatePosition()
         s[0] = tr("P:");
         s[1] = tr("Y:");
         s[2] = tr("L:");
-        s[3] = QString("%1 %2").arg(pitch * R2D, 0, 'f', 3).arg(degreeChar);
-        s[4] = QString("%1 %2").arg(yaw * R2D, 0, 'f', 3).arg(degreeChar);
+        s[3] = QStringLiteral("%1 %2").arg(pitch * R2D, 0, 'f', 3).arg(degreeChar);
+        s[4] = QStringLiteral("%1 %2").arg(yaw * R2D, 0, 'f', 3).arg(degreeChar);
         s[5] = tr("%1 m").arg(len, 0, 'f', 3);
         s[6] = tr("N: %1, E: %2, U: %3 m").arg(SQRT(Qe[4]), 6, 'f', 3).arg(SQRT(Qe[0]), 6, 'f', 3).arg(SQRT(Qe[8]), 6, 'f', 3);
     }
@@ -1566,7 +1570,7 @@ void MainWindow::updatePosition()
     ui->lblIndicatorQ->setToolTip(ui->lblIndicatorSolution->toolTip());
     ui->lblSolutionS->setText(ui->lblSolution->text());
     setWidgetTextColor(ui->lblSolutionS, ui->lblSolution->palette().color(ui->lblSolution->foregroundRole()));
-    ui->lblSolutionQ->setText(QString("%1 %2 %3 %4 %5 %6 %7%8").arg(
+    ui->lblSolutionQ->setText(QStringLiteral("%1 %2 %3 %4 %5 %6 %7%8").arg(
                                                                 ext,
                                                                 label[0]->text(),
                                                                 label[3]->text(),
@@ -1579,7 +1583,7 @@ void MainWindow::updatePosition()
 // update stream status indicators ------------------------------------------
 void MainWindow::updateStream()
 {
-    static QColor color[] = {QColor(Qt::red), QColor(Qt::white), Color::Orange, Color::Green, Color::Lime};
+    static const QColor color[] = {QColor(Qt::red), QColor(Qt::white), Color::Orange, Color::Green, Color::Lime};
     QLabel *ind[MAXSTRRTK] = {ui->lblStream1, ui->lblStream2, ui->lblStream3, ui->lblStream4, ui->lblStream5, ui->lblStream6, ui->lblStream7, ui->lblStream8};
     int i, sstat[MAXSTRRTK] = {0};
     char msg[MAXSTRMSG] = "";
@@ -1694,7 +1698,7 @@ void MainWindow::drawSolutionPlot(QLabel *plot, int type, int freq)
             drawText(c, x + h, 1, s2, Qt::gray, 1, 2);
         } else { // vertical
             drawSatellites(c, w, h / 2, 0, 0, 0, freq);
-            drawSnr(c, w, (h - topMargin) / 2, 0, topMargin + (h - topMargin) / 2, 1, freq);
+            drawSnr(c, w, (h - topMargin) / 2, 0, topMargin + (h - topMargin) / 2, 0, freq);
             drawText(c, x, 1, s1, Qt::gray, 1, 2);
         }
     } else if (type == 4) { // skyplot rover+base
@@ -1897,8 +1901,8 @@ void MainWindow::drawSatellites(QPainter &c, int w, int h, int x0, int y0,
 // draw baseline plot -------------------------------------------------------
 void MainWindow::drawBaseline(QPainter &c, int id, int w, int h)
 {
-    static QColor colors[] = {Color::Silver, Qt::green, Color::Orange, Color::Fuchsia, Qt::blue, Qt::red, Color::Teal};
-    static QString directions[] = {tr("N"), tr("E"), tr("S"), tr("W")};
+    static const QColor colors[] = {Color::Silver, Qt::green, Color::Orange, Color::Fuchsia, Qt::blue, Qt::red, Color::Teal};
+    static const QString directions[] = {tr("N"), tr("E"), tr("S"), tr("W")};
     QPoint center(w / 2, h / 2), p1, p2, pp;
     double radius = qMin(w * 0.95, h * 0.95) / 2;
     double *rrover = solutionRover + solutionsCurrent * 3;
@@ -1991,12 +1995,12 @@ void MainWindow::drawBaseline(QPainter &c, int id, int w, int h)
 // draw track plot ----------------------------------------------------------
 void MainWindow::drawTrack(QPainter &c, int id, QPaintDevice *plot)
 {
-    static QColor mcolor[] = {Color::Silver, Qt::green, Color::Orange, Color::Fuchsia, Qt::blue, Qt::red, Color::Teal};
+    static const QColor mcolor[] = {Color::Silver, Qt::green, Color::Orange, Color::Fuchsia, Qt::blue, Qt::red, Color::Teal};
     QColor *color;
     Graph *graph = new Graph(plot);
     QPoint p1, p2;
     QString label;
-    static double scale[] = {
+    static const double scale[] = {
         0.00021, 0.00047, 0.001, 0.0021, 0.0047, 0.01, 0.021, 0.047, 0.1,   0.21,   0.47,
         1.0,	 2.1,	  4.7,	 10.0,	 21.0,	 47.0, 100.0, 210.0, 470.0, 1000.0, 2100.0,4700.0,
         10000.0
@@ -2101,7 +2105,7 @@ void MainWindow::drawTrack(QPainter &c, int id, QPaintDevice *plot)
 // draw skyplot -------------------------------------------------------------
 void MainWindow::drawSky(QPainter &c, int w, int h, int x0, int y0)
 {
-    static QString label[] = {tr("N"), tr("E"), tr("S"), tr("W")};
+    static const QString label[] = {tr("N"), tr("E"), tr("S"), tr("W")};
     QPoint p(x0 + w / 2, y0 + h / 2);
     double radius = qMin(w * 0.95, h * 0.95) / 2;
     int a, e, d, x, y;

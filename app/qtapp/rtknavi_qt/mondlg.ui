@@ -445,7 +445,14 @@
     </widget>
    </item>
    <item>
-    <widget class="QTableWidget" name="tWConsole"/>
+    <widget class="QTableWidget" name="tWConsole">
+     <property name="alternatingRowColors">
+      <bool>true</bool>
+     </property>
+     <property name="selectionBehavior">
+      <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

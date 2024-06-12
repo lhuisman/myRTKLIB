@@ -101,6 +101,7 @@ private:
     void updateEnable();
     void showFrequenciesDialog();
     void showKeyDialog();
+    void updateOptions();
     int options;
     Ui::OptDialog *ui;
 
