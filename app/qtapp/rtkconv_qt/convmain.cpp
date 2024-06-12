@@ -70,7 +70,7 @@ extern "C" {
 
         va_start(arg, format); vsprintf(buff, format, arg); va_end(arg);
 
-        QMetaObject::invokeMethod(mainWindow, "showMessage", Qt::QueuedConnection, Q_ARG(QString, QString(buff)));
+        QMetaObject::invokeMethod(mainWindow, "showMessage", Qt::AutoConnection, Q_ARG(QString, QString(buff)));
 
         return abortf;
     }
@@ -186,7 +186,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(acOutputFileView[7], &QAction::triggered, this, &MainWindow::viewOutputFile8);
     connect(acOutputFileView[8], &QAction::triggered, this, &MainWindow::viewOutputFile9);
     connect(acOutputDirSelect, &QAction::triggered, this, &MainWindow::selectOutputDirectory);
-    connect(ui->lEOutputDirectory, &QLineEdit::editingFinished, this, &MainWindow::outputDirectoryChanged);
+    connect(ui->lEOutputDirectory, &QLineEdit::textChanged, this, &MainWindow::outputDirectoryChanged);
     connect(ui->cBTimeStart, &QCheckBox::clicked, this, &MainWindow::updateEnable);
     connect(ui->cBTimeEnd, &QCheckBox::clicked, this, &MainWindow::updateEnable);
     connect(ui->cBTimeInterval, &QCheckBox::clicked, this, &MainWindow::updateEnable);
