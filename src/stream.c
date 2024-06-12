@@ -2132,7 +2132,7 @@ static udp_t *openudpsvr(const char *path, char *msg)
     
     if (sscanf(sport,"%d",&port)<1) {
         sprintf(msg,"port error: %s",sport);
-        tracet(2,"openudpsvr: port error port=%s\n",port);
+        tracet(2,"openudpsvr: port error port=%s\n",sport);
         return NULL;
     }
     return genudp(0,port,"",msg);

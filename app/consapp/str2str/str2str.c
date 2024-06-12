@@ -69,6 +69,8 @@ static const char *help[]={
 "    ntrip client : ntrip://[user[:passwd]@]addr[:port][/mntpnt]",
 "    ntrip server : ntrips://[:passwd@]addr[:port]/mntpnt[:str] (only out)",
 "    ntrip caster : ntripc://[user:passwd@][:port]/mntpnt[:srctbl] (only out)",
+"    udp server   : udpsvr://:port (only in)",
+"    udp client   : udpcli://addr:port (only out)",
 "    file         : [file://]path[::T][::+start][::xseppd][::S=swap]",
 "",
 "  format",
@@ -184,6 +186,7 @@ static int decodepath(const char *path, int *type, char *strpath, int *fmt)
     else if (!strncmp(path,"ntrip", 5)) *type=STR_NTRIPCLI;
     else if (!strncmp(path,"file",  4)) *type=STR_FILE;
     else if (!strncmp(path,"udpsvr",  6)) *type=STR_UDPSVR;
+    else if (!strncmp(path,"udpcli",  6)) *type=STR_UDPCLI;
     else {
         fprintf(stderr,"stream path error: %s\n",buff);
         return 0;
