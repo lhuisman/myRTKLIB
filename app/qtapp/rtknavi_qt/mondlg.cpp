@@ -1094,12 +1094,12 @@ void MonitorDialog::setNavigationGPS()
         << tr("deltan (deg/s)") << tr("OMEGAdot (deg/s)") << tr("IDOT (deg/s)")
         << tr("Cuc (rad)") << tr("Cus (rad)") << tr("Crc (m)") << tr("Crs (m)") << tr("Cic (rad)") << tr("Cis (rad)")
         << tr("af0 (ns)") << tr("af1 (ns/s)") << tr("af2 (ns/s2)");
-    if (sys == SYS_GPS)
-        header	<< tr("TGD (ns)");
-    else if (sys == SYS_GAL)
+    if (sys == SYS_GAL)
         header	<< tr("BGD E1-E5a (ns)") << tr("BGD E1-E5b (ns)");
     else if (sys == SYS_CMP)
         header	<< tr("TGD B1I (ns)") << tr("TGD B2I/B2b (ns)") << tr("TGD B1Cp (ns)") << tr("TGD B2ap (ns)") << tr("ISC B1Cd (ns)") << tr("TGD B2ad (ns)");
+    else
+        header	<< tr("TGD (ns)");
 
     header << tr("Code") << tr("Flag");
     int i, width[] = {
