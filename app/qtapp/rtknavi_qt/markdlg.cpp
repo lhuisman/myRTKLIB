@@ -19,8 +19,8 @@ MarkDialog::MarkDialog(QWidget *parent)
     ui->lblMarker->setText(QString("%r=%1").arg(nMark, 3, 10, QLatin1Char('0')));
 
     connect(ui->btnKeyDlg, &QPushButton::clicked, this, &MarkDialog::showKeyDialog);
-    connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &MarkDialog::saveClose);
-    connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &MarkDialog::close);
+    connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &MarkDialog::accept);
+    connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &MarkDialog::reject);
     connect(ui->btnPosition, &QPushButton::clicked, this, &MarkDialog::btnPositionClicked);
     connect(ui->cBMarkerNameC, &QCheckBox::clicked, this, &MarkDialog::updateEnable);
     connect(ui->rBGo, &QRadioButton::toggled, this, &MarkDialog::updateEnable);
@@ -30,14 +30,14 @@ MarkDialog::MarkDialog(QWidget *parent)
     keyDialog = new KeyDialog(this);
 }
 //---------------------------------------------------------------------------
-void MarkDialog::saveClose()
+void MarkDialog::accept()
 {
     if (ui->cBMarkerNameC->isChecked()) {
         nMark++;
         ui->lblMarker->setText(QString("%r=%1").arg(nMark, 3, 10, QLatin1Char('0')));
     }
 
-    accept();
+    QDialog::accept();
 }
 //---------------------------------------------------------------------------
 void MarkDialog::updateEnable()

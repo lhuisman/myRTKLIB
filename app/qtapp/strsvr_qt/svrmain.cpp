@@ -1,10 +1,10 @@
 //---------------------------------------------------------------------------
-// strsvr : stream server
+// strsvr_qt : stream server
 //
 //          Copyright (C) 2007-2012 by T.TAKASU, All rights reserved.
 //          ported to Qt by Jens Reimann
 //
-// options : strsvr [-t title][-i file][-auto][-tray]
+// options : strsvr_qt [-t title][-i file][-auto][-tray]
 //
 //           -t title   window title
 //           -i file    ini file path
