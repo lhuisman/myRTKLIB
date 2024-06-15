@@ -83,7 +83,7 @@ void OutputStrDialog::selectFile2()
 //---------------------------------------------------------------------------
 void OutputStrDialog::showKeyDialog()
 {
-    keyDialog->exec();
+    keyDialog->show();
 }
 //---------------------------------------------------------------------------
 void OutputStrDialog::showStream1Options()
@@ -168,9 +168,10 @@ void OutputStrDialog::updateEnable()
     ui->btnStream2->setEnabled(ui->cBStream2C->isChecked() && ui->cBStream2->currentIndex() <= 4);
     ui->lEFilePath1->setEnabled(ui->cBStream1C->isChecked() && ui->cBStream1->currentIndex() == 5);
     ui->lEFilePath2->setEnabled(ui->cBStream2C->isChecked() && ui->cBStream2->currentIndex() == 5);
+    ui->cBFormat1->setEnabled(ui->cBStream1C->isChecked());
+    ui->cBFormat2->setEnabled(ui->cBStream2C->isChecked());
     ui->lblF1->setEnabled(ena);
     ui->lblSwapInterval->setEnabled(ena);
-    ui->lblH->setEnabled(ena);
     ui->cBTimeTag->setEnabled(ena);
     ui->cBSwapInterval->setEnabled(ena);
     ui->btnKey->setEnabled(ena);
