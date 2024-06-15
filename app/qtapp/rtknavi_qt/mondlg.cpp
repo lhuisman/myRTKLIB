@@ -1127,7 +1127,7 @@ void MonitorDialog::showNavigationsGPS()
 	gtime_t time;
     QString s;
     char tstr[64], id[32];
-    int i, k, n, nsat, prn, off = ui->cBSelectEphemeris->currentIndex() ? MAXSAT : 0;
+    int i, k, n, nsat, prn, off = ui->cBSelectEphemeris->currentIndex();
     bool valid;
     int sys = sys_tbl[ui->cBSelectSingleNavigationSystem->currentIndex() + 1];
 
@@ -1241,7 +1241,7 @@ void MonitorDialog::showGlonassNavigations()
 	gtime_t time;
     QString s;
     char tstr[64], id[32];
-    int i, n, nsat, valid, prn, off = ui->cBSelectEphemeris->currentIndex() ? NSATGLO : 0;
+    int i, n, nsat, valid, prn, off = ui->cBSelectEphemeris->currentIndex();
 
     geph_t geph0;
     memset(&geph0, 0, sizeof(geph_t));
@@ -1334,7 +1334,7 @@ void MonitorDialog::showSbsNavigations()
 {
     seph_t seph[MAXPRNSBS - MINPRNSBS + 1];
 	gtime_t time;
-    int i, n, nsat, valid, prn, off = ui->cBSelectEphemeris->currentIndex() ? NSATSBS : 0;
+    int i, n, nsat, valid, prn, off = ui->cBSelectEphemeris->currentIndex();
     char tstr[64], id[32];
 
     seph_t seph0;
