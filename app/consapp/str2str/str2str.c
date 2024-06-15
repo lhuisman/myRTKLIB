@@ -29,13 +29,16 @@
 *           2017/05/26  1.17 add input format tersus
 *           2020/11/30  1.18 support api change strsvrstart(),strsvrstat()
 *-----------------------------------------------------------------------------*/
+#define _POSIX_C_SOURCE 199506
+#include <fcntl.h>
 #include <signal.h>
 #include <unistd.h>
 #include "rtklib.h"
 
 #define PRGNAME     "str2str"          /* program name */
 #define MAXSTR      5                  /* max number of streams */
-#define TRFILE      "str2str.trace"    /* trace file */
+#define TRACEFILE   "str2str_%Y%m%d%h%M.trace" /* Debug trace file */
+#define LOGFILE     "str2str_%Y%m%d%h%M.log"   /* Deamon log file */
 
 /* global variables ----------------------------------------------------------*/
 static strsvr_t strsvr;                /* stream server */
@@ -109,6 +112,8 @@ static const char *help[]={
 " -b  str_no        relay back messages from output str to input str [no]",
 " -t  level         trace level [0]",
 " -fl file          log file [str2str.trace]",
+" --deamon          detach from the console",
+" --version         print version",
 " -h                print help",
 "",
 "  command file cheat sheet:",
@@ -210,6 +215,39 @@ static void readcmd(const char *file, char *cmd, int type)
     }
     fclose(fp);
 }
+
+static void deamonise(void)
+{
+#ifndef WIN32
+    /* In case we were not started in the background, fork and let the parent
+     * exit.  Guarantees that the child is not a process group leader. */
+    int childpid = fork();
+    if (childpid < 0) {
+        perror("fork\n");
+        _exit(1);
+    } else if (childpid > 0) {
+        /* parent */
+        _exit(0);
+    }
+
+    /* Make ourselves the leader of a new process group with no controlling
+     * terminal. */
+    if (setsid() < 0) {
+        perror("setsid\n");
+        _exit(1);
+    }
+
+    for (int fd = 0; fd < 10; fd++) close(fd);
+
+    open("/dev/null", O_RDWR);
+    gtime_t time = utc2gpst(timeget());
+    char path[1024];
+    reppath(LOGFILE, path, time, "", "");
+    open(path, O_WRONLY|O_CREAT|O_TRUNC, 0666);
+    dup(1);
+#endif
+}
+
 /* str2str -------------------------------------------------------------------*/
 int main(int argc, char **argv)
 {
@@ -227,6 +265,7 @@ int main(int argc, char **argv)
     int i,j,n=0,dispint=5000,trlevel=0,opts[]={10000,10000,2000,32768,10,0,30,0};
     int types[MAXSTR]={STR_FILE,STR_FILE},stat[MAXSTR]={0},log_stat[MAXSTR]={0};
     int byte[MAXSTR]={0},bps[MAXSTR]={0},fmts[MAXSTR]={0},sta=0;
+    int deamon=0;
     
     for (i=0;i<MAXSTR;i++) {
         paths[i]=s1[i];
@@ -278,6 +317,7 @@ int main(int argc, char **argv)
         else if (!strcmp(argv[i],"-b"  )&&i+1<argc) opts[7]=atoi(argv[++i]);
         else if (!strcmp(argv[i],"-fl" )&&i+1<argc) logfile=argv[++i];
         else if (!strcmp(argv[i],"-t"  )&&i+1<argc) trlevel=atoi(argv[++i]);
+        else if (!strcmp(argv[i], "--deamon")) deamon=1;
         else if (!strcmp(argv[i], "--version")) {
             fprintf(stderr, "str2str RTKLIB %s %s\n", VER_RTKLIB, PATCH_LEVEL);
             exit(0);
@@ -313,6 +353,7 @@ int main(int argc, char **argv)
         matcpy(conv[i]->out.sta.pos,stapos,3,1);
         matcpy(conv[i]->out.sta.del,stadel,3,1);
     }
+    if (deamon) deamonise();
     signal(SIGTERM,sigfunc);
     signal(SIGINT ,sigfunc);
     signal(SIGHUP ,SIG_IGN);
@@ -321,7 +362,7 @@ int main(int argc, char **argv)
     strsvrinit(&strsvr,n+1);
     
     if (trlevel>0) {
-        traceopen(*logfile?logfile:TRFILE);
+        traceopen(*logfile?logfile:TRACEFILE);
         tracelevel(trlevel);
     }
     fprintf(stderr,"stream server start\n");
