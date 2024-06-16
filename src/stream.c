@@ -2525,17 +2525,16 @@ static void closemembuf(membuf_t *membuf)
 /* read memory buffer --------------------------------------------------------*/
 static int readmembuf(membuf_t *membuf, uint8_t *buff, int n, char *msg)
 {
-    int i,nr=0;
-    
     tracet(4,"readmembuf: n=%d\n",n);
     
     if (!membuf) return 0;
     
     rtklib_lock(&membuf->lock);
     
-    for (i=membuf->rp;i!=membuf->wp&&nr<n;i++) {
-        if (i>=membuf->bufsize) i=0;
+    size_t i=membuf->rp, nr=0;
+    while (i!=membuf->wp&&nr<n) {
         buff[nr++]=membuf->buf[i];
+        if (++i>=membuf->bufsize) i=0;
     }
     membuf->rp=i;
     rtklib_unlock(&membuf->lock);
