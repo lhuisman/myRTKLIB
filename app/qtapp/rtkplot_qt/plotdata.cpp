@@ -1283,7 +1283,7 @@ void Plot::updateMp()
         }
 
     }
-    for (int sat = 1; sat <= MAXSAT; sat++) {
+    for (uint8_t sat = 1; sat <= MAXSAT; sat++) {
         for (j = 0; j < NFREQ + NEXOBS; j++) {
             for (i = n = m = 0, B = 0.0; i < observation.n; i++) {
                 data = observation.data + i;

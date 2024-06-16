@@ -79,7 +79,7 @@ void LogStrDialog::selectFile3()
 //---------------------------------------------------------------------------
 void LogStrDialog::showKeyDialog()
 {
-    keyDialog->exec();
+    keyDialog->show();
 }
 //---------------------------------------------------------------------------
 void LogStrDialog::showStreamOptions1()
