@@ -345,14 +345,14 @@ static DWORD WINAPI serialthread(void *arg)
 /* open serial ---------------------------------------------------------------*/
 static serial_t *openserial(const char *path, int mode, char *msg)
 {
-    const int br[]={
-        300,600,1200,2400,4800,9600,19200,38400,57600,115200,230400,460800,
-        921600
-    };
     serial_t *serial;
     int i,brate=115200,bsize=8,stopb=1,tcp_port=0;
     char *p,parity='N',dev[128],port[128],fctr[64]="",path_tcp[32],msg_tcp[128];
 #ifdef WIN32
+    const int br[]={
+        300,600,1200,2400,4800,9600,19200,38400,57600,115200,230400,460800,
+        921600
+    };
     DWORD error,rw=0,siz=sizeof(COMMCONFIG);
     COMMCONFIG cc={0};
     COMMTIMEOUTS co={MAXDWORD,0,0,0,0}; /* non-block-read */
@@ -360,10 +360,17 @@ static serial_t *openserial(const char *path, int mode, char *msg)
 #else
 #ifdef __APPLE__
     /* MacOS doesn't support higher baudrates (>230400B) */
+    const int br[]={
+        300,600,1200,2400,4800,9600,19200,38400,57600,115200,230400
+    };
     const speed_t bs[]={
         B300,B600,B1200,B2400,B4800,B9600,B19200,B38400,B57600,B115200,B230400
     };
 #else /* regular Linux with higher baudrates */
+    const int br[]={
+        300,600,1200,2400,4800,9600,19200,38400,57600,115200,230400,460800,
+        921600
+    };
     const speed_t bs[]={
         B300,B600,B1200,B2400,B4800,B9600,B19200,B38400,B57600,B115200,B230400,
         B460800,B921600
@@ -385,8 +392,9 @@ static serial_t *openserial(const char *path, int mode, char *msg)
     if ((p=strchr(path,'#'))) {
         sscanf(p,"#%d",&tcp_port);
     }
-    for (i=0;i<13;i++) if (br[i]==brate) break;
-    if (i>=13) {
+    int nbr = sizeof(br) / sizeof(int);
+    for (i=0;i<nbr;i++) if (br[i]==brate) break;
+    if (i>=nbr) {
         sprintf(msg,"bitrate error (%d)",brate);
         tracet(1,"openserial: %s path=%s\n",msg,path);
         free(serial);
