@@ -64,6 +64,7 @@
 #define NAVIFILE    "rtkrcv.nav"        /* navigation save file */
 #define STATFILE    "rtkrcv_%Y%m%d%h%M.stat"  /* solution status file */
 #define TRACEFILE   "rtkrcv_%Y%m%d%h%M.trace" /* debug trace file */
+#define LOGFILE     "rtkrcv_%Y%m%d%h%M.log"   /* Deamon log file */
 #define INTKEEPALIVE 1000               /* keep alive interval (ms) */
 
 #define ESC_CLEAR   "\033[H\033[2J"     /* ansi/vt100 escape: erase screen */
@@ -138,7 +139,9 @@ static const char *usage[]={
     "  -w pwd     login password for remote console (\"\": no password)",
     "  -r level   output solution status file (0:off,1:states,2:residuals)",
     "  -t level   debug trace level (0:off,1-5:on)",
-    "  -sta sta   station name for receiver dcb"
+    "  -sta sta   station name for receiver dcb",
+    "  --deamon   detach from the console",
+    "  --version  print the version and exit"
 };
 static const char *helptxt[]={
     "start                 : start rtk server",
@@ -1374,7 +1377,10 @@ static void *con_thread(void *arg)
     while (con->state) {
         
         /* output prompt */
-        if (!vt_puts(con->vt,CMDPROMPT)) break;
+        if (!vt_puts(con->vt,CMDPROMPT)) {
+            con->state = 0;
+            break;
+        }
         
         /* input command */
         if (!vt_gets(con->vt,buff,sizeof(buff))) break;
@@ -1430,6 +1436,7 @@ static void *con_thread(void *arg)
         }
     }
     vt_close(con->vt);
+    con->vt = NULL;
     return NULL;
 }
 /* open console --------------------------------------------------------------*/
@@ -1527,9 +1534,42 @@ static void accept_sock(int ssock, con_t **con)
     trace(2,"remote console connection refused. addr=%s\n",
          inet_ntoa(addr.sin_addr));
 }
+
+static void deamonise(void)
+{
+#ifndef WIN32
+    /* In case we were not started in the background, fork and let the parent
+     * exit.  Guarantees that the child is not a process group leader. */
+    int childpid = fork();
+    if (childpid < 0) {
+        perror("fork\n");
+        _exit(1);
+    } else if (childpid > 0) {
+        /* parent */
+      _exit(0);
+    }
+
+    /* Make ourselves the leader of a new process group with no controlling
+     * terminal. */
+    if (setsid() < 0) {
+        perror("setsid\n");
+        _exit(1);
+    }
+
+    for (int fd = 0; fd < 10; fd++) close(fd);
+
+    open("/dev/null", O_RDWR);
+    gtime_t time = utc2gpst(timeget());
+    char path[1024];
+    reppath(LOGFILE, path, time, "", "");
+    open(path, O_WRONLY|O_CREAT|O_TRUNC, 0666);
+    dup(1);
+#endif
+}
+
 /* rtkrcv main -----------------------------------------------------------------
 * synopsis
-*     rtkrcv [-s][-p port][-d dev][-o file][-r level][-t level][-sta sta]
+*     rtkrcv [-s][-nc][-p port][-d dev][-o file][-r level][-t level][-sta sta]
 *
 * description
 *     A command line version of the real-time positioning AP by rtklib. To start
@@ -1543,8 +1583,13 @@ static void accept_sock(int ssock, con_t **con)
 *     set, load or save command on the console. To shutdown the program, use
 *     shutdown command on the console or send USR2 signal to the process.
 *
+*     The --deamon option implies no console. When used with -s or -nc the RTK
+*     server is started on program startup. A telnet console can be used with
+*     this option to start and control the RTK server.
+*
 * option
 *     -s         start RTK server on program startup
+*     -nc        start RTK server on program startup with no console
 *     -p port    port number for telnet console
 *     -m port    port number for monitor stream
 *     -d dev     terminal device for console
@@ -1553,6 +1598,8 @@ static void accept_sock(int ssock, con_t **con)
 *     -r level   output solution status file (0:off,1:states,2:residuals)
 *     -t level   debug trace level (0:off,1-5:on)
 *     -sta sta   station name for receiver dcb
+*     --deamon   detach from the console
+*     --version  prints the version and exits
 *
 * command
 *     start
@@ -1636,6 +1683,7 @@ int main(int argc, char **argv)
     con_t *con[MAXCON]={0};
     int i,port=0,outstat=0,trace=0,sock=0;
     char *dev="",file[MAXSTR]="";
+    int deamon=0;
     
     for (i=1;i<argc;i++) {
         if      (!strcmp(argv[i],"-s")) start|=1; /* console */
@@ -1648,12 +1696,14 @@ int main(int argc, char **argv)
         else if (!strcmp(argv[i],"-r")&&i+1<argc) outstat=atoi(argv[++i]);
         else if (!strcmp(argv[i],"-t")&&i+1<argc) trace=atoi(argv[++i]);
         else if (!strcmp(argv[i],"-sta")&&i+1<argc) strcpy(sta_name,argv[++i]);
+        else if (!strcmp(argv[i], "--deamon")) deamon=1;
         else if (!strcmp(argv[i], "--version")) {
             fprintf(stderr, "rtkrcv RTKLIB %s %s\n", VER_RTKLIB, PATCH_LEVEL);
             exit(0);
         }
         else printusage();
     }
+    if (deamon) deamonise();
     if (trace>0) {
         traceopen(TRACEFILE);
         tracelevel(trace);
@@ -1691,9 +1741,10 @@ int main(int argc, char **argv)
             traceclose();
             return EXIT_FAILURE;
         }
-    } else if (start&2) { /* start without console */
+    }
+    if (start&2) { /* Start without console */
         startsvr(NULL); 
-    } else  {  
+    } else if (!deamon) {
         /* open device for local console */
         if (!(con[0]=con_open(0,dev))) {
             fprintf(stderr,"console open error dev=%s\n",dev);
