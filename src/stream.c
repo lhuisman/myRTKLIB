@@ -1899,7 +1899,7 @@ static void rsp_ntripc(ntripc_t *ntripc, int i)
 {
     const char *rsp1=NTRIP_RSP_UNAUTH,*rsp2=NTRIP_RSP_OK_CLI;
     ntripc_con_t *con=ntripc->con+i;
-    char url[256]="",mntpnt[256]="",proto[256]="",user[513],user_pwd[256],*p,*q;
+    char url[256]="",mntpnt[256]="",proto[256]="",user[513],user_pwd[712],*p,*q;
     
     tracet(3,"rspntripc_c i=%d\n",i);
     con->buff[con->nb]='\0';
@@ -1940,7 +1940,8 @@ static void rsp_ntripc(ntripc_t *ntripc, int i)
         sprintf(user,"%s:%s",ntripc->user,ntripc->passwd);
         q=user_pwd;
         q+=sprintf(q,"Authorization: Basic ");
-        q+=encbase64(q,(uint8_t *)user,strlen(user));
+        encbase64(q,(uint8_t *)user,strlen(user));
+        strcat(user_pwd,"\r\n");
         if (!(p=strstr((char *)con->buff,"Authorization:"))||
             strncmp(p,user_pwd,strlen(user_pwd))) {
             tracet(2,"rsp_ntripc_c: authroziation error\n");
