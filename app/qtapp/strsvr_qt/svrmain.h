@@ -51,7 +51,7 @@ protected:
 
 private:
     QString iniFile;
-    QString paths[MAXSTR][4], commands[MAXSTR][3], commandsTcp[MAXSTR][3];
+    QString paths[MAXSTR][7], commands[MAXSTR][3], commandsTcp[MAXSTR][3];
     QString tcpHistory[MAXHIST], tcpMountpointHistory[MAXHIST];
     QString conversionMessage[MAXSTR - 1], conversionOptions[MAXSTR - 1];
     QString pathLog[MAXSTR];
