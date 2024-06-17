@@ -1,10 +1,10 @@
 //---------------------------------------------------------------------------
-// strsvr : stream server
+// strsvr_qt : stream server
 //
 //          Copyright (C) 2007-2012 by T.TAKASU, All rights reserved.
 //          ported to Qt by Jens Reimann
 //
-// options : strsvr [-t title][-i file][-auto][-tray]
+// options : strsvr_qt [-t title][-i file][-auto][-tray]
 //
 //           -t title   window title
 //           -i file    ini file path
@@ -240,7 +240,7 @@ void MainForm::showInputOptions()
         case 1: tcpClientOptions(0, 1); break; // TCP Client
         case 2: tcpServerOptions(0, 2); break; // TCP Server
         case 3: ntripClientOptions(0, 3); break; // Ntrip Client
-        case 4: udpServerOptions(0, 6); break;  // UDP Server
+        case 4: udpServerOptions(0, 4); break;  // UDP Server
         case 5: fileOptions(0, 0); break;
     }
 }
@@ -591,7 +591,7 @@ void MainForm::stopServer()
                          STR_FTP, STR_HTTP};
     const int outputTypes[] = {
         STR_NONE, STR_SERIAL, STR_TCPCLI, STR_TCPSVR, STR_NTRIPSVR, STR_NTRIPCAS,
-        STR_FILE
+        STR_UDPCLI, STR_FILE
     };
     int streamTypes[MAXSTR];
 
@@ -635,9 +635,9 @@ void MainForm::stopServer()
 void MainForm::updateStreamMonitor()
 {
     static const QString types[] = {
-        tr("None"), tr("Serial"), tr("File"), tr("TCP Server"), tr("TCP Client"), tr("UDP"), tr("Ntrip Sever"),
+        tr("None"), tr("Serial"), tr("File"), tr("TCP Server"), tr("TCP Client"), tr("Ntrip Sever"),
         tr("Ntrip Client"), tr("FTP"), tr("HTTP"), tr("Ntrip Caster"), tr("UDP Server"),
-        tr("UDP Client")
+        tr("UDP Client"), tr("Mem Buffer")
     };
     unsigned char *msg = 0;
     char *p;
@@ -863,7 +863,7 @@ void MainForm::loadOptions()
 
     // paths
     for (int i = 0; i < MAXSTR; i++)
-        for (int j = 0; j < 4; j++)
+        for (int j = 0; j < 7; j++)
             paths[i][j] = settings.value(QString("path/path_%1_%2").arg(i).arg(j), "").toString();
 
     for (int i=0;i<MAXSTR;i++) {
@@ -953,7 +953,7 @@ void MainForm::saveOptions()
             settings.setValue(QString("tcpip/cmdena_%1_%2").arg(i).arg(j), commandsEnabledTcp[i][j]);
         }
     for (int i = 0; i < MAXSTR; i++)
-        for (int j = 0; j < 4; j++)
+        for (int j = 0; j < 7; j++)
             settings.setValue(QString("path/path_%1_%2").arg(i).arg(j), paths[i][j]);
 
     for (int i = 0; i < MAXSTR; i++)

@@ -262,7 +262,7 @@ OptDialog::OptDialog(QWidget *parent, int opts)
     QAction *acIonosphereFileSelect = ui->lEIonosphereFile->addAction(QIcon(":/buttons/folder"), QLineEdit::TrailingPosition);
     acIonosphereFileSelect->setToolTip(tr("Select File"));
 
-    connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &OptDialog::saveClose);
+    connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &OptDialog::accept);
     connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &OptDialog::reject);
     connect(ui->btnLoad, &QPushButton::clicked, this, &OptDialog::loadSettings);
     connect(ui->btnSave, &QPushButton::clicked, this, &OptDialog::saveSettings);
@@ -878,10 +878,11 @@ void OptDialog::updateOptions()
 }
 
 //---------------------------------------------------------------------------
-void OptDialog::saveClose()
+void OptDialog::accept()
 {
     updateOptions();
-    accept();
+
+    QDialog::accept();
 }
 //---------------------------------------------------------------------------
 void OptDialog::load(const QString &file)

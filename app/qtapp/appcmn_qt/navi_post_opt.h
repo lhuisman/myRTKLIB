@@ -66,7 +66,7 @@ protected:
     QRegularExpression regExDistance;
 
 protected slots:
-    void saveClose();
+    void accept();
     void selectAntennaPcvFile();
     void viewAntennaPcvFile();
     void loadSettings();

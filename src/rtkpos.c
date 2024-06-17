@@ -356,7 +356,7 @@ static void outsolstat(rtk_t *rtk,const nav_t *nav)
         satno2id(i+1,id);
         for (j=0;j<nfreq;j++) {
             k=IB(i+1,j,&rtk->opt);
-            fprintf(fp_stat,"$SAT,%d,%.3f,%s,%d,%.1f,%.1f,%.4f,%.4f,%d,%.0f,%d,%d,%d,%d,%d,%d,%.2f,%.6f,%.5f\n",
+            fprintf(fp_stat,"$SAT,%d,%.3f,%s,%d,%.1f,%.1f,%.4f,%.4f,%d,%.0f,%d,%d,%d,%u,%u,%u,%.2f,%.6f,%.5f\n",
                     week,tow,id,j+1,ssat->azel[0]*R2D,ssat->azel[1]*R2D,
                     ssat->resp[j],ssat->resc[j],ssat->vsat[j],ssat->snr_rover[j]*SNR_UNIT,
                     ssat->fix[j],ssat->slip[j]&3,ssat->lock[j],ssat->outc[j],
@@ -731,7 +731,7 @@ static void detslp_gf(rtk_t *rtk, const obsd_t *obs, int i, int j,
 static void detslp_dop(rtk_t *rtk, const obsd_t *obs, const int *ix, int ns,
                        int rcv, const nav_t *nav)
 {
-    int i,ii,f,sat,ndop=0;
+    int i,ii,f,sat,ndop=0,nf=rtk->opt.nf;
     double dph,dpt,mean_dop=0;
     double dopdif[MAXSAT][NFREQ], tt[MAXSAT][NFREQ];
 
@@ -743,7 +743,7 @@ static void detslp_dop(rtk_t *rtk, const obsd_t *obs, const int *ix, int ns,
         ii = ix[i];
         sat=obs[ii].sat;
 
-        for (f=0;f<rtk->opt.nf;f++) {
+        for (f=0;f<nf;f++) {
             dopdif[i][f]=0;tt[i][f]=0.00;
             if (obs[ii].L[f]==0.0||obs[ii].D[f]==0.0||rtk->ssat[sat-1].ph[rcv-1][f]==0.0) continue;
             if (fabs(tt[i][f]=timediff(obs[ii].time,rtk->ssat[sat-1].pt[rcv-1][f]))<DTTOL) continue;
@@ -768,7 +768,7 @@ static void detslp_dop(rtk_t *rtk, const obsd_t *obs, const int *ix, int ns,
     for (i=0;i<ns;i++) {
         sat=obs[ix[i]].sat;
 
-        for (f=0;f<rtk->opt.nf;f++) {
+        for (f=0;f<nf;f++) {
             if (dopdif[i][f]==0.00) continue;
             if (fabs(dopdif[i][f]-mean_dop)>rtk->opt.thresdop) {
                 rtk->ssat[sat-1].slip[f]|=1;

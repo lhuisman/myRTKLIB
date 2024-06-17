@@ -304,20 +304,14 @@ QColor Plot::sysColor(int sat)
     }
 }
 // get observation data color -----------------------------------------------
-QColor Plot::observationColor(const obsd_t *obs, double az, double el)
+QColor Plot::observationColor(const obsd_t *obs, double az, double el, QVariant obstype)
 {
     QColor color;
-    QVariant obstype;
     int i, n, freq;
 
     trace(4, "observationColor\n");
 
     if (!satelliteSelection[obs->sat - 1]) return Qt::black;
-
-    if (plotType == PLOT_SNR || plotType == PLOT_SNRE) {
-        obstype = ui->cBObservationTypeSNR->currentData();
-    } else
-        obstype = ui->cBObservationType->currentData();
 
     if (simulatedObservation) {
         color = sysColor(obs->sat);

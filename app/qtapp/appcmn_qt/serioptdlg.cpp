@@ -30,8 +30,8 @@ void SerialOptDialog::showEvent(QShowEvent *event)
 //---------------------------------------------------------------------------
 void SerialOptDialog::setOptions(int options)
 {
-    ui->cBOutputTcpPort->setEnabled(options);
-    ui->cBTcpPort->setEnabled(options);
+    ui->cBOutputTcpPort->setVisible(options);
+    ui->cBTcpPort->setVisible(options);
 }
 //---------------------------------------------------------------------------
 void SerialOptDialog::setPath(const QString &path)

@@ -42,7 +42,7 @@ MonitorDialog::MonitorDialog(QWidget *parent, rtksvr_t *server, stream_t* stream
     init_raw(&raw, -1);
 
     connect(ui->btnClear, &QPushButton::clicked, this, &MonitorDialog::clearOutput);
-    connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &MonitorDialog::accept);
+    connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &MonitorDialog::reject);
     connect(ui->btnDown, &QPushButton::clicked, this, &MonitorDialog::scrollDown);
     connect(ui->cBType, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &MonitorDialog::displayTypeChanged);
     connect(ui->cBSelectSingleNavigationSystem, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &MonitorDialog::displayTypeChanged);

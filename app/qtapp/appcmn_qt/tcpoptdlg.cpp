@@ -29,7 +29,7 @@ TcpOptDialog::TcpOptDialog(QWidget *parent, int options)
 
     mntpOptDialog = new MntpOptDialog(this);
 
-    connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &TcpOptDialog::btnOkClicked);
+    connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &TcpOptDialog::accept);
     connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &TcpOptDialog::reject);
     connect(ui->btnNtrip, &QPushButton::clicked, this, &TcpOptDialog::btnNtripClicked);
     connect(ui->btnMountpointOptions, &QPushButton::clicked, this, &TcpOptDialog::btnMountpointClicked);
@@ -165,11 +165,11 @@ QString TcpOptDialog::getPath() {
 }
 
 //---------------------------------------------------------------------------
-void TcpOptDialog::btnOkClicked()
+void TcpOptDialog::accept()
 {
     addHistory(ui->cBAddress, history);
 
-    accept();
+    QDialog::accept();
 }
 //---------------------------------------------------------------------------
 void TcpOptDialog::addHistory(QComboBox *list, QString *hist)

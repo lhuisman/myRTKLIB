@@ -72,6 +72,8 @@ static const char *help[]={
 "    ntrip client : ntrip://[user[:passwd]@]addr[:port][/mntpnt]",
 "    ntrip server : ntrips://[:passwd@]addr[:port]/mntpnt[:str] (only out)",
 "    ntrip caster : ntripc://[user:passwd@][:port]/mntpnt[:srctbl] (only out)",
+"    udp server   : udpsvr://:port (only in)",
+"    udp client   : udpcli://addr:port (only out)",
 "    file         : [file://]path[::T][::+start][::xseppd][::S=swap]",
 "",
 "  format",
@@ -189,6 +191,7 @@ static int decodepath(const char *path, int *type, char *strpath, int *fmt)
     else if (!strncmp(path,"ntrip", 5)) *type=STR_NTRIPCLI;
     else if (!strncmp(path,"file",  4)) *type=STR_FILE;
     else if (!strncmp(path,"udpsvr",  6)) *type=STR_UDPSVR;
+    else if (!strncmp(path,"udpcli",  6)) *type=STR_UDPCLI;
     else {
         fprintf(stderr,"stream path error: %s\n",buff);
         return 0;
@@ -341,12 +344,13 @@ int main(int argc, char **argv)
             return EXIT_FAILURE;
         }
         strcpy(buff,antinfo);
-        for (p=strtok(buff,","),j=0;p&&j<3;p=strtok(NULL,",")) ant[j++]=p;
+        char *r;
+        for (p=strtok_r(buff,",",&r),j=0;p&&j<3;p=strtok_r(NULL,",",&r)) ant[j++]=p;
         strcpy(conv[i]->out.sta.antdes,ant[0]);
         strcpy(conv[i]->out.sta.antsno,ant[1]);
         conv[i]->out.sta.antsetup=atoi(ant[2]);
         strcpy(buff,rcvinfo);
-        for (p=strtok(buff,","),j=0;p&&j<3;p=strtok(NULL,",")) rcv[j++]=p;
+        for (p=strtok_r(buff,",",&r),j=0;p&&j<3;p=strtok_r(NULL,",",&r)) rcv[j++]=p;
         strcpy(conv[i]->out.sta.rectype,rcv[0]);
         strcpy(conv[i]->out.sta.recver ,rcv[1]);
         strcpy(conv[i]->out.sta.recsno ,rcv[2]);
