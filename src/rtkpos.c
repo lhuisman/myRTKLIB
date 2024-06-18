@@ -1187,7 +1187,7 @@ static int ddres(rtk_t *rtk, const obsd_t *obs, double dt, const double *x,
                  int ns, double *v, double *H, double *R, int *vflg)
 {
     prcopt_t *opt=&rtk->opt;
-    double bl,dr[3],posu[3],posr[3],didxi=0.0,didxj=0.0,*im,icb,threshadj;
+    double bl,dr[3],posu[3],posr[3],didxi=0.0,didxj=0.0,*im,threshadj;
     double *tropr,*tropu,*dtdxr,*dtdxu,*Ri,*Rj,freqi,freqj,*Hi=NULL,df;
     int i,j,k,m,f,nv=0,nb[NFREQ*NSYS*2+2]={0},b=0,sysi,sysj,nf=NF(opt);
     int ii,jj,frq,code;
@@ -1314,7 +1314,7 @@ static int ddres(rtk_t *rtk, const obsd_t *obs, double dt, const double *x,
                     }
                     else if (rtk->opt.glomodear==GLO_ARMODE_FIXHOLD && frq<NFREQGLO) {
                         /* fix-and-hold method */
-                        icb=rtk->ssat[sat[i]-1].icbias[frq]*CLIGHT/freqi - rtk->ssat[sat[j]-1].icbias[frq]*CLIGHT/freqj;
+                        double icb=rtk->ssat[sat[i]-1].icbias[frq]*CLIGHT/freqi - rtk->ssat[sat[j]-1].icbias[frq]*CLIGHT/freqj;
                         v[nv]-=icb;
                     }
                 }
@@ -1323,7 +1323,7 @@ static int ddres(rtk_t *rtk, const obsd_t *obs, double dt, const double *x,
                 if (sysj==SYS_SBS&&sysi==SYS_GPS) {
                     if (rtk->opt.glomodear==GLO_ARMODE_FIXHOLD && frq<NFREQ) {
                         /* fix-and-hold method */
-                        icb=rtk->ssat[sat[i]-1].icbias[frq]*CLIGHT/freqi - rtk->ssat[sat[j]-1].icbias[frq]*CLIGHT/freqj;
+                        double icb=rtk->ssat[sat[i]-1].icbias[frq]*CLIGHT/freqi - rtk->ssat[sat[j]-1].icbias[frq]*CLIGHT/freqj;
                         v[nv]-=icb;
                     }
                 }
@@ -1365,6 +1365,8 @@ static int ddres(rtk_t *rtk, const obsd_t *obs, double dt, const double *x,
                     rtk->ssat[sat[i]-1].vsat[frq]=rtk->ssat[sat[j]-1].vsat[frq]=1;
                 }
 
+#ifdef TRACE
+                double icb;
                 if (rtk->opt.glomodear==GLO_ARMODE_AUTOCAL)
                     icb=x[IL(frq,opt)];
                 else
@@ -1374,6 +1376,7 @@ static int ddres(rtk_t *rtk, const obsd_t *obs, double dt, const double *x,
                 trace(3,"sat=%3d-%3d %s%d v=%13.3f R=%9.6f %9.6f icb=%9.3f lock=%5d x=%9.3f P=%.3f\n",
                         sat[i],sat[j],code?"P":"L",frq+1,v[nv],Ri[nv],Rj[nv],icb,
                         rtk->ssat[sat[j]-1].lock[frq],x[jj],P[jj+jj*rtk->nx]);
+#endif
 
                 vflg[nv++]=(sat[i]<<16)|(sat[j]<<8)|((code?1:0)<<4)|(frq);
                 nb[b]++;
@@ -1653,7 +1656,6 @@ static int resamb_LAMBDA(rtk_t *rtk, double *bias, double *xa,int gps,int glo,in
     double *DP,*y,*b,*db,*Qb,*Qab,*QQ,s[2];
     int *ix;
     double coeff[3];
-    double QQb[MAXSAT];
 
     trace(3,"resamb_LAMBDA : nx=%d\n",nx);
 
@@ -1686,10 +1688,13 @@ static int resamb_LAMBDA(rtk_t *rtk, double *bias, double *xa,int gps,int glo,in
     for (j=0;j<nb;j++) for (i=0;i<na;i++) {
         Qab[i+j*na]=rtk->P[i+ix[j*2]*nx]-rtk->P[i+ix[j*2+1]*nx];
     }
-    for (i=0;i<nb;i++) QQb[i]=1000*Qb[i+i*nb];
 
+#ifdef TRACE
+    double QQb[MAXSAT];
+    for (i=0;i<nb;i++) QQb[i]=1000*Qb[i+i*nb];
     trace(3,"N(0)=     "); tracemat(3,y,1,nb,7,2);
     trace(3,"Qb*1000=  "); tracemat(3,QQb,1,nb,7,4);
+#endif
 
     /* lambda/mlambda integer least-square estimation */
     /* return best integer solutions */
