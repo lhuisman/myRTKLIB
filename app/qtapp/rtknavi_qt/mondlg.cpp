@@ -895,16 +895,15 @@ void MonitorDialog::showEstimates()
             for (int col = 0; col < ui->tWConsole->columnCount(); col++)
                 ui->tWConsole->setItem(row, col, new QTableWidgetItem());
     }
-    ui->tWConsole->setRowCount(n);
 
-    for (i = 0, n = 1; i < nx; i++) {
+    for (i = 0, n = 0; i < nx; i++) {
         int j = 0;
         if (ui->cBSelectSatellites->currentIndex() == 1 && x[i] == 0.0) continue;
-        ui->tWConsole->item(i, j++)->setText(tr("X_%1").arg(i + 1));
-        ui->tWConsole->item(i, j++)->setText(x[i] == 0.0 ? s0 : QString::number(x[i], 'f', 3));
-        ui->tWConsole->item(i, j++)->setText(P[i + i * nx] == 0.0 ? s0 : QString::number(SQRT(P[i + i * nx]), 'f', 3));
-        ui->tWConsole->item(i, j++)->setText((i >= na || qFuzzyCompare(xa[i], 0)) ? s0 : QString::number(xa[i], 'f', 3));
-        ui->tWConsole->item(i, j++)->setText((i >= na || Pa[i + i * na] == 0.0) ? s0 : QString::number(SQRT(Pa[i + i * na]), 'f', 3));
+        ui->tWConsole->item(n, j++)->setText(tr("X_%1").arg(i + 1));
+        ui->tWConsole->item(n, j++)->setText(x[i] == 0.0 ? s0 : QString::number(x[i], 'f', 3));
+        ui->tWConsole->item(n, j++)->setText(P[i + i * nx] == 0.0 ? s0 : QString::number(SQRT(P[i + i * nx]), 'f', 3));
+        ui->tWConsole->item(n, j++)->setText((i >= na || qFuzzyCompare(xa[i], 0)) ? s0 : QString::number(xa[i], 'f', 3));
+        ui->tWConsole->item(n, j++)->setText((i >= na || Pa[i + i * na] == 0.0) ? s0 : QString::number(SQRT(Pa[i + i * na]), 'f', 3));
 		n++;
 	}
 	free(x); free(P); free(xa); free(Pa);
