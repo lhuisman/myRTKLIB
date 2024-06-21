@@ -686,16 +686,16 @@ void MonitorDialog::setSat()
 {
     int i, j = 0;
     const QString label[] = {
-        tr("SAT"),	tr("PRN"), tr("PRN"), tr("Status"), tr("Azimuth (deg)"), tr("Elevation (deg)"), tr("LG (m)"), tr("PHW (cyc)"),
+        tr("SAT"), tr("Status"), tr("Azimuth (deg)"), tr("Elevation (deg)"), tr("LG (m)"), tr("PHW (cyc)"),
         tr("P1-P2 (m)"), tr("P1-C1 (m)"), tr("P2-C2(m)")
 	};
-    int width[] = {25, 25, 30, 130, 140, 140, 60, 120, 120, 120, 120}, nfreq;
+    int width[] = {46, 60, 125, 130, 90, 90, 90, 90, 90}, nfreq;
 
     rtksvrlock(rtksvr);
     nfreq = rtksvr->rtk.opt.nf > NFREQ ? NFREQ : rtksvr->rtk.opt.nf;
     rtksvrunlock(rtksvr);
 
-    ui->tWConsole->setColumnCount(11 + nfreq * 9);
+    ui->tWConsole->setColumnCount(9 + nfreq * 9);
     ui->tWConsole->setRowCount(0);
     header.clear();
 
@@ -705,42 +705,38 @@ void MonitorDialog::setSat()
         header << label[i];
 	}
     for (i = 0; i < nfreq; i++) {
-        ui->tWConsole->setColumnWidth(j++, 30 * fontScale / 96);
+        ui->tWConsole->setColumnWidth(j++, 38 * fontScale / 96);
         header << tr("L%1").arg(i+1);
 	}
     for (i = 0; i < nfreq; i++) {
-        ui->tWConsole->setColumnWidth(j++, 40 * fontScale / 96);
+        ui->tWConsole->setColumnWidth(j++, 70 * fontScale / 96);
         header << tr("Fix%1").arg(i+1);
 	}
     for (i = 0; i < nfreq; i++) {
-        ui->tWConsole->setColumnWidth(j++, 150 * fontScale / 96);
+        ui->tWConsole->setColumnWidth(j++, 140 * fontScale / 96);
         header << tr("P%1 Residual (m)").arg(i+1);
 	}
     for (i = 0; i < nfreq; i++) {
-        ui->tWConsole->setColumnWidth(j++, 150 * fontScale / 96);
+        ui->tWConsole->setColumnWidth(j++, 135 * fontScale / 96);
         header << tr("L%1 Residual (m)").arg(i+1);
 	}
     for (i = 0; i < nfreq; i++) {
-        ui->tWConsole->setColumnWidth(j++, 45 * fontScale / 96);
+        ui->tWConsole->setColumnWidth(j++, 50 * fontScale / 96);
         header << tr("Slip%1").arg(i+1);
 	}
     for (i = 0; i < nfreq; i++) {
-        ui->tWConsole->setColumnWidth(j++, 45 * fontScale / 96);
+        ui->tWConsole->setColumnWidth(j++, 55 * fontScale / 96);
         header << tr("Lock%1").arg(i+1);
 	}
     for (i = 0; i < nfreq; i++) {
-        ui->tWConsole->setColumnWidth(j++, 95 * fontScale / 96);
+        ui->tWConsole->setColumnWidth(j++, 80 * fontScale / 96);
         header << tr("Outage%1").arg(i+1);
 	}
     for (i = 0; i < nfreq; i++) {
-        ui->tWConsole->setColumnWidth(j++, 75 * fontScale / 96);
+        ui->tWConsole->setColumnWidth(j++, 70 * fontScale / 96);
         header << tr("Reject%1").arg(i+1);
 	}
-    for (i = 0; i < nfreq; i++) {
-        ui->tWConsole->setColumnWidth(j++, 110 * fontScale / 96);
-        header << tr("WaveL%1 (m)").arg(i+1);
-	}
-    for (i = 4; i < 11; i++) {
+    for (i = 4; i < 9; i++) {
         ui->tWConsole->setColumnWidth(j++, width[i] * fontScale / 96);
         header << label[i];
 	}
