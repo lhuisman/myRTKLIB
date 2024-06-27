@@ -224,13 +224,11 @@ extern const sbsigpband_t igpband2[][5]; /* SBAS IGP band 9-10 */
 /* get fields (little-endian) ------------------------------------------------*/
 #define U1(p) (*((unsigned char *)(p)))
 #define I1(p) (*((signed char *)(p)))
-static uint16_t       U2(unsigned char *p) {uint16_t       u; memcpy(&u,p,2); return u;}
-static uint32_t       U4(unsigned char *p) {uint32_t       u; memcpy(&u,p,4); return u;}
-static uint64_t       U8(unsigned char *p) {uint64_t       u; memcpy(&u,p,8); return u;}
-static float          R4(unsigned char *p) {float          r; memcpy(&r,p,4); return r;}
-static double         R8(unsigned char *p) {double         r; memcpy(&r,p,8); return r;}
-static int32_t        I4(unsigned char *p) {int32_t        u; memcpy(&u,p,4); return u;}
-static int16_t        I2(unsigned char *p) {int16_t        i; memcpy(&i,p,2); return i;}
+static uint16_t       U2(uint8_t *p) {uint16_t       u; memcpy(&u,p,2); return u;}
+static uint32_t       U4(uint8_t *p) {uint32_t       u; memcpy(&u,p,4); return u;}
+static float          R4(uint8_t *p) {float          r; memcpy(&r,p,4); return r;}
+static double         R8(uint8_t *p) {double         r; memcpy(&r,p,8); return r;}
+static int32_t        I4(uint8_t *p) {int32_t        u; memcpy(&u,p,4); return u;}
 
 /* checksum lookup table -----------------------------------------------------*/
 static const unsigned short CRC_16CCIT_LookUp[256] = {
@@ -512,12 +510,14 @@ static int decode_measepoch(raw_t *raw)
             p += len1 + len2*n2; /* skip block (and its sub-blocks)*/
             continue;
         }
-        if (!(sat = svid2sat(svid))) {
+        sat = svid2sat(svid);
+        if (!sat) {
             trace(3, "sbf measepoch svid error: svid=%d\n", svid);
             p += len1 + len2*n2; /* skip block (and its sub-blocks)*/
             continue;
         }
-        if ((idx = sig2idx(sat, sig, raw->opt, &code)) < 0) {
+        idx = sig2idx(sat, sig, raw->opt, &code);
+        if (idx < 0) {
             trace(2, "sbf measepoch sig error: sat=%d sig=%d\n", sat, sig);
             p+= len1 + len2*n2;  /* skip block (and its sub-blocks)*/
             continue;
@@ -629,7 +629,7 @@ static int decode_gpsrawcanav(raw_t *raw, int sys){
      * To debug the problem an understanding of the whole RTK code is needed
      */
 
-    uint8_t *p = (raw->buff)+6, id;
+    uint8_t *p = raw->buff+6, id;
     eph_t eph = {0};
     int sat, svid, prn, ret;
     uint8_t _buf[30] = {0};
@@ -644,7 +644,8 @@ static int decode_gpsrawcanav(raw_t *raw, int sys){
 
     /* get GPS satellite number */
     svid = U1(p+8);
-    if (!(sat = svid2sat(svid)) || satsys(sat, &prn) != sys) {
+    sat = svid2sat(svid);
+    if (!sat || satsys(sat, &prn) != sys) {
         trace(2, "sbf rawca svid error: sys=%d svid=%d\n", sys, svid);
         return -1;
     }
@@ -676,13 +677,14 @@ static int decode_gpsrawcanav(raw_t *raw, int sys){
 
     /* Now that we have a classic subframe we call the generic function */
     id = getbitu(_buf, 43, 3); /* get subframe id */
-    if ((id<1) || (id>5)) {
+    if (id<1 || id>5) {
         trace(2, "sbf rawca subframe id error: sys=%d prn=%d id=%d\n", sys, prn, id);
         return -1;
     }
 
     memcpy(raw->subfrm[sat-1]+(id-1)*30, _buf, 30);
 
+    /* TODO decode_frame returns 1 or 0 */
     if (decode_frame(raw->subfrm[sat-1]   , &eph, NULL, NULL, NULL) == 1 &&
         decode_frame(raw->subfrm[sat-1]+30, &eph, NULL, NULL, NULL) == 2 &&
         decode_frame(raw->subfrm[sat-1]+60, &eph, NULL, NULL, NULL) == 3) {
@@ -724,7 +726,8 @@ static int decode_glorawcanav(raw_t *raw){
         return -1;
     }
     svid = U1(p);
-    if (!(sat=svid2sat(svid)) || satsys(sat,&prn)!=SYS_GLO) {
+    sat=svid2sat(svid);
+    if (!sat || satsys(sat,&prn)!=SYS_GLO) {
         trace(3, "sbf glorawca svid error: svid=%d\n", svid);
         return (svid==62) ? 0 : -1; /* svid=62: slot unknown */
     }
@@ -790,7 +793,8 @@ static int decode_galrawfnav(raw_t *raw)
     svid = U1(p);
     src  = U1(p+3) & 0x1f;
 
-    if (!(sat=svid2sat(svid)) || satsys(sat,&prn)!=SYS_GAL) {
+    sat=svid2sat(svid);
+    if (!sat || satsys(sat,&prn)!=SYS_GAL) {
         trace(2, "sbf galrawfnav svid error: svid=%d src=%d\n", svid, src);
         return -1;
     }
@@ -859,7 +863,8 @@ static int decode_galrawinav(raw_t *raw){
     svid = U1(p);
     src  = U1(p+3) & 0x1f;
 
-    if (!(sat=svid2sat(svid)) || satsys(sat, &prn)!=SYS_GAL) {
+    sat=svid2sat(svid);
+    if (!sat || satsys(sat, &prn)!=SYS_GAL) {
         trace(2, "sbf galrawinav svid error: svid=%d src=%d\n", svid, src);
         return -1;
     }
@@ -934,7 +939,8 @@ static int decode_georaw(raw_t *raw){
     }
 
     svid = U1(p);
-    if (!(sat=svid2sat(svid)) || satsys(sat,&prn)!=SYS_SBS) {
+    sat=svid2sat(svid);
+    if (!sat || satsys(sat,&prn)!=SYS_SBS) {
         trace(2, "sbf georawl1 svid error: svid=%d\n", svid);
         return -1;
     }
@@ -969,7 +975,8 @@ static int decode_cmpraw(raw_t *raw){
         return -1;
     }
     svid = U1(p);
-    if (!(sat=svid2sat(svid)) || satsys(sat, &prn)!=SYS_CMP) {
+    sat=svid2sat(svid);
+    if (!sat || satsys(sat, &prn)!=SYS_CMP) {
         trace(2, "sbf cmpraw svid error: svid=%d\n", svid);
         return -1;
     }
@@ -1040,7 +1047,8 @@ static int decode_navicraw(raw_t *raw)
         return -1;
     }
     svid = U1(p);
-    if (!(sat=svid2sat(svid)) || satsys(sat,&prn)!=SYS_IRN) {
+    sat=svid2sat(svid);
+    if (!sat || satsys(sat,&prn)!=SYS_IRN) {
         trace(2, "sbf navicraw svid error: svid=%d\n", svid);
         return -1;
     }
@@ -1094,7 +1102,7 @@ static int decode_navicraw(raw_t *raw)
 /* decode SBF nav message for GPS (navigation data) --------------------------*/
 static int decode_gpsnav(raw_t *raw)
 {
-    uint8_t *p = (raw->buff)+8;                 /* points at TOW location */
+    uint8_t *p = raw->buff+8;                 /* points at TOW location */
     eph_t eph = {0};
     uint32_t tocs;
     uint8_t prn, sat, iode3;
@@ -1102,7 +1110,7 @@ static int decode_gpsnav(raw_t *raw)
 
     trace(4, "SBF decode_gpsnav: len=%d\n", raw->len);
 
-    if ((raw->len) < 140) {
+    if (raw->len < 140) {
         trace(2, "SBF decode_gpsnav frame length error: len=%d\n", raw->len);
         return -1;
     }
@@ -1112,7 +1120,7 @@ static int decode_gpsnav(raw_t *raw)
 
     if (sat == 0) return -1;
 
-    if (!((prn>=1) && (prn<=37))){
+    if (!(prn>=1 && prn<=37)){
         trace(2, "SBF decode_gpsnav prn error: sat=%d\n", prn);
         return -1;
     }
@@ -1177,7 +1185,7 @@ static int decode_gpsnav(raw_t *raw)
 /* decode SBF gpsalm --------------------------------------------------------*/
 static int decode_gpsalm(raw_t *raw)
 {
-    uint8_t *p = (raw->buff)+8;                 /* points at TOW location */
+    uint8_t *p = raw->buff+8;                 /* points at TOW location */
     alm_t alm;
     uint16_t week;
 
@@ -1222,7 +1230,7 @@ static int decode_gpsalm(raw_t *raw)
 
 /* decode SBF gpsion --------------------------------------------------------*/
 static int decode_gpsion(raw_t *raw){
-    uint8_t *p = (raw->buff)+8;            /* points at TOW location */
+    uint8_t *p = raw->buff+8;            /* points at TOW location */
 
     trace(4,"SBF decode_gpsion: len=%d\n", raw->len);
 
@@ -1251,7 +1259,7 @@ static int decode_gpsion(raw_t *raw){
 /* decode SBF gpsutc --------------------------------------------------------*/
 static int decode_gpsutc(raw_t *raw)
 {
-    uint8_t *p = (raw->buff)+8;                 /* points at TOW location */
+    uint8_t *p = raw->buff+8;                 /* points at TOW location */
     uint16_t week;
 
     trace(4,"SBF decode_gpsutc: len=%d\n", raw->len);
@@ -1283,7 +1291,7 @@ static int decode_gpsutc(raw_t *raw)
 /* decode SBF cnav message for GPS (navigation data) --------------------------*/
 static int decode_gpscnav(raw_t *raw)
 {
-    uint8_t *p = (raw->buff)+8;                 /* points at TOW location */
+    uint8_t *p = raw->buff+8;                 /* points at TOW location */
     eph_t eph = {0};
     uint32_t tocs;
     uint8_t prn, sat;
@@ -1291,7 +1299,7 @@ static int decode_gpscnav(raw_t *raw)
 
     trace(4, "SBF decode_gpscnav: len=%d\n", raw->len);
 
-    if ((raw->len) < 172) {
+    if (raw->len < 172) {
         trace(2, "SBF decode_gpscnav frame length error: len=%d\n", raw->len);
         return -1;
     }
@@ -1301,7 +1309,7 @@ static int decode_gpscnav(raw_t *raw)
 
     if (sat == 0) return -1;
 
-    if (!((prn>=1) && (prn<=37))){
+    if (!(prn>=1 && prn<=37)){
         trace(2, "SBF decode_gpscnav prn error: sat=%d\n", prn);
         return -1;
     }
@@ -1376,7 +1384,7 @@ static int decode_gpscnav(raw_t *raw)
 /* decode SBF nav message for glonass (navigation data) ----------------------*/
 static int decode_glonav(raw_t *raw){
 
-    uint8_t *p = (raw->buff)+8;                 /* points at TOW location */
+    uint8_t *p = raw->buff+8;                 /* points at TOW location */
     geph_t eph = {0};
     int prn, sat;
     uint16_t week, week_toes;
@@ -1384,7 +1392,7 @@ static int decode_glonav(raw_t *raw){
 
     trace(4, "SBF decode_glonav: len=%d\n", raw->len);
 
-    if ((raw->len) < 96) {
+    if (raw->len < 96) {
         trace(2, "SBF decode_glonav frame length error: len=%d\n", raw->len);
         return -1;
     }
@@ -1393,7 +1401,7 @@ static int decode_glonav(raw_t *raw){
 
     if (sat == 0) return -1;
 
-    if (!((prn>=1) && (prn<=24))){
+    if (!(prn>=1 && prn<=24)){
         trace(2, "SBF decode_glonav prn error: sat=%d\n", prn);
         return -1;
     }
@@ -1449,7 +1457,7 @@ static int decode_glonav(raw_t *raw){
 /* decode SBF gloutc --------------------------------------------------------*/
 static int decode_gloutc(raw_t *raw)
 {
-    uint8_t *p = (raw->buff)+8;                 /* points at TOW location */
+    uint8_t *p = raw->buff+8;                 /* points at TOW location */
 
     trace(4, "SBF decode_gloutc: len=%d\n", raw->len);
 
@@ -1482,7 +1490,7 @@ static int decode_gloutc(raw_t *raw)
 /* decode SBF nav message for Galileo (navigation data) --------------------------*/
 static int decode_galnav(raw_t *raw){
 
-    uint8_t *p = (raw->buff)+8;                 /* points at TOW location */
+    uint8_t *p = raw->buff+8;                 /* points at TOW location */
     eph_t eph = {0};
     uint32_t tocs;
     int prn, sat;
@@ -1491,7 +1499,7 @@ static int decode_galnav(raw_t *raw){
 
     trace(4, "SBF decode_galnav: len=%d\n", raw->len);
 
-    if ((raw->len) < 149) {
+    if (raw->len < 149) {
         trace(2, "SBF decode_galnav frame length error: len=%d\n", raw->len);
         return -1;
     }
@@ -1501,7 +1509,7 @@ static int decode_galnav(raw_t *raw){
 
     if (sat == 0) return -1;
 
-    if (!((prn>=1) && (prn<=36))){
+    if (!(prn>=1 && prn<=36)){
         trace(2, "SBF decode_galnav prn error: sat=%d\n", prn);
         return -1;
     }
@@ -1564,8 +1572,6 @@ static int decode_galnav(raw_t *raw){
         if (eph.iode == raw->nav.eph[sat-1].iode) return 0;
     }
 
-    if (sat == 0) return -1;
-
     eph.sat = sat;
     raw->nav.eph[sat-1] = eph;
     raw->ephsat = sat;
@@ -1576,7 +1582,7 @@ static int decode_galnav(raw_t *raw){
 /* decode SBF galalm --------------------------------------------------------*/
 static int decode_galalm(raw_t *raw)
 {
-    uint8_t *p = (raw->buff)+8;                 /* points at TOW location */
+    uint8_t *p = raw->buff+8;                 /* points at TOW location */
     alm_t alm;
     uint16_t week, health;
 
@@ -1623,7 +1629,7 @@ static int decode_galalm(raw_t *raw)
 
 /* decode SBF galion --------------------------------------------------------*/
 static int decode_galion(raw_t *raw){
-    uint8_t *p = (raw->buff)+8;            /* points at TOW location */
+    uint8_t *p = raw->buff+8;            /* points at TOW location */
 
     trace(4, "SBF decode_galion: len=%d\n", raw->len);
 
@@ -1649,7 +1655,7 @@ static int decode_galion(raw_t *raw){
 /* decode SBF galutc --------------------------------------------------------*/
 static int decode_galutc(raw_t *raw)
 {
-    uint8_t *p = (raw->buff)+8;                 /* points at TOW location */
+    uint8_t *p = raw->buff+8;                 /* points at TOW location */
     uint16_t week;
 
     trace(4, "SBF decode_galutc: len=%d\n", raw->len);
@@ -1683,8 +1689,8 @@ static int decode_galutc(raw_t *raw)
 /* decode SBF nav message for Compass/Beidou (navigation data) --------------------------*/
 static int decode_cmpnav(raw_t *raw)
 {
-    uint8_t *p = (raw->buff)+8;                 /* points at TOW location */
-    //uint8_t *puiTmp = (raw->buff)+6;
+    uint8_t *p = raw->buff+8;                 /* points at TOW location */
+    //uint8_t *puiTmp = raw->buff+6;
     eph_t eph = {0};
     uint32_t tocs;
     int prn, sat;
@@ -1692,7 +1698,7 @@ static int decode_cmpnav(raw_t *raw)
 
     trace(4, "SBF decode_cmpnav: len=%d\n", raw->len);
 
-    if ((raw->len) < 140) {
+    if (raw->len < 140) {
         trace(2, "SBF decode_cmpnav frame length error: len=%d\n", raw->len);
         return -1;
     }
@@ -1702,7 +1708,7 @@ static int decode_cmpnav(raw_t *raw)
 
     if (sat == 0) return -1;
 
-    if (!((prn >= 1) && (prn <= 32))){
+    if (!(prn >= 1 && prn <= 32)){
         trace(2, "SBF decode_cmpnav prn error: sat=%d\n", prn);
         return -1;
     }
@@ -1753,8 +1759,6 @@ static int decode_cmpnav(raw_t *raw)
         if (eph.iode == raw->nav.eph[sat-1].iode) return 0;
     }
 
-    if (sat == 0) return -1;
-
     eph.sat = sat;
     raw->nav.eph[sat-1] = eph;
     raw->ephsat = sat;
@@ -1765,7 +1769,7 @@ static int decode_cmpnav(raw_t *raw)
 /* decode SBF cmpalm --------------------------------------------------------*/
 static int decode_cmpalm(raw_t *raw)
 {
-    uint8_t *p = (raw->buff)+8;                 /* points at TOW location */
+    uint8_t *p = raw->buff+8;                 /* points at TOW location */
     alm_t alm;
     uint16_t week;
 
@@ -1809,7 +1813,7 @@ static int decode_cmpalm(raw_t *raw)
 
 /* decode SBF cmpion --------------------------------------------------------*/
 static int decode_cmpion(raw_t *raw){
-    uint8_t *p = (raw->buff)+8;            /* points at TOW location */
+    uint8_t *p = raw->buff+8;            /* points at TOW location */
 
     trace(4, "SBF decode_cmpion: len=%d\n", raw->len);
 
@@ -1839,7 +1843,7 @@ static int decode_cmpion(raw_t *raw){
 /* decode SBF cmputc --------------------------------------------------------*/
 static int decode_cmputc(raw_t *raw)
 {
-    uint8_t *p = (raw->buff)+8;                 /* points at TOW location */
+    uint8_t *p = raw->buff+8;                 /* points at TOW location */
     uint16_t week;
 
     trace(4, "SBF decode_cmputc: len=%d\n", raw->len);
@@ -1876,7 +1880,7 @@ static int decode_cmputc(raw_t *raw)
 /* decode SBF nav message for QZSS (navigation data) --------------------------*/
 static int decode_qzssnav(raw_t *raw){
 
-    uint8_t *puiTmp = (raw->buff)+6;
+    uint8_t *puiTmp = raw->buff+6;
     eph_t eph={0};
     double toc;
     int prn, sat;
@@ -1884,7 +1888,7 @@ static int decode_qzssnav(raw_t *raw){
 
     trace(4,"SBF decode_qzssnav: len=%d\n",raw->len);
 
-    if ((raw->len)<140) {
+    if (raw->len<140) {
         trace(2,"SBF decode_qzssnav frame length error: len=%d\n",raw->len);
         return -1;
     }
@@ -1894,7 +1898,7 @@ static int decode_qzssnav(raw_t *raw){
 
     if (sat == 0) return -1;
 
-    if (!((prn>=1)&&(prn<=7))){
+    if (!(prn>=1 && prn<=7)){
         trace(2,"SBF decode_qzssnav prn error: sat=%d\n",prn);
         return -1;
     }
@@ -1905,7 +1909,7 @@ static int decode_qzssnav(raw_t *raw){
     eph.iodc   = U2(puiTmp + 16);
     eph.iode   = U1(puiTmp + 18);
     eph.fit    = U1(puiTmp + 20);
-    if (R4(p + 22) != -2.e10
+    if (R4(p + 22) != -2.e10)
         eph.tgd[0] = R4(puiTmp + 22);
     toc        = U4(puiTmp + 26);
     eph.f2     = R4(puiTmp + 30);
@@ -1943,8 +1947,6 @@ static int decode_qzssnav(raw_t *raw){
         if (eph.iode==raw->nav.eph[sat-1].iode) return 0;
     }
 
-    if (sat == 0) return -1;
-
     eph.sat=sat;
     raw->nav.eph[sat-1]=eph;
     raw->ephsat=sat;
@@ -1958,7 +1960,7 @@ static int decode_qzssnav(raw_t *raw){
 /* decode SBF nav message for sbas (navigation data) ----------------------*/
 static int decode_geonav(raw_t *raw)
 {
-    uint8_t *p = (raw->buff)+8;                 /* points at TOW location */
+    uint8_t *p = raw->buff+8;                 /* points at TOW location */
     seph_t eph = {0};
     int prn, sat;
     uint16_t week;
@@ -1966,14 +1968,14 @@ static int decode_geonav(raw_t *raw)
 
     trace(4, "SBF decode_geonav: len=%d\n", raw->len);
 
-    if ((raw->len) < 104) {
+    if (raw->len < 104) {
         trace(2, "SBF decode_geonav frame length error: len=%d\n", raw->len);
         return -1;
     }
     prn = U1(p+6);
     sat = satno(SYS_SBS, prn);
 
-    if (!((prn>=120) && (prn<=140))){
+    if (!(prn>=120 && prn<=140)){
         trace(2, "SBF decode_geonav prn error: sat=%d\n", prn);
         return -1;
     }
@@ -2034,7 +2036,7 @@ static int decode_sbsfast(raw_t *raw)
     gtime_t t0_old;
     uint32_t tow;
     uint16_t week;
-    uint8_t *p = (raw->buff)+8;
+    uint8_t *p = raw->buff+8;
 
     trace(4, "SBF decode_sbsfast: len=%d\n", raw->len);
 
@@ -2065,7 +2067,7 @@ static int decode_sbsfast(raw_t *raw)
     sbCount = U1(p+10);
     sbLength = U1(p+11);
 
-    if ((type > 5) || (type == 1)) return -1;
+    if (type > 5 || type == 1) return -1;
 
     for (i=0; i<sbCount; i++) {
         j = U1(p+12+i*sbLength+1);
@@ -2096,7 +2098,7 @@ static int decode_sbsfast(raw_t *raw)
 static int decode_sbsprnmask(raw_t *raw)
 {
     int i, n, sat, prn;
-    uint8_t *p = (raw->buff)+8;
+    uint8_t *p = raw->buff+8;
 
     trace(4, "SBF decode_sbsprnmask:\n");
 
@@ -2140,7 +2142,7 @@ static int decode_sbsprnmask(raw_t *raw)
 static int decode_sbsintegriy(raw_t *raw)
 {
     int i, prn;
-    uint8_t *p = (raw->buff)+6;
+    uint8_t *p = raw->buff+6;
     uint8_t iodf[4], udre;
 
 
@@ -2164,7 +2166,8 @@ static int decode_sbsintegriy(raw_t *raw)
     for (i=0; i<4; i++) {
         iodf[i] = U1(p+10+i);
     }
-    for (i=0; i<raw->nav.sbssat.nsat && i<MAXSAT; i++) {
+    /* Limited to 51 to avoid overflow of iodf[]. TODO check the logic */
+    for (i=0; i<raw->nav.sbssat.nsat && i<51; i++) {
         if (raw->nav.sbssat.sat[i].fcorr.iodf != iodf[i/13]) continue;
         udre = U1(p+14+i);
         raw->nav.sbssat.sat[i].fcorr.udre = udre;
@@ -2177,7 +2180,7 @@ static int decode_sbsintegriy(raw_t *raw)
 static int decode_sbsfastcorrdegr(raw_t *raw)
 {
     int i,prn;
-    uint8_t *p=(raw->buff)+6;
+    uint8_t *p=raw->buff+6;
 
 
     trace(4,"SBF decode_sbsfastcorrdegr:\n");
@@ -2212,7 +2215,7 @@ static int decode_sbsionodelay(raw_t *raw)
 {
     int i, j, give, prn;
     int band;
-    uint8_t *p = (raw->buff)+8, sbLength, count;
+    uint8_t *p = raw->buff+8, sbLength, count;
     uint16_t week;
     uint32_t tow;
 
@@ -2272,7 +2275,7 @@ static int decode_sbsigpmask(raw_t *raw) /* TODO: verify this function */
     int i, j, n, m, prn;
     uint8_t band;
 
-    uint8_t *p = (raw->buff)+8;
+    uint8_t *p = raw->buff+8;
 
     trace(4, "SBF decode_sbsigpmask:\n");
 
@@ -2294,7 +2297,7 @@ static int decode_sbsigpmask(raw_t *raw) /* TODO: verify this function */
     band = U1(p+8);
 
     if      (band <= 8) {b = igpband1[band]; m = 8;}
-    else if (9<=band && band<=10) {b = igpband2[band-9]; m = 5;}
+    else if (band <= 10) {b = igpband2[band-9]; m = 5;}
     else return 0;
 
     raw->nav.sbsion[band].iodi = U1(p+9);
@@ -2319,7 +2322,7 @@ static int decode_sbsigpmask(raw_t *raw) /* TODO: verify this function */
 static int decode_sbslongcorrh(raw_t* raw)
 {
     int prn, i;
-    uint8_t *p = (raw->buff)+8;
+    uint8_t *p = raw->buff+8;
     uint8_t count, sbLength, no;
     uint32_t tow;
     uint16_t week;
@@ -2709,7 +2712,8 @@ extern int input_sbff(raw_t *raw, FILE *fp)
     /* go to the beginning of the first block */
     if (raw->nbyte == 0) {
         for (i=0;;i++) {
-            if ((data=fgetc(fp)) == EOF) return -2;
+            data=fgetc(fp);
+            if (data == EOF) return -2;
             if (sync_sbf(raw->buff, (unsigned char)data)) break;
             if (i >= MAXRAWLEN) return 0;
         }
