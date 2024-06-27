@@ -522,7 +522,7 @@ static int sigPriority(int sys, int idx, const char *opt, uint8_t *code)
         if (strstr(opt, "-CL1P") && idx==0) return (*code == CODE_L1P) ? 0 : -1;
         if (*code == CODE_L1P) return (nex<1) ? -1 : NFREQ;
     }
-    return (idx < NFREQ) ? idx : -1;
+    return (idx < NFREQ + nex) ? idx : -1;
 }
 
 /* signal number to freq-index and code --------------------------------------*/
@@ -659,13 +659,13 @@ static int flushobuf(raw_t *raw) {
 
 /* decode SBF measurements message (observables) -----------------------------*/
 /*
- * this is the most importan block in the SBF format. It it contains all code
+ * This is the most important block in the SBF format. It it contains all code
  * pseudoranges and carrier phase measurements of all received satellites.
- * This block is made of one Type1 sub-block per santellite followed by, if any,
+ * This block is made of one Type1 sub-block per satellite followed by, if any,
  * a certain number of Type2 sub-blocks. SB2Num defines how many Type2
  * sub-blocks there are inside its Type1 sub-block.
- * Type1 subplock contains code pseudorange and carrier phase range of the first
- * decoded sygnal defined by signType1, this is typically L1 signal.
+ * Type1 subblock contains code pseudorange and carrier phase range of the first
+ * decoded signal defined by signType1, this is typically L1 signal.
  * Any following Type2 sub-block (if there are any) contains signType2 signal
  * information, typically L2 signal. Inside Type2 sub-blocks, information is
  * expressed as difference from the data in signType1 sub-block. This makes the
@@ -1486,12 +1486,12 @@ int decode_meas3CN(raw_t* raw)
 static int decode_gpsionutc(raw_t *raw, int sat)
 {
     double ion[8], utc[8];
-    int sys = satsys(sat, NULL);
 
     if (!decode_frame(raw->subfrm[sat-1], NULL, NULL, ion, utc)) return 0;
 
     adj_utcweek(raw->time, &utc[3]);
     adj_utcweek(raw->time, &utc[5]);
+    int sys = satsys(sat, NULL);
     if (sys == SYS_QZS) {
         matcpy(raw->nav.ion_qzs, ion, 8, 1);
         matcpy(raw->nav.utc_qzs, utc, 8, 1);
@@ -1499,7 +1499,7 @@ static int decode_gpsionutc(raw_t *raw, int sat)
         matcpy(raw->nav.ion_gps, ion, 8, 1);
         matcpy(raw->nav.utc_gps, utc, 8, 1);
     }
-    return 1;
+    return 9;
 }
 
 
@@ -1566,10 +1566,9 @@ static int decode_gpsrawcanav(raw_t *raw, int sys){
 
     memcpy(raw->subfrm[sat-1]+(id-1)*30, _buf, 30);
 
-    /* TODO decode_frame returns 1 or 0 */
-    if (decode_frame(raw->subfrm[sat-1]   , &eph, NULL, NULL, NULL) == 0 &&
-        decode_frame(raw->subfrm[sat-1]+30, &eph, NULL, NULL, NULL) == 0 &&
-        decode_frame(raw->subfrm[sat-1]+60, &eph, NULL, NULL, NULL) == 0) {
+    if (id == 3) {
+        if (!decode_frame(raw->subfrm[sat-1], &eph, NULL, NULL, NULL))
+            return 0;
 
         if (!strstr(raw->opt, "-EPHALL")) {
             if (eph.iode == raw->nav.eph[sat-1].iode &&
@@ -1586,7 +1585,7 @@ static int decode_gpsrawcanav(raw_t *raw, int sys){
     }
     if (id==4 || id==5) {
         ret = decode_gpsionutc(raw, sat);
-        memset(raw->subfrm[sat-1]+id*30, 0, 30);
+        memset(raw->subfrm[sat-1]+(id-1)*30, 0, 30);
 
         return ret;
     }
@@ -2846,7 +2845,7 @@ static int decode_cmpcnav2(raw_t *raw, uint32_t sbf_id)
 /* decode SBF cmpalm --------------------------------------------------------*/
 static int decode_cmpalm(raw_t *raw)
 {
-    uint8_t *p = raw->buff+8;                 /* points at TOW location */
+    uint8_t *p = raw->buff + 8;                 /* points at TOW location */
     alm_t alm;
     uint16_t week;
 
@@ -2956,7 +2955,7 @@ static int decode_cmputc(raw_t *raw)
 
 /* decode SBF nav message for QZSS (navigation data) --------------------------*/
 static int decode_qzssnav(raw_t *raw){
-    uint8_t *puiTmp = (raw->buff)+8;
+    uint8_t *puiTmp = raw->buff + 8;
     eph_t eph = {0};
     double toc;
     int prn, sat;
