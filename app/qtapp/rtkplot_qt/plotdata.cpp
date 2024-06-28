@@ -224,6 +224,8 @@ int Plot::readObservationRinex(const QStringList &files, obs_t *obs, nav_t *nav,
     for (i = 0; i < files.count(); i++) {
         showMessage(tr("Reading observation data... %1").arg(QDir::toNativeSeparators(files.at(i))));
         qApp->processEvents();
+        if (files.at(i).isEmpty())
+            continue;
 
         if (readrnxt(qPrintable(QDir::toNativeSeparators(files.at(i))), 1, ts, te, tint, opt, obs, nav, sta) < 0) {
             showMessage(tr("Error: insufficient memory"));

@@ -412,15 +412,19 @@ void  MainForm::dropEvent(QDropEvent *event)
 // callback on button-plot --------------------------------------------------
 void MainForm::callRtkPlot()
 {
+    QDir appDir = QDir(QCoreApplication::applicationDirPath());
     QString file = filePath(ui->cBOutputFile->currentText());
-    QString cmd[] = {"rtkplot_qt", "../rtkplot_qt/rtkplot_qt", "../../../bin/rtkplot_qt"};
+    QStringList cmds = {"rtkplot_qt", "../rtkplot_qt/rtkplot_qt", "../../../bin/rtkplot_qt"};
     QStringList opts;
 
     opts += file;
 
-    if (!execCommand(cmd[0], opts, 1) && !execCommand(cmd[1], opts, 1) && !execCommand(cmd[2], opts, 1)) {
-        showMessage("Error : rtkplot_qt execution failed");
-    }
+    for (const auto& path: cmds)
+        if (execCommand(appDir.filePath(path), opts, 1)) {
+            return;
+        }
+
+    showMessage("Error: rtkplot_qt execution failed");
 }
 // --------------------------------------------------------------------------
 void MainForm::setProgress(int value)
@@ -651,8 +655,9 @@ void MainForm::viewOutputFileTrace()
 // callback on button-inputplot-1 -------------------------------------------
 void MainForm::plotInputFile1()
 {
+    QDir appDir = QDir(QCoreApplication::applicationDirPath());
     QString files[6];
-    QString cmd[] = {"rtkplot_qt", "../rtkplot_qt/rtkplot_qt", "../../../bin/rtkplot_qt"};
+    QStringList cmds = {"rtkplot_qt", "../rtkplot_qt/rtkplot_qt", "../../../bin/rtkplot_qt"};
     QStringList opts;
     QString navfile;
 
@@ -668,15 +673,19 @@ void MainForm::plotInputFile1()
 
     opts << "-r" << files[0] << files[2] << files[3] << files[4] << files[5];
 
-    if (!execCommand(cmd[0], opts, 1) && !execCommand(cmd[1], opts, 1) && !execCommand(cmd[2], opts, 1)) {
-        showMessage(tr("Error: rtkplot_qt execution failed"));
-    }
+    for (const auto& path: cmds)
+        if (execCommand(appDir.filePath(path), opts, 1)) {
+            return;
+        }
+
+    showMessage(tr("Error: rtkplot_qt execution failed"));
 }
 // callback on button-inputplot-2 -------------------------------------------
 void MainForm::plotInputFile2()
 {
+    QDir appDir = QDir(QCoreApplication::applicationDirPath());
     QString files[6];
-    QString cmd[] = {"rtkplot_qt", "../rtkplot_qt/rtkplot_qt", "../../../bin/rtkplot_qt"};
+    QStringList cmds = {"rtkplot_qt", "../rtkplot_qt/rtkplot_qt", "../../../bin/rtkplot_qt"};
     QStringList opts;
     QString navfile;
 
@@ -688,13 +697,16 @@ void MainForm::plotInputFile2()
     files[5] = filePath(ui->cBInputFile6->currentText());
 
     if ((files[2].isEmpty()) && (obsToNav(files[0], navfile)))
-        files[2]=navfile;
+        files[2] = navfile;
 
     opts << "-r" << files[1] << files[2] << files[3] << files[4] << files[5];
 
-    if (!execCommand(cmd[0], opts, 1) && !execCommand(cmd[1], opts, 1) && !execCommand(cmd[2], opts, 1)) {
-        showMessage(tr("Error: rtkplot_qt execution failed"));
-    }
+    for (const auto& path: cmds)
+        if (execCommand(appDir.filePath(path), opts, 1)) {
+            return;
+        }
+
+    showMessage(tr("Error: rtkplot_qt execution failed"));
 }
 // callback on button-output-directory --------------------------------------
 void MainForm::selectOutputDirectory()

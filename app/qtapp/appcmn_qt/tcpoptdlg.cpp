@@ -5,6 +5,7 @@
 
 #include <QProcess>
 #include <QUrl>
+#include <QDir>
 
 #include "tcpoptdlg.h"
 #include "mntpoptdlg.h"
@@ -223,11 +224,17 @@ void TcpOptDialog::btnNtripClicked()
 //---------------------------------------------------------------------------
 void TcpOptDialog::btnBrowseClicked()
 {
+    QStringList cmds = {"srctblbrows_qt", "../../../bin/srctblbrows_qt" "../srctblbrows_qt/srctblbrows_qt"};
+    QDir appDir = QDir(QCoreApplication::applicationDirPath());
     QString addrText = ui->cBAddress->currentText();
     QString portText = ui->sBPort->text();
 
     if (!portText.isEmpty()) addrText += ":" + portText;
-    execCommand("srctblbrows_qt", QStringList(addrText), 1);
+
+    for (const auto& path: cmds)
+        if (execCommand(appDir.filePath(path), QStringList(addrText), 1)) {
+            return;
+        }
 }
 //---------------------------------------------------------------------------
 void TcpOptDialog::btnMountpointClicked()

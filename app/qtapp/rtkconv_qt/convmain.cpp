@@ -360,42 +360,52 @@ void MainWindow::callRtkPlot()
         ui->cBOutputFileEnable1, ui->cBOutputFileEnable2, ui->cBOutputFileEnable3, ui->cBOutputFileEnable4,
         ui->cBOutputFileEnable5, ui->cBOutputFileEnable6, ui->cBOutputFileEnable7, ui->cBOutputFileEnable8
     };
-    QString cmd[] = {"rtkplot_qt", "..\\..\\..\\bin\\rtkplot_qt", "..\\rtkplot_qt\\rtkplot_qt"};
+    QStringList cmds = {"rtkplot_qt", "../../../bin/rtkplot_qt", "../rtkplot_qt/rtkplot_qt"};
     QStringList opts;
+    QDir appDir = QDir(QCoreApplication::applicationDirPath());
 
-    opts << " -r";
+    opts << "-r";
 
     for (i = 0; i < 8; i++) ena[i] = cb[i]->isEnabled() && cb[i]->isChecked();
 
     for (i = 0; i < 8; i++)
-        if (ena[i]) opts << " \"" + repPath(file[i]) + "\"";
+        if (ena[i]) opts << repPath(file[i]);
 
     if (opts.size() == 1) return;
 
-    if (!execCommand(cmd[0], opts) && !execCommand(cmd[1], opts) && !execCommand(cmd[2], opts))
-        showMessage(tr("error : rtkplot_qt execution"));
+    for (const auto& path: cmds)
+        if (execCommand(appDir.filePath(path), opts)) {
+            return;
+        }
+
+    showMessage(tr("Error: Could not execute rtkplot_qt"));
 }
 // callback on button-post-proc ---------------------------------------------
 void MainWindow::callRtkPost()
 {
-    QString cmd[] = {commandPostExe, QString("..\\..\\..\\bin\\") + commandPostExe, QString("..\\rtkpost_qt\\") + commandPostExe};
+    QStringList cmds = {commandPostExe, QString("../../../bin/") + commandPostExe, QString("../rtkpost_qt/") + commandPostExe};
     QStringList opts;
+    QDir appDir = QDir(QCoreApplication::applicationDirPath());
 
     if (!ui->cBOutputFileEnable1->isChecked()) return;
 
-    opts << " -r \"" + ui->lEOutputFile1->text() + "\"";
-    opts << " -n \"\" -n \"\"";
+    opts << "-r" << ui->lEOutputFile1->text();
+    opts << "-n" << "" << "-n" << "";
 
     if (ui->cBOutputFileEnable9->isChecked())
-        opts << " -n \"" + ui->lEOutputFile9->text() + "\"";
+        opts << "-n" << ui->lEOutputFile9->text();
 
-    if (ui->cBTimeStart->isChecked()) opts << + " -ts " + ui->dateTimeStart->dateTime().toString("yyyy/MM/dd hh:mm:ss");
-    if (ui->cBTimeEnd->isChecked()) opts << " -te " + ui->dateTimeStop->dateTime().toString("yyyy/MM/dd hh:mm:ss");
-    if (ui->cBTimeInterval->isChecked()) opts << " -ti " + ui->comboTimeInterval->currentText();
-    if (ui->cBTimeUnit->isChecked()) opts << " -tu " + ui->cBTimeUnit->text();
+    if (ui->cBTimeStart->isChecked()) opts << + "-ts" << ui->dateTimeStart->dateTime().toString("yyyy/MM/dd hh:mm:ss");
+    if (ui->cBTimeEnd->isChecked()) opts << "-te" << ui->dateTimeStop->dateTime().toString("yyyy/MM/dd hh:mm:ss");
+    if (ui->cBTimeInterval->isChecked()) opts << "-ti" << ui->comboTimeInterval->currentText();
+    if (ui->cBTimeUnit->isChecked()) opts << "-tu" << ui->cBTimeUnit->text();
 
-    if (!execCommand(cmd[0], opts) && !execCommand(cmd[1], opts) && !execCommand(cmd[2], opts))
-        showMessage(tr("error : rtkpost_qt execution"));
+    for (const auto& path: cmds)
+        if (execCommand(appDir.filePath(path), opts)) {
+            return;
+        }
+
+    showMessage(tr("Error: Could not execute rtkpost_qt"));
 }
 // callback on button-options -----------------------------------------------
 void MainWindow::showOptions()
@@ -712,9 +722,9 @@ QString MainWindow::repPath(const QString &File)
     return QString(path);
 }
 // execute command ----------------------------------------------------------
-int MainWindow::execCommand(const QString &cmd, QStringList &opt)
+int MainWindow::execCommand(const QString &cmd, QStringList &opts)
 {
-    return QProcess::startDetached(cmd, opt);
+    return QProcess::startDetached(cmd, opts);
 }
 // update enable/disable of widgets -----------------------------------------
 void MainWindow::updateEnable()

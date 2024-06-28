@@ -442,7 +442,8 @@ void MainWindow::stopServer()
 // callback on button-plot --------------------------------------------------
 void MainWindow::showRtkPlot()
 {
-    QString cmd[] = {"rtkplot_qt", "..\\..\\..\\bin\\rtkplot_qt", "..\\rtkplot_qt\\rtkplot_qt"};
+    QDir appDir = QDir(QCoreApplication::applicationDirPath());
+    QStringList cmds = {"rtkplot_qt", "../../../bin/rtkplot_qt", "../rtkplot_qt/rtkplot_qt"};
     QStringList opts;
 
     trace(3, "showRtkPlot\n");
@@ -452,11 +453,15 @@ void MainWindow::showRtkPlot()
         return;
     }
 
-    opts << QString(" -p tcpcli://localhost:%1 -t \"%2 %3\"").arg(monitorPortOpen)
-                .arg(windowTitle(), QString(": %1").arg(PRGNAME));
+    opts << "-p" << QString("tcpcli://localhost:%1").arg(monitorPortOpen) << "-t" << QString("%1:  %2")
+                .arg(windowTitle(), PRGNAME);
 
-    if (!execCommand(cmd[0], opts, 1) && !execCommand(cmd[1], opts, 1) && !execCommand(cmd[2], opts, 1))
-        QMessageBox::critical(this, tr("Error"), tr("Error: rtkplot_qt could not be executed"));
+    for (const auto& path: cmds)
+        if (execCommand(appDir.filePath(path), opts, 1)) {
+            return;
+        }
+
+    QMessageBox::critical(this, tr("Error"), tr("Error: rtkplot_qt could not be executed"));
 }
 // callback on button-options -----------------------------------------------
 void MainWindow::showOptionsDialog()
