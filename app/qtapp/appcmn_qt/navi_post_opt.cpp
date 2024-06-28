@@ -128,10 +128,10 @@ OptDialog::OptDialog(QWidget *parent, int opts)
     regExDMSLat = QRegularExpression("^\\s*(?:(?<deg1>[-+]?90)[°\\s]\\s*(?<min1>0{1,2})['\\s]\\s*(?<sec1>0{1,2}(?:[\\.,]0*)?)\"?\\s*)|(?:(?<deg2>[-+]?(?:[1-8][0-9]|[0-9]))[°\\s]\\s*(?<min2>(?:[0-5][0-9]|[0-9]))['\\s]\\s*(?<sec2>(?:[0-5][0-9]|[0-9])(?:[\\.,][0-9]*)?)\"?)\\s*$");
     regExDMSLon = QRegularExpression("^\\s*(?:(?<deg1>[-+]?180)[°\\s]\\s*(?<min1>0{1,2})['\\s]\\s*(?<sec1>0{1,2}(?:[\\.,]0*)?)\"?\\s*)|(?:(?<deg2>[-+]?(?:1[0-7][0-9]|[0-9][0-9]|[0-9]))[°\\s]\\s*(?<min2>(?:[0-5][0-9]|[0-9]))['\\s]\\s*(?<sec2>(?:[0-5][0-9]|[0-9])(?:[\\.,][0-9]*)?)\"?)\\s*$");
 
-    regExLat = QRegularExpression("^\\s*((?:\\+|-)?(?:90(?:(?:[\\.,]0*)?)|(?:[0-9]|[1-8][0-9])(?:(?:[\\.,][0-9]*)?)))(?:\\s+°)?\\s*$");
-    regExLon = QRegularExpression("^\\s*((\\+|-)?(?:180(?:(?:[\\.,]0*)?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:[\\.,][0-9]*)?)))(?:\\s+°)?\\s*$");
+    regExLat = QRegularExpression("^\\s*((?:\\+|-)?(?:90(?:(?:[\\.,]0*)?)|(?:[0-9]|[1-8][0-9])(?:(?:[\\.,][0-9]*)?)))(?:\\s*°)?\\s*$");
+    regExLon = QRegularExpression("^\\s*((\\+|-)?(?:180(?:(?:[\\.,]0*)?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:[\\.,][0-9]*)?)))(?:\\s*°)?\\s*$");
 
-    regExDistance = QRegularExpression("^\\s*([-+]?[0-9]+(?:[\\.,][0-9]*)?)(?:\\s*m)?\\s*?$");
+    regExDistance = QRegularExpression("^\\s*([-+]?[0-9]+(?:[\\.,][0-9]*)+)(?:\\s*m)?\\s*?$");
 
     processingOptions = prcopt_default;
     solutionOptions = solopt_default;
@@ -1783,12 +1783,12 @@ void OptDialog::getPosition(int type, QLineEdit **edit, double *pos)
     if (type == 1) { /* lat/lon/height dms/m */
         auto lat = regExDMSLat.match(edit[0]->text());
         if (lat.hasMatch()) {
-          double deg1 = lat.captured("deg1").toDouble();
-          double min1 = lat.captured("min1").toDouble();
-          double sec1 = lat.captured("sec1").toDouble();
-          double deg2 = lat.captured("deg2").toDouble();
-          double min2 = lat.captured("min2").toDouble();
-          double sec2 = lat.captured("sec2").toDouble();
+          double deg1 = QLocale::system().toDouble(lat.captured("deg1"));
+          double min1 = QLocale::system().toDouble(lat.captured("min1"));
+          double sec1 = QLocale::system().toDouble(lat.captured("sec1"));
+          double deg2 = QLocale::system().toDouble(lat.captured("deg2"));
+          double min2 = QLocale::system().toDouble(lat.captured("min2"));
+          double sec2 = QLocale::system().toDouble(lat.captured("sec2"));
           if (fabs(fabs(deg1) - 90) < 1e-12 && fabs(min1) < 1e-12 && fabs(sec1) < 1e-12)
             p[0] = (deg1 < 0 ? -1 : 1) * fabs(deg1) * D2R;
           else
@@ -1798,12 +1798,12 @@ void OptDialog::getPosition(int type, QLineEdit **edit, double *pos)
 
         auto lon = regExDMSLon.match(edit[1]->text());
         if (lon.hasMatch()) {
-          double deg1 = lon.captured("deg1").toDouble();
-          double min1 = lon.captured("min1").toDouble();
-          double sec1 = lon.captured("sec1").toDouble();
-          double deg2 = lon.captured("deg2").toDouble();
-          double min2 = lon.captured("min2").toDouble();
-          double sec2 = lon.captured("sec2").toDouble();
+          double deg1 = QLocale::system().toDouble(lon.captured("deg1"));
+          double min1 = QLocale::system().toDouble(lon.captured("min1"));
+          double sec1 = QLocale::system().toDouble(lon.captured("sec1"));
+          double deg2 = QLocale::system().toDouble(lon.captured("deg2"));
+          double min2 = QLocale::system().toDouble(lon.captured("min2"));
+          double sec2 = QLocale::system().toDouble(lon.captured("sec2"));
           if (fabs(fabs(deg1) - 180) < 1e-12 && fabs(min1) < 1e-12 && fabs(sec1) < 1e-12)
             p[1] = (deg1 < 0 ? -1 : 1) * fabs(deg1) * D2R;
           else
@@ -1813,7 +1813,7 @@ void OptDialog::getPosition(int type, QLineEdit **edit, double *pos)
 
         auto height = regExDistance.match(edit[2]->text());
         if (height.hasMatch()) {
-          p[2] = height.captured(1).toDouble();
+          p[2] = QLocale::system().toDouble(height.captured(1));
         } else
           p[2] = 0;
 
@@ -1823,22 +1823,22 @@ void OptDialog::getPosition(int type, QLineEdit **edit, double *pos)
         auto y = regExDistance.match(edit[1]->text());
         auto z = regExDistance.match(edit[2]->text());
 
-        if (x.hasMatch()) pos[0] = x.captured(1).toDouble();
+        if (x.hasMatch()) pos[0] = QLocale::system().toDouble(x.captured(1));
         else pos[0] = 0;
-        if (y.hasMatch()) pos[1] = y.captured(1).toDouble();
+        if (y.hasMatch()) pos[1] = QLocale::system().toDouble(y.captured(1));
         else pos[1] = 0;
-        if (z.hasMatch()) pos[2] = z.captured(1).toDouble();
+        if (z.hasMatch()) pos[2] = QLocale::system().toDouble(z.captured(1));
         else pos[2] = 0;
     } else {   /* lat/lon/hight decimal */
         auto lat = regExLat.match(edit[0]->text());
         auto lon = regExLon.match(edit[1]->text());
         auto height = regExDistance.match(edit[2]->text());
 
-        if (lat.hasMatch()) p[0] = lat.captured(1).toDouble() * D2R;
+        if (lat.hasMatch()) p[0] = QLocale::system().toDouble(lat.captured(1)) * D2R;
         else p[0] = 0;
-        if (lon.hasMatch()) p[1] = lon.captured(1).toDouble() * D2R;
+        if (lon.hasMatch()) p[1] = QLocale::system().toDouble(lon.captured(1)) * D2R;
         else p[1] = 0;
-        if (height.hasMatch()) p[2] = height.captured(1).toDouble();
+        if (height.hasMatch()) p[2] = QLocale::system().toDouble(height.captured(1));
         else p[0] = 0;
 
         pos2ecef(p, pos);
@@ -1864,27 +1864,29 @@ void OptDialog::setPosition(int type, QLineEdit **edit, double *pos)
         edit[1]->setValidator(new QRegularExpressionValidator(regExDMSLon, this));
         edit[2]->setValidator(new QRegularExpressionValidator(regExDistance, this));
 
-        edit[0]->setText(QString("%1° %2' %3\"").arg(s1 * dms1[0], 0, 'f', 0).arg(dms1[1], 2, 'f', 0, '0').arg(dms1[2], 9, 'f', 6, '0'));
-        edit[1]->setText(QString("%1° %2' %3\"").arg(s2 * dms2[0], 0, 'f', 0).arg(dms2[1], 2, 'f', 0, '0').arg(dms2[2], 9, 'f', 6, '0'));
-        edit[2]->setText(QString("%1 m").arg(p[2], 0, 'f', 4));
+        edit[0]->setText(QString("%1° %2' %3\"").arg(QLocale::system().toString(s1 * dms1[0], 'f', 0))
+                             .arg(QLocale::system().toString(dms1[1], 'f', 0)).arg(QLocale::system().toString(dms1[2],'f', 6)));
+        edit[1]->setText(QString("%1° %2' %3\"").arg(QLocale::system().toString(s2 * dms2[0], 'f', 0))
+                             .arg(QLocale::system().toString(dms2[1], 'f', 0)).arg(QLocale::system().toString(dms2[2], 'f', 6)));
+        edit[2]->setText(QString("%1 m").arg(QLocale::system().toString(p[2], 'f', 4)));
 
     } else if (type == 2) { /* x/y/z-ecef */
         edit[0]->setValidator(new QRegularExpressionValidator(regExDistance, this));
         edit[1]->setValidator(new QRegularExpressionValidator(regExDistance, this));
         edit[2]->setValidator(new QRegularExpressionValidator(regExDistance, this));
 
-        edit[0]->setText(QString("%1 m").arg(pos[0], 0, 'f', 4));
-        edit[1]->setText(QString("%1 m").arg(pos[1], 0, 'f', 4));
-        edit[2]->setText(QString("%1 m").arg(pos[2], 0, 'f', 4));
+        edit[0]->setText(QString("%1 m").arg(QLocale::system().toString(pos[0], 'f', 4)));
+        edit[1]->setText(QString("%1 m").arg(QLocale::system().toString(pos[1], 'f', 4)));
+        edit[2]->setText(QString("%1 m").arg(QLocale::system().toString(pos[2], 'f', 4)));
     } else {   /* lat/lon/hight decimal */
         edit[0]->setValidator(new QRegularExpressionValidator(regExLat, this));
         edit[1]->setValidator(new QRegularExpressionValidator(regExLon, this));
         edit[2]->setValidator(new QRegularExpressionValidator(regExDistance, this));
 
         ecef2pos(pos, p);
-        edit[0]->setText(QString("%1 °").arg(p[0] * R2D, 0, 'f', 9));
-        edit[1]->setText(QString("%1 °").arg(p[1] * R2D, 0, 'f', 9));
-        edit[2]->setText(QString("%1 m").arg(p[2], 0, 'f', 4));
+        edit[0]->setText(QString("%1°").arg(QLocale::system().toString(p[0] * R2D, 'f', 9)));
+        edit[1]->setText(QString("%1°").arg(QLocale::system().toString(p[1] * R2D, 'f', 9)));
+        edit[2]->setText(QString("%1 m").arg(QLocale::system().toString(p[2], 'f', 4)));
     }
 }
 //---------------------------------------------------------------------------
