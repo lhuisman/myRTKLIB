@@ -2,6 +2,7 @@
 
 #include <QShowEvent>
 #include <QDateTime>
+#include <QTimeZone>
 
 #include "rtklib.h"
 #include "plotmain.h"
