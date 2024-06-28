@@ -82,7 +82,7 @@ gtime_t SpanDialog::getStartTime()
 //---------------------------------------------------------------------------
 void SpanDialog::setStartTime(gtime_t timeStart)
 {
-    QDateTime start = QDateTime::fromSecsSinceEpoch(timeStart.time, QTimeZone::UTC);
+    QDateTime start = QDateTime::fromSecsSinceEpoch(timeStart.time, QTimeZone::utc());
 
     start = start.addMSecs(timeStart.sec * 1000);
 
@@ -102,7 +102,7 @@ gtime_t SpanDialog::getEndTime()
 //---------------------------------------------------------------------------
 void SpanDialog::setEndTime(gtime_t timeEnd)
 {
-    QDateTime end = QDateTime::fromSecsSinceEpoch(timeEnd.time, QTimeZone::UTC);
+    QDateTime end = QDateTime::fromSecsSinceEpoch(timeEnd.time, QTimeZone::utc());
     end = end.addMSecs(timeEnd.sec * 1000);
 
     dTTimeEnd->setDateTime(end);
