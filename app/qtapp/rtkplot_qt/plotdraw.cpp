@@ -482,7 +482,8 @@ void Plot::drawTrackPoint(QPainter &c, const TIMEPOS *pos, int level, int style)
             graphTrack->drawMarks(c, pos->x, pos->y, color, pos->n, Graph::MarkerTypes::Dot, plotOptDialog->getMarkSize() + 2, 0);
         }
 
-        for (i = 0; i < pos->n; i++) color[i] = plotOptDialog->getMarkerColor(style, pos->q[i]);
+        for (i = 0; i < pos->n; i++)
+            color[i] = plotOptDialog->getMarkerColor(style, pos->q[i]);
         graphTrack->drawMarks(c, pos->x, pos->y, color, pos->n, Graph::MarkerTypes::Dot, plotOptDialog->getMarkSize(), 0);
         delete[] color;
     }
@@ -840,7 +841,7 @@ void Plot::drawSolutionPoint(QPainter &c, const TIMEPOS *pos, int level, int sty
             QColor * color = new QColor[pos->n];
 
             for (j = 0; j < pos->n; j++)
-                color[panel] = plotOptDialog->getMarkerColor(style, pos->q[j]);
+                color[j] = plotOptDialog->getMarkerColor(style, pos->q[j]);
             graphTriple[panel]->drawMarks(c, x, y, color, pos->n, Graph::MarkerTypes::Dot, plotOptDialog->getMarkSize(), 0);
 
             delete[] color;
