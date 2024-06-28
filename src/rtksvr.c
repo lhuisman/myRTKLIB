@@ -730,22 +730,25 @@ extern int rtksvrinit(rtksvr_t *svr)
     for (i=0;i<3;i++) svr->rb_ave[i]=0.0;
     
     memset(&svr->nav,0,sizeof(nav_t));
+    memset(&svr->obs,0,sizeof(svr->obs));
     if (!(svr->nav.eph =(eph_t  *)malloc(sizeof(eph_t )*MAXSAT*4 ))||
         !(svr->nav.geph=(geph_t *)malloc(sizeof(geph_t)*NSATGLO*2))||
         !(svr->nav.seph=(seph_t *)malloc(sizeof(seph_t)*NSATSBS*2))) {
         tracet(1,"rtksvrinit: malloc error\n");
+        rtksvrfree(svr);
         return 0;
     }
     for (i=0;i<MAXSAT*4 ;i++) svr->nav.eph [i]=eph0;
     for (i=0;i<NSATGLO*2;i++) svr->nav.geph[i]=geph0;
     for (i=0;i<NSATSBS*2;i++) svr->nav.seph[i]=seph0;
-    svr->nav.n =MAXSAT *2;
-    svr->nav.ng=NSATGLO*2;
-    svr->nav.ns=NSATSBS*2;
+    svr->nav.n =svr->nav.nmax =MAXSAT *2;
+    svr->nav.ng=svr->nav.ngmax=NSATGLO*2;
+    svr->nav.ns=svr->nav.nsmax=NSATSBS*2;
     
     for (i=0;i<3;i++) for (j=0;j<MAXOBSBUF;j++) {
         if (!(svr->obs[i][j].data=(obsd_t *)malloc(sizeof(obsd_t)*MAXOBS))) {
             tracet(1,"rtksvrinit: malloc error\n");
+            rtksvrfree(svr);
             return 0;
         }
     }

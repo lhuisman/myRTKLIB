@@ -266,13 +266,13 @@ static char *obscodes[]={       /* observation code strings */
     "6E","7D","7P","7Z","8D", "8P","4A","4B","4X",""    /* 60-69 */
 };
 static char codepris[7][MAXFREQ][16]={  /* code priority for each freq-index */
-    /* L1/E1/B1I L2/E5b/B2I L5/E5a/B3I E6/LEX/B2A E5(a+b)         */
+    /* L1/E1/B1 L2/E5b/B2b L5/E5a/B2a E6/LEX/B3 E5(a+b)         */
     {"CPYWMNSLX","CPYWMNDLSX","IQX"     ,""       ,""       ,""}, /* GPS */
     {"CPABX"   ,"CPABX"     ,"IQX"     ,""       ,""       ,""}, /* GLO */
     {"CABXZ"   ,"XIQ"       ,"XIQ"     ,"ABCXZ"  ,"IQX"    ,""}, /* GAL */
     {"CLSXZ"   ,"LSX"       ,"IQXDPZ"  ,"LSXEZ"  ,""       ,""}, /* QZS */
     {"C"       ,"IQX"       ,""        ,""       ,""       ,""}, /* SBS */
-    {"IQXDPAN" ,"IQXDPZ"    ,"IQXA"    ,"DPX"   ,"DPX"    ,""}, /* BDS */
+    {"IQXDPAN" ,"IQXDPZ"    ,"DPX"    ,"IQXA"    ,"DPX"    ,""}, /* BDS */
     {"ABCX"    ,"ABCX"      ,""        ,""       ,""       ,""}  /* IRN */
 };
 static fatalfunc_t *fatalfunc=NULL; /* fatal callback function */
@@ -673,12 +673,12 @@ static int code2freq_BDS(uint8_t code, double *freq)
     char *obs=code2obs(code);
 
     switch (obs[0]) {
-        case '1': *freq=FREQL1;     return 0; /* B1C */
+        case '1': *freq=FREQL1;    return 0; /* B1C */
         case '2': *freq=FREQ1_CMP; return 0; /* B1I */
-        case '7': *freq=FREQ2_CMP; return 1; /* B2I/B2b */
-        case '6': *freq=FREQ3_CMP; return 2; /* B3 */
-        case '5': *freq=FREQL5;     return 3; /* B2a */
-        case '8': *freq=FREQE5ab;     return 4; /* B2ab */
+        case '7': *freq=FREQ2_CMP; return 1; /* B2b */
+        case '5': *freq=FREQL5;    return 2; /* B2a */
+        case '6': *freq=FREQ3_CMP; return 3; /* B3 */
+        case '8': *freq=FREQE5ab;  return 4; /* B2ab */
     }
     return -1;
 }
@@ -705,7 +705,7 @@ static int code2freq_IRN(uint8_t code, double *freq)
 *            Galileo   E1    E5b   E5a   E6   E5ab
 *            QZSS      L1    L2    L5    L6     -
 *            SBAS      L1     -    L5     -     -
-*            BDS       B1    B2    B3   B2a   B2ab (B1=B1I,B1C,B2=B2I,B2b)
+*            BDS       B1    B2b   B2a   B3   B2ab
 *            NavIC     L5     S     -     -     -
 *-----------------------------------------------------------------------------*/
 extern int code2idx(int sys, uint8_t code)
@@ -2452,7 +2452,8 @@ static int decodef(char *p, int n, double *v)
     int i;
 
     for (i=0;i<n;i++) v[i]=0.0;
-    for (i=0,p=strtok(p," ");p&&i<n;p=strtok(NULL," ")) {
+    char *q;
+    for (i=0,p=strtok_r(p," ",&q);p&&i<n;p=strtok_r(NULL," ",&q)) {
         v[i++]=atof(p)*1E-3;
     }
     return i;
@@ -2505,7 +2506,7 @@ static int readngspcv(const char *file, pcvs_t *pcvs)
         else if (n==3) decodef(buff,10,pcv.var[0]);
         else if (n==4) decodef(buff,9,pcv.var[0]+10);
         else if (n==5) {
-            if (decodef(buff,3,neu)<3) continue;;
+            if (decodef(buff,3,neu)<3) continue;
             pcv.off[1][0]=neu[1];
             pcv.off[1][1]=neu[0];
             pcv.off[1][2]=neu[2];
@@ -2653,7 +2654,8 @@ extern pcv_t *searchpcv(int sat, const char *type, gtime_t time,
     }
     else {
         strcpy(buff,type);
-        for (p=strtok(buff," ");p&&n<2;p=strtok(NULL," ")) types[n++]=p;
+        char *q;
+        for (p=strtok_r(buff," ",&q);p&&n<2;p=strtok_r(NULL," ",&q)) types[n++]=p;
         if (n<=0) return NULL;
 
         /* search receiver antenna with radome at first */
@@ -3971,7 +3973,7 @@ extern int rtk_uncompress(const char *file, char *uncfile)
                 dir,fname);
 #else
         if ((p=strrchr(buff,'/'))) {
-            *p='\0'; dir=fname; fname=p+1;
+            *p='\0'; dir=fname;
         }
         sprintf(cmd,"tar -C \"%s\" -xf \"%s\"",dir,tmpfile);
 #endif

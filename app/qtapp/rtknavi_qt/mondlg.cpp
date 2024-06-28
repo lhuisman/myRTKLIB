@@ -686,16 +686,16 @@ void MonitorDialog::setSat()
 {
     int i, j = 0;
     const QString label[] = {
-        tr("SAT"),	tr("PRN"), tr("PRN"), tr("Status"), tr("Azimuth (deg)"), tr("Elevation (deg)"), tr("LG (m)"), tr("PHW (cyc)"),
+        tr("SAT"), tr("Status"), tr("Azimuth (deg)"), tr("Elevation (deg)"), tr("LG (m)"), tr("PHW (cyc)"),
         tr("P1-P2 (m)"), tr("P1-C1 (m)"), tr("P2-C2(m)")
 	};
-    int width[] = {25, 25, 30, 130, 140, 140, 60, 120, 120, 120, 120}, nfreq;
+    int width[] = {46, 60, 125, 130, 90, 90, 90, 90, 90}, nfreq;
 
     rtksvrlock(rtksvr);
     nfreq = rtksvr->rtk.opt.nf > NFREQ ? NFREQ : rtksvr->rtk.opt.nf;
     rtksvrunlock(rtksvr);
 
-    ui->tWConsole->setColumnCount(11 + nfreq * 9);
+    ui->tWConsole->setColumnCount(9 + nfreq * 9);
     ui->tWConsole->setRowCount(0);
     header.clear();
 
@@ -705,42 +705,38 @@ void MonitorDialog::setSat()
         header << label[i];
 	}
     for (i = 0; i < nfreq; i++) {
-        ui->tWConsole->setColumnWidth(j++, 30 * fontScale / 96);
+        ui->tWConsole->setColumnWidth(j++, 38 * fontScale / 96);
         header << tr("L%1").arg(i+1);
 	}
     for (i = 0; i < nfreq; i++) {
-        ui->tWConsole->setColumnWidth(j++, 40 * fontScale / 96);
+        ui->tWConsole->setColumnWidth(j++, 70 * fontScale / 96);
         header << tr("Fix%1").arg(i+1);
 	}
     for (i = 0; i < nfreq; i++) {
-        ui->tWConsole->setColumnWidth(j++, 150 * fontScale / 96);
+        ui->tWConsole->setColumnWidth(j++, 140 * fontScale / 96);
         header << tr("P%1 Residual (m)").arg(i+1);
 	}
     for (i = 0; i < nfreq; i++) {
-        ui->tWConsole->setColumnWidth(j++, 150 * fontScale / 96);
+        ui->tWConsole->setColumnWidth(j++, 135 * fontScale / 96);
         header << tr("L%1 Residual (m)").arg(i+1);
 	}
     for (i = 0; i < nfreq; i++) {
-        ui->tWConsole->setColumnWidth(j++, 45 * fontScale / 96);
+        ui->tWConsole->setColumnWidth(j++, 50 * fontScale / 96);
         header << tr("Slip%1").arg(i+1);
 	}
     for (i = 0; i < nfreq; i++) {
-        ui->tWConsole->setColumnWidth(j++, 45 * fontScale / 96);
+        ui->tWConsole->setColumnWidth(j++, 55 * fontScale / 96);
         header << tr("Lock%1").arg(i+1);
 	}
     for (i = 0; i < nfreq; i++) {
-        ui->tWConsole->setColumnWidth(j++, 95 * fontScale / 96);
+        ui->tWConsole->setColumnWidth(j++, 80 * fontScale / 96);
         header << tr("Outage%1").arg(i+1);
 	}
     for (i = 0; i < nfreq; i++) {
-        ui->tWConsole->setColumnWidth(j++, 75 * fontScale / 96);
+        ui->tWConsole->setColumnWidth(j++, 70 * fontScale / 96);
         header << tr("Reject%1").arg(i+1);
 	}
-    for (i = 0; i < nfreq; i++) {
-        ui->tWConsole->setColumnWidth(j++, 110 * fontScale / 96);
-        header << tr("WaveL%1 (m)").arg(i+1);
-	}
-    for (i = 4; i < 11; i++) {
+    for (i = 4; i < 9; i++) {
         ui->tWConsole->setColumnWidth(j++, width[i] * fontScale / 96);
         header << label[i];
 	}
@@ -835,7 +831,7 @@ void MonitorDialog::setEstimates()
     QString label[] = {
         tr("State"), tr("Estimate Float"), tr("Std Float"), tr("Estimate Fixed"), tr("Std Fixed")
 	};
-    int i, width[] = {40, 160, 100, 160, 100};
+    int i, width[] = {70, 160, 100, 160, 100};
 
     ui->tWConsole->setColumnCount(5);
     ui->tWConsole->setRowCount(0);
@@ -895,16 +891,15 @@ void MonitorDialog::showEstimates()
             for (int col = 0; col < ui->tWConsole->columnCount(); col++)
                 ui->tWConsole->setItem(row, col, new QTableWidgetItem());
     }
-    ui->tWConsole->setRowCount(n);
 
-    for (i = 0, n = 1; i < nx; i++) {
+    for (i = 0, n = 0; i < nx; i++) {
         int j = 0;
         if (ui->cBSelectSatellites->currentIndex() == 1 && x[i] == 0.0) continue;
-        ui->tWConsole->item(i, j++)->setText(tr("X_%1").arg(i + 1));
-        ui->tWConsole->item(i, j++)->setText(x[i] == 0.0 ? s0 : QString::number(x[i], 'f', 3));
-        ui->tWConsole->item(i, j++)->setText(P[i + i * nx] == 0.0 ? s0 : QString::number(SQRT(P[i + i * nx]), 'f', 3));
-        ui->tWConsole->item(i, j++)->setText((i >= na || qFuzzyCompare(xa[i], 0)) ? s0 : QString::number(xa[i], 'f', 3));
-        ui->tWConsole->item(i, j++)->setText((i >= na || Pa[i + i * na] == 0.0) ? s0 : QString::number(SQRT(Pa[i + i * na]), 'f', 3));
+        ui->tWConsole->item(n, j++)->setText(tr("X_%1").arg(i + 1));
+        ui->tWConsole->item(n, j++)->setText(x[i] == 0.0 ? s0 : QString::number(x[i], 'f', 3));
+        ui->tWConsole->item(n, j++)->setText(P[i + i * nx] == 0.0 ? s0 : QString::number(SQRT(P[i + i * nx]), 'f', 3));
+        ui->tWConsole->item(n, j++)->setText((i >= na || qFuzzyCompare(xa[i], 0)) ? s0 : QString::number(xa[i], 'f', 3));
+        ui->tWConsole->item(n, j++)->setText((i >= na || Pa[i + i * na] == 0.0) ? s0 : QString::number(SQRT(Pa[i + i * na]), 'f', 3));
 		n++;
 	}
 	free(x); free(P); free(xa); free(Pa);
@@ -989,7 +984,7 @@ void MonitorDialog::showCovariance()
 void MonitorDialog::setObservations()
 {
     const QString label[] = {tr("Trcv (GPST)"), tr("SAT"), tr("STR")};
-    int i, j = 0, width[] = {220, 25, 25};
+    int i, j = 0, width[] = {230, 46, 40};
     int nex = ui->cBSelectObservation->currentIndex() ? NEXOBS : 0;
 
     ui->tWConsole->setColumnCount(3 + (NFREQ + nex) * 6);
@@ -1005,11 +1000,11 @@ void MonitorDialog::setObservations()
         header << (i < NFREQ ? tr("C%1").arg(i+1) : tr("CX%1").arg(i - NFREQ + 1));
     }
     for (i = 0; i < NFREQ + nex; i++) {
-        ui->tWConsole->setColumnWidth(j++, 30 * fontScale / 96);
+        ui->tWConsole->setColumnWidth(j++, 50 * fontScale / 96);
         header << (i < NFREQ ? tr("S%1").arg(i+1) : tr("SX%1").arg(i - NFREQ + 1));
     }
     for (i = 0; i < NFREQ + nex; i++) {
-        ui->tWConsole->setColumnWidth(j++, 130 * fontScale / 96);
+        ui->tWConsole->setColumnWidth(j++, 135 * fontScale / 96);
         header << (i < NFREQ ? tr("P%1 (m)").arg(i+1) : tr("PX%1 (m)").arg(i - NFREQ + 1));
     }
     for (i = 0; i < NFREQ + nex; i++) {
@@ -1103,7 +1098,7 @@ void MonitorDialog::setNavigationGPS()
 
     header << tr("Code") << tr("Flag");
     int i, width[] = {
-        25, 25, 30, 30, 30, 25, 25, 200, 200, 200, 140, 110, 90, 140, 130, 90, 140, 140, 120,
+        46, 46, 60, 30, 30, 25, 25, 200, 200, 200, 140, 110, 90, 140, 130, 90, 140, 140, 120,
         120, 120, 120, 120, 120, 120, 120, 120, 120,
         140, 140, 140, 140, 140, 140, 50, 50
 	};
@@ -1224,7 +1219,7 @@ void MonitorDialog::setGlonassNavigations()
            << tr("Ax (m/s2)") << tr("Ay (m/s2)") << tr("Az (m/s2)") << tr("Tau (ns)") << tr("Gamma (ns/s)") << tr("dTau L1-L2 (ns)");
 
     int i, width[] = {
-        25, 25, 30, 30, 30, 25, 110, 200, 200, 140, 140, 140, 130, 130, 130, 95, 95, 95, 110, 140, 140
+        46, 46, 60, 30, 30, 25, 110, 200, 200, 140, 140, 140, 130, 130, 130, 95, 95, 95, 110, 140, 140
 	};
     ui->tWConsole->setColumnCount(21);
     ui->tWConsole->setRowCount(0);
@@ -1319,7 +1314,7 @@ void MonitorDialog::setSbsNavigations()
         << tr("Vy (m/s)") << tr("Vz (m/s)") << tr("Ax (m/s2)") << tr("Ay (m/s2)") << tr("Az (m/s2)")
         << tr("af0 (ns)") << tr("af1 (ns/s)");
 
-    int i, width[] = {25, 25, 30, 200, 200, 30, 30, 150, 150, 150, 100, 100, 100, 100, 100, 100, 80, 95};
+    int i, width[] = {46, 46, 60, 200, 200, 30, 30, 150, 150, 150, 100, 100, 100, 100, 100, 100, 80, 95};
 
     ui->tWConsole->setColumnCount(18);
     ui->tWConsole->setRowCount(0);
@@ -1517,7 +1512,7 @@ void MonitorDialog::setStream()
     header	<< tr("STR") << tr("Stream") << tr("Type") << tr("Format") << tr("Mode") << tr("State") << tr("Input (bytes)") << tr("Input (bps)")
         << tr("Output (bytes)") << tr("Output (bps)") << tr("Path") << tr("Message");
 
-    int i, width[] = {25, 135, 70, 80, 35, 35, 140, 140, 140, 140, 220, 220};
+    int i, width[] = {40, 150, 120, 110, 50, 50, 140, 140, 140, 140, 220, 220};
 
     ui->tWConsole->setColumnCount(12);
     ui->tWConsole->setRowCount(9);

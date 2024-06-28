@@ -14,6 +14,7 @@
 *                            limit max number of download paths
 *                            use integer types in stdint.h
 *-----------------------------------------------------------------------------*/
+#define _POSIX_C_SOURCE 199506
 #include <errno.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -95,7 +96,7 @@ static char *parse_str(char *buff, char *str, int nmax)
 {
     char *p,*q,sep[]=" \r\n";
     
-    for (p=buff;*p&&*p==' ';p++) ;
+    for (p=buff;*p==' ';p++) ;
     
     if (*p=='"') sep[0]=*p++; /* enclosed within quotation marks */
     
@@ -112,8 +113,9 @@ static int cmp_str(const char *str1, const char *str2)
     
     sprintf(s1,"^%s$",str1);
     sprintf(s2,"^%s$",str2);
-    
-    for (p=s1,q=strtok(s2,"*");q;q=strtok(NULL,"*")) {
+
+    char *r;
+    for (p=s1,q=strtok_r(s2,"*",&r);q;q=strtok_r(NULL,"*",&r)) {
         if ((p=strstr(p,q))) p+=strlen(q); else break;
     }
     return p!=NULL;
@@ -330,7 +332,6 @@ static int get_list(const path_t *path, const char *usr, const char *pwd,
 {
     FILE *fp;
     char cmd[4096],env[1024]="",remot[1024],*opt="",*opt2="",*p;
-    int stat;
     
 #ifndef WIN32
     opt2=" -o /dev/null";
@@ -727,7 +728,8 @@ extern int dl_readstas(const char *file, char **stas, int nmax)
     }
     while (fgets(buff,sizeof(buff),fp)&&n<nmax) {
         if ((p=strchr(buff,'#'))) *p='\0';
-        for (p=strtok(buff," \r\n");p&&n<nmax;p=strtok(NULL," \r\n")) {
+        char *r;
+        for (p=strtok_r(buff," \r\n",&r);p&&n<nmax;p=strtok_r(NULL," \r\n",&r)) {
             strcpy(stas[n++],p);
         }
     }

@@ -540,6 +540,8 @@ extern "C" {
 #define rtklib_lock(f)     EnterCriticalSection(f)
 #define rtklib_unlock(f)   LeaveCriticalSection(f)
 #define RTKLIB_FILEPATHSEP '\\'
+/* strtok_r not supported in Windows */
+#define strtok_r(str,delim,ptr) strtok(str,delim)
 #else
 #define rtklib_thread_t    pthread_t
 #define rtklib_lock_t      pthread_mutex_t

@@ -1832,9 +1832,10 @@ extern int init_rnxctr(rnxctr_t *rnx)
     rnx->sys=rnx->tsys=0;
     for (i=0;i<RNX_NUMSYS;i++) for (j=0;j<MAXOBSTYPE;j++) rnx->tobs[i][j][0]='\0';
     rnx->obs.n=0;
-    rnx->nav.n=MAXSAT*2;
-    rnx->nav.ng=NSATGLO;
-    rnx->nav.ns=NSATSBS*2;
+    rnx->obs.nmax=MAXOBS;
+    rnx->nav.n=rnx->nav.nmax=MAXSAT*2;
+    rnx->nav.ng=rnx->nav.ngmax=NSATGLO;
+    rnx->nav.ns=rnx->nav.nsmax=NSATSBS*2;
     for (i=0;i<MAXOBS   ;i++) rnx->obs.data[i]=data0;
     for (i=0;i<MAXSAT*2 ;i++) rnx->nav.eph [i]=eph0;
     for (i=0;i<NSATGLO  ;i++) rnx->nav.geph[i]=geph0;
@@ -1853,10 +1854,10 @@ extern void free_rnxctr(rnxctr_t *rnx)
 {
     trace(3,"free_rnxctr:\n");
 
-    free(rnx->obs.data); rnx->obs.data=NULL; rnx->obs.n =0;
-    free(rnx->nav.eph ); rnx->nav.eph =NULL; rnx->nav.n =0;
-    free(rnx->nav.geph); rnx->nav.geph=NULL; rnx->nav.ng=0;
-    free(rnx->nav.seph); rnx->nav.seph=NULL; rnx->nav.ns=0;
+    free(rnx->obs.data); rnx->obs.data=NULL; rnx->obs.n =rnx->obs.nmax =0;
+    free(rnx->nav.eph ); rnx->nav.eph =NULL; rnx->nav.n =rnx->nav.nmax =0;
+    free(rnx->nav.geph); rnx->nav.geph=NULL; rnx->nav.ng=rnx->nav.ngmax=0;
+    free(rnx->nav.seph); rnx->nav.seph=NULL; rnx->nav.ns=rnx->nav.nsmax=0;
 }
 /* open RINEX data -------------------------------------------------------------
 * fetch next RINEX message and input a message from file
@@ -2186,8 +2187,6 @@ extern int outrnxobsh(FILE *fp, const rnxopt_t *opt, const nav_t *nav)
     }
     if (opt->rnxver>=302) {
         outrnx_glo_fcn(fp,opt,nav); /* GLONASS SLOT / FRQ # */
-    }
-    if (opt->rnxver>=302) {
         outrnx_glo_bias(fp,opt); /* GLONASS COD/PHS/BIS */
     }
     return fprintf(fp,"%-60.60s%-20s\n","","END OF HEADER")!=EOF;
