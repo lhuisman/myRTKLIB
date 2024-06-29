@@ -466,11 +466,11 @@ void MainForm::startPostProcessing()
         showMessage(tr("Error: No rinex observation file (rover)"));
         return;
     }
-    if (ui->cBInputFile2->currentText() == "" && PMODE_DGPS <=  optDialog->processingOptions.mode &&  optDialog->processingOptions.mode <= PMODE_FIXED) {
+    if (ui->cBInputFile2->currentText().isEmpty() && PMODE_DGPS <=  optDialog->processingOptions.mode &&  optDialog->processingOptions.mode <= PMODE_FIXED) {
         showMessage(tr("Error: No rinex observation file (base station)"));
         return;
     }
-    if (ui->cBOutputFile->currentText() == "") {
+    if (ui->cBOutputFile->currentText().isEmpty()) {
         showMessage(tr("Error: No output file"));
         return;
     }
@@ -656,22 +656,21 @@ void MainForm::viewOutputFileTrace()
 void MainForm::plotInputFile1()
 {
     QDir appDir = QDir(QCoreApplication::applicationDirPath());
-    QString files[6];
+    QString files[5];
     QStringList cmds = {"rtkplot_qt", "../rtkplot_qt/rtkplot_qt", "../../../bin/rtkplot_qt"};
     QStringList opts;
     QString navfile;
 
     files[0] = filePath(ui->cBInputFile1->currentText()); /* obs rover */
-    files[1] = filePath(ui->cBInputFile2->currentText()); /* obs base */
-    files[2] = filePath(ui->cBInputFile3->currentText());
-    files[3] = filePath(ui->cBInputFile4->currentText());
-    files[4] = filePath(ui->cBInputFile5->currentText());
-    files[5] = filePath(ui->cBInputFile6->currentText());
+    files[1] = filePath(ui->cBInputFile3->currentText());
+    files[2] = filePath(ui->cBInputFile4->currentText());
+    files[3] = filePath(ui->cBInputFile5->currentText());
+    files[4] = filePath(ui->cBInputFile6->currentText());
 
-    if ((files[2].isEmpty()) && (obsToNav(files[0], navfile)))
-        files[2] = navfile;
+    if ((files[1].isEmpty()) && (obsToNav(files[0], navfile)))
+        files[1] = navfile;
 
-    opts << "-r" << files[0] << files[2] << files[3] << files[4] << files[5];
+    opts << "-r" << files[0] << files[1] << files[2] << files[3] << files[4];
 
     for (const auto& path: cmds)
         if (execCommand(appDir.filePath(path), opts, 1)) {
@@ -684,22 +683,21 @@ void MainForm::plotInputFile1()
 void MainForm::plotInputFile2()
 {
     QDir appDir = QDir(QCoreApplication::applicationDirPath());
-    QString files[6];
+    QString files[5];
     QStringList cmds = {"rtkplot_qt", "../rtkplot_qt/rtkplot_qt", "../../../bin/rtkplot_qt"};
     QStringList opts;
     QString navfile;
 
-    files[0] = filePath(ui->cBInputFile1->currentText()); /* obs rover */
-    files[1] = filePath(ui->cBInputFile2->currentText()); /* obs base */
-    files[2] = filePath(ui->cBInputFile3->currentText());
-    files[3] = filePath(ui->cBInputFile4->currentText());
-    files[4] = filePath(ui->cBInputFile5->currentText());
-    files[5] = filePath(ui->cBInputFile6->currentText());
+    files[0] = filePath(ui->cBInputFile2->currentText()); /* obs base */
+    files[1] = filePath(ui->cBInputFile3->currentText());
+    files[2] = filePath(ui->cBInputFile4->currentText());
+    files[3] = filePath(ui->cBInputFile5->currentText());
+    files[4] = filePath(ui->cBInputFile6->currentText());
 
-    if ((files[2].isEmpty()) && (obsToNav(files[0], navfile)))
-        files[2] = navfile;
+    if ((files[1].isEmpty()) && (obsToNav(files[0], navfile)))
+        files[1] = navfile;
 
-    opts << "-r" << files[1] << files[2] << files[3] << files[4] << files[5];
+    opts << "-r" << files[0] << files[1] << files[2] << files[3] << files[4];
 
     for (const auto& path: cmds)
         if (execCommand(appDir.filePath(path), opts, 1)) {

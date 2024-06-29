@@ -1767,7 +1767,7 @@ void OptDialog::updateEnable()
         ui->tWOptions->setTabVisible(7, false);
     } else if (options == PostOptions) {
         ui->lEIonosphereFile->setVisible(true);
-        ui->lblIonosphereFile->setVisible(false);
+        ui->lblIonosphereFile->setVisible(true);
         ui->lELocalDirectory->setVisible(false);
         ui->lblLocalDirectory->setVisible(false);
 
