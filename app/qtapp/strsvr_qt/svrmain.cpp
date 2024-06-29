@@ -561,7 +561,7 @@ void MainForm::startServer()
     }
 
     // stream server start (if no error in preparation occured)
-    if (!error && strsvrstart(&strsvr, opt, streamTypes, pths, logs, conv, cmds, cmds_periodic, svrOptDialog->antennaPosition)) {
+    if (!error && strsvrstart(&strsvr, opt, streamTypes, (const char **)pths, (const char **)logs, conv, (const char **)cmds, (const char **)cmds_periodic, svrOptDialog->antennaPosition)) {
         startTime = utc2gpst(timeget());
         ui->panelStreams->setEnabled(false);
         ui->btnStart->setVisible(false);
@@ -611,7 +611,7 @@ void MainForm::stopServer()
             if (commandsEnabledTcp[i][1]) strncpy(cmds[i], qPrintable(commandsTcp[i][1]), 1023);
         }
     }
-    strsvrstop(&strsvr, cmds);
+    strsvrstop(&strsvr, (const char **)cmds);
 
     endTime = utc2gpst(timeget());
     ui->panelStreams->setEnabled(true);
