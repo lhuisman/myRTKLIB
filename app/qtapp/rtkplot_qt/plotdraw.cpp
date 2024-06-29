@@ -1132,7 +1132,7 @@ void Plot::generateObservationSlips(int *LLI)
                     prev_gf[obs->sat-1][j] = gf;
                 }
             } else {
-                if (obstype.canConvert<int>()) {  // frequency selected
+                if (strcmp(obstype.typeName(), "int") == 0) {  // frequency selected
                     k = obstype.toInt();
                     j = k > 2 ? k - 3 : k - 1;  /* L1,L2,L5,L6 ... */
                 } else {  // code selected
@@ -1159,7 +1159,7 @@ void Plot::generateObservationSlips(int *LLI)
                     LLI[i] |= obs->LLI[j];
 
             } else {
-                if (obstype.canConvert<int>()) {  // frequency selected
+                if (strcmp(obstype.typeName(), "int") == 0) {  // frequency selected
                     k = obstype.toInt();
                     j = k > 2 ? k - 3 : k - 1;  /* L1,L2,L5,L6 ... */
                 } else {  // code selected
@@ -1506,7 +1506,7 @@ void Plot::drawSky(QPainter &c, int level)
                     if (obs->L[j] == 0.0) s += "-";
                     else s += QString::number(obs->LLI[j]);
                 }
-            } else if (obstype.canConvert<int>()) {  // frequency
+            } else if (strcmp(obstype.typeName(), "int") == 0) {  // frequency
                 freq = obstype.toInt();
                 freq -= freq > 2 ? 2 : 0;  /* L1,L2,L5,L6 ... */
 
@@ -1835,7 +1835,7 @@ void Plot::drawSnr(QPainter &c, int level)
                     if (obs->sat != sat) continue;
 
                     // find array index corresponding to the selected data
-                    if (obstype.canConvert<int>()) {
+                    if (strcmp(obstype.typeName(), "int") == 0) {
                         int freq = obstype.toInt();
                         idx = freq > 2 ? freq - 3 : freq - 1;
                     } else {
@@ -2030,7 +2030,7 @@ void Plot::drawSnrE(QPainter &c, int level)
 
                 if (obs->sat != sat || elevation[j] <= 0.0) continue;
 
-                if (obstype.canConvert<int>()) {
+                if (strcmp(obstype.typeName(), "int") == 0) {
                     int freq = obstype.toInt();
                     idx = freq > 2 ? freq-3 : freq-1;  /* L1,L2,L5,L6 ... */
                 } else {
@@ -2183,7 +2183,7 @@ void Plot::drawMpSky(QPainter &c, int level)
 
             if (obs->sat != sat || elevation[i] <= 0.0) continue;
 
-            if (obstype.canConvert<int>()) {
+            if (strcmp(obstype.typeName(), "int") == 0) {
                 int freq = obstype.toInt();
                 idx = freq > 2 ? freq - 3 : freq - 1;  /* L1,L2,L5,L6 ... */
             } else {
@@ -2217,7 +2217,7 @@ void Plot::drawMpSky(QPainter &c, int level)
             obsd_t *obs = observation.data+i;
             int idx;
 
-            if (obstype.canConvert<int>()) {
+            if (strcmp(obstype.typeName(), "int") == 0) {
                 int freq = obstype.toInt();
                 idx = freq > 2 ? freq - 3 : freq - 1;  /* L1,L2,L5,L6 ... */
             } else {
