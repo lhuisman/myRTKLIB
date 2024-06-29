@@ -81,10 +81,6 @@ typedef struct {                       /* console type */
     pthread_t thread;                  /* console thread */
 } con_t;
 
-/* function prototypes -------------------------------------------------------*/
-extern FILE *popen(const char *, const char *);
-extern int pclose(FILE *);
-
 /* global variables ----------------------------------------------------------*/
 static rtksvr_t svr;                    /* rtk server struct */
 static stream_t moni;                   /* monitor stream */
@@ -112,8 +108,10 @@ static char proxyaddr[256]="";          /* http/ntrip proxy */
 static int nmeareq      =0;             /* nmea request type (0:off,1:lat/lon,2:single) */
 static double nmeapos[] ={0,0,0};       /* nmea position (lat/lon/height) (deg,m) */
 static char rcvcmds[3][MAXSTR]={""};    /* receiver commands files */
+#ifdef RTKSHELLCMDS
 static char startcmd[MAXSTR]="";        /* start command */
 static char stopcmd [MAXSTR]="";        /* stop command */
+#endif
 static int modflgr[256] ={0};           /* modified flags of receiver options */
 static int modflgs[256] ={0};           /* modified flags of system options */
 static int moniport     =0;             /* monitor port */
@@ -163,7 +161,6 @@ static const char *helptxt[]={
     "help|? [path]         : print help",
     "exit|ctr-D            : logout console (only for telnet)",
     "shutdown              : shutdown rtk server",
-    "!command [arg...]     : execute command in shell",
     ""
 };
 static const char *pathopts[]={         /* path options help */
@@ -231,8 +228,10 @@ static opt_t rcvopts[]={
     {"misc-proxyaddr",  2,  (void *)proxyaddr,           ""     },
     {"misc-fswapmargin",0,  (void *)&fswapmargin,        "s"    },
     
+#ifdef RTKSHELLCMDS
     {"misc-startcmd",   2,  (void *)startcmd,            ""     },
     {"misc-stopcmd",    2,  (void *)stopcmd,             ""     },
+#endif
     
     {"file-cmdfile1",   2,  (void *)rcvcmds[0],          ""     },
     {"file-cmdfile2",   2,  (void *)rcvcmds[1],          ""     },
@@ -408,7 +407,7 @@ static int startsvr(vt_t *vt)
         strpath[6],strpath[7]
     };
     char errmsg[2048]="";
-    int i,ret,stropt[8]={0};
+    int i,stropt[8]={0};
     
     trace(3,"startsvr:\n");
     
@@ -468,11 +467,14 @@ static int startsvr(vt_t *vt)
     strsetdir(filopt.tempdir);
     strsetproxy(proxyaddr);
     
+#ifdef RTKSHELLCMDS
     /* execute start command */
+    int ret;
     if (*startcmd&&(ret=system(startcmd))) {
         trace(2,"command exec error: %s (%d)\n",startcmd,ret);
         vt_printf(vt,"command exec error: %s (%d)\n",startcmd,ret);
     }
+#endif
     solopt[0].posf=strfmt[3];
     solopt[1].posf=strfmt[4];
     
@@ -490,7 +492,7 @@ static int startsvr(vt_t *vt)
 static void stopsvr(vt_t *vt)
 {
     char s[3][MAXRCVCMD]={"","",""},*cmds[]={NULL,NULL,NULL};
-    int i,ret;
+    int i;
     
     trace(3,"stopsvr:\n");
     
@@ -507,11 +509,14 @@ static void stopsvr(vt_t *vt)
     /* stop rtk server */
     rtksvrstop(&svr,cmds);
     
+#ifdef RTKSHELLCMDS
     /* execute stop command */
+    int ret;
     if (*stopcmd&&(ret=system(stopcmd))) {
         trace(2,"command exec error: %s (%d)\n",stopcmd,ret);
         vt_printf(vt,"command exec error: %s (%d)\n",stopcmd,ret);
     }
+#endif
     if (solopt[0].geoid>0) closegeoid();
     
     vt_printf(vt,"stop rtk server\n");
@@ -1325,26 +1330,6 @@ static void cmd_help(char **args, int narg, vt_t *vt)
         vt_printf(vt,"unknown help: %s\n",args[1]);
     }
 }
-/* exec command --------------------------------------------------------------*/
-static int cmd_exec(const char *cmd, vt_t *vt)
-{
-    FILE *fp;
-    int ret;
-    char buff[MAXSTR];
-    
-    if (!(fp=popen(cmd,"r"))) {
-        vt_printf(vt,"command exec error\n");
-        return -1;
-    }
-    while (!vt_chkbrk(vt)) {
-        if (!fgets(buff,sizeof(buff),fp)) break;
-        vt_printf(vt,buff);
-    }
-    if ((ret=pclose(fp))) {
-        vt_printf(vt,"command exec error (%d)\n",ret);
-    }
-    return ret;
-}
 /* console thread ------------------------------------------------------------*/
 static void *con_thread(void *arg)
 {
@@ -1385,10 +1370,6 @@ static void *con_thread(void *arg)
         /* input command */
         if (!vt_gets(con->vt,buff,sizeof(buff))) break;
         
-        if (buff[0]=='!') { /* shell escape */
-            cmd_exec(buff+1,con->vt);
-            continue;
-        }
         /* parse command */
         narg=0;
         char *r;
@@ -1668,10 +1649,6 @@ static void deamonise(void)
 *
 *     shutdown
 *       Shutdown RTK server and exit the program.
-*
-*     !command [arg...]
-*       Execute command by the operating system shell. Do not use the
-*       interactive command.
 *
 * notes
 *     Short form of a command is allowed. In case of the short form, the
