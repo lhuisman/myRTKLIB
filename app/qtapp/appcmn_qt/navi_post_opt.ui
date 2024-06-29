@@ -23,7 +23,7 @@
       <enum>QTabWidget::TabPosition::North</enum>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>5</number>
      </property>
      <widget class="QWidget" name="tabSettings1">
       <attribute name="title">
@@ -2550,13 +2550,6 @@
        <string>&amp;Files</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_6">
-       <item row="3" column="0" colspan="2">
-        <widget class="QLineEdit" name="lEAntennaPcvFile">
-         <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If you apply the receiver antenna phase center offset and PCV correction, input ANTEX or NGS type antenna parameters file path (option: &lt;span style=&quot; font-style:italic;&quot;&gt;file-rcvantfile&lt;/span&gt;).&lt;/p&gt;&lt;p&gt;An example of the antenna parameter file is found at &amp;quot;data\igs08.atx&amp;quot; or &amp;quot;data\ngs_abs.pcv&amp;quot;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-        </widget>
-       </item>
        <item row="7" column="0">
         <widget class="QLabel" name="Label1">
          <property name="text">
@@ -2590,27 +2583,10 @@
          </property>
         </spacer>
        </item>
-       <item row="8" column="0" colspan="2">
-        <widget class="QLineEdit" name="lEDCBFile">
-         <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Input the file path of DCB correction for PPP in CODE format (option: &lt;span style=&quot; font-style:italic;&quot;&gt;file-dcbfile&lt;/span&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-        </widget>
-       </item>
        <item row="23" column="0">
-        <widget class="QLineEdit" name="lEIonosphereFile"/>
-       </item>
-       <item row="13" column="0" colspan="2">
-        <widget class="QLineEdit" name="lEEOPFile">
+        <widget class="QLineEdit" name="lEIonosphereFile">
          <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Input the file path of an EOP data file (option: &lt;span style=&quot; font-style:italic;&quot;&gt;file-eopfile&lt;/span&gt;). &lt;/p&gt;&lt;p&gt;The format of the EOP data file shall be IGS ERP format version 2. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-        </widget>
-       </item>
-       <item row="25" column="0" colspan="2">
-        <widget class="QLineEdit" name="lELocalDirectory">
-         <property name="toolTip">
-          <string>Local directory for downloaded data</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Input the file path of an ionospheric corrections file (*.yyi)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
         </widget>
        </item>
@@ -2621,13 +2597,6 @@
          </property>
          <property name="buddy">
           <cstring>lESatellitePcvFile</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0" colspan="2">
-        <widget class="QLineEdit" name="lESatellitePcvFile">
-         <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If you use the precise ephemeris or SSR correction, input the ANTEX antenna parameters file path for the satellite antenna PCV (phase center variation) correction (option: &lt;span style=&quot; font-style:italic;&quot;&gt;file-satantfile&lt;/span&gt;). &lt;/p&gt;&lt;p&gt;Usually use latest igs08.atx file provided by IGS.&lt;/p&gt;&lt;p&gt;An example of the ANTEX file is found in the rtklib directory &amp;quot;data\igs08.atx&amp;quot;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
         </widget>
        </item>
@@ -2661,13 +2630,6 @@
          </property>
         </widget>
        </item>
-       <item row="6" column="0" colspan="2">
-        <widget class="QLineEdit" name="lEGeoidDataFile">
-         <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Input the file path of the geoid data file if selecting the external model as Geoid Model (option: &lt;span style=&quot; font-style:italic;&quot;&gt;file-geoidfile&lt;/span&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-        </widget>
-       </item>
        <item row="12" column="0">
         <widget class="QLabel" name="Label23">
          <property name="text">
@@ -2678,17 +2640,59 @@
          </property>
         </widget>
        </item>
-       <item row="19" column="0" colspan="2">
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_9">
+         <property name="text">
+          <string>Receiver Antenna PCV File ANTEX/NGS PCV</string>
+         </property>
+        </widget>
+       </item>
+       <item row="19" column="0">
         <widget class="QLineEdit" name="lEBLQFile">
          <property name="toolTip">
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Input the file path of an OTL coefficients file (option: &lt;span style=&quot; font-style:italic;&quot;&gt;file-blqfile&lt;/span&gt;). &lt;/p&gt;&lt;p&gt;The format of the OTL coefficients file is BLQ format.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
         </widget>
        </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="label_9">
-         <property name="text">
-          <string>Receiver Antenna PCV File ANTEX/NGS PCV</string>
+       <item row="25" column="0">
+        <widget class="QLineEdit" name="lELocalDirectory">
+         <property name="toolTip">
+          <string>Local directory for downloaded data</string>
+         </property>
+        </widget>
+       </item>
+       <item row="13" column="0">
+        <widget class="QLineEdit" name="lEEOPFile">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Input the file path of an EOP data file (option: &lt;span style=&quot; font-style:italic;&quot;&gt;file-eopfile&lt;/span&gt;). &lt;/p&gt;&lt;p&gt;The format of the EOP data file shall be IGS ERP format version 2. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="0">
+        <widget class="QLineEdit" name="lEDCBFile">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Input the file path of DCB correction for PPP in CODE format (option: &lt;span style=&quot; font-style:italic;&quot;&gt;file-dcbfile&lt;/span&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="0">
+        <widget class="QLineEdit" name="lEGeoidDataFile">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Input the file path of the geoid data file if selecting the external model as Geoid Model (option: &lt;span style=&quot; font-style:italic;&quot;&gt;file-geoidfile&lt;/span&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLineEdit" name="lEAntennaPcvFile">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If you apply the receiver antenna phase center offset and PCV correction, input ANTEX or NGS type antenna parameters file path (option: &lt;span style=&quot; font-style:italic;&quot;&gt;file-rcvantfile&lt;/span&gt;).&lt;/p&gt;&lt;p&gt;An example of the antenna parameter file is found at &amp;quot;data\igs08.atx&amp;quot; or &amp;quot;data\ngs_abs.pcv&amp;quot;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLineEdit" name="lESatellitePcvFile">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If you use the precise ephemeris or SSR correction, input the ANTEX antenna parameters file path for the satellite antenna PCV (phase center variation) correction (option: &lt;span style=&quot; font-style:italic;&quot;&gt;file-satantfile&lt;/span&gt;). &lt;/p&gt;&lt;p&gt;Usually use latest igs08.atx file provided by IGS.&lt;/p&gt;&lt;p&gt;An example of the ANTEX file is found in the rtklib directory &amp;quot;data\igs08.atx&amp;quot;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
         </widget>
        </item>
