@@ -828,7 +828,7 @@ int __fastcall TMainForm::ExecProc(void)
     showmsg((char *)"reading...");
     
     // post processing positioning
-    if ((stat=postpos(ts,te,ti,tu,&prcopt,&solopt,&filopt,(const char **)infile,n,(const char **)outfile,
+    if ((stat=postpos(ts,te,ti,tu,&prcopt,&solopt,&filopt,(const char **)infile,n,(const char *)outfile,
                       (const char *)rov,base))==1) {
         showmsg((char *)"aborted");
     }
