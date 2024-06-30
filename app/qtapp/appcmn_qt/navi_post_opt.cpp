@@ -19,6 +19,7 @@
 #include "freqdlg.h"
 #include "keydlg.h"
 #include "helper.h"
+#include "doubleunitvalidator.h"
 
 #include "ui_navi_post_opt.h"
 
@@ -128,17 +129,12 @@ OptDialog::OptDialog(QWidget *parent, int opts)
     QString posSign = QRegularExpression::escape(QLocale::system().positiveSign());
     QString negSign = QRegularExpression::escape(QLocale::system().negativeSign());
     QString decSep = QRegularExpression::escape(QLocale::system().decimalPoint());
-    QString grpSep = QRegularExpression::escape(QLocale::system().groupSeparator());
 
     regExDMSLat = QRegularExpression(QString("^\\s*(?:(?<deg1>[%0%1]?90)[°\\s]\\s*(?<min1>0{1,2})['\\s]\\s*(?<sec1>0{1,2}(?:[%2]0*)?)\"?\\s*)|"
                                              "(?:(?<deg2>[%0%1]?(?:[1-8][0-9]|[0-9]))[°\\s]\\s*(?<min2>(?:[0-5][0-9]|[0-9]))['\\s]\\s*(?<sec2>(?:[0-5][0-9]|[0-9])(?:[%2][0-9]*)?)\"?)\\s*$").arg(posSign, negSign, decSep));
     regExDMSLon = QRegularExpression(QString("^\\s*(?:(?<deg1>[%0%1]?180)[°\\s]\\s*(?<min1>0{1,2})['\\s]\\s*(?<sec1>0{1,2}(?:[%2]0*)?)\"?\\s*)|"
                                              "(?:(?<deg2>[%0%1]?(?:1[0-7][0-9]|[0-9][0-9]|[0-9]))[°\\s]\\s*(?<min2>(?:[0-5][0-9]|[0-9]))['\\s]\\s*(?<sec2>(?:[0-5][0-9]|[0-9])(?:[%2][0-9]*)?)\"?)\\s*$").arg(posSign, negSign, decSep));
 
-    regExLat = QRegularExpression(QString("^\\s*((?:%0|%1)?(?:90(?:(?:[%2]0*)?)|(?:[0-9]|[1-8][0-9])(?:(?:[%2][0-9]*)?)))(?:\\s*°)?\\s*$").arg(posSign, negSign, decSep));
-    regExLon = QRegularExpression(QString("^\\s*((%0|%1)?(?:180(?:(?:[%2]0*)?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:[%2][0-9]*)?)))(?:\\s*°)?\\s*$").arg(posSign, negSign, decSep));
-
-    regExDistance = QRegularExpression(QString("^\\s*([%0%1]?[0-9]+(?:[%2%3][0-9]*)*)(?:\\s*m)?\\s*?$").arg(posSign, negSign, grpSep, decSep));
 
     processingOptions = prcopt_default;
     solutionOptions = solopt_default;
@@ -309,6 +305,12 @@ OptDialog::OptDialog(QWidget *parent, int opts)
     connect(ui->cBSolutionFormat, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &OptDialog::updateEnable);
     connect(ui->cBReferencePositionType, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &OptDialog::referencePositionTypeChanged);
     connect(ui->cBRoverPositionType, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &OptDialog::roverPositionTypeChanged);
+    connect(ui->lEReferencePosition1, &QLineEdit::textChanged, this, &OptDialog::checkLineEditValidator);
+    connect(ui->lEReferencePosition2, &QLineEdit::textChanged, this, &OptDialog::checkLineEditValidator);
+    connect(ui->lEReferencePosition3, &QLineEdit::textChanged, this, &OptDialog::checkLineEditValidator);
+    connect(ui->lERoverPosition1, &QLineEdit::textChanged, this, &OptDialog::checkLineEditValidator);
+    connect(ui->lERoverPosition2, &QLineEdit::textChanged, this, &OptDialog::checkLineEditValidator);
+    connect(ui->lERoverPosition3, &QLineEdit::textChanged, this, &OptDialog::checkLineEditValidator);
     connect(ui->cBAmbiguityResolutionGPS, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &OptDialog::updateEnable);
     connect(ui->cBRoverAntennaPcv, &QCheckBox::clicked, this, &OptDialog::updateEnable);
     connect(ui->cBReferenceAntennaPcv, &QCheckBox::clicked, this, &OptDialog::updateEnable);
@@ -424,10 +426,13 @@ void OptDialog::roverPositionTypeChanged(int)
 	double pos[3];
 
     // update position value in accordance to type
-    getPosition(current_roverPositionType, edit, pos);
-    setPosition(ui->cBRoverPositionType->currentIndex(), edit, pos);
-    current_roverPositionType = ui->cBRoverPositionType->currentIndex();
-
+    int error = getPosition(current_roverPositionType, edit, pos);
+    if (error) {
+        ui->cBRoverPositionType->setCurrentIndex(current_roverPositionType); // don't allow to change the type
+    } else {
+        setPosition(ui->cBRoverPositionType->currentIndex(), edit, pos);
+        current_roverPositionType = ui->cBRoverPositionType->currentIndex();
+    }
 	updateEnable();
 }
 //---------------------------------------------------------------------------
@@ -437,9 +442,13 @@ void OptDialog::referencePositionTypeChanged(int)
 	double pos[3];
 
     // update position value in accordance to type
-    getPosition(current_referencePositionType, edit, pos);
-    setPosition(ui->cBReferencePositionType->currentIndex(), edit, pos);
-    current_referencePositionType = ui->cBReferencePositionType->currentIndex();
+    int error = getPosition(current_referencePositionType, edit, pos);
+    if (error) {
+        ui->cBReferencePositionType->setCurrentIndex(current_referencePositionType); // don't allow to change the type
+    } else {
+        setPosition(ui->cBReferencePositionType->currentIndex(), edit, pos);
+        current_referencePositionType = ui->cBReferencePositionType->currentIndex();
+    }
 
 	updateEnable();
 }
@@ -1783,9 +1792,11 @@ void OptDialog::updateEnable()
     }
 }
 //---------------------------------------------------------------------------
-void OptDialog::getPosition(int type, QLineEdit **edit, double *pos)
+int OptDialog::getPosition(int type, QLineEdit **edit, double *pos)
 {
     double p[3] = { 0 };
+    bool okay;
+    int ret = 0;
 
     if (type == 1) { /* lat/lon/height dms/m */
         auto lat = regExDMSLat.match(edit[0]->text());
@@ -1818,38 +1829,38 @@ void OptDialog::getPosition(int type, QLineEdit **edit, double *pos)
         } else
           p[1] = 0;
 
-        auto height = regExDistance.match(edit[2]->text());
-        if (height.hasMatch()) {
-          p[2] = QLocale::system().toDouble(height.captured(1));
-        } else
-          p[2] = 0;
+        auto height = stripped(edit[2]->text(), "m");
+        p[2] = QLocale::system().toDouble(height, &okay);
+        if (!okay) {ret |= 0x4; p[2] = 0;};
 
         pos2ecef(p, pos);
     } else if (type == 2) { /* x/y/z-ecef */
-        auto x = regExDistance.match(edit[0]->text());
-        auto y = regExDistance.match(edit[1]->text());
-        auto z = regExDistance.match(edit[2]->text());
+        auto x = stripped(edit[0]->text(), "m");
+        auto y = stripped(edit[1]->text(), "m");
+        auto z = stripped(edit[2]->text(), "m");
 
-        if (x.hasMatch()) pos[0] = QLocale::system().toDouble(x.captured(1));
-        else pos[0] = 0;
-        if (y.hasMatch()) pos[1] = QLocale::system().toDouble(y.captured(1));
-        else pos[1] = 0;
-        if (z.hasMatch()) pos[2] = QLocale::system().toDouble(z.captured(1));
-        else pos[2] = 0;
+        pos[0] = QLocale::system().toDouble(x, &okay);
+        if (!okay) {ret |= 0x1; pos[0] = 0;}
+        pos[1] = QLocale::system().toDouble(y, &okay);
+        if (!okay) {ret |= 0x2; pos[1] = 0;}
+        pos[2] = QLocale::system().toDouble(z, &okay);
+        if (!okay) {ret |= 0x4; pos[2] = 0;}
     } else {   /* lat/lon/hight decimal */
-        auto lat = regExLat.match(edit[0]->text());
-        auto lon = regExLon.match(edit[1]->text());
-        auto height = regExDistance.match(edit[2]->text());
-
-        if (lat.hasMatch()) p[0] = QLocale::system().toDouble(lat.captured(1)) * D2R;
-        else p[0] = 0;
-        if (lon.hasMatch()) p[1] = QLocale::system().toDouble(lon.captured(1)) * D2R;
-        else p[1] = 0;
-        if (height.hasMatch()) p[2] = QLocale::system().toDouble(height.captured(1));
-        else p[0] = 0;
+        auto lat = stripped(edit[0]->text(), "°");
+        auto lon = stripped(edit[1]->text(), "°");
+        auto height = stripped(edit[2]->text(), "m");
+        
+        p[0] = QLocale::system().toDouble(lat, &okay) * D2R;
+        if (!okay) {ret |= 0x1; p[0] = 0;}
+        p[1] = QLocale::system().toDouble(lon, &okay) * D2R;
+        if (!okay) {ret |= 0x2; p[1] = 0;}
+        p[2] = QLocale::system().toDouble(height, &okay);
+        if (!okay) {ret |= 0x4; p[2] = 0;}
 
         pos2ecef(p, pos);
     }
+
+    return ret;
 }
 //---------------------------------------------------------------------------
 void OptDialog::setPosition(int type, QLineEdit **edit, double *pos)
@@ -1869,7 +1880,7 @@ void OptDialog::setPosition(int type, QLineEdit **edit, double *pos)
 
         edit[0]->setValidator(new QRegularExpressionValidator(regExDMSLat, this));
         edit[1]->setValidator(new QRegularExpressionValidator(regExDMSLon, this));
-        edit[2]->setValidator(new QRegularExpressionValidator(regExDistance, this));
+        edit[2]->setValidator(new DoubleUnitValidator(-100, 10000, -1, " m", this));
 
         edit[0]->setText(QString("%1° %2' %3\"").arg(QLocale::system().toString(s1 * dms1[0], 'f', 0))
                              .arg(QLocale::system().toString(dms1[1], 'f', 0)).arg(QLocale::system().toString(dms1[2],'f', 6)));
@@ -1878,17 +1889,17 @@ void OptDialog::setPosition(int type, QLineEdit **edit, double *pos)
         edit[2]->setText(QString("%1 m").arg(QLocale::system().toString(p[2], 'f', 4)));
 
     } else if (type == 2) { /* x/y/z-ecef */
-        edit[0]->setValidator(new QRegularExpressionValidator(regExDistance, this));
-        edit[1]->setValidator(new QRegularExpressionValidator(regExDistance, this));
-        edit[2]->setValidator(new QRegularExpressionValidator(regExDistance, this));
+        edit[0]->setValidator(new DoubleUnitValidator(-INFINITY, INFINITY, -1, " m", this));
+        edit[1]->setValidator(new DoubleUnitValidator(-INFINITY, INFINITY, -1, " m", this));
+        edit[2]->setValidator(new DoubleUnitValidator(-INFINITY, INFINITY, -1, " m", this));
 
         edit[0]->setText(QString("%1 m").arg(QLocale::system().toString(pos[0], 'f', 4)));
         edit[1]->setText(QString("%1 m").arg(QLocale::system().toString(pos[1], 'f', 4)));
         edit[2]->setText(QString("%1 m").arg(QLocale::system().toString(pos[2], 'f', 4)));
     } else {   /* lat/lon/hight decimal */
-        edit[0]->setValidator(new QRegularExpressionValidator(regExLat, this));
-        edit[1]->setValidator(new QRegularExpressionValidator(regExLon, this));
-        edit[2]->setValidator(new QRegularExpressionValidator(regExDistance, this));
+        edit[0]->setValidator(new DoubleUnitValidator(-90, 90, -1, "°", this));
+        edit[1]->setValidator(new DoubleUnitValidator(-180, 180, -1, "°", this));
+        edit[2]->setValidator(new DoubleUnitValidator(-100, 10000, -1, " m", this));
 
         ecef2pos(pos, p);
         edit[0]->setText(QString("%1°").arg(QLocale::system().toString(p[0] * R2D, 'f', 9)));
@@ -1988,3 +1999,32 @@ bool OptDialog::fillExcludedSatellites(prcopt_t *prcopt, const QString &excluded
     }
     return false;
 };
+//---------------------------------------------------------------------------
+QString OptDialog::stripped(const QString input, const QString suffix) const
+{
+    QString text = input;
+    int size;
+
+    if (suffix.size() && text.endsWith(suffix)) {
+        size = text.size() - suffix.size();
+        text = text.mid(0, size).trimmed();
+    }
+
+    return text;
+}
+//---------------------------------------------------------------------------
+void OptDialog::checkLineEditValidator()
+{
+    QLineEdit *edit = (QLineEdit*)this->sender();
+
+    const QValidator *validator = edit->validator();
+
+    if (!validator) return;
+
+    QString text = edit->text();
+    int pos = edit->cursorPosition();
+    setWidgetTextColor(edit, validator->validate(text, pos) == QValidator::Acceptable ? QColor() : QColor(Qt::red));
+
+    edit->setText(text);
+    edit->setCursorPosition(pos);
+}

@@ -61,9 +61,6 @@ protected:
     FreqDialog * freqDialog;
     QRegularExpression regExDMSLat;
     QRegularExpression regExDMSLon;
-    QRegularExpression regExLat;
-    QRegularExpression regExLon;
-    QRegularExpression regExDistance;
 
 protected slots:
     void accept();
@@ -77,7 +74,7 @@ protected slots:
     void selectStationPositionFile();
     void referencePositionTypeChanged(int);
     void roverPositionTypeChanged(int);
-    void getPosition(int type, QLineEdit **edit, double *pos);
+    int getPosition(int type, QLineEdit **edit, double *pos);
     void setPosition(int type, QLineEdit **edit, double *pos);
     void selectPanelFont();
     void selectSolutionFont();
@@ -93,6 +90,7 @@ protected slots:
     void selectBLQFile();
     void viewBLQFile();
     void showSnrMaskDialog();
+    void checkLineEditValidator();
 
 private:
     void load(const QString &file);
@@ -102,6 +100,7 @@ private:
     void showFrequenciesDialog();
     void showKeyDialog();
     void updateOptions();
+    QString stripped(const QString input, const QString suffix) const;
     int options;
     Ui::OptDialog *ui;
 
