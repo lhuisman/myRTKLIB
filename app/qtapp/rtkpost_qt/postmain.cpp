@@ -238,7 +238,7 @@ MainForm::MainForm(QWidget *parent)
     connect(ui->cBTimeUnitF, &QCheckBox::clicked, this, &MainForm::updateEnable);
     connect(ui->cBInputFile1, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &MainForm::setOutputFile);
     connect(ui->cBOutputDirectoryEnable, &QCheckBox::clicked, this, &MainForm::outputDirectoryEnableClicked);
-    connect(ui->lEOutputDirectory, &QLineEdit::editingFinished, this, &MainForm::setOutputFile);
+    connect(ui->lEOutputDirectory, &QLineEdit::textChanged, this, &MainForm::setOutputFile);
     connect(ui->btnOutputDirectory, &QPushButton::clicked, this, &MainForm::selectOutputDirectory);
 
     ui->btnAbort->setVisible(false);
@@ -732,22 +732,17 @@ void MainForm::setOutputFile()
 
     if (ui->cBInputFile1->currentText().isEmpty()) return;
 
-    if (ui->cBOutputFile->currentText().isEmpty()) { // generate output name from input file name
-      ifile = ui->cBInputFile1->currentText();
-      if (ui->cBOutputDirectoryEnable->isChecked()) {
-          QFileInfo f(ifile);
-          ofile = QDir(ui->lEOutputDirectory->text()).filePath(f.baseName());
-      } else {
-          QFileInfo f(ifile);
-          ofile = f.absoluteDir().filePath(f.baseName());
-      }
-      ofile += optDialog->solutionOptions.posf == SOLF_NMEA ? ".nmea" : ".pos";
-      ofile.replace('*', '0');
+    ifile = ui->cBInputFile1->currentText();
+    if (ui->cBOutputDirectoryEnable->isChecked()) {
+        QFileInfo f(ifile);
+        ofile = QDir(ui->lEOutputDirectory->text()).filePath(f.baseName());
     } else {
-      ofile = ui->cBOutputFile->currentText();
-    };
+        QFileInfo f(ifile);
+        ofile = f.absoluteDir().filePath(f.baseName());
+    }
+    ofile += optDialog->solutionOptions.posf == SOLF_NMEA ? ".nmea" : ".pos";
+    ofile.replace('*', '0');
     ui->cBOutputFile->setCurrentText(QDir::toNativeSeparators(ofile));
-
 }
 // execute post-processing --------------------------------------------------
 void MainForm::execProcessing()
