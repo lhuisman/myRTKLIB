@@ -125,13 +125,20 @@ OptDialog::OptDialog(QWidget *parent, int opts)
 
     // inspired by https://stackoverflow.com/questions/18321779/degrees-minutes-and-seconds-regex
     // and https://stackoverflow.com/questions/3518504/regular-expression-for-matching-latitude-longitude-coordinates
-    regExDMSLat = QRegularExpression("^\\s*(?:(?<deg1>[-+]?90)[°\\s]\\s*(?<min1>0{1,2})['\\s]\\s*(?<sec1>0{1,2}(?:[\\.,]0*)?)\"?\\s*)|(?:(?<deg2>[-+]?(?:[1-8][0-9]|[0-9]))[°\\s]\\s*(?<min2>(?:[0-5][0-9]|[0-9]))['\\s]\\s*(?<sec2>(?:[0-5][0-9]|[0-9])(?:[\\.,][0-9]*)?)\"?)\\s*$");
-    regExDMSLon = QRegularExpression("^\\s*(?:(?<deg1>[-+]?180)[°\\s]\\s*(?<min1>0{1,2})['\\s]\\s*(?<sec1>0{1,2}(?:[\\.,]0*)?)\"?\\s*)|(?:(?<deg2>[-+]?(?:1[0-7][0-9]|[0-9][0-9]|[0-9]))[°\\s]\\s*(?<min2>(?:[0-5][0-9]|[0-9]))['\\s]\\s*(?<sec2>(?:[0-5][0-9]|[0-9])(?:[\\.,][0-9]*)?)\"?)\\s*$");
+    QString posSign = QLocale::system().positiveSign();
+    QString negSign = QLocale::system().negativeSign();
+    QString decSep = QLocale::system().decimalPoint();
+    QString grpSep = QLocale::system().groupSeparator();
 
-    regExLat = QRegularExpression("^\\s*((?:\\+|-)?(?:90(?:(?:[\\.,]0*)?)|(?:[0-9]|[1-8][0-9])(?:(?:[\\.,][0-9]*)?)))(?:\\s*°)?\\s*$");
-    regExLon = QRegularExpression("^\\s*((\\+|-)?(?:180(?:(?:[\\.,]0*)?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:[\\.,][0-9]*)?)))(?:\\s*°)?\\s*$");
+    regExDMSLat = QRegularExpression(QString("^\\s*(?:(?<deg1>[\\%0\\%1]?90)[°\\s]\\s*(?<min1>0{1,2})['\\s]\\s*(?<sec1>0{1,2}(?:[\\%2]0*)?)\"?\\s*)|"
+                                             "(?:(?<deg2>[\\%0\\%1]?(?:[1-8][0-9]|[0-9]))[°\\s]\\s*(?<min2>(?:[0-5][0-9]|[0-9]))['\\s]\\s*(?<sec2>(?:[0-5][0-9]|[0-9])(?:[\\%2][0-9]*)?)\"?)\\s*$").arg(posSign, negSign, decSep));
+    regExDMSLon = QRegularExpression(QString("^\\s*(?:(?<deg1>[\\%0\\%1]?180)[°\\s]\\s*(?<min1>0{1,2})['\\s]\\s*(?<sec1>0{1,2}(?:[\\%2]0*)?)\"?\\s*)|"
+                                             "(?:(?<deg2>[\\%0\\%1]?(?:1[0-7][0-9]|[0-9][0-9]|[0-9]))[°\\s]\\s*(?<min2>(?:[0-5][0-9]|[0-9]))['\\s]\\s*(?<sec2>(?:[0-5][0-9]|[0-9])(?:[\\%2][0-9]*)?)\"?)\\s*$").arg(posSign, negSign, decSep));
 
-    regExDistance = QRegularExpression("^\\s*([-+]?[0-9]+(?:[\\.,][0-9]*)+)(?:\\s*m)?\\s*?$");
+    regExLat = QRegularExpression(QString("^\\s*((?:\\%0|\\%1)?(?:90(?:(?:[\\%2]0*)?)|(?:[0-9]|[1-8][0-9])(?:(?:[\\%2][0-9]*)?)))(?:\\s*°)?\\s*$").arg(posSign, negSign, decSep));
+    regExLon = QRegularExpression(QString("^\\s*((\\%0|\\%1)?(?:180(?:(?:[\\%2]0*)?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:[\\%2][0-9]*)?)))(?:\\s*°)?\\s*$").arg(posSign, negSign, decSep));
+
+    regExDistance = QRegularExpression(QString("^\\s*([\\%0\\%1]?[0-9]+(?:[\\%2\\%3][0-9]*)*)(?:\\s*m)?\\s*?$").arg(posSign, negSign, grpSep, decSep));
 
     processingOptions = prcopt_default;
     solutionOptions = solopt_default;
