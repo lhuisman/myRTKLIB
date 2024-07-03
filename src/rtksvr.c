@@ -71,7 +71,7 @@ static void saveoutbuf(rtksvr_t *svr, uint8_t *buff, int n, int index)
 static void writesol(rtksvr_t *svr, int index)
 {
     solopt_t solopt=solopt_default;
-    uint8_t buff[MAXSOLMSG+1];
+    uint8_t buff[2*MAXSOLMSG+1];
     int i,n;
     
     tracet(4,"writesol: index=%d\n",index);
@@ -82,7 +82,7 @@ static void writesol(rtksvr_t *svr, int index)
             
             /* output solution status */
             rtksvrlock(svr);
-            n=rtkoutstat(&svr->rtk,(char *)buff);
+            n=rtkoutstat(&svr->rtk,svr->solopt[i].sstat,(char *)buff);
             rtksvrunlock(svr);
         }
         else {
@@ -836,8 +836,8 @@ extern void rtksvrunlock(rtksvr_t *svr) {rtklib_unlock(&svr->lock);}
 * return : status (1:ok 0:error)
 *-----------------------------------------------------------------------------*/
 extern int rtksvrstart(rtksvr_t *svr, int cycle, int buffsize, int *strs,
-                       char **paths, int *formats, int navsel, char **cmds,
-                       char **cmds_periodic, char **rcvopts, int nmeacycle,
+                       const char **paths, int *formats, int navsel, const char **cmds,
+                       const char **cmds_periodic, const char **rcvopts, int nmeacycle,
                        int nmeareq, const double *nmeapos, prcopt_t *prcopt,
                        solopt_t *solopt, stream_t *moni, char *errmsg)
 {
@@ -969,7 +969,7 @@ extern int rtksvrstart(rtksvr_t *svr, int cycle, int buffsize, int *strs,
 *                              cmds[2]=input stream ephem (NULL: no command)
 * return : none
 *-----------------------------------------------------------------------------*/
-extern void rtksvrstop(rtksvr_t *svr, char **cmds)
+extern void rtksvrstop(rtksvr_t *svr, const char **cmds)
 {
     int i;
     

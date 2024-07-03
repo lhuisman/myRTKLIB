@@ -3639,7 +3639,7 @@ extern double ionppp(const double *pos, const double *azel, double re,
     double cosaz,r,rp,ap,sinap,tanap;
 
     /* The radius at the receiver station. */
-    r=re+pos[2];
+    r=re+pos[2]/1000.0;
     /* asin(rp) is the zenith angle at the IPP. */
     rp=r/(re+hion)*cos(azel[1]);
     /* The angle at the center of the earth. */

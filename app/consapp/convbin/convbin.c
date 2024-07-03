@@ -317,7 +317,7 @@ static int convbin(int format, rnxopt_t *opt, const char *ifile, char **file,
 static void setmask(const char *argv, rnxopt_t *opt, int mask)
 {
     char buff[1024],*p;
-    int i,code;
+    int i;
     
     strcpy(buff,argv);
     char *r;

@@ -806,7 +806,7 @@ static int statexfile(file_t *file, char *msg)
     p+=sprintf(p,"  tick_f  = %u\n",file->tick_f);
     p+=sprintf(p,"  start   = %.3f\n",file->start);
     p+=sprintf(p,"  speed   = %.3f\n",file->speed);
-    p+=sprintf(p,"  swapintv= %.3f\n",file->swapintv);
+    sprintf(p,"  swapintv= %.3f\n",file->swapintv);
     return state;
 }
 /* read file -----------------------------------------------------------------*/
@@ -1816,7 +1816,7 @@ static int statexntrip(ntrip_t *ntrip, char *msg)
     p+=sprintf(p,"  passwd  = %s\n",ntrip->passwd);
     p+=sprintf(p,"  str     = %s\n",ntrip->str);
     p+=sprintf(p,"  svr:\n");
-    p+=statextcp(&ntrip->tcp->svr,p);
+    statextcp(&ntrip->tcp->svr,p);
     return state;
 }
 /* open ntrip-caster ---------------------------------------------------------*/
@@ -2190,7 +2190,7 @@ static int statexudpsvr(udp_t *udpsvr, char *msg)
     if (!state) return 0;
     p+=sprintf(p,"  type    = %d\n",udpsvr->type);
     p+=sprintf(p,"  sock    = %d\n",(int)udpsvr->sock);
-    p+=sprintf(p,"  port    = %d\n",udpsvr->port);
+    sprintf(p,"  port    = %d\n",udpsvr->port);
     return state;
 }
 /* open udp client -----------------------------------------------------------*/
@@ -2243,7 +2243,7 @@ static int statexudpcli(udp_t *udpcli, char *msg)
     p+=sprintf(p,"  type    = %d\n",udpcli->type);
     p+=sprintf(p,"  sock    = %d\n",(int)udpcli->sock);
     p+=sprintf(p,"  addr    = %s\n",udpcli->saddr);
-    p+=sprintf(p,"  port    = %d\n",udpcli->port);
+    sprintf(p,"  port    = %d\n",udpcli->port);
     return state;
 }
 /* decode ftp path -----------------------------------------------------------*/
@@ -2594,7 +2594,7 @@ static int statexmembuf(membuf_t *membuf, char *msg)
     if (!state) return 0;
     p+=sprintf(p,"  buffsize= %d\n",membuf->bufsize);
     p+=sprintf(p,"  wp      = %d\n",membuf->wp);
-    p+=sprintf(p,"  rp      = %d\n",membuf->rp);
+    sprintf(p,"  rp      = %d\n",membuf->rp);
     return state;
 }
 /* initialize stream environment -----------------------------------------------
@@ -2648,8 +2648,8 @@ extern void strinit(stream_t *stream)
 *                                 STR_UDPSVR   = UDP server (read only)
 *                                 STR_UDPCLI   = UDP client (write only)
 *                                 STR_MEMBUF   = memory buffer (FIFO)
-*                                 STR_FTP      = download by FTP (raed only)
-*                                 STR_HTTP     = download by HTTP (raed only)
+*                                 STR_FTP      = download by FTP (read only)
+*                                 STR_HTTP     = download by HTTP (read only)
 *          int mode         I   stream mode (STR_MODE_???)
 *                                 STR_MODE_R   = read only
 *                                 STR_MODE_W   = write only

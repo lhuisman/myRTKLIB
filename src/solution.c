@@ -373,8 +373,8 @@ static int decode_nmea(char *buff, sol_t *sol)
 static char *decode_soltime(char *buff, const solopt_t *opt, gtime_t *time)
 {
     double v[MAXFIELD];
-    char *p,*q,sep[64]=" ";
-    int n,sep_len;
+    char *p,*q;
+    int n;
 
     trace(4,"decode_soltime:\n");
 
@@ -382,9 +382,8 @@ static char *decode_soltime(char *buff, const solopt_t *opt, gtime_t *time)
         return buff;
     }
 
-    if (!strcmp(opt->sep,"\\t")) strcpy(sep,"\t");
-    else if (*opt->sep) strcpy(sep,opt->sep);
-    sep_len=(int)strlen(sep);
+    const char *sep = opt2sep(opt);
+    size_t sep_len = strlen(sep);
 
     if (opt->posf==SOLF_GSIF) {
         if (sscanf(buff,"%lf %lf %lf %lf:%lf:%lf",v,v+1,v+2,v+3,v+4,v+5)<6) {
@@ -751,7 +750,7 @@ static void decode_solopt(char *buff, solopt_t *opt)
         strncpy(opt->sep,p+13,1);
         opt->sep[1]='\0';
     }
-    else if ((p=strstr(buff,"+SITE/INF"))) { /* gsi f2/f3 solution */
+    else if (strstr(buff,"+SITE/INF")) { /* gsi f2/f3 solution */
         opt->times=TIMES_GPST;
         opt->posf=SOLF_GSIF;
         opt->degf=0;
@@ -872,7 +871,7 @@ static int sort_solbuf(solbuf_t *solbuf)
 *          solbuf_t *solbuf O  solution buffer
 * return : status (1:ok,0:no data or error)
 *-----------------------------------------------------------------------------*/
-extern int readsolt(char *files[], int nfile, gtime_t ts, gtime_t te,
+extern int readsolt(const char *files[], int nfile, gtime_t ts, gtime_t te,
                     double tint, int qflag, solbuf_t *solbuf)
 {
     FILE *fp;
@@ -900,7 +899,7 @@ extern int readsolt(char *files[], int nfile, gtime_t ts, gtime_t te,
     }
     return sort_solbuf(solbuf);
 }
-extern int readsol(char *files[], int nfile, solbuf_t *sol)
+extern int readsol(const char *files[], int nfile, solbuf_t *sol)
 {
     gtime_t time={0};
     
@@ -1137,7 +1136,7 @@ static int readsolstatdata(FILE *fp, gtime_t ts, gtime_t te, double tint,
 *          solstatbuf_t *statbuf O  solution status buffer
 * return : status (1:ok,0:no data or error)
 *-----------------------------------------------------------------------------*/
-extern int readsolstatt(char *files[], int nfile, gtime_t ts, gtime_t te,
+extern int readsolstatt(const char *files[], int nfile, gtime_t ts, gtime_t te,
                         double tint, solstatbuf_t *statbuf)
 {
     FILE *fp;
@@ -1168,7 +1167,7 @@ extern int readsolstatt(char *files[], int nfile, gtime_t ts, gtime_t te,
     }
     return sort_solstat(statbuf);
 }
-extern int readsolstat(char *files[], int nfile, solstatbuf_t *statbuf)
+extern int readsolstat(const char *files[], int nfile, solstatbuf_t *statbuf)
 {
     gtime_t time={0};
     
