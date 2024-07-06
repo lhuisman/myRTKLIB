@@ -143,6 +143,7 @@ MainForm::MainForm(QWidget *parent)
     connect(ui->btnConv4, &QPushButton::clicked, this, &MainForm::showConvertDialog);
     connect(ui->btnConv5, &QPushButton::clicked, this, &MainForm::showConvertDialog);
     connect(ui->btnConv6, &QPushButton::clicked, this, &MainForm::showConvertDialog);
+    connect(ui->btnLog, &QPushButton::clicked, this, &MainForm::showLogStreamDialog);
     connect(ui->btnLog1, &QPushButton::clicked, this, &MainForm::showLogStreamDialog);
     connect(ui->btnLog2, &QPushButton::clicked, this, &MainForm::showLogStreamDialog);
     connect(ui->btnLog3, &QPushButton::clicked, this, &MainForm::showLogStreamDialog);
@@ -241,7 +242,7 @@ void MainForm::showInputOptions()
         case 2: tcpServerOptions(0, 2); break; // TCP Server
         case 3: ntripClientOptions(0, 3); break; // Ntrip Client
         case 4: udpServerOptions(0, 4); break;  // UDP Server
-        case 5: fileOptions(0, 0); break;
+        case 5: fileOptions(0, 5); break;
     }
 }
 // callback on button-input-cmd ---------------------------------------------
@@ -679,8 +680,8 @@ void MainForm::updateStreamMonitor()
 // set serial options -------------------------------------------------------
 void MainForm::serialOptions(int index, int path)
 {
-    serialOptDialog->setPath(paths[index][path]);
     serialOptDialog->setOptions((index == 0) ? 0 : 1);
+    serialOptDialog->setPath(paths[index][path]);
 
     serialOptDialog->exec();
     if (serialOptDialog->result() != QDialog::Accepted) return;
@@ -690,8 +691,8 @@ void MainForm::serialOptions(int index, int path)
 // set tcp server options -------------------------------------------------------
 void MainForm::tcpServerOptions(int index, int path)
 {
-    tcpOptDialog->setPath(paths[index][path]);
     tcpOptDialog->setOptions(0);  // 0: TCP Server
+    tcpOptDialog->setPath(paths[index][path]);
 
     tcpOptDialog->exec();
     if (tcpOptDialog->result()!=QDialog::Accepted) return;
@@ -701,9 +702,9 @@ void MainForm::tcpServerOptions(int index, int path)
 // set tcp client options ---------------------------------------------------
 void MainForm::tcpClientOptions(int index, int path)
 {
+    tcpOptDialog->setOptions(1);  // 1: TCP Client
     tcpOptDialog->setHistory(tcpHistory, MAXHIST);
     tcpOptDialog->setPath(paths[index][path]);
-    tcpOptDialog->setOptions(1);  // 1: TCP Client
 
     tcpOptDialog->exec();
     if (tcpOptDialog->result() != QDialog::Accepted) return;
@@ -715,9 +716,9 @@ void MainForm::tcpClientOptions(int index, int path)
 // set ntrip server options ---------------------------------------------------------
 void MainForm::ntripServerOptions(int index, int path)
 {
+    tcpOptDialog->setOptions(2);  // 2: Ntrip Server
     tcpOptDialog->setHistory(tcpHistory, MAXHIST);
     tcpOptDialog->setPath(paths[index][path]);
-    tcpOptDialog->setOptions(2);  // 2: Ntrip Server
 
     tcpOptDialog->exec();
     if (tcpOptDialog->result() != QDialog::Accepted) return;
@@ -729,9 +730,9 @@ void MainForm::ntripServerOptions(int index, int path)
 // set ntrip client options ---------------------------------------------------------
 void MainForm::ntripClientOptions(int index, int path)
 {
+    tcpOptDialog->setOptions(3);  // Ntrip Client
     tcpOptDialog->setHistory(tcpHistory, MAXHIST);
     tcpOptDialog->setPath(paths[index][path]);
-    tcpOptDialog->setOptions(3);  // Ntrip Client
 
     tcpOptDialog->exec();
     if (tcpOptDialog->result() != QDialog::Accepted) return;
@@ -743,8 +744,8 @@ void MainForm::ntripClientOptions(int index, int path)
 // set ntrip caster options ---------------------------------------------------------
 void MainForm::ntripCasterOptions(int index, int path)
 {
-    tcpOptDialog->setPath(paths[index][path]);
     tcpOptDialog->setOptions(4);  // Ntrip caster
+    tcpOptDialog->setPath(paths[index][path]);
 
     tcpOptDialog->exec();
     if (tcpOptDialog->result() != QDialog::Accepted) return;
@@ -754,8 +755,8 @@ void MainForm::ntripCasterOptions(int index, int path)
 // set udp server options ---------------------------------------------------------
 void MainForm::udpServerOptions(int index, int path)
 {
-    tcpOptDialog->setPath(paths[index][path]);
     tcpOptDialog->setOptions(6);  // UDP Server
+    tcpOptDialog->setPath(paths[index][path]);
 
     tcpOptDialog->exec();
     if (tcpOptDialog->result() != QDialog::Accepted) return;
@@ -776,9 +777,9 @@ void MainForm::udpClientOptions(int index, int path)
 // set file options ---------------------------------------------------------
 void MainForm::fileOptions(int index, int path)
 {
+    fileOptDialog->setOptions((index == 0) ? 0 : 1);
     fileOptDialog->setPath(paths[index][path]);
     fileOptDialog->setWindowTitle("File Options");
-    fileOptDialog->setOptions((index == 0) ? 0 : 1);
 
     fileOptDialog->exec();
     if (fileOptDialog->result() != QDialog::Accepted) return;

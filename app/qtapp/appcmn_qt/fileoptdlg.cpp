@@ -61,8 +61,6 @@ void FileOptDialog::setOptions(int options)
     ui->lbSwapInterval->setVisible(options);
     ui->cBSwapInterval->setVisible(options);
     ui->btnKey->setVisible(options);
-    ui->cBTimeTag->setChecked(false);
-
 }
 //---------------------------------------------------------------------------
 void FileOptDialog::setPathEnabled(int pathEnabled)
@@ -74,6 +72,7 @@ void FileOptDialog::setPathEnabled(int pathEnabled)
 //---------------------------------------------------------------------------
 void FileOptDialog::setPath(const QString &path)
 {
+    ui->cBTimeTag->setChecked(false);
     if (!options) { // input
         double speed = 1.0, start = 0.0;
         int size_fpos = 4;
@@ -127,6 +126,7 @@ void FileOptDialog::setPath(const QString &path)
         ui->lEFilePath->setText(tokens.at(0));
         setPathEnabled(ui->cBPathEnable->isChecked());
 	}
+    updateEnable();
 }
 //---------------------------------------------------------------------------
 QString FileOptDialog::getPath()
