@@ -7,7 +7,8 @@
 * reference :
 *     [1] Septentrio, SBF Reference Guide, Version 130722r38600, 07/2013
 *
-* note: - QZSS and Compass/Beidou is deactivated. The code is not tested. Use -DTESTING to activate.
+* note: - QZSS and IRN is deactivated. The code is not tested. Use -DTESTING to activate.
+*
 *
 * version : $Revision: 1.4 $ $Date: 2016/01/29 15:05:00 $
 *
@@ -88,6 +89,7 @@ Meas3_RefEpoch_t meas3_refEpoch;
 
 /* assignment for rtklib frequency indices to meas3 signal indices */
 int8_t meas3_freqAssignment[MEAS3_SYS_MAX][MEAS3_SAT_MAX][MEAS3_SIG_MAX];
+int meas2_channelAssignment[2048];
 
 
 /* SBF definitions  2020 */
@@ -96,16 +98,25 @@ int8_t meas3_freqAssignment[MEAS3_SYS_MAX][MEAS3_SAT_MAX][MEAS3_SIG_MAX];
 #define SBF_MAXSIG         39   /* SBF max signal number */
 
 /* Measurement Blocks */
+
+#define ID_GENMEASEPOCH    5944 /* SBF message id: Measurement set of one epoch */
 #define ID_MEASEPOCH       4027 /* SBF message id: Measurement set of one epoch  */
 #define ID_MEASEPOCHEXTRA  4000 /* SBF message id: Additional info such as observable variance */
+#define ID_MEASFULLRANGE   4098 /* SBF message id: Extended-range code and phase measurements */
 #define ID_MEASE3RNG       4109 /* SBF message id: Code, phase and CN0 measurements */
 #define ID_MEASE3CN        4110 /* SBF message id: Extension of Meas3Ranges containing fractional C/N0 values */
 #define ID_MEASE3DOPPLER   4111 /* SBF message id: Extension of Meas3Ranges containing Doppler values */
 #define ID_MEASE3PP        4112 /* SBF message id: Extension of Meas3Ranges containing proprietary flags for data post-processing. (undocumented) */
 #define ID_MEASE3MP        4113 /* SBF message id: Extension of Meas3Ranges containing multipath corrections applied by the receiver. (undocumented */
+#define ID_IQCORR          4046 /* SBF message id: Real and imaginary post-correlation values */
+#define ID_ISMR            4086 /* SBF message id: Ionospheric scintillation monitor (ISMR) data  */
+#define ID_SQMSAMPLES      4087 /* SBF message id: Correlation samples for signal quality monitoring */
 #define ID_MEASEPOCH_END   5922 /* SBF message id: Measurement epoch marker */
 
 /* Navigation Page Blocks */
+//#define ID_GPSRaw       5895    /* SBF message id: GPS CA navigation frame  */
+//#define ID_CNAVRaw      5947    /* SBF message id: GPS L2C navigation frame */
+//#define ID_GEORaw       5898    /* SBF message id: SBAS L1 navigation frame */
 #define ID_GPSRAWCA     4017    /* SBF message id: GPS CA navigation subframe  */
 #define ID_GPSRAWL2C    4018    /* SBF message id: GPS L2C navigation frame */
 #define ID_GPSRAWL5     4019    /* SBF message id: GPS L5 navigation frame */
@@ -114,22 +125,25 @@ int8_t meas3_freqAssignment[MEAS3_SYS_MAX][MEAS3_SAT_MAX][MEAS3_SIG_MAX];
 #define ID_GALRAWFNAV   4022    /* SBF message id: Galileo F/NAV navigation page */
 #define ID_GALRAWINAV   4023    /* SBF message id: Galileo I/NAV navigation page */
 #define ID_GALRAWCNAV   4024    /* SBF message id: Galileo C/NAV navigation page */
+//#define ID_GALRAWGNAV   4025    /* SBF message id: Galileo G/NAV navigation page */
+//#define ID_GALRAWGNAVE  4029    /* SBF message id: Galileo G/NAVe navigation page */
 #define ID_GEORAWL1     4020    /* SBF message id: SBAS L1 navigation message */
 #define ID_GEORAWL5     4021    /* SBF message id: SBAS L5 navigation message */
 #define ID_BDSRAW       4047    /* SBF message id: BeiDou navigation page */
-//#define ID_BSDRAWB1C    4218    /* SBF message id: BeiDou B1C navigation frame */
-//#define ID_BSDRAWB2A    4219    /* SBF message id: BeiDou B2A navigation frame */
-//#define ID_BSDRAWB2N    4242    /* SBF message id: BeiDou B2B navigation frame */
+#define ID_BDSRAWB1C    4218    /* SBF message id: BeiDou B1C navigation frame */
+#define ID_BDSRAWB2A    4219    /* SBF message id: BeiDou B2A navigation frame */
+#define ID_BDSRAWB2B    4242    /* SBF message id: BeiDou B2B navigation frame */
 #define ID_QZSSL1CA     4066    /* SBF message id: QZSS L1C/A or L1C/B navigation frame */
 #define ID_QZSSL2C      4067    /* SBF message id: QZSS L2C navigation frame  */
-//#define ID_QZSSL5      4068    /* SBF message id: QZSS L5 navigation frame */
-//#define ID_QZSSL6      4069    /* SBF message id: QZSS L6 navigation frame */
-#define ID_QZSSL5       4068    /* SBF message id: QZSS L5 navigation frame  */
-//#define ID_QZSSL6       4069    /* SBF message id: QZSS L6 navigation message */
-//#define ID_QZSSL1C       4227    /* SBF message id: QZSS L1C navigation message */
-//#define ID_QZSSL1S       4228    /* SBF message id: QZSS L1S navigation message */
-//#define ID_QZSSL5S       4246    /* SBF message id: QZSS L5S navigation message */
+#define ID_QZSSL5       4068    /* SBF message id: QZSS L5 navigation frame */
+#define ID_QZSSL6       4069    /* SBF message id: QZSS L6 navigation frame */
+#define ID_QZSSL1C      4227    /* SBF message id: QZSS L1C navigation message */
+#define ID_QZSSL1S      4228    /* SBF message id: QZSS L1S navigation message */
+#define ID_QZSSL5S      4246    /* SBF message id: QZSS L5S navigation message */
 #define ID_IRNSSRAW     4093    /* SBF message id: IRNSS raw navigation page or frame */
+//#define ID_IRNSSRAWL1   4262    /* SBF message id: IRNSS raw navigation page or frame */
+#define ID_GNSSNAVBITS  4088  /* SBF message id: Raw navigation bits during last second */
+#define ID_GNSSSYMBOLS  4099  /* SBF message id: Raw navigation symbols */
 
 /* GPS Decoded Message Blocks */
 #define ID_GPSNAV       5891    /* SBF message id: GPS ephemeris and clock */
@@ -137,7 +151,7 @@ int8_t meas3_freqAssignment[MEAS3_SYS_MAX][MEAS3_SAT_MAX][MEAS3_SIG_MAX];
 #define ID_GPSION       5893    /* SBF message id: Ionosphere data from the GPS subframe 5 */
 #define ID_GPSUTC       5894    /* SBF message id: GPS-UTC data from GPS subframe 5 */
 #define ID_GPSCNAV      4042    /* SBF message id: CNAV Ephemeris data for one satellite.  */
-//#define ID_GPSCNAV2      4258    /* SBF message id: CNAV Ephemeris data for one satellite.  */
+#define ID_GPSCNAV2     4258    /* SBF message id: CNAV Ephemeris data for one satellite.  */
 
 /* GLONASS Decoded Message Blocks */
 #define ID_GLONAV       4004    /* SBF message id: GLONASS ephemeris and clock */
@@ -154,8 +168,9 @@ int8_t meas3_freqAssignment[MEAS3_SYS_MAX][MEAS3_SAT_MAX][MEAS3_SIG_MAX];
 
 /* BeiDou Decoded Message Blocks */
 #define ID_BDSNAV       4081    /* SBF message id: BeiDou ephemeris and clock */
-//#define ID_BDSCNAV1     4251    /* SBF message id: BeiDou B-CNAV2 ephemeris data for one satellite.  */
-//#define ID_BDSCNAV2     4252    /* SBF message id: BeiDou B-CNAV2 ephemeris data for one satellite.  */
+#define ID_BDSCNAV1     4251    /* SBF message id: BeiDou B-CNAV1 ephemeris data for one satellite.  */
+#define ID_BDSCNAV2     4252    /* SBF message id: BeiDou B-CNAV2 ephemeris data for one satellite.  */
+#define ID_BDSCNAV3     4253    /* SBF message id: BeiDou B-CNAV3 ephemeris data for one satellite.  */
 #define ID_BDSALM       4119    /* SBF message id: Almanac data for a BeiDou satellite  */
 #define ID_BDSION       4120    /* SBF message id: BeiDou Ionospheric delay model parameters */
 #define ID_BDSUTC       4121    /* SBF message id: BDT-UTC data */
@@ -167,7 +182,7 @@ int8_t meas3_freqAssignment[MEAS3_SYS_MAX][MEAS3_SAT_MAX][MEAS3_SIG_MAX];
 #define ID_QZSSALM      4116    /* SBF message id: Almanac data for a QZSS satellite */
 
 /* NavIC/IRNSS Decoded Message Blocks */
-//#define ID_NAVICLNAV    4254    /* SBF message id: NavIC/IRNSS ephemeris and clock  */
+#define ID_NAVICLNAV    4254    /* SBF message id: NavIC/IRNSS ephemeris and clock  */
 
 /* SBAS L1 Decoded Message Blocks */
 #define ID_GEOMT00                  5925 /* SBF message id:  SBAS: Don't use for safety application */
@@ -185,84 +200,150 @@ int8_t meas3_freqAssignment[MEAS3_SYS_MAX][MEAS3_SAT_MAX][MEAS3_SIG_MAX];
 #define ID_GEOSERVICELEVEL          5917 /* SBF message id:  SBAS Service Message */
 #define ID_GEOCLOCKEPHCOVMATRIX     5934 /* SBF message id:  Clock-Ephemeris Covariance Matrix l*/
 
+/* SBAS L5 Decoded Message Blocks */
+#define ID_SBASL5NAV    5958     /* SBF message id: DFMC SBAS ephemeris and clock data */
+#define ID_SBASL5ALM    5959     /* SBF message id: DFMC SBAS almanac data */
+
 /* GNSS Position, Velocity and Time Blocks */
-#define ID_PVTCART      4006    /* SBF message id: GNSS position, velocity, and time in Cartesian coordinates */
-#define ID_PVTGEOD      4007    /* SBF message id: GNSS position, velocity, and time in geodetic coordinates */
-#define ID_COVCART      5905    /* SBF message id: Position covariance matrix (X,Y, Z) */
-#define ID_COVGEOD      5906    /* SBF message id: Position covariance matrix (Lat, Lon, Alt) */
-#define ID_VELCOVCART   5907    /* SBF message id: Velocity covariance matrix (X, Y, Z)  */
-#define ID_VELCOVGEOD   5908    /* SBF message id: Velocity covariance matrix (North, East, Up)  */
-#define ID_DOP          4001    /* SBF message id: Dilution of precision */
-#define ID_POSCART      4044    /* SBF message id: Position, variance and baseline in Cartesian coordinates */
-#define ID_PVTLOCAL     4052    /* SBF message id: Position in a local datum */
-#define ID_POSPROJ      4094    /* SBF message id: Plane grid coordinates */
-#define ID_PVTSATCART   4008    /* SBF message id: Satellite positions */
-#define ID_PVTRESIDUALS 4009    /* SBF message id: Measurement residuals */
-#define ID_RAIMSTATS    4011    /* SBF message id: Integrity statistics */
-#define ID_GEOCORR      5935    /* SBF message id: Orbit, Clock and pseudoranges SBAS corrections  */
-#define ID_BASEVECCART  4043    /* SBF message id: XYZ relative position and velocity with respect to base(s) */
-#define ID_BASEVECGEOD  4028    /* SBF message id: ENU relative position and velocity with respect to base(s)  */
-#define ID_PVTSUPPORT   4076    /* SBF message id: Internal parameters for maintenance and support */
-#define ID_PVTSUPPORTA  4079    /* SBF message id: Internal parameters for maintenance and support */
-#define ID_PVTEND       5921    /* SBF message id: PVT epoch marke */
+#define ID_PVTCART1      5903    /* SBF message id: GNSS position, velocity, and time in Cartesian coordinates */
+#define ID_PVTGEOD1      5904    /* SBF message id: GNSS position, velocity, and time in Geodetic coordinates */
+#define ID_DOP1          5909    /* SBF message id: Dilution of precision */
+#define ID_PVTRESIDUALS1 5910    /* SBF message id: Measurement residuals */
+#define ID_RAIMSTATS1    5915    /* SBF message id: Integrity statistics */
+#define ID_PVTCART2      4006    /* SBF message id: GNSS position, velocity, and time in Cartesian coordinates */
+#define ID_PVTGEOD2      4007    /* SBF message id: GNSS position, velocity, and time in Geodetic coordinates */
+#define ID_PVTGEODAUTH   4232    /* SBF message id: OSNMA-Authenticated Position, velocity, and time in geodetic coordinate */
+#define ID_COVCART       5905    /* SBF message id: Position covariance matrix (X,Y, Z) */
+#define ID_COVGEOD       5906    /* SBF message id: Position covariance matrix (Lat, Lon, Alt) */
+#define ID_VELCOVCART    5907    /* SBF message id: Velocity covariance matrix (X, Y, Z)  */
+#define ID_VELCOVGEOD    5908    /* SBF message id: Velocity covariance matrix (North, East, Up)  */
+#define ID_DOP2          4001    /* SBF message id: Dilution of precision */
+#define ID_DOPAUTH       4247    /* SBF message id: Dilution of Precision Authenticated Data */
+#define ID_POSCART       4044    /* SBF message id: Position, variance and baseline in Cartesian coordinates */
+#define ID_PVTLOCAL      4052    /* SBF message id: Position in a local datum */
+#define ID_POSPROJ       4094    /* SBF message id: Plane grid coordinates */
+#define ID_PVTSATCART    4008    /* SBF message id: Satellite positions */
+#define ID_PVTRESIDUALS2 4009    /* SBF message id: Measurement residuals */
+#define ID_RAIMSTATS2    4011    /* SBF message id: Integrity statistics */
+#define ID_GEOCORR       5935    /* SBF message id: Orbit, Clock and pseudoranges SBAS corrections  */
+#define ID_BASEVECCART   4043    /* SBF message id: XYZ relative position and velocity with respect to base(s) */
+#define ID_BASEVECGEOD   4028    /* SBF message id: ENU relative position and velocity with respect to base(s)  */
+#define ID_AMBIGUITIES   4240    /* SBF message id: Carrier phase ambiguity states */
+#define ID_PVTSUPPORT    4076    /* SBF message id: Internal parameters for maintenance and support */
+#define ID_PVTSUPPORTA   4079    /* SBF message id: Internal parameters for maintenance and support */
+#define ID_PVTEND        5921    /* SBF message id: PVT epoch marke */
+#define ID_BASELINE      5950    /* SBF message id:  Base-rover vector (deprecated block - not to be used) */
+
+/* INS/GNSS Integrated Blocks */
+#define ID_INTPVCART      4060   /* SBF message id: Integrated PV in Cartesian coordinates */
+#define ID_INTPVGEOD      4061   /* SBF message id: Integrated PV in Geodetic coordinates */
+#define ID_INTPOSCOVCART  4062   /* SBF message id: Integrated position covariance matrix (X, Y, Z) */
+#define ID_INTVELCOVCART  4063   /* SBF message id: Integrated velocity covariance matrix (X, Y, Z) */
+#define ID_INTPOSCOVGEOD  4064   /* SBF message id: Integrated position covariance matrix (Lat, Lon, Alt) */
+#define ID_INTVELCOVGEOD  4065   /* SBF message id: Integrated velocity covariance matrix (North, East, Up) */
+#define ID_INTATTEULER    4070   /* SBF message id: Integrated attitude in Euler angles */
+#define ID_INTATTCCOEULER 4072   /* SBF message id: Integrated attitude covariance matrix of Euler angles */
+#define ID_INTPVAAGEOD    4045   /* SBF message id: Integrated position, velocity, acceleration and attitude */
+#define ID_INSNAVCART     4225   /* SBF message id: INS solution in Cartesian coordinates */
+#define ID_INSNAVGEOD     4226   /* SBF message id: INS solution in Geodetic coordinates */
+#define ID_IMUBIAS        4241   /* SBF message id: Estimated parameters of the IMU, such as the IMU biases and their standard deviation */
 
 /* GNSS Attitude Blocks */
 #define ID_ATTEULER     5938    /* SBF message id: GNSS attitude expressed as Euler angles */
 #define ID_ATTCOVEULER  5939    /* SBF message id: Covariance matrix of attitude */
 #define ID_AUXPOS       5942    /* SBF message id: Relative position and velocity estimates of auxiliary antennas  */
 #define ID_ENDATT       5943    /* SBF message id: GNSS attitude epoch marker */
+#define ID_ATTQUAD      5940    /* SBF message id: GNSS attitude expressed as Quaternions */
+#define ID_ATTCOVQUAD   5941    /* SBF message id: Covariance matrix of attitude as Quaternions */
 
 /* Receiver Time Blocks */
 #define ID_RXTIME       5914    /* SBF message id: Current receiver and UTC time */
 #define ID_PPSOFFSET    5911    /* SBF message id: Offset of the xPPS pulse with respect to GNSS time */
+#define ID_SYSTIMEOFF   4039    /* SBF message id: Time offset between different constellations */
+#define ID_FUGROTIMEOFF 4255    /* SBF message id: Fugro clock biases */
 
 /* External Event Blocks */
-#define ID_EXEVENT      5924    /* SBF message id: Time at the instant of an external event */
-#define ID_EXEVENTCART  4937    /* SBF message id: Cartesian position at the instant of an event */
-#define ID_EXEVENTGEO   4938    /* SBF message id: Geodetic position at the instant of an event */
-#define ID_EXEVENTBASEVEC  4217 /* SBF message id: NU relative position with respect to base(s) at the instant of an event */
+#define ID_EXTEVENT     5924    /* SBF message id: Time at the instant of an external event */
+#define ID_EXTEVENTCART 4937    /* SBF message id: Cartesian position at the instant of an event */
+#define ID_EXTEVENTGEO  4938    /* SBF message id: Geodetic position at the instant of an event */
+#define ID_EXTEVENTBASEVECCART  4216 /* SBF message id: XYZ relative position with respect to base(s) at the instant of an event */
+#define ID_EXTEVENTBASEVECGEOD  4217 /* SBF message id: ENU relative position with respect to base(s) at the instant of an event */
+#define ID_EXTEVENTINSNAVCART   4229 /* SBF message id: INS solution in Cartesian coordinates at the instant of an event */
+#define ID_EXTEVENTINSNAVGEOD   4230 /* SBF message id: INS solution in Geodetic coordinates at the instant of an event */
+#define ID_EXTEEVENTAATTEULER   4237 /* GNSS attitude expressed as Euler angles at the instant of an event */
 
 /* Differential Correction Blocks */
 #define ID_DIFFCORRIN   5919    /* SBF message id: Incoming RTCM or CMR message */
 #define ID_BASESTATION  5949    /* SBF message id: Base station coordinates  */
 #define ID_RTCMDATUM    4049    /* SBF message id: Datum information from the RTK service provider  */
+#define ID_BASELINK     5948    /* SBF message id: Number of received and transmitted byte */
 
 /* L-Band Demodulator Blocks */
-//#define ID_LTRACK       4201    /* SBF message id: Status of the L-band signal tracking */
-//#define ID_LDECODE      4202    /* SBF message id: Status of the LBAS1 L-band service */
-//#define ID_LMESSAGE     4203    /* SBF message id: LBAS1over-the-air message */
-//#define ID_LBEAMS       4204    /* SBF message id: L-band satellite/beam information */
+#define ID_LRECEIVER    4200    /* SBF message id: L-Band Receiver Status */
+#define ID_LTRACK       4201    /* SBF message id: Status of the L-band signal tracking */
+#define ID_LDECODE      4202    /* SBF message id: Status of the LBAS1 L-band service */
+//#define ID_LMESSAGE     4203    /* SBF message id: LBAS1 over-the-air message */
+#define ID_LBEAMS       4204    /* SBF message id: L-band satellite/beam information */
+#define ID_FUGRODSS     4211    /* SBF message id: DDS (Debug Data Stream) from Fugro */
+//#define ID_LRAW         4212  /* SBF message id: L-Band raw user data  */
+#define ID_FUGROSTAT    4214    /* SBF message id: Fugro Status Information  */
+
+/* External Sensor Blocks */
+#define ID_EXTSENSORMEAS     4050  /* SBF message id: Measurement set of external sensors of one epoch */
+#define ID_EXTSENSORSTATUS   4056  /* SBF message id: Overall status of external sensors */
+#define ID_EXTSENSORSETUP    4057  /* SBF message id: General information about the setup of external sensors */
+#define ID_EXTSENSORSTATUS2  4223  /* SBF message id: Overall status of external sensors */
+#define ID_EXTSENSORINFO     4222  /* SBF message id: Configuration information of external sensors */
+#define ID_IMUSETUP          4224  /* SBF message id: General information about the setup of the IMU */
+#define ID_VELSENSORSETUP    4244  /* SBF message id: General information about the setup of the velocity sensor */
+#define ID_LEVERARMSUPPORT1  4248  /* SBF message id: LeverArm estimation */
 
 /* Status Blocks */
-#define ID_CHNSTATUS    4013    /* SBF message id: Status of the tracking for all receiver channels */
-#define ID_RXSTATUS     4014    /* SBF message id: Overall status information of the receiver */
-#define ID_SATVISIBILITY 4012   /* SBF message id: Azimuth/elevation of visible satellites  */
-#define ID_INPUTLINK    4090    /* SBF message id: Statistics on input streams */
-#define ID_OUTPUTLINK   4091    /* SBF message id: Statistics on in´output streams */
-#define ID_NTRIPCLTSTAT 4053    /* SBF message id: NTRIP client connection status */
-#define ID_NTRIPSVRSTAT 4122    /* SBF message id: NTRIP server connection status */
-#define ID_IPSTATUS     4058    /* SBF message id: IP address, gateway and MAC address of Ethernet interface */
-#define ID_WIFIAPSTATUS 4054    /* SBF message id: WiFi status in access point mode */
-#define ID_WIFICLTSTATUS 4096    /* SBF message id: WiFi status in client mode */
-#define ID_DYNDNSSTATUS 4105    /* SBF message id: DynDNS status */
-#define ID_POWERSTATUS  4101    /* SBF message id: Power supply source and voltage */
-#define ID_QUALIND      4082    /* SBF message id: Quality indicators */
-#define ID_DISKSTATUS   4059    /* SBF message id: Internal logging status */
-#define ID_LOGSTATUS    4102    /* SBF message id: Log sessions status  */
-#define ID_RFSTATUS     4092    /* SBF message id: Radio-frequency interference mitigation status  */
-#define ID_P2PPSTATUS   4238    /* SBF message id: P2PP client/server status */
-#define ID_COSMOSTATUS  4243    /* SBF message id: Cosmos receiver service status */
-#define ID_GALAUTHSTATUS 4245   /* SBF message id: Galileo OSNMA authentication status */
+#define ID_RXSTATUS1       5913    /* SBF message id: Overall status information of the receiver */
+#define ID_TRACKSTATUS     5912    /* SBF message id: Status of the tracking for all receiver channels */
+#define ID_CHNSTATUS       4013    /* SBF message id: Status of the tracking for all receiver channels */
+#define ID_RXSTATUS2       4014    /* SBF message id: Overall status information of the receiver */
+#define ID_SATVISIBILITY   4012    /* SBF message id: Azimuth/elevation of visible satellites  */
+#define ID_INPUTLINK       4090    /* SBF message id: Statistics on input streams */
+#define ID_OUTPUTLINK      4091    /* SBF message id: Statistics on in´output streams */
+#define ID_NTRIPCLTSTAT    4053    /* SBF message id: NTRIP client connection status */
+#define ID_NTRIPSVRSTAT    4122    /* SBF message id: NTRIP server connection status */
+#define ID_IPSTATUS        4058    /* SBF message id: IP address, gateway and MAC address of Ethernet interface */
+#define ID_WIFIAPSTATUS    4054    /* SBF message id: WiFi status in access point mode */
+#define ID_WIFICLTSTATUS   4096    /* SBF message id: WiFi status in client mode */
+#define ID_CELLULARSTATUS  4055    /* SBF message id: Cellular status */
+#define ID_BLUETOOTHSTATUS 4051    /* SBF message id: Bluethooth status */
+#define ID_DYNDNSSTATUS    4105    /* SBF message id: DynDNS status */
+#define ID_BATTERYSTATUS   4083    /* SBF message id: Battery status */
+#define ID_POWERSTATUS     4101    /* SBF message id: Power supply source and voltage */
+#define ID_QUALIND         4082    /* SBF message id: Quality indicators */
+#define ID_DISKSTATUS      4059    /* SBF message id: Internal logging status */
+#define ID_LOGSTATUS       4102    /* SBF message id: Log sessions status  */
+#define ID_UHFSTATUS       4085    /* SBF message id: UHF status  */
+#define ID_RFSTATUS        4092    /* SBF message id: Radio-frequency interference mitigation status  */
+#define ID_RIMSHEALTH      4089    /* SBF message id: Health status of the receiver */
+#define ID_OSNMASTATUS     4231    /* SBF message id: OSNMA status information */
+#define ID_GALNAVMONITOR   4108    /* SBF message id: Monitoring navigation data per Galileo satellite. */
+#define ID_GALNAVRCEDMONITOR 4249  /* SBF message id: Monitoring Reduced CED per Galileo satellite. */
+#define ID_INAVMONITOR     4233    /* SBF message id: Reed-Solomon and SSP status information */
+#define ID_P2PPSTATUS      4238    /* SBF message id: P2PP client/server status */
+//#define ID_AUTHSTATUS     4239
+#define ID_COSMOSTATUS     4243    /* SBF message id: Cosmos receiver service status */
+#define ID_GALAUTHSTATUS   4245    /* SBF message id: Galileo OSNMA authentication status */
+#define ID_FUGROAUTHSTATUS 4256    /* SBF message id: Fugro authentication status */
 
 /* Miscellaneous Blocks */
 #define ID_RXSETUP      5902     /* SBF message id: General information about the receiver installation*/
-#define ID_RFCOMPS      4084     /* SBF message id: Information on various receiver components  */
+#define ID_RXCOMPS      4084     /* SBF message id: Information on various receiver components  */
 #define ID_RXMESSAGE    4103     /* SBF message id: Receiver Messages */
 #define ID_COMMANDS     4015     /* SBF message id: Commands entered by the user */
 #define ID_COMMENT      5936     /* SBF message id: Comment entered by the user */
 #define ID_BBSMPS       4040     /* SBF message id: Baseband samples */
 #define ID_ASCIIIN      4075     /* SBF message id: ASCII input from external sensor  */
 #define ID_ENCAPSOUT    4097     /* SBF message id: SBF encapsulation of non-SBF messages */
+#define ID_RAWDATAIN    4236     /* SBF message id: Incoming raw data message */
+#define ID_IMURAWSAMPLES  4250   /* SBF message id: IMU Raw samples */
+#define ID_INTERFACESTATS 4261   /* SBF message id: Statistics (data traffic and Internet availability) of every interface. */
 
 /* Advanced Blocks */
 #define ID_SYSINFO      6000     /* SBF message id: System parameters for maintenance and support  */
@@ -562,8 +643,10 @@ static int decode_measepoch(raw_t *raw)
 {
     uint8_t *p = raw->buff+14, code;
     double P1, P2, L1, L2, D1, D2, S1, S2, freq1, freq2;
-    int i, j, idx, n, n1, n2, len1, len2, sig, ant, svid, info, sat, sys, lock, fcn, LLI;
+    int i, j, idx, n, n1, n2, len1, len2, sig, ant, svid, info, sat, sys, lock, fcn, LLI, chn;
     int ant_sel = 0; /* antenna selection (0:main) */
+
+    if (strstr(raw->opt, "-NO_MEAS2")) return 0;
 
     if      (strstr(raw->opt, "-AUX1")) ant_sel = 1;
     else if (strstr(raw->opt, "-AUX2")) ant_sel = 2;
@@ -581,12 +664,16 @@ static int decode_measepoch(raw_t *raw)
         return -1;
     }
 
+    // reset channel assignment
+    memset(&meas2_channelAssignment, -1, 2048*sizeof(int));
+
     if (raw->outtype) {
         sprintf(raw->msgtype+strlen(raw->msgtype), " nsat=%d", n1);
     }
 
     for (i=n=0, p+=6; i<n1 && n<MAXOBS && p+20 <= raw->buff+raw->len; i++) {
         /* byte 0: receiver channel */
+        chn  = U1(p);
         ant  = U1(p+1) >> 5;
         sig  = U1(p+1) & 0x1f;
         svid = U1(p+2);
@@ -615,6 +702,7 @@ static int decode_measepoch(raw_t *raw)
             continue;
         }
         init_obsd(raw->time, sat, raw->obuf.data+n);
+        meas2_channelAssignment[chn] = n;
         P1 = D1 = 0.0;
         sys = satsys(sat, NULL);
         freq1 = code2freq(sys, code, fcn);
@@ -689,12 +777,79 @@ static int decode_measepoch(raw_t *raw)
     return 1;
 }
 
+static int decode_measepochextra(raw_t *raw)
+{
+    uint8_t *p = raw->buff+8;
+    uint8_t n_chn, sbLen, i, misc;
+    uint8_t code, type, chn;
+    uint16_t revision;
+    double codeVar, carrierVar, pstd;
+    int sig, n, idx, sat;
+    int ant_sel = 0; /* antenna selection (0:main) */
+
+    if (raw->outtype) {
+        sprintf(raw->msgtype, "SBF Measurement Data Extra");
+    }
+
+    if (strstr(raw->opt, "-NO_MEAS2")) return 0;
+
+    if      (strstr(raw->opt, "-AUX1")) ant_sel = 1;
+    else if (strstr(raw->opt, "-AUX2")) ant_sel = 2;
+
+    revision = U2(raw->buff+4) >> 13;
+    n_chn = U1 (p+6);
+    sbLen = U1(p+7);
+
+    for (i = 0; i < n_chn; i++)
+    {
+        uint8_t *p_chan = p+12+i*sbLen;
+
+        chn = U1(p_chan);
+        type = U1(p_chan+1);
+        if ((type >> 5) != ant_sel)   /* check selected antenna */
+            continue;
+        sig = type & 0x1f;
+        if (sig == 31)
+            sig = (U1(p_chan + 15) >> 3) + 32;
+
+        n = meas2_channelAssignment[chn];
+        if (n < 0) {
+            continue;  /* channel is acquired but not tracked */
+        }
+        sat = raw->obuf.data[n].sat;
+        idx = meas2_sig2idx(sat, sig, raw->opt, &code);
+        if (idx < 0) {
+            trace(2, "sbf measepochextra sig error: sat=%d sig=%d\n", sat, sig);
+            continue;
+        }
+
+        codeVar = U2(p_chan+6)/10000.;    /* in meters^2 */
+        carrierVar = U2(p_chan+8)/1000.;  /* in cycles^2 */
+
+        if (codeVar != 65535) {
+            pstd = log2(sqrt(codeVar)*100)-5;
+            raw->obuf.data[n].Pstd[idx] = pstd>0 ? pstd : 0;
+        }
+        if (carrierVar != 65535) {
+            raw->obuf.data[n].Lstd[idx] = sqrt(carrierVar)/0.004;
+        }
+
+        if ((revision >= 3) && (sbLen >= 16)) {  /* later revision contains high-resolution extension for CN0 values*/
+            misc = U1(p_chan+15);
+            raw->obuf.data[n].SNR[idx] += (uint16_t)(((misc & 0x7 ) * 0.0312)/SNR_UNIT+0.5);
+        }
+    }
+
+    return 0;
+}
+
 /* decode meas3 bloack -------------------------------------------------*/
 static int decode_meas3ranges(raw_t *raw) {
     uint8_t *p = raw->buff+8;
     int n = 0, idx = 0;
-
     int ant_sel = 0; /* antenna selection (0:main) */
+
+    if (strstr(raw->opt, "-NO_MEAS3")) return 0;
 
     if      (strstr(raw->opt, "-AUX1")) ant_sel = 1;
     else if (strstr(raw->opt, "-AUX2")) ant_sel = 2;
@@ -734,7 +889,7 @@ static int decode_meas3ranges(raw_t *raw) {
     p += 12; // jump to start of data
 
     /* invalidate frequency assignments */
-    memset(meas3_freqAssignment, -1, MEAS3_SYS_MAX*MEAS3_SAT_MAX*MEAS3_SIG_MAX);
+    memset(meas3_freqAssignment, -1, MEAS3_SYS_MAX*MEAS3_SAT_MAX*MEAS3_SIG_MAX*sizeof(uint8_t));
 
     if (((TOW % refEpochInterval) == 0) ||  // check reference epoch
         (meas3_refEpoch.TOW == (uint32_t)(TOW / refEpochInterval)*refEpochInterval))  // or reference epoch is available
@@ -1181,6 +1336,14 @@ int decode_meas3Doppler(raw_t* raw)
 {
     int n;
     uint32_t offset = 0;
+    int ant_sel = 0; /* antenna selection (0:main) */
+
+    if (strstr(raw->opt, "-NO_MEAS3")) return 0;
+
+    uint16_t flags = U2(raw->buff + 14);
+    if      (strstr(raw->opt, "-AUX1")) ant_sel = 1;
+    else if (strstr(raw->opt, "-AUX2")) ant_sel = 2;
+    if ((flags & 0x7) != ant_sel) return 0;
 
     for (n = 0; n < raw->obuf.n && offset+16 < (uint32_t)raw->len; n++) {
         int navsys, sys, prn;
@@ -1223,6 +1386,14 @@ int decode_meas3CN(raw_t* raw)
 {
     int n;
     uint32_t offset = 0;
+    int ant_sel = 0; /* antenna selection (0:main) */
+
+    if (strstr(raw->opt, "-NO_MEAS3")) return 0;
+
+    uint16_t flags = U2(raw->buff + 14);
+    if      (strstr(raw->opt, "-AUX1")) ant_sel = 1;
+    else if (strstr(raw->opt, "-AUX2")) ant_sel = 2;
+    if ((flags & 0x7) != ant_sel) return 0;
 
     for (n = 0; n < raw->obuf.n && offset+16 < (uint32_t)raw->len; n++) {
         int navsys, sys, prn;
@@ -1476,15 +1647,15 @@ static int decode_galrawfnav(raw_t *raw)
 
     if (strstr(raw->opt, "-GALINAV")) return 0;
 
-    if (raw->len<52) {
+    if (raw->len < 52) {
         trace(2, "sbf galrawfnav length error: len=%d\n", raw->len);
         return -1;
     }
     svid = U1(p);
     src  = U1(p+3) & 0x1f;
 
-    sat=svid2sat(svid);
-    if (!sat || satsys(sat,&prn)!=SYS_GAL) {
+    sat = svid2sat(svid);
+    if (!sat || satsys(sat, &prn) != SYS_GAL) {
         trace(2, "sbf galrawfnav svid error: svid=%d src=%d\n", svid, src);
         return -1;
     }
@@ -1504,7 +1675,7 @@ static int decode_galrawfnav(raw_t *raw)
     }
     type = getbitu(buff, 0, 6); /* page type */
 
-    if (type==63) return 0; /* dummy page */
+    if (type == 63) return 0; /* dummy page */
     if (type<1 || type>6) {
         trace(2, "sbf galrawfnav page type error: prn=%d type=%d\n", prn, type);
         return -1;
@@ -1660,13 +1831,13 @@ static int decode_cmpraw(raw_t *raw){
     uint8_t *p = raw->buff+14, buff[40];
     int i, id, svid, sat, prn, pgn;
 
-    if (raw->len<52) {
+    if (raw->len < 52) {
         trace(2, "sbf cmpraw length error: len=%d\n", raw->len);
         return -1;
     }
     svid = U1(p);
-    sat=svid2sat(svid);
-    if (!sat || satsys(sat, &prn)!=SYS_CMP) {
+    sat = svid2sat(svid);
+    if (!sat || satsys(sat, &prn) != SYS_CMP) {
         trace(2, "sbf cmpraw svid error: svid=%d\n", svid);
         return -1;
     }
@@ -1700,23 +1871,25 @@ static int decode_cmpraw(raw_t *raw){
         else return 0;
     }
     else { /* GEO */
-        pgn=getbitu(buff, 42, 4); /* page number */
+        pgn = getbitu(buff, 42, 4); /* page number */
 
         if (id==1 && pgn>=1 && pgn<=10) {
             memcpy(raw->subfrm[sat-1]+(pgn-1)*38, buff, 38);
             if (pgn != 10) return 0;
             if (!decode_bds_d2(raw->subfrm[sat-1], &eph, NULL)) return 0;
         }
-        else if (id==1&&pgn==102) {
+        else if (id==1 && pgn==102) {
             memcpy(raw->subfrm[sat-1]+10*38, buff, 38);
             if (!decode_bds_d2(raw->subfrm[sat-1], NULL, utc)) return 0;
             matcpy(raw->nav.utc_cmp, utc, 8, 1);
             return 9;
         }
-        else return 0;
+        else
+            return 0;
     }
     if (!strstr(raw->opt, "-EPHALL")) {
-        if (timediff(eph.toe, raw->nav.eph[sat-1].toe)==0.0) return 0;
+        if (timediff(eph.toe, raw->nav.eph[sat-1].toe) == 0.0)
+            return 0;
     }
     eph.sat = sat;
     raw->nav.eph[sat-1] = eph;
@@ -1724,6 +1897,9 @@ static int decode_cmpraw(raw_t *raw){
     raw->ephset = 0;
     return 2;
 }
+
+#ifdef TESTING
+#ifdef ENAIRN
 /* decode SBF NavIC/IRNSS subframe -------------------------------------------*/
 static int decode_navicraw(raw_t *raw)
 {
@@ -1786,6 +1962,88 @@ static int decode_navicraw(raw_t *raw)
     }
     return 0;
 }
+
+/* decode SBF lnav message for NavIC (navigation data) --------------------------*/
+static int decode_naviclnav(raw_t *raw)
+{
+    uint8_t *p = raw->buff+8;  /* points at TOW location */
+    eph_t eph = {0};
+    uint32_t tocs;
+    uint8_t prn, sat, iodec;
+
+    trace(4, "SBF decode_naviclnav: len=%d\n", raw->len);
+
+    if (raw->len < 148) {
+        trace(2, "SBF decode_naviclnav frame length error: len=%d\n", raw->len);
+        return -1;
+    }
+
+    prn = U1(p+6);
+    sat = satno(SYS_IRN, prn);
+
+    if (sat == 0) return -1;
+
+    if (!(prn>=1 && prn<=37)){
+        trace(2, "SBF decode_naviclnav prn error: sat=%d\n", prn);
+        return -1;
+    }
+
+    eph.week   = U2(p +   4);
+    iodec      = U1(p +   7);
+    eph.toes   = U4(p +   8);
+    eph.A      = pow(R8(p +  12), 2);
+    eph.deln   = R4(p +  20) * PI;
+    eph.M0     = R8(p +  24) * PI;
+    eph.e      = R8(p +  32);
+    eph.omg    = R8(p +  40) * PI;
+    eph.OMG0   = R8(p +  48) * PI;
+    eph.OMGd   = R8(p +  56) * PI;
+    eph.i0     = R8(p +  64) * PI;
+    eph.idot   = R4(p +  72) * PI;
+    eph.cis    = R4(p +  76);
+    eph.cic    = R4(p +  80);
+    eph.crs    = R4(p +  84);
+    eph.crc    = R4(p +  88);
+    eph.cus    = R4(p +  92);
+    eph.cuc    = R4(p +  96);
+    tocs       = U4(p + 100);
+    eph.f2     = R4(p + 104);
+    eph.f1     = R4(p + 108);
+    eph.f0     = R8(p + 112);
+    eph.tgd[0] = R4(p + 120);
+    eph.flag   = U1(p + 124);
+    eph.sva    = U1(p + 125);
+    eph.svh    = U1(p + 140);
+
+    eph.code   = 0;
+    eph.fit    = 0;
+
+    eph.iodc = iodec;
+    eph.iode = iodec;
+
+    eph.toe = gpst2time(eph.week, eph.toes);
+    eph.toc = gpst2time(eph.week, tocs);
+    eph.ttr = raw->time;
+
+    if (raw->outtype) {
+        sprintf(raw->msgtype, "SBF NavIC Decoded L-Navigation Data (PRN=%d, IODE=%d, IODC=%d, TOES=%6.0f )", prn, eph.iode, eph.iodc, eph.toes);
+    }
+
+    if (!strstr(raw->opt, "-EPHALL")) {
+        if ((eph.iode == raw->nav.eph[sat-1].iode) &&
+            (eph.iodc == raw->nav.eph[sat-1].iodc)) return 0;
+    }
+
+    eph.sat = sat;
+    raw->nav.eph[sat-1] = eph;
+    raw->ephsat = sat;
+
+    return 2;
+}
+#endif
+#endif
+
+
 
 /* GPS Decoded Message Block */
 
@@ -1981,9 +2239,9 @@ static int decode_gpsutc(raw_t *raw)
 }
 
 /* decode SBF cnav message for GPS (navigation data) --------------------------*/
-static int decode_gpscnav(raw_t *raw)
+static int decode_gpscnav(raw_t *raw, uint32_t sbf_id)
 {
-    uint8_t *p = raw->buff+8;                 /* points at TOW location */
+    uint8_t *p = raw->buff+8;  /* points at TOW location */
     eph_t eph = {0};
     uint32_t tocs, tops;
     uint8_t prn, sat;
@@ -2037,12 +2295,21 @@ static int decode_gpscnav(raw_t *raw)
     eph.f2     = R4(p + 128);
     eph.f1     = R4(p + 132);
     eph.f0     = R8(p + 136);
-    if (R4(p + 144) != -2.e10)
-        eph.tgd[0] = R4(p + 144);
-    /* 144-147: ISC_L1CA */
-    /* 148-151: ISC_L1C */
-    /* 152-155: ISC_L5I5 */
-    /* 156-159: ISC_L5Q5 */
+    if (sbf_id == ID_GPSCNAV) {
+        if (R4(p + 144) != -2.e10)
+            eph.tgd[0] = R4(p + 144);
+        /* 144-147: ISC_L1CA */
+        /* 148-151: ISC_L2C */
+        /* 152-155: ISC_L5I5 */
+        /* 156-159: ISC_L5Q5 */
+    } else if (sbf_id == ID_GPSCNAV2) {
+        /* 144-147: ISC_L1CP */
+        /* 148-151: ISC_L1CD */
+        /* 152-155: ISC_L1CA */
+        /* 156-159: ISC_L2C */
+        /* 160-163: ISC_L5Q5 */
+        /* 164-167: ISC_L5Q5 */
+    }
     eph.fit    = 0;
 
     eph.iodc = tops;  // IODC/IODE is not present in CNAV, use t_op instead
@@ -2456,6 +2723,105 @@ static int decode_cmpnav(raw_t *raw)
     return 2;
 }
 
+/* decode SBF cnav2 message for BDS (navigation data) --------------------------*/
+static int decode_cmpcnav2(raw_t *raw, uint32_t sbf_id)
+{
+    uint8_t *p = raw->buff+8;  /* points at TOW location */
+    eph_t eph = {0};
+    uint32_t tocs, tops;
+    uint8_t prn, sat;
+
+    trace(4, "SBF decode_cmpcnav2: len=%d\n", raw->len);
+
+    if (raw->len < 164) {
+        trace(2, "SBF decode_cmpcnav2 frame length error: len=%d\n", raw->len);
+        return -1;
+    }
+
+    prn = U1(p+6);
+    sat = satno(SYS_CMP, prn);
+
+    if (sat == 0) return -1;
+
+    if (!(prn>=1 && prn<=37)){
+        trace(2, "SBF decode_cmpcnav2 prn error: sat=%d\n", prn);
+        return -1;
+    }
+
+    eph.week   = U2(p +   4);
+    eph.code   = 0;
+    eph.flag   = U1(p +   7);
+    eph.toes   = U4(p +   8);
+    eph.A      = R8(p +  12);
+    eph.Adot   = R8(p +  20);
+    eph.deln   = R4(p +  28) * PI;
+    eph.ndot   = R4(p +  32);
+    eph.M0     = R8(p +  36) * PI;
+    eph.e      = R8(p +  44);
+    eph.omg    = R8(p +  52) * PI;
+    eph.OMG0   = R8(p +  60) * PI;
+    eph.OMGd   = R8(p +  68) * PI;
+    eph.i0     = R8(p +  76) * PI;
+    eph.idot   = R4(p +  84) * PI;
+    eph.cis    = R4(p +  88);
+    eph.cic    = R4(p +  92);
+    eph.crs    = R4(p +  96);
+    eph.crc    = R4(p + 100);
+    eph.cus    = R4(p + 104);
+    eph.cuc    = R4(p + 108);
+    tocs       = U4(p + 112);
+    eph.f2     = R4(p + 116);
+    eph.f1     = R4(p + 120);
+    eph.f0     = R8(p + 124);
+    tops       = U4(p + 132);
+    eph.sva    = U1(p + 139); /* to be checked */
+    eph.svh    = U1(p + 140);
+
+    if (sbf_id == ID_BDSCNAV1) {
+        if (R4(p + 144) != -2.e10)
+            eph.tgd[4] = R4(p + 144);  /* ISC_B1Cd */
+        if (R4(p + 148) != -2.e10)
+            eph.tgd[2] = R4(p + 148);  /* T_GDB1Cp */
+        if (R4(p + 152) != -2.e10)
+            eph.tgd[3] = R4(p + 152);  /* T_GDB2ap */
+    } else if (sbf_id == ID_BDSCNAV2) {
+        if (R4(p + 144) != -2.e10)
+            eph.tgd[5] = R4(p + 144);  /* ISC_B2ad */
+        if (R4(p + 148) != -2.e10)
+            eph.tgd[3] = R4(p + 148);  /* T_GDB2ap */
+        if (R4(p + 152) != -2.e10)
+            eph.tgd[2] = R4(p + 152);  /* T_GDB1Cp */
+    } else if (sbf_id == ID_BDSCNAV3) {
+        if (R4(p + 144) != -2.e10)
+            eph.tgd[1] = R4(p + 144);  /* T_GDB2bI */
+    }
+
+    eph.fit    = 0;
+
+    eph.iodc = tops;  // IODC/IODE is not present in CNAV, use t_op instead
+    eph.iode = tops;
+
+    eph.toe = gpst2time(eph.week, eph.toes);
+    eph.toc = gpst2time(eph.week, tocs);
+    eph.ttr = raw->time;
+
+    if (raw->outtype) {
+        sprintf(raw->msgtype, "SBF BDS Decoded C-Navigation 2 Data (PRN=%d, IODE=%d, IODC=%d, TOES=%6.0f )", prn, eph.iode, eph.iodc, eph.toes);
+    }
+
+    if (!strstr(raw->opt, "-EPHALL")) {
+        if ((eph.iode == raw->nav.eph[sat-1].iode) &&
+            (eph.iodc == raw->nav.eph[sat-1].iodc)) return 0;
+    }
+
+    eph.sat = sat;
+    raw->nav.eph[sat-1] = eph;
+    raw->ephsat = sat;
+
+    return 2;
+}
+
+
 /* decode SBF cmpalm --------------------------------------------------------*/
 static int decode_cmpalm(raw_t *raw)
 {
@@ -2565,11 +2931,11 @@ static int decode_cmputc(raw_t *raw)
 
 /* QZSS Decoded Message Blocks */
 
-#if 0 /* UNUSED */
+#ifdef TESTING
 
 /* decode SBF nav message for QZSS (navigation data) --------------------------*/
 static int decode_qzssnav(raw_t *raw){
-    uint8_t *puiTmp = (raw->buff)+6;
+    uint8_t *puiTmp = (raw->buff)+8;
     eph_t eph = {0};
     double toc;
     int prn, sat;
@@ -2578,53 +2944,53 @@ static int decode_qzssnav(raw_t *raw){
     trace(4, "SBF decode_qzssnav: len=%d\n", raw->len);
 
     if (raw->len < 140) {
-        trace(2,"SBF decode_qzssnav frame length error: len=%d\n",raw->len);
+        trace(2, "SBF decode_qzssnav frame length error: len=%d\n", raw->len);
         return -1;
     }
 
-    prn = U1(puiTmp+8)-180;
+    prn = U1(puiTmp+6) - 180;
     sat = satno(SYS_QZS, prn);
 
     if (sat == 0) return -1;
 
     if (!(prn>=1 && prn<=7)){
-        trace(2,"SBF decode_qzssnav prn error: sat=%d\n",prn);
+        trace(2, "SBF decode_qzssnav prn error: sat=%d\n", prn);
         return -1;
     }
 
-    eph.code   = U1(puiTmp + 12);
-    eph.sva    = U1(puiTmp + 13);
-    eph.svh    = U1(puiTmp + 14);
-    /* byte 15 L2 P data flag */
-    eph.iodc   = U2(puiTmp + 16);
-    eph.iode   = U1(puiTmp + 18);
-    /* byte 19: IODE from frame 3 */
-    eph.fit    = U1(puiTmp + 20);
-    /* byte 21: reserved */
-    if (R4(p + 22) != -2.e10)
-        eph.tgd[0] = R4(puiTmp + 22);
-    toc        = U4(puiTmp + 26);
-    eph.f2     = R4(puiTmp + 30);
-    eph.f1     = R4(puiTmp + 34);
-    eph.f0     = R4(puiTmp + 38);
-    eph.crs    = R4(puiTmp + 42);
-    eph.deln   = R4(puiTmp + 46) * PI;
-    eph.M0     = R8(puiTmp + 50) * PI;
-    eph.cuc    = R4(puiTmp + 58);
-    eph.e      = R8(puiTmp + 62);
-    eph.cus    = R4(puiTmp + 70);
-    eph.A      = pow(R8(puiTmp +  74), 2);
-    eph.toes   = U4(puiTmp + 82);
-    eph.cic    = R4(puiTmp + 86);
-    eph.OMG0   = R8(puiTmp + 90) * PI;
-    eph.cis    = R4(puiTmp + 98);
-    eph.i0     = R8(puiTmp +102) * PI;
-    eph.crc    = R4(puiTmp +110);
-    eph.omg    = R8(puiTmp +114) * PI;
-    eph.OMGd   = R4(puiTmp +122) * PI;
-    eph.idot   = R4(puiTmp +126) * PI;
-    week_oc    = U2(puiTmp +130); /* WNt_oc */
-    week_oe    = U2(puiTmp +132); /* WNt_oe l*/
+    eph.code   = U1(puiTmp + 10);
+    eph.sva    = U1(puiTmp + 11);
+    eph.svh    = U1(puiTmp + 12);
+    /* byte 13 L2 P data flag */
+    eph.iodc   = U2(puiTmp + 14);
+    eph.iode   = U1(puiTmp + 16);
+    /* byte 17: IODE from frame 3 */
+    eph.fit    = U1(puiTmp + 18);
+    /* byte 19: reserved */
+    if (R4(p + 20) != -2.e10)
+        eph.tgd[0] = R4(puiTmp + 20);
+    toc        = U4(puiTmp + 24);
+    eph.f2     = R4(puiTmp + 28);
+    eph.f1     = R4(puiTmp + 32);
+    eph.f0     = R4(puiTmp + 36);
+    eph.crs    = R4(puiTmp + 40);
+    eph.deln   = R4(puiTmp + 44) * PI;
+    eph.M0     = R8(puiTmp + 48) * PI;
+    eph.cuc    = R4(puiTmp + 56);
+    eph.e      = R8(puiTmp + 60);
+    eph.cus    = R4(puiTmp + 68);
+    eph.A      = pow(R8(puiTmp +  72), 2);
+    eph.toes   = U4(puiTmp + 80);
+    eph.cic    = R4(puiTmp + 84);
+    eph.OMG0   = R8(puiTmp + 88) * PI;
+    eph.cis    = R4(puiTmp + 96);
+    eph.i0     = R8(puiTmp +100) * PI;
+    eph.crc    = R4(puiTmp +108);
+    eph.omg    = R8(puiTmp +112) * PI;
+    eph.OMGd   = R4(puiTmp +120) * PI;
+    eph.idot   = R4(puiTmp +124) * PI;
+    week_oc    = U2(puiTmp +128); /* WNt_oc */
+    week_oe    = U2(puiTmp +130); /* WNt_oe l*/
 
     eph.week = adjust_WN10(week_oc);
     eph.toe = gpst2time(adjust_WN10(week_oe), eph.toes);
@@ -2645,7 +3011,52 @@ static int decode_qzssnav(raw_t *raw){
     return 2;
 }
 
-#endif /* UNUSED */
+/* decode SBF almanach message for QZSS --------------------------*/
+static int decode_qzssalm(raw_t *raw)
+{
+    uint8_t *p = raw->buff+8;                 /* points at TOW location */
+    alm_t alm;
+    uint16_t week;
+
+    trace(4, "SBF decode_cmpalm: len=%d\n", raw->len);
+
+    if (raw->len < 60)
+    {
+        trace(1, "SBF decode_cmpalm: Block too short\n");
+        return -1;
+    }
+
+    week      = U2(p + 4);
+    alm.sat   = satno(SYS_QZS, U1(p + 6) - 180);
+    /* byte 7: reserved */
+    alm.e     = R4(p + 8);
+    alm.toas  = U4(p + 12);
+    alm.i0    = R4(p + 16);
+    alm.OMGd  = R4(p + 20);
+    alm.A     = pow(R4(p + 24), 2);
+    alm.OMG0  = R4(p + 28);
+    alm.omg   = R4(p + 32);
+    alm.M0    = R4(p + 36);
+    alm.f1    = R4(p + 40);
+    alm.f0    = R4(p + 44);
+    alm.week  = adjust_WN8(week, U1(p + 48));
+    /* byte 49: reserved */
+    alm.svh   = U1(p + 50);
+    alm.svconf= 0;
+
+    alm.toa   = gpst2time(alm.week, alm.toas);
+
+    if (alm.sat == 0) return -1;
+
+    raw->nav.alm[alm.sat-1] = alm;
+
+    if (raw->outtype) {
+        sprintf(raw->msgtype, "SBF QZSS Almanach (PRN=%d)", U1(p + 6));
+    }
+
+    return 9;
+}
+#endif /* TESTING */
 
 
 
@@ -3080,6 +3491,49 @@ static int decode_sbslongcorrh(raw_t* raw)
 
 #endif /* UNUSED */
 
+/* decode external event block -----------------------------*/
+static int decode_extevent(raw_t *raw)
+{
+    uint8_t *p = raw->buff+8;
+    gtime_t eventime;
+    uint32_t tow;
+    uint16_t week;
+    uint8_t source, polarity;
+    double offset, clk_bias;
+
+    trace(4, "SBF decode_extevent:\n");
+
+    if (raw->len < 20)
+    {
+        trace(1, "SBF decode_extevent: Block too short\n");
+        return -1;
+    }
+
+    tow = U4(p+0);
+    week = U2(p+4);
+    source = U1(p+6);
+    polarity = U1(p+7);
+    offset = R4(p+8);
+    clk_bias = R8(p+12);
+
+    if (clk_bias == -2e10) /* do-not-use value*/
+        clk_bias = 0;
+
+    eventime = gpst2time(week, tow/1000. +  offset - clk_bias);
+
+    raw->obs.flag = 1 + source; /* Event flag */
+    raw->obs.data[0].eventime = eventime;
+    raw->obs.tmcount++;
+
+    if (raw->outtype) {
+        sprintf(raw->msgtype, "SBF external event WN=%d, tow=%f: source=%d, polarity=%d",
+                week, tow/1000. + offset - clk_bias, source, polarity);
+    }
+
+    return 0;
+}
+
+
 /* decode SBF raw message --------------------------------------------------*/
 static int decode_sbf(raw_t *raw)
 {
@@ -3125,11 +3579,7 @@ static int decode_sbf(raw_t *raw)
 
         /* only read and store data and indicate new obs data only at ID_MEASEPOCH_END */
         case ID_MEASEPOCH:      decode_measepoch(raw); return 0;
-        case ID_MEASEPOCHEXTRA:
-            if (raw->outtype) {
-                sprintf(raw->msgtype, "SBF Measurement Data Extra");
-            }
-            return 0;
+        case ID_MEASEPOCHEXTRA: decode_measepochextra(raw); return 0;
         case ID_MEASE3RNG:      decode_meas3ranges(raw); return 0;
         case ID_MEASE3DOPPLER:  decode_meas3Doppler(raw); return 0;
         case ID_MEASE3CN:       decode_meas3CN(raw); return 0;
@@ -3150,10 +3600,15 @@ static int decode_sbf(raw_t *raw)
 #ifdef ENAGAL
         case ID_GALRAWINAV:     return decode_galrawinav(raw);
         case ID_GALRAWFNAV:     return decode_galrawfnav(raw);
-        //case ID_GALRAWCNAV:     return decode_galrawcnav(raw);
+        /*case ID_GALRAWCNAV:     return decode_galrawcnav(raw); */
 #endif
+        case ID_GEORAWL1:
+        case ID_GEORAWL5:       return decode_georaw(raw);
 #ifdef ENACMP
         case ID_BDSRAW:         return decode_cmpraw(raw);
+        case ID_BDSRAWB1C:
+        case ID_BDSRAWB2A:
+        case ID_BDSRAWB2B:      return 0; /* yet unsupported by rtklib */
 #endif
 #ifdef TESTING /* not tested */
 #ifdef ENAQZS
@@ -3166,47 +3621,60 @@ static int decode_sbf(raw_t *raw)
         case ID_QZSSL1CA:
         case ID_QZSSL2C:
         case ID_QZSSL5:
+        case ID_QZSSL6:
+        case ID_QZSSL1C:
+        case ID_QZSSL1S:
+        case ID_QZSSL5S:
             return 0;
 #endif
+#ifdef TESTING /* not tested */
 #ifdef ENAIRN
-        case ID_IRNSSRAW:           return decode_navicraw  (raw);
+        case ID_IRNSSRAW:       return decode_navicraw(raw);
+        case ID_NAVICLNAV:      return decode_naviclnav(raw);
+#endif
+#else
+        case ID_IRNSSRAW:
+        case ID_NAVICLNAV:      return 0;
 #endif
 
         /* GPS Decoded Message Blocks */
         case ID_GPSNAV:         return decode_gpsnav(raw);
+        case ID_GPSALM:         return decode_gpsalm(raw);
         case ID_GPSION:         return decode_gpsion(raw);
         case ID_GPSUTC:         return decode_gpsutc(raw);
-        case ID_GPSALM:         return decode_gpsalm(raw);
-        case ID_GPSCNAV:        return decode_gpscnav(raw); /* todo */
+        case ID_GPSCNAV:
+        case ID_GPSCNAV2:       return decode_gpscnav(raw, type);
 
         /* GLONASS Decoded Message Blocks */
 #ifdef ENAGLO
         case ID_GLONAV:         return decode_glonav(raw);
+        case ID_GLOALM:         return 0; /* not suppported by rtklib */
         case ID_GLOTIME:        return decode_gloutc(raw);
 #endif
         /* Galileo Decoded Message Blocks */
 #ifdef ENAGAL
         case ID_GALNAV:         return decode_galnav(raw);
+        case ID_GALALM:         return decode_galalm(raw);
         case ID_GALION:         return decode_galion(raw);
         case ID_GALUTC:         return decode_galutc(raw);
-        case ID_GALALM:         return decode_galalm(raw);
 #endif
         /* BeiDou Decoded Message Blocks */
 #ifdef ENACMP
         case ID_BDSNAV:         return decode_cmpnav(raw);
-        case ID_BDSION:         return decode_cmpion(raw);
+        case ID_BDSCNAV1:
+        case ID_BDSCNAV2:
+        case ID_BDSCNAV3:
+                                return decode_cmpcnav2(raw, type);
         case ID_BDSALM:         return decode_cmpalm(raw);
+        case ID_BDSION:         return decode_cmpion(raw);
         case ID_BDSUTC:         return decode_cmputc(raw);
 #endif
-        case ID_GEONAV:         return decode_geonav(raw);
-        case ID_GEORAWL1:
-        case ID_GEORAWL5:       return decode_georaw(raw);
 
         /* QZSS Decoded Message Blocks */
 #ifdef TESTING /* not tested */
 #ifdef ENAQZS
         case ID_QZSSNAV:       return decode_qzssnav(raw);
-        case ID_QZSSALM:       return 0; /* todo */
+        case ID_QZSSALM:       return decode_qzssalm(raw);
 #endif
 
 #else
@@ -3218,44 +3686,43 @@ static int decode_sbf(raw_t *raw)
         /* NavIC/IRNSS Decoded Message Blocks */
 
         /* SBAS L1 Decoded Message Blocks */
-#if 1 /* not yet supported by RTKLIB, todo */
         case ID_GEOMT00:        return decode_sbsfast(raw);
         case ID_GEOPRNMASK:     return decode_sbsprnmask(raw);
         case ID_GEOFASTCORR:    return decode_sbsfast(raw);
         case ID_GEOINTEGRITY:   return decode_sbsintegriy(raw);
         case ID_GEOFASTCORRDEGR:return decode_sbsfastcorrdegr(raw);
+        case ID_GEONAV:         return decode_geonav(raw);
         case ID_GEOIGPMASK:     return decode_sbsigpmask(raw);
         case ID_GEOLONGTERMCOR: return decode_sbslongcorrh(raw);
         case ID_GEOIONODELAY:   return decode_sbsionodelay(raw);
-#else
-        case ID_GEOMT00:
-        case ID_GEOPRNMASK:
-        case ID_GEOFASTCORR:
-        case ID_GEOINTEGRITY:
-        case ID_GEOFASTCORRDEGR:
-        case ID_GEOIGPMASK:
-        case ID_GEOLONGTERMCOR:
-        case ID_GEOIONODELAY:
 
-            return 0;
-#endif /* UNUSED */
+        /* External Event Blocks */
+        case ID_EXTEVENT:       return decode_extevent(raw);
 
 
 #if 1 /* UNUSED */
-        case ID_GLOALM:         return 0; /* to be checked */
-        case ID_SATVISIBILITY:  return 0; /* to be checked */
-        case ID_DIFFCORRIN:     return 0; /* to be checked */
-        case ID_BASESTATION:    return 0; /* to be checked */
-        case ID_RTCMDATUM:      return 0; /* to be checked */
-        case ID_GEONETWORKTIME: return 0; /* to be checked */
-        case ID_PVTSATCART:return 0; /* to be checked */
-        case ID_GEOCORR:return 0; /* to be checked */
+        case ID_GENMEASEPOCH:   return 0; /* to be implemented */
+        case ID_MEASFULLRANGE:  return 0; /* to be implemented */
+        case ID_SBASL5NAV:      return 0; /* to be implemented */
+        case ID_SBASL5ALM:      return 0; /* to be implemented */
+        /* Differential Correction Blocks */
+        case ID_DIFFCORRIN:     return 0; /* not yet supported */
+
+        case ID_GEONETWORKTIME: return 0; /* not suppported by rtklib */
+        case ID_PVTSATCART:     return 0; /* to be checked */
+        case ID_GEOCORR:        return 0; /* to be checked */
 #endif /* UNUSED */
 
         /* commands that don't need to be handled */
             /* Measurement Blocks */
         case ID_MEASE3PP:
         case ID_MEASE3MP:
+        case ID_IQCORR:
+        case ID_ISMR:
+        case ID_SQMSAMPLES:
+            /* Navigation Page Blocks */
+        case ID_GNSSNAVBITS:
+        case ID_GNSSSYMBOLS:
             /* Galileo Decoded Message Blocks */
         case ID_GALGSTGPS:
         case ID_GALARRLM:
@@ -3263,40 +3730,92 @@ static int decode_sbf(raw_t *raw)
         case ID_GEOSERVICELEVEL:
         case ID_GEOCLOCKEPHCOVMATRIX:
         case ID_GEODEGRFACTORS:
-        case ID_PVTRESIDUALS:
             /* GNSS Position, Velocity and Time Blocks */
-        case ID_PVTCART:
-        case ID_PVTGEOD:
+        case ID_PVTCART1:
+        case ID_PVTGEOD1:
+        case ID_DOP1:
+        case ID_PVTRESIDUALS1:
+        case ID_RAIMSTATS1:
+        case ID_PVTRESIDUALS2:
+        case ID_PVTCART2:
+        case ID_PVTGEOD2:
+        case ID_PVTGEODAUTH:
         case ID_COVCART:
         case ID_COVGEOD:
         case ID_VELCOVCART:
         case ID_VELCOVGEOD:
-        case ID_DOP:
+        case ID_DOP2:
+        case ID_DOPAUTH:
         case ID_POSCART:
         case ID_PVTLOCAL:
         case ID_POSPROJ:
-        case ID_RAIMSTATS:
+        case ID_RAIMSTATS2:
         case ID_BASEVECCART:
         case ID_BASEVECGEOD:
+        case ID_AMBIGUITIES:
         case ID_PVTSUPPORT:
         case ID_PVTSUPPORTA:
         case ID_PVTEND:
+        case ID_BASELINE:
+            /* INS/GNSS Integrated Blocks */
+        case ID_INTPVCART:
+        case ID_INTPVGEOD:
+        case ID_INTPOSCOVCART:
+        case ID_INTVELCOVCART:
+        case ID_INTPOSCOVGEOD:
+        case ID_INTVELCOVGEOD:
+        case ID_INTATTEULER:
+        case ID_INTATTCCOEULER:
+        case ID_INTPVAAGEOD:
+        case ID_INSNAVCART:
+        case ID_INSNAVGEOD:
+        case ID_IMUBIAS:
             /* GNSS Attitude Blocks */
         case ID_ATTEULER:
         case ID_ATTCOVEULER:
         case ID_AUXPOS:
         case ID_ENDATT:
+        case ID_ATTQUAD:
+        case ID_ATTCOVQUAD:
             /* Receiver Time Blocks */
         case ID_RXTIME:
         case ID_PPSOFFSET:
+        case ID_SYSTIMEOFF:
+        case ID_FUGROTIMEOFF:
             /* External Event Blocks */
-        case ID_EXEVENT:
-        case ID_EXEVENTCART:
-        case ID_EXEVENTGEO:
-        case ID_EXEVENTBASEVEC:
+        case ID_EXTEVENTCART:
+        case ID_EXTEVENTGEO:
+        case ID_EXTEVENTBASEVECCART:
+        case ID_EXTEVENTBASEVECGEOD:
+        case ID_EXTEVENTINSNAVCART:
+        case ID_EXTEVENTINSNAVGEOD:
+        case ID_EXTEEVENTAATTEULER:
+            /* Differential Correction Blocks */
+        case ID_BASESTATION:
+        case ID_RTCMDATUM:
+        case ID_BASELINK:
+            /* L-Band Demodulator Blocks */
+        case ID_LRECEIVER:
+        case ID_LTRACK:
+        case ID_LDECODE:
+        case ID_LBEAMS:
+        case ID_FUGRODSS:
+        case ID_FUGROSTAT:
+            /* External Sensor Blocks */
+        case ID_EXTSENSORMEAS:
+        case ID_EXTSENSORSTATUS:
+        case ID_EXTSENSORSETUP:
+        case ID_EXTSENSORSTATUS2:
+        case ID_EXTSENSORINFO:
+        case ID_IMUSETUP:
+        case ID_VELSENSORSETUP:
+        case ID_LEVERARMSUPPORT1:
             /* Status Blocks */
+        case ID_RXSTATUS1:
+        case ID_TRACKSTATUS:
         case ID_CHNSTATUS:
-        case ID_RXSTATUS:
+        case ID_RXSTATUS2:
+        case ID_SATVISIBILITY:
         case ID_INPUTLINK:
         case ID_OUTPUTLINK:
         case ID_NTRIPCLTSTAT:
@@ -3304,24 +3823,36 @@ static int decode_sbf(raw_t *raw)
         case ID_IPSTATUS:
         case ID_WIFIAPSTATUS:
         case ID_WIFICLTSTATUS:
+        case ID_CELLULARSTATUS:
+        case ID_BLUETOOTHSTATUS:
         case ID_DYNDNSSTATUS:
         case ID_POWERSTATUS:
         case ID_QUALIND:
         case ID_DISKSTATUS:
         case ID_LOGSTATUS:
+        case ID_UHFSTATUS:
         case ID_RFSTATUS:
+        case ID_RIMSHEALTH:
+        case ID_OSNMASTATUS:
+        case ID_GALNAVMONITOR:
+        case ID_GALNAVRCEDMONITOR:
+        case ID_INAVMONITOR:
         case ID_P2PPSTATUS:
         case ID_COSMOSTATUS:
         case ID_GALAUTHSTATUS:
+        case ID_FUGROAUTHSTATUS:
             /* Miscellaneous Blocks */
         case ID_RXSETUP:
         case ID_RXMESSAGE:
         case ID_COMMANDS:
         case ID_COMMENT:
         case ID_BBSMPS:
-        case ID_RFCOMPS:
+        case ID_RXCOMPS:
         case ID_ASCIIIN:
         case ID_ENCAPSOUT:
+        case ID_RAWDATAIN:
+        case ID_IMURAWSAMPLES:
+        case ID_INTERFACESTATS:
             /* Advanced Blocks */
         case ID_SYSINFO:
 
@@ -3356,19 +3887,21 @@ static int sync_sbf(unsigned char *buff, unsigned char data)
 *          option strings separated by spaces.
 *
 *
-*          -EPHALL : input all ephemerides
-*          -AUX1   : select antenna Aux1  (default: main)
-*          -AUX2   : select antenna Aux2  (default: main)
-*          -GL1W   : select 1W for GPS L1 (default: 1C)
-*          -GL1L   : select 1L for GPS L1 (default: 1C)
-*          -GL2L   : select 2L for GPS L2 (default: 2W)
-*          -RL1P   : select 1P for GLO G1 (default: 1C)
-*          -RL2C   : select 2C for GLO G2 (default: 2P)
-*          -JL1L   : select 1L for QZS L1 (default: 1C)
-*          -JL1Z   : select 1Z for QZS L1 (default: 1C)
-*          -CL1P   : select 1P for BDS B1 (default: 2I)
-*          -GALINAV: select I/NAV for Galileo ephemeris (default: all)
-*          -GALFNAV: select F/NAV for Galileo ephemeris (default: all)
+*          -EPHALL  : input all ephemerides
+*          -AUX1    : select antenna Aux1  (default: main)
+*          -AUX2    : select antenna Aux2  (default: main)
+*          -GL1W    : select 1W for GPS L1 (default: 1C)
+*          -GL1L    : select 1L for GPS L1 (default: 1C)
+*          -GL2L    : select 2L for GPS L2 (default: 2W)
+*          -RL1P    : select 1P for GLO G1 (default: 1C)
+*          -RL2C    : select 2C for GLO G2 (default: 2P)
+*          -JL1L    : select 1L for QZS L1 (default: 1C)
+*          -JL1Z    : select 1Z for QZS L1 (default: 1C)
+*          -CL1P    : select 1P for BDS B1 (default: 2I)
+*          -GALINAV : select I/NAV for Galileo ephemeris (default: all)
+*          -GALFNAV : select F/NAV for Galileo ephemeris (default: all)
+*          -NO_MEAS2: ignore range measurements version 2 blocks
+*          -NO_MEAS3: ignore range measurements version 3 blocks
 *-----------------------------------------------------------------------------*/
 extern int input_sbf(raw_t *raw, unsigned char data)
 {
