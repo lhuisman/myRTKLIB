@@ -5,8 +5,8 @@ OUTPUT_DIRECTORY = $${OUT_PWD}
 include(../../RTKLib.pri)
 
 QMAKE_LIBDIR += ../../../lib
-QMAKE_LIBDIR += $${ROOT_DIRECTORY}/lib 
-QMAKE_LIBDIR += $${ROOT_DIRECTORY}/src 
+QMAKE_LIBDIR += $${ROOT_DIRECTORY}/lib
+QMAKE_LIBDIR += $${ROOT_DIRECTORY}/src
 
 LIBS += -L$${ROOT_DIRECTORY}/lib/ -lRTKLib
 
