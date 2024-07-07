@@ -137,7 +137,7 @@ QString FileOptDialog::getPath()
     if (!options) {  // input
         path = ui->lEFilePath->text();
         if (ui->cBTimeTag->isChecked())
-            path = path + "::T" + "::" + ui->cBTimeSpeed->currentText() + "::+" + ui->sBTimeStart->text();
+            path = path + "::T" + "::" + ui->cBTimeSpeed->currentText() + "::+" + QString::number(ui->sBTimeStart->value());
         if (ui->cB64Bit->isChecked()) {
             path = path + "::P=8";
         }
@@ -168,11 +168,14 @@ void FileOptDialog::keyDialogShow()
 //---------------------------------------------------------------------------
 void FileOptDialog::updateEnable()
 {
-    ui->lEFilePath->setEnabled(ui->cBPathEnable->isChecked());
+
     ui->cBTimeSpeed->setEnabled(ui->cBTimeTag->isChecked());
     ui->sBTimeStart->setEnabled(ui->cBTimeTag->isChecked());
-    ui->cB64Bit ->setEnabled(ui->cBTimeTag->isChecked());
-    ui->lbSwapInterval->setEnabled(ui->cBTimeTag->isChecked());
+    ui->lbPlus->setEnabled(ui->cBTimeTag->isChecked());
+    ui->cB64Bit->setEnabled(ui->cBTimeTag->isChecked());
+
+    ui->lEFilePath->setEnabled(ui->cBPathEnable->isChecked());
+    ui->lbSwapInterval->setEnabled(ui->cBPathEnable->isChecked());
     ui->cBSwapInterval->setEnabled(ui->cBPathEnable->isChecked());
     ui->lbFilePath->setEnabled(ui->cBPathEnable->isChecked());
     ui->cBTimeTag->setEnabled(ui->cBPathEnable->isChecked());
