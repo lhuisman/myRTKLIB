@@ -1329,15 +1329,21 @@
    <property name="text">
     <string>Open &amp;Map Image...</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+M</string>
+   </property>
   </action>
   <action name="menuOpenShape">
    <property name="text">
-    <string>Open &amp;Shapefile</string>
+    <string>Open Shapefile</string>
    </property>
   </action>
   <action name="menuOpenSkyImage">
    <property name="text">
     <string>Open S&amp;ky Image...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+K</string>
    </property>
   </action>
   <action name="MenuFileSel">
@@ -1368,30 +1374,42 @@
    <property name="text">
     <string>O&amp;pen Elev Mask...</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
+   </property>
   </action>
   <action name="menuVisibilityAnalysis">
    <property name="text">
-    <string>&amp;Visibility Analysis...</string>
+    <string>Visibility Analysis...</string>
    </property>
   </action>
   <action name="menuSaveImage">
    <property name="text">
     <string>Save &amp;Image...</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+I</string>
+   </property>
   </action>
   <action name="menuSaveDop">
    <property name="text">
     <string>Save # o&amp;f Sats/DOP...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+F</string>
    </property>
   </action>
   <action name="menuSaveSnrMp">
    <property name="text">
     <string>Save A&amp;Z/EL/SNR/MP...</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+Z</string>
+   </property>
   </action>
   <action name="menuSaveElevationMask">
    <property name="text">
-    <string>S&amp;ave Elev Mask...</string>
+    <string>Save Elev Mask...</string>
    </property>
   </action>
   <action name="menuConnect">
@@ -1413,6 +1431,9 @@
    </property>
    <property name="text">
     <string>&amp;Disconnect</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+D</string>
    </property>
   </action>
   <action name="menuPort">
@@ -1440,6 +1461,9 @@
    <property name="text">
     <string>C&amp;lear</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+L</string>
+   </property>
   </action>
   <action name="menuQuit">
    <property name="text">
@@ -1451,10 +1475,7 @@
   </action>
   <action name="menuTime">
    <property name="text">
-    <string>&amp;Time Span/Interval...</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+W</string>
+    <string>Time Span/Interval...</string>
    </property>
   </action>
   <action name="menuMapImage">
@@ -1463,12 +1484,12 @@
      <normaloff>:/buttons/map</normaloff>:/buttons/map</iconset>
    </property>
    <property name="text">
-    <string>&amp;Map Image...</string>
+    <string>Map Image...</string>
    </property>
   </action>
   <action name="menuSkyImage">
    <property name="text">
-    <string>&amp;Sky Image...</string>
+    <string>Sky Image...</string>
    </property>
   </action>
   <action name="menuWaypoint">
@@ -1481,7 +1502,7 @@
   </action>
   <action name="menuSourceSolution">
    <property name="text">
-    <string>So&amp;lution Source...</string>
+    <string>Solution Source...</string>
    </property>
    <property name="toolTip">
     <string>Show solution source text</string>
@@ -1489,7 +1510,7 @@
   </action>
   <action name="menuSourceObservation">
    <property name="text">
-    <string>Observation &amp;Data Source...</string>
+    <string>Observation Data Source...</string>
    </property>
    <property name="toolTip">
     <string>Show observation data source text</string>
@@ -1514,10 +1535,7 @@
      <normaloff>:/buttons/tool</normaloff>:/buttons/tool</iconset>
    </property>
    <property name="text">
-    <string>&amp;Options...</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+O</string>
+    <string>Options...</string>
    </property>
   </action>
   <action name="menuToolBar">
@@ -1528,7 +1546,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Show &amp;Tool Bar</string>
+    <string>Show Tool Bar</string>
    </property>
   </action>
   <action name="menuStatusBar">
@@ -1539,7 +1557,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Show &amp;Status Bar</string>
+    <string>Show Status Bar</string>
    </property>
   </action>
   <action name="menuMapView">
@@ -1548,7 +1566,7 @@
      <normaloff>:/buttons/gm</normaloff>:/buttons/gm</iconset>
    </property>
    <property name="text">
-    <string>&amp;Map View...</string>
+    <string>Map View...</string>
    </property>
    <property name="iconText">
     <string>Map View</string>
@@ -1561,10 +1579,16 @@
    <property name="text">
     <string>Input Monitor &amp;1...</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+1</string>
+   </property>
   </action>
   <action name="menuMonitor2">
    <property name="text">
     <string>Input Monitor &amp;2...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+2</string>
    </property>
   </action>
   <action name="menuCenterOrigin">
@@ -1573,7 +1597,7 @@
      <normaloff>:/buttons/ori</normaloff>:/buttons/ori</iconset>
    </property>
    <property name="text">
-    <string>&amp;Center Origin</string>
+    <string>Center Origin</string>
    </property>
   </action>
   <action name="menuFitHoriz">
@@ -1609,7 +1633,7 @@
      <normaloff>:/icons/point</normaloff>:/icons/point</iconset>
    </property>
    <property name="text">
-    <string>Show Track &amp;Point</string>
+    <string>Show Track Point</string>
    </property>
   </action>
   <action name="menuFixCenter">
@@ -1624,7 +1648,7 @@
      <normaloff>:/buttons/trackc</normaloff>:/buttons/trackc</iconset>
    </property>
    <property name="text">
-    <string>&amp;Fix Track Center</string>
+    <string>Fix Track Center</string>
    </property>
   </action>
   <action name="menuFixHoriz">
@@ -1639,10 +1663,7 @@
      <normaloff>:/buttons/track</normaloff>:/buttons/track</iconset>
    </property>
    <property name="text">
-    <string>Fi&amp;x Track Horizontal</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+V</string>
+    <string>Fix Track Horizontal</string>
    </property>
   </action>
   <action name="menuFixVert">
@@ -1660,7 +1681,7 @@
      <normaloff>:/buttons/trackl</normaloff>:/buttons/trackl</iconset>
    </property>
    <property name="text">
-    <string>Fix T&amp;rack Vertical</string>
+    <string>Fix Track Vertical</string>
    </property>
   </action>
   <action name="menuShowSkyplot">
@@ -1672,7 +1693,7 @@
      <normaloff>:/buttons/graph</normaloff>:/buttons/graph</iconset>
    </property>
    <property name="text">
-    <string>Sh&amp;ow Skyplot</string>
+    <string>Show Skyplot</string>
    </property>
   </action>
   <action name="menuShowImage">
@@ -1684,7 +1705,7 @@
      <normaloff>:/buttons/map</normaloff>:/buttons/map</iconset>
    </property>
    <property name="text">
-    <string>Show &amp;Image</string>
+    <string>Show Image</string>
    </property>
   </action>
   <action name="menuShowMap">
@@ -1696,7 +1717,7 @@
      <normaloff>:/buttons/showp</normaloff>:/buttons/showp</iconset>
    </property>
    <property name="text">
-    <string>Show Map/&amp;Waypoint</string>
+    <string>Show Map/Waypoint</string>
    </property>
    <property name="toolTip">
     <string>Show Map/Waypoint</string>
@@ -1710,6 +1731,9 @@
    <property name="text">
     <string>&amp;Animation Start</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+A</string>
+   </property>
   </action>
   <action name="menuAnimationStop">
    <property name="icon">
@@ -1717,42 +1741,45 @@
      <normaloff>:/buttons/anim2</normaloff>:/buttons/anim2</iconset>
    </property>
    <property name="text">
-    <string>A&amp;nimation Stop</string>
+    <string>Animation Stop</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+A</string>
    </property>
   </action>
   <action name="MenuOverlap">
    <property name="text">
-    <string>&amp;Overlapped</string>
+    <string>Overlapped</string>
    </property>
   </action>
   <action name="menuMax">
    <property name="text">
-    <string>&amp;Maximized</string>
+    <string>Maximized</string>
    </property>
   </action>
   <action name="menuPlotMapViewHorizontal">
    <property name="text">
-    <string>Plot - Map &amp;View Horizontal</string>
+    <string>Plot - Map View Horizontal</string>
    </property>
   </action>
   <action name="menuAbout">
    <property name="text">
-    <string>&amp;About...</string>
+    <string>About...</string>
    </property>
   </action>
   <action name="menuOpenWaypoint">
    <property name="text">
-    <string>Open &amp;Waypoint...</string>
+    <string>Open Waypoint...</string>
    </property>
   </action>
   <action name="menuSaveWaypoint">
    <property name="text">
-    <string>Save Wa&amp;ypoint...</string>
+    <string>Save Waypoint...</string>
    </property>
   </action>
   <action name="menuMapLayer">
    <property name="text">
-    <string>Ma&amp;p Layer...</string>
+    <string>Map Layer...</string>
    </property>
   </action>
   <action name="menuBrowse">
@@ -1760,7 +1787,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Show &amp;Browse Panel</string>
+    <string>Show Browse Panel</string>
    </property>
   </action>
   <action name="menuShowGrid">
@@ -1772,10 +1799,13 @@
      <normaloff>:/buttons/grid</normaloff>:/buttons/grid</iconset>
    </property>
    <property name="text">
-    <string>Show Gri&amp;d</string>
+    <string>Show &amp;Grid</string>
    </property>
    <property name="toolTip">
     <string>Show Grid</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+G</string>
    </property>
   </action>
  </widget>
