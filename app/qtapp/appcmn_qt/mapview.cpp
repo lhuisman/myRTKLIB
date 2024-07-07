@@ -302,6 +302,8 @@ void MapView::addMark(int map, int index, double lat, double lon, const QString 
 {
     QString func = QString("AddMark(%1,%2,'%3','%4')").arg(lat, 0, 'f', 9).arg(lon, 0, 'f', 9).arg(title, msg);
 
+    if (index >= NUM_MARK) return;
+
     markTitle[index] = title;
     markMessage[index] = msg;
     markPosition[index][0] = lat;
@@ -315,6 +317,8 @@ void MapView::addMark(int map, int index, double lat, double lon, const QString 
 //---------------------------------------------------------------------------
 void MapView::setMark(int index, const QString &title, double lat, double lon)
 {
+    if (index >= NUM_MARK) return;
+
     markTitle[index] = title;
     QString func = QString("PosMark(%1,%2,'%3')").arg(lat, 0, 'f', 9).arg(lon, 0, 'f', 9).arg(title);
 
@@ -326,6 +330,8 @@ void MapView::setMark(int index, const QString &title, double lat, double lon)
 //---------------------------------------------------------------------------
 void MapView::showMark(int index)
 {
+    if (index >= NUM_MARK) return;
+
     QString title = markTitle[index];
     QString func = QString("ShowMark('%1')").arg(title);
 
@@ -335,6 +341,8 @@ void MapView::showMark(int index)
 //---------------------------------------------------------------------------
 void MapView::hideMark(int index)
 {
+    if (index >= NUM_MARK) return;
+
     QString title = markTitle[index];
     QString func = QString("HideMark('%1')").arg(title);
 
@@ -344,6 +352,8 @@ void MapView::hideMark(int index)
 //---------------------------------------------------------------------------
 void MapView::highlightMark(int index)
 {
+    if (index >= NUM_MARK) return;
+
     QString title = markTitle[index];
     QString func = QString("HighlightMark('%1')").arg(title);
 
@@ -356,7 +366,7 @@ void MapView::clearMark()
     QString func = QString("ClearMark()");
 
     highlightedMark = -1;
-    for (int i = 0; i < 256; i++) {
+    for (int i = 0; i < NUM_MARK; i++) {
         markState[0] = markState[1] = 0;
         markPosition[i][0] = markPosition[i][1] = NAN;
     }
