@@ -30,13 +30,13 @@
 #include <QMenu>
 #include <QStringList>
 #include <QDir>
+#include <QLocale>
 
 #include "rtklib.h"
 #include "svroptdlg.h"
 #include "serioptdlg.h"
 #include "fileoptdlg.h"
 #include "tcpoptdlg.h"
-#include "ftpoptdlg.h"
 #include "cmdoptdlg.h"
 #include "convdlg.h"
 #include "aboutdlg.h"
@@ -60,16 +60,6 @@ extern void settspan(gtime_t, gtime_t) {}
 }
 
 
-// number to comma-separated number -----------------------------------------
-static QString num2cnum(int num)
-{
-    QString str = QString::number(num);
-    int len = str.length();
-    for (int i = 0; i < len; i++) {
-        if ((len-i-1) % 3 == 0 && i < len-1) str = str.insert(i, ',');
-    }
-    return str;
-}
 // constructor --------------------------------------------------------------
 MainForm::MainForm(QWidget *parent)
     : QDialog(parent), ui(new Ui::MainForm)
@@ -105,7 +95,6 @@ MainForm::MainForm(QWidget *parent)
     tcpOptDialog = new TcpOptDialog(this);
     serialOptDialog = new SerialOptDialog(this);
     fileOptDialog = new FileOptDialog(this);
-    ftpOptDialog = new FtpOptDialog(this);
     strMonDialog = new StrMonDialog(this);
 
     startTime.sec = startTime.time = endTime.sec = endTime.time = 0;
@@ -344,7 +333,7 @@ void MainForm::showConvertDialog()
     convDialog->setOutputFormat(conversionOutputFormat[stream]);
     convDialog->setConversionMessage(conversionMessage[stream]);
     convDialog->setConversionOptions(conversionOptions[stream]);
-    convDialog->setWindowTitle(tr("Output%1 Conversion Options").arg(stream+1));
+    convDialog->setWindowTitle(tr("Output %1: Conversion Options").arg(stream+1));
 
     convDialog->exec();
     if (convDialog->result() != QDialog::Accepted) {
@@ -411,11 +400,11 @@ void MainForm::updateServerStat()
     strsvrstat(&strsvr, stat, log_stat, byte, bps, msg);
     // update status indicators
     for (int i = 0; i < MAXSTR; i++) {
-        lblStatus[i]->setStyleSheet(QString("background-color: %1").arg(color2String(color[stat[i] + 1])));
+        lblStatus[i]->setStyleSheet(QString("QLabel {background-color: %1;}").arg(color2String(color[stat[i] + 1])));
         lblStatus[i]->setToolTip(statusStr[stat[i]+1]);
-        lblBytes[i]->setText(num2cnum(byte[i]));
-        lblBps[i]->setText(num2cnum(bps[i]));
-        lblLog[i]->setStyleSheet(QString("background-color :%1").arg(color2String(color[log_stat[i]+1])));
+        lblBytes[i]->setText(QLocale::system().toString(byte[i]));
+        lblBps[i]->setText(QLocale::system().toString(bps[i]));
+        lblLog[i]->setStyleSheet(QString("QLabel {background-color :%1;}").arg(color2String(color[log_stat[i]+1])));
         lblLog[i]->setToolTip(statusStr[log_stat[i]+1]);
     }
     // update progress bar
@@ -438,7 +427,7 @@ void MainForm::updateServerStat()
     ui->lblCurrentConnectionTime->setText(QString("%1d %2:%3:%4").arg(t[0], 0, 'f', 0).arg(t[1], 2, 'f', 0, QChar('0')).arg(t[2], 2, 'f', 0, QChar('0')).arg(t[3], 2, 'f', 0, QChar('0')));
 
     // update task tray icon
-    trayIcon->setToolTip(QString(tr("%1 bytes %2 bps")).arg(num2cnum(byte[0]), num2cnum(bps[0])));
+    trayIcon->setToolTip(QString(tr("%1 bytes, %2 bps")).arg(QLocale::system().toString(byte[0]), QLocale::system().toString(bps[0])));
     setTrayIcon(stat[0] <= 0 ? 0 : (stat[0] == 3 ? 2 : 1));
 
     ui->lblMessage->setText(QString(msg).trimmed());
@@ -691,7 +680,7 @@ void MainForm::serialOptions(int index, int path)
 // set tcp server options -------------------------------------------------------
 void MainForm::tcpServerOptions(int index, int path)
 {
-    tcpOptDialog->setOptions(0);  // 0: TCP Server
+    tcpOptDialog->setOptions(TcpOptDialog::OPT_TCP_SERVER);  // 0: TCP Server
     tcpOptDialog->setPath(paths[index][path]);
 
     tcpOptDialog->exec();
@@ -702,7 +691,7 @@ void MainForm::tcpServerOptions(int index, int path)
 // set tcp client options ---------------------------------------------------
 void MainForm::tcpClientOptions(int index, int path)
 {
-    tcpOptDialog->setOptions(1);  // 1: TCP Client
+    tcpOptDialog->setOptions(TcpOptDialog::OPT_TCP_CLIENT);  // 1: TCP Client
     tcpOptDialog->setHistory(tcpHistory, MAXHIST);
     tcpOptDialog->setPath(paths[index][path]);
 
@@ -716,7 +705,7 @@ void MainForm::tcpClientOptions(int index, int path)
 // set ntrip server options ---------------------------------------------------------
 void MainForm::ntripServerOptions(int index, int path)
 {
-    tcpOptDialog->setOptions(2);  // 2: Ntrip Server
+    tcpOptDialog->setOptions(TcpOptDialog::OPT_NTRIP_SERVER);  // 2: Ntrip Server
     tcpOptDialog->setHistory(tcpHistory, MAXHIST);
     tcpOptDialog->setPath(paths[index][path]);
 
@@ -730,7 +719,7 @@ void MainForm::ntripServerOptions(int index, int path)
 // set ntrip client options ---------------------------------------------------------
 void MainForm::ntripClientOptions(int index, int path)
 {
-    tcpOptDialog->setOptions(3);  // Ntrip Client
+    tcpOptDialog->setOptions(TcpOptDialog::OPT_NTRIP_CLIENT);  // Ntrip Client
     tcpOptDialog->setHistory(tcpHistory, MAXHIST);
     tcpOptDialog->setPath(paths[index][path]);
 
@@ -744,7 +733,7 @@ void MainForm::ntripClientOptions(int index, int path)
 // set ntrip caster options ---------------------------------------------------------
 void MainForm::ntripCasterOptions(int index, int path)
 {
-    tcpOptDialog->setOptions(4);  // Ntrip caster
+    tcpOptDialog->setOptions(TcpOptDialog::OPT_NTRIP_CASTER_CLIENT);  // Ntrip caster
     tcpOptDialog->setPath(paths[index][path]);
 
     tcpOptDialog->exec();
@@ -755,7 +744,7 @@ void MainForm::ntripCasterOptions(int index, int path)
 // set udp server options ---------------------------------------------------------
 void MainForm::udpServerOptions(int index, int path)
 {
-    tcpOptDialog->setOptions(6);  // UDP Server
+    tcpOptDialog->setOptions(TcpOptDialog::OPT_UDP_SERVER);  // UDP Server
     tcpOptDialog->setPath(paths[index][path]);
 
     tcpOptDialog->exec();
@@ -815,7 +804,7 @@ void MainForm::setTrayIcon(int index)
 {
     static const QString icon[] = {":/icons/tray0", ":/icons/tray1", ":/icons/tray2"};
 
-    trayIcon->setIcon(QIcon(icon[index]));
+    trayIcon->setIcon(QPixmap(icon[index]));
 }
 // load options -------------------------------------------------------------
 void MainForm::loadOptions()
@@ -989,10 +978,10 @@ void MainForm::showLogStreamDialog()
     }
     if (stream == -1) return;
 
+    fileOptDialog->setOptions(2);
     fileOptDialog->setPath(pathLog[stream]);
     fileOptDialog->setPathEnabled(pathEnabled[stream]);
     fileOptDialog->setWindowTitle((stream == 0) ? tr("Input Log Options") : tr("Return Log Options"));
-    fileOptDialog->setOptions(2);
 
     fileOptDialog->exec();
     if (fileOptDialog->result() != QDialog::Accepted) return;
