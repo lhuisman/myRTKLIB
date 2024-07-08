@@ -87,7 +87,7 @@ MainForm::MainForm(QWidget *parent)
 
     if (parser.isSet(miniOption)) minimize = 1;
 
-    ui->btnOption->setVisible(false);
+    ui->btnOption->setVisible(false);  // used options dialog
 
     trayMenu = new QMenu(this);
     trayMenu->addAction(tr("Expand"), this, &MainForm::expandWindow);
@@ -159,8 +159,6 @@ void MainForm::showEvent(QShowEvent *event)
 //---------------------------------------------------------------------------
 void MainForm::closeEvent(QCloseEvent *event)
 {
-    if (event->spontaneous()) return;
-
     QSettings settings(iniFile, QSettings::IniFormat);
 
     settings.setValue("pos/left", pos().x());
