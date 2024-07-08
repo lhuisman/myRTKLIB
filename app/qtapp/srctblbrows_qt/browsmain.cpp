@@ -391,13 +391,13 @@ void MainForm::streamTableShowMountpoint(int row, int col)
     if (ui->tWTableStr->columnCount() < 2) return;
 
     if (0 <= row && row < ui->tWTableStr->rowCount()) {
+        mountPointDialog->setOption(0);
         mountPointDialog->setMountPoint(ui->tWTableStr->item(row, 1)->text());
         QString mntpStr;
         for (int i = 0; i < ui->tWTableStr->columnCount(); i++)
             mntpStr += ui->tWTableStr->item(row, i)->text() + ";" ;
 
         mountPointDialog->setMountPointString(mntpStr);
-        mountPointDialog->setOption(1);
         mountPointDialog->show();
     }
 }
