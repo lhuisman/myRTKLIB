@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>745</width>
-    <height>585</height>
+    <height>670</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -45,7 +45,7 @@
           <bool>true</bool>
          </property>
          <property name="timeSpec">
-          <enum>Qt::UTC</enum>
+          <enum>Qt::TimeSpec::UTC</enum>
          </property>
         </widget>
        </item>
@@ -85,7 +85,7 @@
           <bool>true</bool>
          </property>
          <property name="timeSpec">
-          <enum>Qt::UTC</enum>
+          <enum>Qt::TimeSpec::UTC</enum>
          </property>
         </widget>
        </item>
@@ -219,8 +219,11 @@
          <property name="suffix">
           <string> h</string>
          </property>
+         <property name="maximum">
+          <double>168.000000000000000</double>
+         </property>
          <property name="singleStep">
-          <double>25.000000000000000</double>
+          <double>1.000000000000000</double>
          </property>
         </widget>
        </item>
@@ -275,7 +278,7 @@
           <string>File format</string>
          </property>
          <property name="sizeAdjustPolicy">
-          <enum>QComboBox::AdjustToContents</enum>
+          <enum>QComboBox::SizeAdjustPolicy::AdjustToContents</enum>
          </property>
         </widget>
        </item>
