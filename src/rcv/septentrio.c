@@ -49,6 +49,7 @@
 extern const sbsigpband_t igpband1[][8]; /* SBAS IGP band 0-8 */
 extern const sbsigpband_t igpband2[][5]; /* SBAS IGP band 9-10 */
 
+static gtime_t current_time = {0, 0};
 
 #define MEAS3_SYS_MAX 7
 #define MEAS3_SAT_MAX 64
@@ -624,6 +625,38 @@ static gtime_t adjday(gtime_t time, double tod)
 
 /* Measurement Blocks */
 
+/* flush observation data buffer ---------------------------------------------*/
+static int flushobuf(raw_t *raw) {
+    int i, j, n = 0;
+
+    trace(3, "flushobuf: n=%d\n", raw->obuf.n);
+
+    /* copy observation data buffer */
+    for (i = 0; i < raw->obuf.n && i < MAXOBS; i++) {
+        if (!satsys(raw->obuf.data[i].sat, NULL)) continue;
+        if (raw->obuf.data[i].time.time == 0) continue;
+        raw->obs.data[n++] = raw->obuf.data[i];
+    }
+    raw->obs.n = n;
+
+    /* clear observation data buffer */
+    for (i = 0; i < MAXOBS; i++) {
+        raw->obuf.data[i].time.time = 0;
+        raw->obuf.data[i].time.sec = 0;
+        for (j = 0; j < NFREQ + NEXOBS; j++) {
+            raw->obuf.data[i].L[j] = raw->obuf.data[i].P[j] = 0.0;
+            raw->obuf.data[i].Lstd[j] = raw->obuf.data[i].Pstd[j] = 0.0;
+            raw->obuf.data[i].D[j] = 0.0;
+            raw->obuf.data[i].SNR[j] = raw->obuf.data[i].LLI[j] = 0;
+            raw->obuf.data[i].code[j] = CODE_NONE;
+        }
+    }
+    for (i = 0; i < MAXSAT; i++) {
+        raw->prCA[i] = raw->dpCA[i] = 0.0;
+    }
+    return n > 0 ? 1 : 0;
+}
+
 /* decode SBF measurements message (observables) -----------------------------*/
 /*
  * this is the most importan block in the SBF format. It it contains all code
@@ -774,7 +807,12 @@ static int decode_measepoch(raw_t *raw)
         n++;
     }
     raw->obuf.n = n;
-    return 1;
+
+    if (timediff(raw->time, current_time) != 0) {
+        current_time = raw->time;
+        return flushobuf(raw);
+    } else
+        return 0;
 }
 
 static int decode_measepochextra(raw_t *raw)
@@ -840,7 +878,11 @@ static int decode_measepochextra(raw_t *raw)
         }
     }
 
-    return 0;
+    if (timediff(raw->time, current_time) != 0) {
+        current_time = raw->time;
+        return flushobuf(raw);
+    } else
+        return 0;
 }
 
 /* decode meas3 bloack -------------------------------------------------*/
@@ -1294,7 +1336,11 @@ static int decode_meas3ranges(raw_t *raw) {
     if (raw->len < idx+20)
         trace(2, "sbf meas3ranges len error: %d % d\n", raw->len, idx+20);
 
-    return 1;
+    if (timediff(raw->time, current_time) != 0) {
+        current_time = raw->time;
+        return flushobuf(raw);
+    } else
+        return 0;
 }
 
 int32_t meas3_DopplerPrRate(raw_t* raw, uint32_t *offset)
@@ -1379,7 +1425,11 @@ int decode_meas3Doppler(raw_t* raw)
         }
     }
 
-    return 1;
+    if (timediff(raw->time, current_time) != 0) {
+        current_time = raw->time;
+        return flushobuf(raw);
+    } else
+        return 0;
 }
 
 int decode_meas3CN(raw_t* raw)
@@ -1423,41 +1473,12 @@ int decode_meas3CN(raw_t* raw)
         }
     }
 
-    return 1;
+    if (timediff(raw->time, current_time) != 0) {
+        current_time = raw->time;
+        return flushobuf(raw);
+    } else
+        return 0;
 }
-/* flush observation data buffer ---------------------------------------------*/
-static int flushobuf(raw_t *raw) {
-    int i, j, n = 0;
-
-    trace(3, "flushobuf: n=%d\n", raw->obuf.n);
-
-    /* copy observation data buffer */
-    for (i = 0; i < raw->obuf.n && i < MAXOBS; i++) {
-        if (!satsys(raw->obuf.data[i].sat, NULL)) continue;
-        if (raw->obuf.data[i].time.time == 0) continue;
-        raw->obs.data[n++] = raw->obuf.data[i];
-    }
-    raw->obs.n = n;
-
-    /* clear observation data buffer */
-    for (i = 0; i < MAXOBS; i++) {
-        raw->obuf.data[i].time.time = 0;
-        raw->obuf.data[i].time.sec = 0;
-        for (j = 0; j < NFREQ + NEXOBS; j++) {
-            raw->obuf.data[i].L[j] = raw->obuf.data[i].P[j] = 0.0;
-            raw->obuf.data[i].Lstd[j] = raw->obuf.data[i].Pstd[j] = 0.0;
-            raw->obuf.data[i].D[j] = 0.0;
-            raw->obuf.data[i].SNR[j] = raw->obuf.data[i].LLI[j] = 0;
-            raw->obuf.data[i].code[j] = CODE_NONE;
-        }
-    }
-    for (i = 0; i < MAXSAT; i++) {
-        raw->prCA[i] = raw->dpCA[i] = 0.0;
-    }
-    return n > 0 ? 1 : 0;
-}
-
-
 
 /* Navigation Page Blocks */
 
@@ -1800,13 +1821,13 @@ static int decode_georaw(raw_t *raw){
     }
 
     svid = U1(p);
-    sat=svid2sat(svid);
-    if (!sat || satsys(sat,&prn)!=SYS_SBS) {
+    sat = svid2sat(svid);
+    if (!sat || satsys(sat, &prn)!=SYS_SBS) {
         trace(2, "sbf georawl1 svid error: svid=%d\n", svid);
         return -1;
     }
     if (!U1(p+1)) {
-        trace(3, "sbf georawl1 parity/crc error: prn=%d err=%d\n", prn, U1(p+2));
+        trace(3, "sbf georaw parity/crc error: prn=%d err=%d\n", prn, U1(p+2));
         return 0;
     }
     if (raw->outtype) {
@@ -3143,7 +3164,7 @@ static int decode_sbsfast(raw_t *raw)
 
     trace(4, "SBF decode_sbsfast: len=%d\n", raw->len);
 
-    if (raw->len<20)
+    if (raw->len < 20)
     {
         trace(1, "SBF decode_sbsfast: Block too short\n");
         return -1;
@@ -3251,7 +3272,7 @@ static int decode_sbsintegriy(raw_t *raw)
 
     trace(4, "decode_sbsintegriy:\n");
 
-    if (raw->len<71)
+    if (raw->len < 71)
     {
         trace(1, "SBF decode_sbsintegriy: Block too short\n");
         return -1;
@@ -3283,32 +3304,32 @@ static int decode_sbsintegriy(raw_t *raw)
 static int decode_sbsfastcorrdegr(raw_t *raw)
 {
     int i,prn;
-    uint8_t *p=raw->buff+6;
+    uint8_t *p = raw->buff+6;
 
 
-    trace(4,"SBF decode_sbsfastcorrdegr:\n");
+    trace(4, "SBF decode_sbsfastcorrdegr:\n");
 
-    if (raw->len<68)
+    if (raw->len < 68)
     {
-        trace(1,"SBF decode_sbsfastcorrdegr: Block too short\n");
+        trace(1, "SBF decode_sbsfastcorrdegr: Block too short\n");
         return -1;
     }
 
     /* get satellite number */
-    prn=U1(p+8);
+    prn = U1(p+8);
     if (prn < 120) return -1;
     if (prn > 139) return -1;
 
     if (raw->outtype) {
-        sprintf(raw->msgtype,"SBF SBAS Fast Correction Degradation Factor from PRN=%d", prn);
+        sprintf(raw->msgtype, "SBF SBAS Fast Correction Degradation Factor from PRN=%d", prn);
     }
 
-    if (raw->nav.sbssat.iodp!=U1(p+9)) return 0;
+    if (raw->nav.sbssat.iodp != U1(p+9)) return 0;
 
-    raw->nav.sbssat.tlat=U1(p+10);
+    raw->nav.sbssat.tlat = U1(p+10);
 
-    for (i=0;i<raw->nav.sbssat.nsat&&i<MAXSAT;i++) {
-        raw->nav.sbssat.sat[i].fcorr.ai=U1(p+11+i);
+    for (i=0; i<raw->nav.sbssat.nsat && i<MAXSAT; i++) {
+        raw->nav.sbssat.sat[i].fcorr.ai = U1(p+11+i);
     }
     return 0;
 }
@@ -3324,7 +3345,7 @@ static int decode_sbsionodelay(raw_t *raw)
 
     trace(4, "SBF decode_sbsionodelay:\n");
 
-    if (raw->len<20)
+    if (raw->len < 20)
     {
         trace(1, "SBF decode_sbsionodelay: Block too short\n");
         return -1;
@@ -3578,11 +3599,11 @@ static int decode_sbf(raw_t *raw)
         /* Measurement Blocks */
 
         /* only read and store data and indicate new obs data only at ID_MEASEPOCH_END */
-        case ID_MEASEPOCH:      decode_measepoch(raw); return 0;
-        case ID_MEASEPOCHEXTRA: decode_measepochextra(raw); return 0;
-        case ID_MEASE3RNG:      decode_meas3ranges(raw); return 0;
-        case ID_MEASE3DOPPLER:  decode_meas3Doppler(raw); return 0;
-        case ID_MEASE3CN:       decode_meas3CN(raw); return 0;
+        case ID_MEASEPOCH:      return decode_measepoch(raw);
+        case ID_MEASEPOCHEXTRA: return decode_measepochextra(raw);
+        case ID_MEASE3RNG:      return decode_meas3ranges(raw);
+        case ID_MEASE3DOPPLER:  return decode_meas3Doppler(raw);
+        case ID_MEASE3CN:       return decode_meas3CN(raw);
         case ID_MEASEPOCH_END:
             if (raw->outtype) {
                 sprintf(raw->msgtype, "SBF Measurement Epoch End");
