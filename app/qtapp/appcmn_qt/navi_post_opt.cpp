@@ -752,35 +752,30 @@ void OptDialog::updateOptions()
     getPosition(ui->cBRoverPositionType->currentIndex(), editu, rovPos);
     getPosition(ui->cBReferencePositionType->currentIndex(), editr, refPos);
 
-    if (options == NaviOptions) {
-        processingOptions.refpos = POSOPT_POS;
-        if      (ui->cBReferencePositionType->currentIndex() == 3) processingOptions.refpos = POSOPT_RTCM;
-        else if (ui->cBReferencePositionType->currentIndex() == 4) processingOptions.refpos = POSOPT_SINGLE;
-    } else if (options == PostOptions) {
-        processingOptions.refpos = ui->cBReferencePositionType->currentIndex() < 3 ? 0 : ui->cBReferencePositionType->currentIndex() - 2;
-    }
-
     if (processingOptions.mode != PMODE_FIXED && processingOptions.mode != PMODE_PPP_FIXED) {
         processingOptions.rovpos = POSOPT_POS;
         for (int i = 0; i < 3; i++) processingOptions.ru[i] = 0.0;
-    } else if (ui->cBRoverPositionType->currentIndex() <= 2) {
+    } else if (ui->cBRoverPositionType->currentIndex() < 3) {
         processingOptions.rovpos = POSOPT_POS;
         for (int i = 0; i < 3; i++) processingOptions.ru[i] = rovPos[i];
     } else {  // RTKPost, only
         processingOptions.rovpos = ui->cBRoverPositionType->currentIndex() - 2; /* 1:single, 2:posfile, 3:rinex */
     }
 
+    processingOptions.refpos = POSOPT_POS;
     if (processingOptions.mode == PMODE_SINGLE || processingOptions.mode == PMODE_MOVEB) {
         processingOptions.refpos = POSOPT_POS;
         for (int i = 0; i < 3; i++) processingOptions.rb[i] = 0.0;
     } else if (ui->cBReferencePositionType->currentIndex() <= 2) {
         processingOptions.refpos = POSOPT_POS;
         for (int i = 0; i < 3; i++) processingOptions.rb[i] = refPos[i];
-    } else if (ui->cBRoverPositionType->currentIndex() == 3) {   // RTCM/Raw position, RTKNavi only
+    } else if ((ui->cBReferencePositionType->currentIndex() == 3) && (options == NaviOptions)) {   // RTCM/Raw position, RTKNavi only
         processingOptions.refpos = POSOPT_RTCM;
         for (int i = 0; i < 3; i++) processingOptions.rb[i] = 0.0;
-    } else {
-        processingOptions.refpos = ui->cBReferencePositionType->currentIndex() - 3;
+    } else if (ui->cBReferencePositionType->currentIndex() == 4) {
+        processingOptions.refpos = POSOPT_SINGLE;
+    } else if (options == PostOptions) {
+        processingOptions.refpos = ui->cBReferencePositionType->currentIndex() < 3 ? 0 : ui->cBReferencePositionType->currentIndex() - 3;
         for (int i = 0; i < 3; i++) processingOptions.rb[i] = 0.0;
     }
 
@@ -955,7 +950,7 @@ void OptDialog::load(const QString &file)
         // sbassatsel
         ui->sBSbasSat->setValue(prcopt.sbassatsel);
         ui->cBRoverPositionType->setCurrentIndex(prcopt.rovpos == 0 ? 0 : prcopt.rovpos + 2);
-        ui->cBReferencePositionType->setCurrentIndex(prcopt.refpos == 0 ? 0 : prcopt.refpos + 2);
+        ui->cBReferencePositionType->setCurrentIndex(prcopt.refpos == 0 ? 0 : prcopt.refpos + 3);
     } else if (options == NaviOptions) {
         ui->cBRoverPositionType->setCurrentIndex(0);
         ui->cBReferencePositionType->setCurrentIndex(0);
@@ -1134,7 +1129,7 @@ void OptDialog::save(const QString &file)
         else if (ui->cBReferencePositionType->currentIndex() == 4) procOpts.refpos = POSOPT_SINGLE;
     } else if (options == PostOptions) {
         procOpts.rovpos = ui->cBRoverPositionType->currentIndex() < 3 ? 0 : ui->cBRoverPositionType->currentIndex() - 2;
-        procOpts.refpos = ui->cBReferencePositionType->currentIndex() < 3 ? 0 : ui->cBReferencePositionType->currentIndex() - 2;
+        procOpts.refpos = ui->cBReferencePositionType->currentIndex() < 3 ? 0 : ui->cBReferencePositionType->currentIndex() - 3;
     }
     procOpts.eratio[0] = ui->sBMeasurementErrorR1->value();
     procOpts.eratio[1] = ui->sBMeasurementErrorR2->value();
