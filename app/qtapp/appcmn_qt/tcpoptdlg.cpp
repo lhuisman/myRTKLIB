@@ -190,6 +190,7 @@ void TcpOptDialog::addHistory(QComboBox *list, QString *hist)
     list->clear();
     for (int i = 0; i < MAXHIST; i++)
         if (!hist[i].isEmpty()) list->addItem(hist[i]);
+    list->setCurrentIndex(0);
 }
 //---------------------------------------------------------------------------
 void TcpOptDialog::btnNtripClicked()

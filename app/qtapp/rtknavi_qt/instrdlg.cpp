@@ -328,7 +328,7 @@ void InputStrDialog::setPath(int stream, int type, const QString & path)
     QLineEdit *edits[] = {ui->lEFilePath1, ui->lEFilePath2, ui->lEFilePath3};
 
     if ((stream < 0) || (stream > 2)) return;
-    if ((type < 0) || (type > 2)) return;
+    if ((type < 0) || (type > 3)) return;
 
     paths[stream][type] = path;
     ui->cBTimeTag->setChecked(path.contains("::T"));
@@ -355,7 +355,7 @@ QString InputStrDialog::getPath(int stream, int type)
 {
     QLineEdit *edits[] = {ui->lEFilePath1, ui->lEFilePath2, ui->lEFilePath3};
     if ((stream < 0) || (stream > 2)) return QString();
-    if ((type < 0) || (type > 2)) return QString();
+    if ((type < 0) || (type > 3)) return QString();
 
     if (type == 2)
         return makePath(edits[stream]->text());
