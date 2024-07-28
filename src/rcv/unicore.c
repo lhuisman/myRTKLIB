@@ -4,10 +4,10 @@
 *          Copyright (C) 2024 Avinab Malla, All rights reserved.
 *
 * version : $Revision: 1.0 $ $Date: 2024/07/23$
-* references: 
+* references:
 *	[1] Unicore N4 Products Commands and Logs Reference Book R1.4 (June 2024)
 *
-* history : 
+* history :
 *	2024/07/23  1.0  new
 *	2024/07/28  1.0.1  Added references, fixed sig2code
 *
@@ -138,9 +138,9 @@ static int sig2code(int sys, int sigtype, int l2c)
 	if (sys == SYS_GPS) {
 		switch (sigtype) {
 		case 0: return CODE_L1C;  // L1C/A 
-		case 9: return l2c==1 ?  CODE_L2S : CODE_L2W;  // L2P(Y),semi-codeless or L2C(M)
+		case 9: return l2c == 1 ? CODE_L2S : CODE_L2W;  // L2P(Y),semi-codeless or L2C(M)
 		case 3: return CODE_L1L;  // L1C Pilot
-		case 11: return CODE_L1S; // L1C Data semi-codeless
+		case 11: return CODE_L1S; // L1C Data, semi-codeless
 		case 6: return CODE_L5I;  // L5 Data 
 		case 14: return CODE_L5Q; // L5 Pilot 
 		case 17: return CODE_L2L; // L2C(L)
@@ -226,7 +226,7 @@ static int decode_track_stat(uint32_t stat, int* sys, int* code, int* plock, int
 	sigtype = (stat >> 21) & 0x1F;
 	l2c = (stat >> 26) & 0x01;
 
-	
+
 	switch (satsys) {
 	case 0: *sys = SYS_GPS; break;
 	case 1: *sys = SYS_GLO; break;
@@ -239,7 +239,7 @@ static int decode_track_stat(uint32_t stat, int* sys, int* code, int* plock, int
 		trace(2, "unicore unknown system: sys=%d\n", satsys);
 		return -1;
 	}
-	if (!(*code = sig2code(*sys, sigtype,l2c)) || (idx = code2idx(*sys, *code)) < 0) {
+	if (!(*code = sig2code(*sys, sigtype, l2c)) || (idx = code2idx(*sys, *code)) < 0) {
 		trace(2, "unicore signal type error: sys=%d sigtype=%d\n", *sys, sigtype);
 		return -1;
 	}
