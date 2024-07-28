@@ -4,8 +4,13 @@
 *          Copyright (C) 2024 Avinab Malla, All rights reserved.
 *
 * version : $Revision: 1.0 $ $Date: 2024/07/23$
+* references: 
+*	[1] Unicore N4 Products Commands and Logs Reference Book R1.4 (June 2024)
 *
-* history : 2024/07/23  1.0  new
+* history : 
+*	2024/07/23  1.0  new
+*	2024/07/28  1.0.1  Added references, fixed sig2code
+*
 */
 #include "rtklib.h"
 
@@ -128,18 +133,16 @@ static int checkpri(const char* opt, int sys, int code, int idx)
 }
 
 /* signal type to obs code ---------------------------------------------------*/
-static int sig2code(int sys, int sigtype)
+static int sig2code(int sys, int sigtype, int l2c)
 {
 	if (sys == SYS_GPS) {
 		switch (sigtype) {
 		case 0: return CODE_L1C;  // L1C/A 
-		case 3: return CODE_L1L;  // L1C/A 
-		case 5: return CODE_L2P;  // L2P
+		case 9: return l2c==1 ?  CODE_L2S : CODE_L2W;  // L2P(Y),semi-codeless or L2C(M)
+		case 3: return CODE_L1L;  // L1C Pilot
+		case 11: return CODE_L1S; // L1C Data semi-codeless
 		case 6: return CODE_L5I;  // L5 Data 
-		case 9: return CODE_L2W;  // L2P(Y),semi-codeless 
-		case 11: return CODE_L1S; // L2P(Y),semi-codeless 
 		case 14: return CODE_L5Q; // L5 Pilot 
-		case 16: return CODE_L1L; // L1C(P)
 		case 17: return CODE_L2L; // L2C(L)
 		default: return 0;
 		}
@@ -155,7 +158,7 @@ static int sig2code(int sys, int sigtype)
 	}
 	else if (sys == SYS_GAL) {
 		switch (sigtype) {
-		case  1: return CODE_L1A; // E1B
+		case  1: return CODE_L1B; // E1B
 		case  2: return CODE_L1C; // E1C
 		case 12: return CODE_L5Q; // E5A Pilot
 		case 17: return CODE_L7Q; // E5B Pilot
@@ -167,6 +170,7 @@ static int sig2code(int sys, int sigtype)
 	else if (sys == SYS_QZS) {
 		switch (sigtype) {
 		case  0: return CODE_L1C; // L1C/A
+		case  9: return l2c == 1 ? CODE_L2S : CODE_L2W;  // L2P(Y),semi-codeless or L2C(M)
 		case  3: return CODE_L1L; // L1C pilot
 		case  6: return CODE_L5I; // L5 Data
 		case 11: return CODE_L1S; // L1C Data
@@ -213,13 +217,16 @@ static int sig2code(int sys, int sigtype)
 static int decode_track_stat(uint32_t stat, int* sys, int* code, int* plock, int* clock)
 {
 	int satsys, sigtype, idx = -1;
+	int l2c;
 
 	*code = CODE_NONE;
 	*plock = (stat >> 10) & 1;
 	*clock = (stat >> 12) & 1;
 	satsys = (stat >> 16) & 7;
 	sigtype = (stat >> 21) & 0x1F;
+	l2c = (stat >> 26) & 0x01;
 
+	
 	switch (satsys) {
 	case 0: *sys = SYS_GPS; break;
 	case 1: *sys = SYS_GLO; break;
@@ -232,7 +239,7 @@ static int decode_track_stat(uint32_t stat, int* sys, int* code, int* plock, int
 		trace(2, "unicore unknown system: sys=%d\n", satsys);
 		return -1;
 	}
-	if (!(*code = sig2code(*sys, sigtype)) || (idx = code2idx(*sys, *code)) < 0) {
+	if (!(*code = sig2code(*sys, sigtype,l2c)) || (idx = code2idx(*sys, *code)) < 0) {
 		trace(2, "unicore signal type error: sys=%d sigtype=%d\n", *sys, sigtype);
 		return -1;
 	}
@@ -566,7 +573,7 @@ static int decode_qzssephb(raw_t* raw) {
 		return -1;
 	}
 
-	prn = U4(p) + MINPRNQZS -1;   p += 4;
+	prn = U4(p) + MINPRNQZS - 1;   p += 4;
 	tow = R8(p); p += 8;
 	health = U4(p) & 0b111111; p += 4;
 	eph.iode = U4(p); p += 4;
@@ -636,7 +643,7 @@ static int decode_qzssephb(raw_t* raw) {
 static int decode_irnssephb(raw_t* raw) {
 	eph_t eph = { 0 };
 	uint8_t* p = raw->buff + HLEN;
-	int prn, sat,  l5_health, s_health;
+	int prn, sat, l5_health, s_health;
 	double toc;
 
 	if (raw->len < HLEN + 224) {
@@ -648,8 +655,8 @@ static int decode_irnssephb(raw_t* raw) {
 	double towc = R8(p); p += 8;
 	l5_health = U4(p) & 1; p += 4;
 	eph.iode = U4(p);   p += 4; /* IODEC */
-	s_health = U4(p);   p += 4; 
-	eph.week = U4(p);   p += 4+4;
+	s_health = U4(p);   p += 4;
+	eph.week = U4(p);   p += 4 + 4;
 	eph.toes = R8(p);   p += 8;
 	eph.A = R8(p);   p += 8;
 	eph.deln = R8(p);   p += 8;
@@ -663,12 +670,12 @@ static int decode_irnssephb(raw_t* raw) {
 	eph.crs = R8(p);   p += 8;
 	eph.cic = R8(p);   p += 8;
 	eph.cis = R8(p);   p += 8;
-	
+
 	eph.i0 = R8(p);   p += 8;
 	eph.idot = R8(p);   p += 8;
 	eph.OMG0 = R8(p);   p += 8;
 	eph.OMGd = R8(p);   p += 8 + 4;
-	
+
 	toc = R8(p);   p += 8;
 	eph.tgd[0] = R8(p);   p += 8; /* TGD */
 
@@ -780,8 +787,8 @@ static int decode_obsvmb(raw_t* raw)
 		else {
 			lli = 0;
 		}
-//		if (!parity) lli |= LLI_HALFC;
-//		if (halfc) lli |= LLI_HALFA;
+		//		if (!parity) lli |= LLI_HALFC;
+		//		if (halfc) lli |= LLI_HALFA;
 		raw->tobs[sat - 1][idx] = raw->time;
 		raw->lockt[sat - 1][idx] = lockt;
 		raw->halfc[sat - 1][idx] = 0;
@@ -832,7 +839,7 @@ static int decode_unicore(raw_t* raw)
 	raw->time = gpst2time(week, tow);
 	double ep[6];
 	time2epoch_n(raw->time, ep, 7);
-	
+
 
 	if (raw->outtype) {
 		time2str(gpst2time(week, tow), tstr, 2);
