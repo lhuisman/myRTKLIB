@@ -246,12 +246,12 @@ const char *formatstrs[32]={    /* stream format strings */
     "Trimble RT17",             /* 11 */
     "Septentrio SBF",           /* 12 */
     "Tersus",                   /* 13 */
-    "RINEX",                    /* 14 */
-    "SP3",                      /* 15 */
-    "RINEX CLK",                /* 16 */
-    "SBAS",                     /* 17 */
-    "NMEA 0183",                /* 18 */
-    "TERSUS",                   /* 19 */
+    "Unicore",                  /* 14 */
+    "RINEX",                    /* 15 */
+    "SP3",                      /* 16 */
+    "RINEX CLK",                /* 17 */
+    "SBAS",                     /* 18 */
+    "NMEA 0183",                /* 19 */
     NULL
 };
 

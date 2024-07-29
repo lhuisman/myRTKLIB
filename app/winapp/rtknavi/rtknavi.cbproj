@@ -406,6 +406,9 @@
             <BuildOrder>48</BuildOrder>
             <BuildOrder>15</BuildOrder>
         </CppCompile>
+        <CppCompile Include="..\..\..\src\rcv\unicore.c">
+            <BuildOrder>60</BuildOrder>
+        </CppCompile>
         <CppCompile Include="..\..\..\src\rinex.c">
             <BuildOrder>47</BuildOrder>
             <BuildOrder>16</BuildOrder>
@@ -458,20 +461,20 @@
         <CppCompile Include="..\..\..\src\trace.c">
             <BuildOrder>59</BuildOrder>
         </CppCompile>
+        <FormResources Include="..\appcmn\refdlg.dfm"/>
         <FormResources Include="..\appcmn\mntpoptdlg.dfm"/>
         <FormResources Include="..\appcmn\maskoptdlg.dfm"/>
-        <FormResources Include="..\appcmn\keydlg.dfm"/>
-        <FormResources Include="..\appcmn\refdlg.dfm"/>
+        <FormResources Include="..\appcmn\serioptdlg.dfm"/>
+        <FormResources Include="..\appcmn\vieweropt.dfm"/>
         <FormResources Include="..\appcmn\viewer.dfm"/>
         <FormResources Include="..\appcmn\tcpoptdlg.dfm"/>
-        <FormResources Include="..\appcmn\serioptdlg.dfm"/>
+        <FormResources Include="..\appcmn\keydlg.dfm"/>
         <FormResources Include="..\appcmn\confdlg.dfm"/>
         <FormResources Include="..\appcmn\cmdoptdlg.dfm"/>
         <FormResources Include="..\appcmn\aboutdlg.dfm"/>
         <FormResources Include="..\appcmn\fileoptdlg.dfm"/>
         <FormResources Include="..\appcmn\ftpoptdlg.dfm"/>
         <FormResources Include="..\appcmn\freqdlg.dfm"/>
-        <FormResources Include="..\appcmn\vieweropt.dfm"/>
         <FormResources Include="rcvoptdlg.dfm"/>
         <FormResources Include="markdlg.dfm"/>
         <FormResources Include="logstrdlg.dfm"/>
