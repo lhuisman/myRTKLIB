@@ -869,6 +869,7 @@ void __fastcall TMainWindow::ConvertFile(void)
 		else if (!strcmp(p,".binex")) format=STRFMT_BINEX;
 		else if (!strcmp(p,".rt17" )) format=STRFMT_RT17;
 		else if (!strcmp(p,".sbf"  )) format=STRFMT_SEPT;
+		else if (!strcmp(p,".unc"  )) format=STRFMT_UNICORE;
 		else if (!strcmp(p,".trs"  )) format=STRFMT_TERSUS;
         else if (!strcmp(p,".cnb"  )) format=STRFMT_CNAV;
 		else if (!strcmp(p,".obs"  )) format=STRFMT_RINEX;
