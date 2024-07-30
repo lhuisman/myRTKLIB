@@ -465,7 +465,8 @@ extern "C" {
 #define STRFMT_RTCM2   0                  /* stream format: RTCM 2 */
 #define STRFMT_RTCM3   1                  /* stream format: RTCM 3 */
 #define STRFMT_OEM4    2                  /* stream format: NovAtel OEMV/4 */
-#define STRFMT_CNAV    3                  /* stream format: ComNav */
+/* Comnav currently not supported */
+/* #define STRFMT_CNAV    3 */            /* stream format: ComNav */
 #define STRFMT_UBX     4                  /* stream format: u-blox LEA-*T */
 #define STRFMT_SBP     5                  /* stream format: Swift Navigation SBP */
 #define STRFMT_CRES    6                  /* stream format: Hemisphere */
@@ -475,7 +476,8 @@ extern "C" {
 #define STRFMT_BINEX   10                 /* stream format: BINEX */
 #define STRFMT_RT17    11                 /* stream format: Trimble RT17 */
 #define STRFMT_SEPT    12                 /* stream format: Septentrio */
-#define STRFMT_TERSUS  13                /* stream format: TERSUS */
+/* Tersus currently not supported */
+/* #define STRFMT_TERSUS   13 */          /* stream format: TERSUS */
 #define STRFMT_UNICORE 14                /* stream format: UNICORE */
 #define STRFMT_RINEX   15                 /* stream format: RINEX */
 #define STRFMT_SP3     16                 /* stream format: SP3 */

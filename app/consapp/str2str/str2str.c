@@ -153,7 +153,7 @@ static void decodefmt(char *path, int *fmt)
         if      (!strcmp(p,"#rtcm2")) *fmt=STRFMT_RTCM2;
         else if (!strcmp(p,"#rtcm3")) *fmt=STRFMT_RTCM3;
         else if (!strcmp(p,"#nov"  )) *fmt=STRFMT_OEM4;
-        else if (!strcmp(p,"#cnav" )) *fmt=STRFMT_CNAV;
+        /* else if (!strcmp(p,"#cnav" )) *fmt=STRFMT_CNAV; */
         else if (!strcmp(p,"#ubx"  )) *fmt=STRFMT_UBX;
         else if (!strcmp(p,"#swift")) *fmt=STRFMT_SBP;
         else if (!strcmp(p,"#hemis")) *fmt=STRFMT_CRES;

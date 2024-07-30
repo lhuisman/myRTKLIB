@@ -235,7 +235,7 @@ const char *formatstrs[32]={    /* stream format strings */
     "RTCM 2",                   /*  0 */
     "RTCM 3",                   /*  1 */
     "NovAtel OEM7",             /*  2 */
-    "ComNav",                   /*  3 */
+    "------",                   /*  3 Comnav currently not supported*/
     "u-blox UBX",               /*  4 */
     "Swift Navigation SBP",     /*  5 */
     "Hemisphere",               /*  6 */
@@ -245,7 +245,7 @@ const char *formatstrs[32]={    /* stream format strings */
     "BINEX",                    /* 10 */
     "Trimble RT17",             /* 11 */
     "Septentrio SBF",           /* 12 */
-    "Tersus",                   /* 13 */
+    "------",                   /* 13 Tersus currently not supported */
     "Unicore",                  /* 14 */
     "RINEX",                    /* 15 */
     "SP3",                      /* 16 */
