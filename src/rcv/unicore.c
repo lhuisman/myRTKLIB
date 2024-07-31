@@ -262,7 +262,7 @@ static int decode_gpsephb(raw_t* raw)
 
     prn = U4(p);   p += 4;
     tow = R8(p); p += 8;
-    health = U4(p) & 0b111111; p += 4;
+    health = U4(p) & 0x3f; p += 4;
     eph.iode = U4(p); p += 4;
     iode2 = U4(p); p += 4;
 
@@ -575,7 +575,7 @@ static int decode_qzssephb(raw_t* raw) {
 
     prn = U4(p) + MINPRNQZS - 1;   p += 4;
     tow = R8(p); p += 8;
-    health = U4(p) & 0b111111; p += 4;
+    health = U4(p) & 0x3f; p += 4;
     eph.iode = U4(p); p += 4;
     iode2 = U4(p); p += 4;
 
