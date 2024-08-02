@@ -1233,7 +1233,7 @@ void Plot::updateObservation(int nobs)
         }
         per = (i + 1) * 100 / observation.n;
         if (per != per_) {
-            showMessage(tr("Updating azimuth/elevation... (%1%)").arg(per_ = per));
+            showMessage(tr("Updating azimuth/elevation... %1%").arg(per_ = per));
             qApp->processEvents();
         }
     }
@@ -1279,7 +1279,7 @@ void Plot::updateMp()
         }
         per = i * 100 / observation.n;
         if (per != per_) {
-            showMessage(tr("Updating multipath (1/2)... (%1%)").arg(per));
+            showMessage(tr("Updating multipath (1/2)... %1%").arg(per));
             per_ = per;
             qApp->processEvents();
         }
@@ -1305,7 +1305,7 @@ void Plot::updateMp()
         }
         per = sat * 100 / MAXSAT;
         if (per != per_) {
-            showMessage(tr("Updating multipath (2/2)... (%1%)").arg(per));
+            showMessage(tr("Updating multipath (2/2)... %1%").arg(per));
             per_ = per;
             qApp->processEvents();
         }

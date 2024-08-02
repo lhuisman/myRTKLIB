@@ -551,20 +551,20 @@ void PlotOptDialog::loadOptions(QSettings & settings)
     updateFont();
 
     markerColor[0][0] = settings.value("plot/mcolor0", QColor(0xc0, 0xc0, 0xc0)).value<QColor>();
-    markerColor[0][1] = settings.value("plot/mcolor1", QColor(Qt::green)).value<QColor>();
-    markerColor[0][2] = settings.value("plot/mcolor2", QColor(0x00, 0xAA, 0xFF)).value<QColor>();
+    markerColor[0][1] = settings.value("plot/mcolor1", QColor(Qt::darkGreen)).value<QColor>();
+    markerColor[0][2] = settings.value("plot/mcolor2", QColor(0xff, 0xAA, 0x00)).value<QColor>();
     markerColor[0][3] = settings.value("plot/mcolor3", QColor(0xff, 0x00, 0xff)).value<QColor>();
-    markerColor[0][4] = settings.value("plot/mcolor4", QColor(Qt::blue)).value<QColor>();
+    markerColor[0][4] = settings.value("plot/mcolor4", QColor(Qt::darkBlue)).value<QColor>();
     markerColor[0][5] = settings.value("plot/mcolor5", QColor(Qt::red)).value<QColor>();
     markerColor[0][6] = settings.value("plot/mcolor6", QColor(0x80, 0x80, 0x00)).value<QColor>();
     markerColor[0][7] = settings.value("plot/mcolor7", QColor(Qt::gray)).value<QColor>();
     markerColor[1][0] = settings.value("plot/mcolor8", QColor(0xc0, 0xc0, 0xc0)).value<QColor>();
-    markerColor[1][1] = settings.value("plot/mcolor9", QColor(0x80, 0x40, 0x00)).value<QColor>();
-    markerColor[1][2] = settings.value("plot/mcolor10", QColor(0x00, 0x80, 0x80)).value<QColor>();
-    markerColor[1][3] = settings.value("plot/mcolor11", QColor(0xFF, 0x00, 0x80)).value<QColor>();
-    markerColor[1][4] = settings.value("plot/mcolor12", QColor(0xFF, 0x80, 0x00)).value<QColor>();
-    markerColor[1][5] = settings.value("plot/mcolor13", QColor(0x80, 0x80, 0xFF)).value<QColor>();
-    markerColor[1][6] = settings.value("plot/mcolor14", QColor(0xFF, 0x80, 0x80)).value<QColor>();
+    markerColor[1][1] = settings.value("plot/mcolor9", QColor(0x00, 0x40, 0x80)).value<QColor>();
+    markerColor[1][2] = settings.value("plot/mcolor10", QColor(0x80, 0x80, 0x00)).value<QColor>();
+    markerColor[1][3] = settings.value("plot/mcolor11", QColor(0x80, 0x00, 0xff)).value<QColor>();
+    markerColor[1][4] = settings.value("plot/mcolor12", QColor(0x00, 0x80, 0xff)).value<QColor>();
+    markerColor[1][5] = settings.value("plot/mcolor13", QColor(0xff, 0x80, 0x80)).value<QColor>();
+    markerColor[1][6] = settings.value("plot/mcolor14", QColor(0x80, 0x80, 0xff)).value<QColor>();
     markerColor[1][7] = settings.value("plot/mcolor15", QColor(Qt::gray)).value<QColor>();
 
     ui->tBMColor1->setStyleSheet(QString("background-color: %1;").arg(color2String(markerColor[0][1])));
