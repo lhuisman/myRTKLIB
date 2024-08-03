@@ -1916,7 +1916,7 @@ static int relpos(rtk_t *rtk, const obsd_t *obs, int nu, int nr,
     int stat=rtk->opt.mode<=PMODE_DGPS?SOLQ_DGPS:SOLQ_FLOAT;
     int nf=opt->ionoopt==IONOOPT_IFLC?1:opt->nf;
 
-    trace(3,"relpos  : nu=%d nr=%d\n",dt,nu,nr);
+    trace(3,"relpos  : nu=%d nr=%d\n",nu,nr);
 
     /* define local matrices, n=total observations, base + rover */
     rs=mat(6,n);            /* range to satellites */
@@ -1956,7 +1956,7 @@ static int relpos(rtk_t *rtk, const obsd_t *obs, int nu, int nr,
     } else dt=timediff(time,obs[nu].time);
     trace(3,"relpos  : dt=%.3f\n",dt);
 
-     if (!(opt->mode==PMODE_MOVEB)) {
+     if (opt->mode!=PMODE_MOVEB) {
         /* check if exceeded max age of differential */
         rtk->sol.age=dt;
         if (fabs(rtk->sol.age)>opt->maxtdiff) {
