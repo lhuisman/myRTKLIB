@@ -797,6 +797,8 @@ void MainWindow::convertFile()
             conversionThread->format = STRFMT_RT17;
         } else if (fi.completeSuffix() == "sbf") {
             conversionThread->format = STRFMT_SEPT;
+        } else if (fi.completeSuffix() == "unc") {
+            conversionThread->format = STRFMT_UNICORE;
         } else if (fi.completeSuffix().toLower() == "obs") {
             conversionThread->format = STRFMT_RINEX;
         } else if (fi.completeSuffix().toLower().contains("nav")) {

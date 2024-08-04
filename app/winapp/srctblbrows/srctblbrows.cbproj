@@ -253,6 +253,9 @@
         <CppCompile Include="..\..\..\src\rcv\ublox.c">
             <BuildOrder>7</BuildOrder>
         </CppCompile>
+        <CppCompile Include="..\..\..\src\rcv\unicore.c">
+            <BuildOrder>23</BuildOrder>
+        </CppCompile>
         <CppCompile Include="..\..\..\src\rtkcmn.c">
             <BuildOrder>23</BuildOrder>
         </CppCompile>

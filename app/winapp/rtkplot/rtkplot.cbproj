@@ -419,6 +419,9 @@
         <CppCompile Include="..\..\..\src\rcv\ublox.c">
             <BuildOrder>31</BuildOrder>
         </CppCompile>
+        <CppCompile Include="..\..\..\src\rcv\unicore.c">
+            <BuildOrder>60</BuildOrder>
+        </CppCompile>
         <CppCompile Include="..\..\..\src\rinex.c">
             <BuildOrder>52</BuildOrder>
         </CppCompile>
@@ -454,12 +457,13 @@
         </CppCompile>
         <FormResources Include="vmapdlg.dfm"/>
         <FormResources Include="skydlg.dfm"/>
+        <FormResources Include="..\appcmn\refdlg.dfm"/>
         <FormResources Include="..\appcmn\mntpoptdlg.dfm"/>
         <FormResources Include="..\appcmn\keydlg.dfm"/>
-        <FormResources Include="..\appcmn\refdlg.dfm"/>
+        <FormResources Include="..\appcmn\serioptdlg.dfm"/>
+        <FormResources Include="..\appcmn\tspandlg.dfm"/>
         <FormResources Include="..\appcmn\timedlg.dfm"/>
         <FormResources Include="..\appcmn\tcpoptdlg.dfm"/>
-        <FormResources Include="..\appcmn\serioptdlg.dfm"/>
         <FormResources Include="..\appcmn\confdlg.dfm"/>
         <FormResources Include="..\appcmn\cmdoptdlg.dfm"/>
         <FormResources Include="..\appcmn\aboutdlg.dfm"/>
@@ -467,10 +471,9 @@
         <FormResources Include="..\appcmn\ftpoptdlg.dfm"/>
         <FormResources Include="..\appcmn\freqdlg.dfm"/>
         <FormResources Include="..\appcmn\fileoptdlg.dfm"/>
-        <FormResources Include="..\appcmn\tspandlg.dfm"/>
         <FormResources Include="plotmain.dfm"/>
-        <FormResources Include="pntdlg.dfm"/>
         <FormResources Include="plotopt.dfm"/>
+        <FormResources Include="pntdlg.dfm"/>
         <FormResources Include="conndlg.dfm"/>
         <FormResources Include="..\appcmn\vieweropt.dfm"/>
         <FormResources Include="..\appcmn\viewer.dfm"/>

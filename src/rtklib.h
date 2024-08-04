@@ -442,11 +442,12 @@ extern "C" {
 #define SBSOPT_ICORR 4                  /* SBAS option: ionosphere correction */
 #define SBSOPT_RANGE 8                  /* SBAS option: ranging */
 
-#define POSOPT_POS   0                  /* pos option: LLH/XYZ */
-#define POSOPT_SINGLE 1                 /* pos option: average of single pos */
-#define POSOPT_FILE  2                  /* pos option: read from pos file */
-#define POSOPT_RINEX 3                  /* pos option: rinex header pos */
-#define POSOPT_RTCM  4                  /* pos option: rtcm/raw station pos */
+#define POSOPT_POS_LLH 0                /* pos option: LLH */
+#define POSOPT_POS_XYZ 1                /* pos option: XYZ */
+#define POSOPT_SINGLE  2                /* pos option: average of single pos */
+#define POSOPT_FILE    3                /* pos option: read from pos file */
+#define POSOPT_RINEX   4                /* pos option: rinex header pos */
+#define POSOPT_RTCM    5                /* pos option: rtcm/raw station pos */
 
 #define STR_NONE     0                  /* stream type: none */
 #define STR_SERIAL   1                  /* stream type: serial */
@@ -462,26 +463,29 @@ extern "C" {
 #define STR_UDPCLI   11                 /* stream type: UDP server */
 #define STR_MEMBUF   12                 /* stream type: memory buffer */
 
-#define STRFMT_RTCM2 0                  /* stream format: RTCM 2 */
-#define STRFMT_RTCM3 1                  /* stream format: RTCM 3 */
-#define STRFMT_OEM4  2                  /* stream format: NovAtel OEMV/4 */
-#define STRFMT_CNAV  3                  /* stream format: ComNav */
-#define STRFMT_UBX   4                  /* stream format: u-blox LEA-*T */
-#define STRFMT_SBP   5                  /* stream format: Swift Navigation SBP */
-#define STRFMT_CRES  6                  /* stream format: Hemisphere */
-#define STRFMT_STQ   7                  /* stream format: SkyTraq S1315F */
-#define STRFMT_JAVAD 8                  /* stream format: JAVAD GRIL/GREIS */
-#define STRFMT_NVS   9                  /* stream format: NVS NVC08C */
-#define STRFMT_BINEX 10                 /* stream format: BINEX */
-#define STRFMT_RT17  11                 /* stream format: Trimble RT17 */
-#define STRFMT_SEPT  12                 /* stream format: Septentrio */
-#define STRFMT_TERSUS 13                /* stream format: TERSUS */
-#define STRFMT_RINEX 14                 /* stream format: RINEX */
-#define STRFMT_SP3   15                 /* stream format: SP3 */
-#define STRFMT_RNXCLK 16                /* stream format: RINEX CLK */
-#define STRFMT_SBAS  17                 /* stream format: SBAS messages */
-#define STRFMT_NMEA  18                 /* stream format: NMEA 0183 */
-#define MAXRCVFMT    13                 /* max number of receiver format */
+#define STRFMT_RTCM2   0                  /* stream format: RTCM 2 */
+#define STRFMT_RTCM3   1                  /* stream format: RTCM 3 */
+#define STRFMT_OEM4    2                  /* stream format: NovAtel OEMV/4 */
+/* Comnav currently not supported */
+/* #define STRFMT_CNAV    3 */            /* stream format: ComNav */
+#define STRFMT_UBX     4                  /* stream format: u-blox LEA-*T */
+#define STRFMT_SBP     5                  /* stream format: Swift Navigation SBP */
+#define STRFMT_CRES    6                  /* stream format: Hemisphere */
+#define STRFMT_STQ     7                  /* stream format: SkyTraq S1315F */
+#define STRFMT_JAVAD   8                  /* stream format: JAVAD GRIL/GREIS */
+#define STRFMT_NVS     9                  /* stream format: NVS NVC08C */
+#define STRFMT_BINEX   10                 /* stream format: BINEX */
+#define STRFMT_RT17    11                 /* stream format: Trimble RT17 */
+#define STRFMT_SEPT    12                 /* stream format: Septentrio */
+/* Tersus currently not supported */
+/* #define STRFMT_TERSUS   13 */          /* stream format: TERSUS */
+#define STRFMT_UNICORE 14                /* stream format: UNICORE */
+#define STRFMT_RINEX   15                 /* stream format: RINEX */
+#define STRFMT_SP3     16                 /* stream format: SP3 */
+#define STRFMT_RNXCLK  17                /* stream format: RINEX CLK */
+#define STRFMT_SBAS    18                 /* stream format: SBAS messages */
+#define STRFMT_NMEA    19                 /* stream format: NMEA 0183 */
+#define MAXRCVFMT      14                 /* max number of receiver format */
 
 #define STR_MODE_R  0x1                 /* stream mode: read */
 #define STR_MODE_W  0x2                 /* stream mode: write */
@@ -1676,6 +1680,7 @@ EXPORT int input_bnx   (raw_t *raw, uint8_t data);
 EXPORT int input_rt17  (raw_t *raw, uint8_t data);
 EXPORT int input_sbf   (raw_t *raw, uint8_t data);
 EXPORT int input_tersus(raw_t *raw, uint8_t data);
+EXPORT int input_unicore(raw_t *raw, uint8_t data);
 EXPORT int input_oem4f (raw_t *raw, FILE *fp);
 EXPORT int input_cnavf (raw_t *raw, FILE *fp);
 EXPORT int input_ubxf  (raw_t *raw, FILE *fp);
@@ -1688,6 +1693,7 @@ EXPORT int input_bnxf  (raw_t *raw, FILE *fp);
 EXPORT int input_rt17f (raw_t *raw, FILE *fp);
 EXPORT int input_sbff  (raw_t *raw, FILE *fp);
 EXPORT int input_tersusf(raw_t *raw, FILE *fp);
+EXPORT int input_unicoref(raw_t *raw, FILE *fp);
 
 EXPORT int gen_ubx (const char *msg, uint8_t *buff);
 EXPORT int gen_stq (const char *msg, uint8_t *buff);

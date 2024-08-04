@@ -306,6 +306,9 @@
         <CppCompile Include="..\..\..\src\rcv\ublox.c">
             <BuildOrder>12</BuildOrder>
         </CppCompile>
+        <CppCompile Include="..\..\..\src\rcv\unicore.c">
+            <BuildOrder>39</BuildOrder>
+        </CppCompile>
         <CppCompile Include="..\..\..\src\rinex.c">
             <BuildOrder>31</BuildOrder>
         </CppCompile>
