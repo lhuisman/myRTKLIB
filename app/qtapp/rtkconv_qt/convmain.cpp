@@ -38,6 +38,7 @@
 #include <QCompleter>
 #include <QFileSystemModel>
 #include <QAction>
+#include <QToolTip>
 
 #include "convmain.h"
 #include "timedlg.h"
@@ -609,7 +610,8 @@ void MainWindow::viewInputFile()
             (ext == "rnx") || (ext == "RNX")) {
         viewer->show();
         viewer->read(repPath(inputFilename));
-    }
+    } else
+        QToolTip::showText(ui->btnInputFileView->mapToGlobal( QPoint( 0, 0 ) ), tr("<font color='#ff0000'>Unrecognized file type</font>") );
 }
 // callback on button-view-file-1 -------------------------------------------
 void MainWindow::viewOutputFile1()

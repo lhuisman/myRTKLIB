@@ -27,6 +27,7 @@ SOURCES += \
     ../appcmn_qt/graph.cpp \
     #../appcmn_qt/pntdlg.cpp \
     ../widgets_qt/doubleunitvalidator.cpp \
+    ../widgets_qt/intunitvalidator.cpp \
     ../widgets_qt/scientificspinbox.cpp \
     ../appcmn_qt/navi_post_opt.cpp \
     mondlg.cpp \
@@ -65,6 +66,7 @@ HEADERS  += \
     ../appcmn_qt/helper.h \
     ../appcmn_qt/graph.h \
     #../appcmn_qt/pntdlg.h \
+    ../widgets_qt/intunitvalidator.h \
     ../widgets_qt/doubleunitvalidator.h \
     ../widgets_qt/scientificspinbox.h
 

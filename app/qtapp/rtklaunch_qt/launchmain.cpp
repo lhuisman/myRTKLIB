@@ -157,7 +157,7 @@ void MainForm::showEvent(QShowEvent *event)
            settings.value("pos/height", 79).toInt());
 }
 //---------------------------------------------------------------------------
-void MainForm::closeEvent(QCloseEvent *event)
+void MainForm::closeEvent(QCloseEvent *)
 {
     QSettings settings(iniFile, QSettings::IniFormat);
 
