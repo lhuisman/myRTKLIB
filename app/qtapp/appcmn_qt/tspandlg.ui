@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>405</width>
-    <height>164</height>
+    <width>394</width>
+    <height>174</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -80,6 +80,9 @@
      <property name="toolTip">
       <string>End time</string>
      </property>
+     <property name="displayFormat">
+      <string>dd.MM.yy HH:mm:ss</string>
+     </property>
      <property name="calendarPopup">
       <bool>true</bool>
      </property>
@@ -92,6 +95,9 @@
     <widget class="QDateTimeEdit" name="dTTimeStart">
      <property name="toolTip">
       <string>Start time</string>
+     </property>
+     <property name="displayFormat">
+      <string>dd.MM.yy HH:mm:ss</string>
      </property>
      <property name="calendarPopup">
       <bool>true</bool>
