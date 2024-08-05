@@ -1332,7 +1332,7 @@ void OptDialog::saveOptions(QSettings &settings)
     settings.setValue("prcopt/maxtdiff", ui->sBMaxAgeDifferences->value());
     settings.setValue("prcopt/maxinno1", ui->sBRejectPhase->value());
     settings.setValue("prcopt/maxinno2", ui->sBRejectCode->value());
-    settings.setValue("prcopt/baselinec", ui->cBBaselineConstrain->isChecked());
+    settings.setValue("prcopt/baselinec", int(ui->cBBaselineConstrain->isChecked()));
     settings.setValue("prcopt/baseline1", ui->sBBaselineLen->value());
     settings.setValue("prcopt/baseline2", ui->sBBaselineSig->value());
     // ru
@@ -1348,18 +1348,18 @@ void OptDialog::saveOptions(QSettings &settings)
     // pcvr
     settings.setValue("prcopt/exsats", ui->lEExcludedSatellites->text());
     settings.setValue("prcopt/maxaveep", ui->sBMaxAveEp->value());
-    settings.setValue("prcopt/initrst", ui->cBInitRestart->isChecked());
+    settings.setValue("prcopt/initrst", int(ui->cBInitRestart->isChecked()));
     settings.setValue("prcopt/outsingle", ui->cBOutputSingle->currentIndex());
     if (options == PostOptions) {
         settings.setValue("opt/rnxopts1", ui->lERnxOptions1->text());
         settings.setValue("opt/rnxopts2", ui->lERnxOptions2->text());
     }
-    settings.setValue("prcopt/posopt1", ui->cBPositionOption1->isChecked());
-    settings.setValue("prcopt/posopt2", ui->cBPositionOption2->isChecked());
-    settings.setValue("prcopt/posopt3", ui->cBPositionOption3->isChecked());
-    settings.setValue("prcopt/posopt4", ui->cBPositionOption4->isChecked());
-    settings.setValue("prcopt/posopt5", ui->cBPositionOption5->isChecked());
-    settings.setValue("prcopt/posopt6", ui->cBPositionOption6->isChecked());
+    settings.setValue("prcopt/posopt1", int(ui->cBPositionOption1->isChecked()));
+    settings.setValue("prcopt/posopt2", int(ui->cBPositionOption2->isChecked()));
+    settings.setValue("prcopt/posopt3", int(ui->cBPositionOption3->isChecked()));
+    settings.setValue("prcopt/posopt4", int(ui->cBPositionOption4->isChecked()));
+    settings.setValue("prcopt/posopt5", int(ui->cBPositionOption5->isChecked()));
+    settings.setValue("prcopt/posopt6", int(ui->cBPositionOption6->isChecked()));
     settings.setValue("prcopt/syncsol", ui->cBSyncSolution->currentIndex());
     // odisp
     // freqopt
