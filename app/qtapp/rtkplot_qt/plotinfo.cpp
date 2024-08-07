@@ -37,10 +37,10 @@ void Plot::updateStatusBarInformation()
 // update time-information for observation-data plot ------------------------
 void Plot::updateTimeObservation()
 {
-    static QStringList legend_freqs = {" #FRQ=5 ", " 4 ", " 3 ", " 2 ", " 1", "", ""};
-    static QStringList legend_snr = {" SNR=...45.", "..40.", "..35.", "..30.", "..25 ", "", " <25 "};
-    static QStringList legend_sys = {" SYS=GPS ", "GLO ", "GAL ", "QZS ", "BDS ", "IRN ", "SBS"};
-    static QStringList legend_mp = {" MP=..0.6", "..0.3", "..0.0..", "-0.3..", "-0.6..", "", ""};
+    static QStringList legend_freqs = {" #OBS = 5 ", " 4 ", " 3 ", " 2 ", " 1", "", ""};
+    static QStringList legend_snr = {" SNR = ...45.", "..40.", "..35.", "..30.", "..25 ", "", " <25 "};
+    static QStringList legend_sys = {" SYS = GPS ", "GLO ", "GAL ", "QZS ", "BDS ", "IRN ", "SBS"};
+    static QStringList legend_mp = {" MP = ..0.6", "..0.3", "..0.0..", "-0.3..", "-0.6..", "", ""};
     QStringList legend;
     QString msg;
     double azel[MAXOBS * 2], dop[4] = { 0 };
@@ -144,10 +144,10 @@ void Plot::updateTimeSolution()
 void Plot::updateInfoObservation()
 {
     static QStringList legend_dop = {" NSAT", " GDOP", " PDOP", " HDOP", " VDOP", "", ""};
-    static QStringList legend_freqs = {" #FRQ=5 ", " 4 ", " 3 ", " 2 ", " 1 ", "", ""};
-    static QStringList legend_snr = {" SNR=...45.", "..40.", "..35.", "..30.", "..25 ", "", " <25 "};
-    static QStringList legend_sys = {" SYS=GPS ", "GLO ", "GAL ", "QZS ", "BDS ", "IRN ", "SBS"};
-    static QStringList legend_mp = {" MP=..0.6", "..0.3", "..0.0..", "-0.3..", "-0.6..", "", ""};
+    static QStringList legend_freqs = {" #OBS = 5 ", " 4 ", " 3 ", " 2 ", " 1 ", "", ""};
+    static QStringList legend_snr = {" SNR = ...45.", "..40.", "..35.", "..30.", "..25 ", "", " <25 "};
+    static QStringList legend_sys = {" SYS = GPS ", "GLO ", "GAL ", "QZS ", "BDS ", "IRN ", "SBS"};
+    static QStringList legend_mp = {" MP = ..0.6", "..0.3", "..0.0..", "-0.3..", "-0.6..", "", ""};
     QString msg;
     QStringList legend;
     QString timeStartString, timeEndString;
