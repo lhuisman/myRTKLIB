@@ -1637,6 +1637,45 @@ static int readrnxfile(const char *file, gtime_t ts, gtime_t te, double tint,
 
     return stat;
 }
+/* Add a RINEX comment, taking care of overflow ------------------------------
+* Returns 1 on success, and 0 if omitted or truncated.
+* The comment is append from the first empty comment, and it is assumed that
+* comments are added without empty comments. */
+extern int rnxcomment(rnxopt_t *opt, const char *format, ...) {
+    char buff[256];
+    va_list ap;
+    va_start(ap, format);
+    int req = vsnprintf(buff, sizeof(buff), format, ap);
+    va_end(ap);
+    if (req < 0) {
+        trace(2,"rnxcomment: format error in '%s'\n", format);
+        return 0;
+    }
+    if (req >= sizeof(buff)) {
+        trace(3, "rnxcomment: buffer overflow\n");
+    }
+    // Don't attempt to leave an empty comment
+    if (req == 0)
+        return 1;
+    // Find the start of empty comment lines.
+    int i;
+    for (i = 0; i < MAXCOMMENT; i++) {
+        if (!*opt->comment[i]) break;
+    }
+    // Copy while wrapping overflow into the next comment line.
+    for (int j = 0, rem = strlen(buff); rem > 0; i++) {
+        if (i >= MAXCOMMENT) return 0;
+        int indent = j > 0 ? 2 : 0; // Indent overflow lines
+        int n = rem > 60 - indent ? 60 - indent : rem;
+        if (indent > 0) strcpy(opt->comment[i], "    ");
+        memcpy(opt->comment[i] + indent, buff + j, n);
+        opt->comment[i][indent + n] = '\0';
+        rem -= n;
+        j += n;
+    }
+    return 1;
+}
+
 /* read RINEX OBS and NAV files ------------------------------------------------
 * read RINEX OBS and NAV files
 * args   : char *file    I      file (wild-card * expanded) ("": stdin)

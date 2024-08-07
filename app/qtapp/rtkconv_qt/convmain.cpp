@@ -899,7 +899,8 @@ void MainWindow::convertFile()
     conversionThread->rnxopt.navsys = convOptDialog->navSys;
     conversionThread->rnxopt.obstype = convOptDialog->observationType;
     conversionThread->rnxopt.freqtype = convOptDialog->frequencyType;
-    for (i = 0; i < 2; i++) sprintf(conversionThread->rnxopt.comment[i], "%.63s", qPrintable(convOptDialog->comment[i]));
+    for (i = 0; i < 2; i++)
+        rnxcomment(&conversionThread->rnxopt, "%s", qPrintable(convOptDialog->comment[i]));
     for (i = 0; i < 7; i++) strncpy(conversionThread->rnxopt.mask[i], qPrintable(convOptDialog->codeMask[i]), 63);
     conversionThread->rnxopt.autopos = convOptDialog->autoPosition;
     conversionThread->rnxopt.phshift = convOptDialog->phaseShift;

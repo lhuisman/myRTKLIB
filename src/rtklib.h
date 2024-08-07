@@ -1593,6 +1593,7 @@ EXPORT int outrnxinavh(FILE *fp, const rnxopt_t *opt, const nav_t *nav);
 EXPORT int outrnxnavb (FILE *fp, const rnxopt_t *opt, const eph_t *eph);
 EXPORT int outrnxgnavb(FILE *fp, const rnxopt_t *opt, const geph_t *geph);
 EXPORT int outrnxhnavb(FILE *fp, const rnxopt_t *opt, const seph_t *seph);
+EXPORT int rnxcomment(rnxopt_t *opt, const char *format, ...);
 EXPORT int rtk_uncompress(const char *file, char *uncfile);
 EXPORT int convrnx(int format, rnxopt_t *opt, const char *file, char **ofile);
 EXPORT int  init_rnxctr (rnxctr_t *rnx);
