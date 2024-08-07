@@ -953,7 +953,7 @@ void __fastcall TMainWindow::ConvertFile(void)
 	rnxopt.navsys=NavSys;
 	rnxopt.obstype=ObsType;
 	rnxopt.freqtype=FreqType;
-	for (i=0;i<2;i++) sprintf(rnxopt.comment[i],"%.63s",Comment[i].c_str());
+	for (i=0;i<2;i++) rnxcomment(&rnxopt, "%s", Comment[i].c_str());
 	for (i=0;i<7;i++) strcpy(rnxopt.mask[i],CodeMask[i].c_str());
         for (i=0;i<7;i++) {
             /* strncpy is appropriate here, the elements are accessed randomly */

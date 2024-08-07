@@ -383,7 +383,7 @@ static int cmdopts(int argc, char **argv, rnxopt_t *opt, char **ifile,
 {
     double eps[]={1980,1,1,0,0,0},epe[]={2037,12,31,0,0,0};
     double epr[]={2010,1,1,0,0,0},span=0.0;
-    int i,j,k,sat,nf=5,nc=2,format=-1;
+    int i,j,k,sat,nf=5,format=-1;
     char *p,*sys,*fmt="",*paths[1],path[1024],buff[256];
     
     opt->rnxver=304;
@@ -431,7 +431,7 @@ static int cmdopts(int argc, char **argv, rnxopt_t *opt, char **ifile,
             nf=atoi(argv[++i]);
         }
         else if (!strcmp(argv[i],"-hc")&&i+1<argc) {
-            if (nc<MAXCOMMENT) strcpy(opt->comment[nc++],argv[++i]);
+            rnxcomment(opt, argv[++i]);
         }
         else if (!strcmp(argv[i],"-hm")&&i+1<argc) {
             strcpy(opt->marker,argv[++i]);
@@ -627,12 +627,6 @@ int main(int argc, char **argv)
         return EXIT_FAILURE;
     }
     sprintf(opt.prog,"%s %s %s",PRGNAME,VER_RTKLIB,PATCH_LEVEL);
-    sprintf(opt.comment[0],"log: %-55.55s",ifile);
-    sprintf(opt.comment[1],"format: %s",formatstrs[format]);
-    if (*opt.rcvopt) {
-        strcat(opt.comment[1],", option: ");
-        strcat(opt.comment[1],opt.rcvopt);
-    }
     if (trace>0) {
         traceopen(TRACEFILE);
         tracelevel(trace);
