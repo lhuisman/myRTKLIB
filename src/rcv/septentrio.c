@@ -676,8 +676,13 @@ static int decode_measepoch(raw_t *raw)
 {
     uint8_t *p = raw->buff+14, code;
     double P1, P2, L1, L2, D1, D2, S1, S2, freq1, freq2;
-    int i, j, idx, n, n1, n2, len1, len2, sig, ant, svid, info, sat, sys, lock, fcn, LLI, chn;
+    int i, j, idx, n, n1, n2, len1, len2, sig, ant, svid, info, sat, sys, lock, fcn, LLI, chn, ret=0;
     int ant_sel = 0; /* antenna selection (0:main) */
+
+    if (timediff(raw->time, current_time) != 0) {
+        current_time = raw->time;
+        ret = flushobuf(raw);
+    }
 
     if (strstr(raw->opt, "-NO_MEAS2")) return 0;
 
@@ -808,11 +813,7 @@ static int decode_measepoch(raw_t *raw)
     }
     raw->obuf.n = n;
 
-    if (timediff(raw->time, current_time) != 0) {
-        current_time = raw->time;
-        return flushobuf(raw);
-    } else
-        return 0;
+    return ret;
 }
 
 static int decode_measepochextra(raw_t *raw)
@@ -822,8 +823,13 @@ static int decode_measepochextra(raw_t *raw)
     uint8_t code, type, chn;
     uint16_t revision;
     double codeVar, carrierVar, pstd;
-    int sig, n, idx, sat;
+    int sig, n, idx, sat, ret = 0;
     int ant_sel = 0; /* antenna selection (0:main) */
+
+    if (timediff(raw->time, current_time) != 0) {
+        current_time = raw->time;
+        ret = flushobuf(raw);
+    }
 
     if (raw->outtype) {
         sprintf(raw->msgtype, "SBF Measurement Data Extra");
@@ -878,18 +884,19 @@ static int decode_measepochextra(raw_t *raw)
         }
     }
 
-    if (timediff(raw->time, current_time) != 0) {
-        current_time = raw->time;
-        return flushobuf(raw);
-    } else
-        return 0;
+    return ret;
 }
 
 /* decode meas3 bloack -------------------------------------------------*/
 static int decode_meas3ranges(raw_t *raw) {
     uint8_t *p = raw->buff+8;
-    int n = 0, idx = 0;
+    int n = 0, idx = 0, ret = 0;
     int ant_sel = 0; /* antenna selection (0:main) */
+
+    if (timediff(raw->time, current_time) != 0) {
+        current_time = raw->time;
+        ret = flushobuf(raw);
+    }
 
     if (strstr(raw->opt, "-NO_MEAS3")) return 0;
 
@@ -1333,14 +1340,7 @@ static int decode_meas3ranges(raw_t *raw) {
     }
     raw->obuf.n = n;
 
-    if (raw->len < idx+20)
-        trace(2, "sbf meas3ranges len error: %d % d\n", raw->len, idx+20);
-
-    if (timediff(raw->time, current_time) != 0) {
-        current_time = raw->time;
-        return flushobuf(raw);
-    } else
-        return 0;
+    return ret;
 }
 
 int32_t meas3_DopplerPrRate(raw_t* raw, uint32_t *offset)
@@ -1381,8 +1381,13 @@ int32_t meas3_DopplerPrRate(raw_t* raw, uint32_t *offset)
 int decode_meas3Doppler(raw_t* raw)
 {
     int n;
-    uint32_t offset = 0;
+    uint32_t offset = 0, ret = 0;
     int ant_sel = 0; /* antenna selection (0:main) */
+
+    if (timediff(raw->time, current_time) != 0) {
+        current_time = raw->time;
+        ret = flushobuf(raw);
+    }
 
     if (strstr(raw->opt, "-NO_MEAS3")) return 0;
 
@@ -1425,18 +1430,19 @@ int decode_meas3Doppler(raw_t* raw)
         }
     }
 
-    if (timediff(raw->time, current_time) != 0) {
-        current_time = raw->time;
-        return flushobuf(raw);
-    } else
-        return 0;
+    return ret;
 }
 
 int decode_meas3CN(raw_t* raw)
 {
-    int n;
+    int n, ret = 0;
     uint32_t offset = 0;
     int ant_sel = 0; /* antenna selection (0:main) */
+
+    if (timediff(raw->time, current_time) != 0) {
+        current_time = raw->time;
+        ret = flushobuf(raw);
+    }
 
     if (strstr(raw->opt, "-NO_MEAS3")) return 0;
 
@@ -1473,11 +1479,7 @@ int decode_meas3CN(raw_t* raw)
         }
     }
 
-    if (timediff(raw->time, current_time) != 0) {
-        current_time = raw->time;
-        return flushobuf(raw);
-    } else
-        return 0;
+    return ret;
 }
 
 /* Navigation Page Blocks */
