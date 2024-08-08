@@ -1599,7 +1599,6 @@ static int decode_gpsrawcanav(raw_t *raw, int sys){
 /* decode SBF raw nav message (raw navigation data) for glonass---------------*/
 static int decode_glorawcanav(raw_t *raw){
     geph_t geph = {0};
-    gtime_t *time;
     double utc[8] = {0};
     uint8_t *p = raw->buff+14, buff[12];
     int i, svid, sat, prn, m;
@@ -1629,10 +1628,11 @@ static int decode_glorawcanav(raw_t *raw){
         trace(2, "sbf glorawca string number error: prn=%d m=%d\n", prn, m);
         return -1;
     }
-    time = (gtime_t *)(raw->subfrm[sat-1]+150);
-    if (fabs(timediff(raw->time, *time)) > 30.0) {
+    int32_t time = raw->time.time;
+    int32_t dt = time - I4(raw->subfrm[sat - 1] + 152);
+    if (dt > 30 || dt < -30) {
         memset(raw->subfrm[sat-1], 0, 40);
-        memcpy(time, &raw->time, sizeof(gtime_t));
+        memcpy(raw->subfrm[sat-1]+152, &time, sizeof(time));
     }
     memcpy(raw->subfrm[sat-1]+(m-1)*10, buff, 10);
     if (m != 4) return 0;
