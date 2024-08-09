@@ -2245,7 +2245,7 @@ static void outrnxobsf(FILE *fp, double obs, int lli, int std)
     else {
         fprintf(fp,"%1.1d",lli&(LLI_SLIP|LLI_HALFC|LLI_BOCTRK));
     }
-    if (std<=0) fprintf(fp," "); else fprintf(fp,"%1.1x",std);
+    if (std<=0) fprintf(fp," "); else fprintf(fp,"%1.1x", std > 9 ? 9 : std);
 }
 /* search observation data index -------------------------------------------*/
 static int obsindex(int rnxver, int sys, const uint8_t *code, const char *tobs,

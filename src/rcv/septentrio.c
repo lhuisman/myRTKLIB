@@ -720,7 +720,7 @@ static int decode_measepoch(raw_t *raw)
         fcn  = 0;
         if (sig == 31) sig = (info>>3)+32;
         else if (sig>=8 && sig<=11) fcn = (info>>3)-8;
-        raw->obuf.data[n].freq = fcn+8;
+        raw->obuf.data[n].freq = fcn+7;
 
         if (ant != ant_sel) {
             trace(3, "sbf measepoch ant error: svid=%d ant=%d\n", svid, ant);
@@ -822,7 +822,6 @@ static int decode_measepochextra(raw_t *raw)
     uint8_t n_chn, sbLen, i, misc;
     uint8_t code, type, chn;
     uint16_t revision;
-    double codeVar, carrierVar, pstd;
     int sig, n, idx, sat, ret = 0;
     int ant_sel = 0; /* antenna selection (0:main) */
 
@@ -843,6 +842,9 @@ static int decode_measepochextra(raw_t *raw)
     revision = U2(raw->buff+4) >> 13;
     n_chn = U1 (p+6);
     sbLen = U1(p+7);
+
+    int rcvstds = 0;
+    if (strstr(raw->opt, "-RCVSTDS")) rcvstds = 1;
 
     for (i = 0; i < n_chn; i++)
     {
@@ -867,20 +869,35 @@ static int decode_measepochextra(raw_t *raw)
             continue;
         }
 
-        codeVar = U2(p_chan+6)/10000.;    /* in meters^2 */
-        carrierVar = U2(p_chan+8)/1000.;  /* in cycles^2 */
+        /* Write rcvr stdevs to unused RINEX fields */
+        if (rcvstds) {
+            uint16_t codeVarU = U2(p_chan + 6);
+            if (codeVarU != 65535) {
+                double codeVar = codeVarU / 10000.;   /* meters^2 */
+                // To RTKlib encoding
+                // TODO starting from 2 rather than 5 would better suit here
+                double pstd = log2(sqrt(codeVar) * 100) - 5;
+                pstd = pstd > 0 ? pstd : 0;
+                /* Further limited to 9 in RINEX output */
+                pstd = pstd <= 254 ? pstd : 254;
+                raw->obuf.data[n].Pstd[idx] = pstd + 0.5;
+            }
 
-        if (codeVar != 65535) {
-            pstd = log2(sqrt(codeVar)*100)-5;
-            raw->obuf.data[n].Pstd[idx] = pstd>0 ? pstd : 0;
-        }
-        if (carrierVar != 65535) {
-            raw->obuf.data[n].Lstd[idx] = sqrt(carrierVar)/0.004;
+            uint16_t carrierVarU = U2(p_chan + 8);
+            if (carrierVarU != 65535) {
+                double carrierVar = carrierVarU / 1000000.; /* cycles^2 */
+                // To RTKlib encoding
+                double lstd = sqrt(carrierVar) / 0.004;
+                lstd = lstd > 0 ? lstd : 0;
+                /* Further limited to 9 in RINEX output */
+                lstd = lstd <= 254 ? lstd : 254;
+                raw->obuf.data[n].Lstd[idx] = lstd + 0.5;
+            }
         }
 
         if ((revision >= 3) && (sbLen >= 16)) {  /* later revision contains high-resolution extension for CN0 values*/
             misc = U1(p_chan+15);
-            raw->obuf.data[n].SNR[idx] += (uint16_t)(((misc & 0x7 ) * 0.0312)/SNR_UNIT+0.5);
+            raw->obuf.data[n].SNR[idx] = (uint16_t)((raw->obuf.data[n].SNR[idx] * SNR_UNIT + (misc & 0x7) * 0.03125) / SNR_UNIT + 0.5);
         }
     }
 
@@ -972,8 +989,8 @@ static int decode_meas3ranges(raw_t *raw) {
             }
             idx_navsys += nB;
 
-            // read glonass fcn list
-            if (navsys == 1) {  // glonass
+            // Read GLONASS fcn list
+            if (navsys == 1) {  // GLONASS
                 memcpy(gloFncs, p_navsys+idx_navsys,  (nSats+1) / 2);
                 idx_navsys += (nSats+1) / 2;
             } else if (navsys  == 3) {  // BDS
@@ -1016,7 +1033,10 @@ static int decode_meas3ranges(raw_t *raw) {
                 if ((satMask & (1ULL << svid)) == 0)
                     continue;
 
-                int8_t glofnc = (int)((gloFncs[satCnt / 2] >> (4 * (satCnt % 2))) & 0xf) - 8;
+                int8_t glofnc = 0;
+                if (navsys == 1) {  // GLONASS
+                    glofnc = (int)((gloFncs[satCnt / 2] >> (4 * (satCnt % 2))) & 0xf) - 8;
+                }
                 int satNo;
                 int masterFreqIndex;
                 uint8_t codeMaster;
@@ -1057,7 +1077,7 @@ static int decode_meas3ranges(raw_t *raw) {
 
                         raw->obuf.data[n].LLI[masterFreqIndex] = (lockTime < raw->lockt[satNo-1][masterFreqIndex] ? LLI_SLIP : 0) | (lti3 == 0 ? LLI_HALFC : 0);
                         raw->lockt[satNo-1][masterFreqIndex] = lockTime;
-                        raw->obuf.data[n].freq = glofnc+8;
+                        raw->obuf.data[n].freq = glofnc+7;
                         meas3_freqAssignment[navsys][svid][0] = masterFreqIndex;
                     };
 
@@ -1096,14 +1116,14 @@ static int decode_meas3ranges(raw_t *raw) {
                         uint8_t isGPSPCode = (navsys == 0) && (codeMaster == CODE_L1W || codeMaster == CODE_L2W);
 
                         raw->obuf.data[n].P[masterFreqIndex] = ((double)prLsb + 4294967296.0 * (double)prMsb) * .001;
-                        raw->obuf.data[n].SNR[masterFreqIndex] = (uint16_t)((isGPSPCode ? (float)CN0 : (float)CN0 + 10.0F)/SNR_UNIT+0.5);
+                        raw->obuf.data[n].SNR[masterFreqIndex] = (uint16_t)((isGPSPCode ? CN0 : CN0 + 10.0) / SNR_UNIT + 0.5);
                         raw->obuf.data[n].code[masterFreqIndex] = codeMaster;
                         if (cmc != 0)
                             raw->obuf.data[n].L[masterFreqIndex] = raw->obuf.data[n].P[masterFreqIndex] / (CLIGHT/freqMaster) - 2097.152 + (double)cmc * .001;
 
                         raw->obuf.data[n].LLI[masterFreqIndex] = (lockTime < raw->lockt[satNo-1][masterFreqIndex] ? LLI_SLIP : 0) | (lti4 == 0 ? LLI_HALFC : 0);
                         raw->lockt[satNo-1][masterFreqIndex] = lockTime;
-                        raw->obuf.data[n].freq = glofnc+8;
+                        raw->obuf.data[n].freq = glofnc+7;
                         meas3_freqAssignment[navsys][svid][0] = masterFreqIndex;
                     };
 
@@ -1131,7 +1151,7 @@ static int decode_meas3ranges(raw_t *raw) {
                         raw->obuf.data[n].P[masterFreqIndex] = master_reference->P[masterFreqIndex] +
                                                        ((int64_t)meas3_refEpoch.prRate[navsys][svid] * 64 * (int32_t)(TOW % refEpochInterval) / 1000) * .001 +
                                                        (double)pr * .001 - 65.536;
-                        raw->obuf.data[n].SNR[masterFreqIndex] = (uint16_t)(master_reference->SNR[masterFreqIndex] - 4/SNR_UNIT + (float)CN0/SNR_UNIT+0.5);
+                        raw->obuf.data[n].SNR[masterFreqIndex] = (uint16_t)((master_reference->SNR[masterFreqIndex] * SNR_UNIT - 4.0 + CN0) / SNR_UNIT + 0.5);
                         raw->obuf.data[n].code[masterFreqIndex] = codeMaster;
                         if (cmc != 0)
                             raw->obuf.data[n].L[masterFreqIndex] = (raw->obuf.data[n].P[masterFreqIndex] - master_reference->P[masterFreqIndex]) / (CLIGHT/freqMaster) +
@@ -1139,7 +1159,7 @@ static int decode_meas3ranges(raw_t *raw) {
 
                         raw->obuf.data[n].LLI[masterFreqIndex] = master_reference->LLI[masterFreqIndex];
                         raw->lockt[satNo-1][masterFreqIndex] = meas3_refEpoch.lockt[navsys][svid][masterFreqIndex];
-                        raw->obuf.data[n].freq = glofnc+8;
+                        raw->obuf.data[n].freq = glofnc+7;
                         meas3_freqAssignment[navsys][svid][0] = masterFreqIndex;
                     }
 
@@ -1162,8 +1182,7 @@ static int decode_meas3ranges(raw_t *raw) {
                         raw->obuf.data[n].P[masterFreqIndex] = masterReference->P[masterFreqIndex] + ((int64_t)meas3_refEpoch.prRate[navsys][svid] * 64 * (int32_t)(TOW % refEpochInterval) / 1000) * .001 + (double)pr * .001 - 8.192;
                         if (cmc != 0)
                             raw->obuf.data[n].L[masterFreqIndex] = (raw->obuf.data[n].P[masterFreqIndex] - masterReference->P[masterFreqIndex]) / (CLIGHT/freqMaster) + masterReference->L[masterFreqIndex] - 8.192 + (double)cmc * .001;
-                        raw->obuf.data[n].SNR[masterFreqIndex] = (uint16_t)(masterReference->SNR[masterFreqIndex] - 1/SNR_UNIT + ((float)CN0)/SNR_UNIT+0.5);
-
+                        raw->obuf.data[n].SNR[masterFreqIndex] = (uint16_t)((masterReference->SNR[masterFreqIndex] * SNR_UNIT - 1.0 + CN0) / SNR_UNIT + 0.5);
                         raw->obuf.data[n].LLI[masterFreqIndex] = masterReference->LLI[masterFreqIndex];
                         raw->lockt[satNo-1][masterFreqIndex] = meas3_refEpoch.lockt[navsys][svid][masterFreqIndex];
                         raw->obuf.data[n].code[masterFreqIndex] = codeMaster;
@@ -1234,10 +1253,9 @@ static int decode_meas3ranges(raw_t *raw) {
                                                           - 32.768 + cmcRes * .001;
 
                                 if ((navsys == 0) && (codeSlave == CODE_L1W || codeSlave == CODE_L2W))
-                                    raw->obuf.data[n].SNR[slaveFreqIndex] = (uint16_t)(raw->obuf.data[n].SNR[masterFreqIndex] - 3.0/SNR_UNIT - (float)CN0/SNR_UNIT+0.5);
+                                    raw->obuf.data[n].SNR[slaveFreqIndex] = (uint16_t)((raw->obuf.data[n].SNR[masterFreqIndex] * SNR_UNIT - 3.0 - CN0) / SNR_UNIT + 0.5);
                                 else
-                                    raw->obuf.data[n].SNR[slaveFreqIndex] = (uint16_t)((CN0 + 24.0F)/SNR_UNIT+0.5);
-
+                                    raw->obuf.data[n].SNR[slaveFreqIndex] = (uint16_t)((CN0 + 24.0) / SNR_UNIT + 0.5);
 
                                 raw->obuf.data[n].code[slaveFreqIndex] = codeSlave;
                                 raw->obuf.data[n].LLI[slaveFreqIndex] = (lockTime < raw->lockt[satNo-1][slaveFreqIndex] ? LLI_SLIP : 0) | (lti3 == 0 ? LLI_HALFC : 0);
@@ -1250,7 +1268,7 @@ static int decode_meas3ranges(raw_t *raw) {
                             /* Slave Long */
                             uint32_t BF1      = U4(p+idx);
                             uint16_t prLsbRel = U2(p+idx + 4);
-                            uint8_t  BF3      = U1(p+6);
+                            uint8_t  BF3      = U1(p+idx + 6);
 
                             uint32_t cmc      = (BF1 >> 2) & 0x3fffff;
                             uint32_t lti4     = (BF1 >> 24) & 0xf;
@@ -1266,9 +1284,9 @@ static int decode_meas3ranges(raw_t *raw) {
                                     raw->obuf.data[n].L[slaveFreqIndex] = raw->obuf.data[n].P[slaveFreqIndex] / (CLIGHT/freqSlave) - 2097.152 + cmc * 0.001;
 
                                 if ((navsys == 0) && (codeSlave == CODE_L1W || codeSlave == CODE_L2W))
-                                    raw->obuf.data[n].SNR[slaveFreqIndex] = (uint16_t)(CN0/SNR_UNIT+0.5);
+                                    raw->obuf.data[n].SNR[slaveFreqIndex] = (uint16_t)(CN0 / SNR_UNIT + 0.5);
                                 else
-                                    raw->obuf.data[n].SNR[slaveFreqIndex] = (uint16_t)((CN0 + 10.0)/SNR_UNIT+0.5); //FIXME
+                                    raw->obuf.data[n].SNR[slaveFreqIndex] = (uint16_t)((CN0 + 10.0) / SNR_UNIT + 0.5);
 
                                 raw->obuf.data[n].code[slaveFreqIndex] = codeSlave;
                                 raw->obuf.data[n].LLI[slaveFreqIndex] = (lockTime < raw->lockt[satNo-1][slaveFreqIndex] ? LLI_SLIP : 0) | (lti4 == 0 ? LLI_HALFC : 0);
@@ -1347,7 +1365,7 @@ int32_t meas3_DopplerPrRate(raw_t* raw, uint32_t *offset)
 {
     int32_t prRate;
 
-    uint32_t value = *((uint32_t*)(raw->buff + 16 + *offset));
+    uint32_t value = U4(raw->buff + 16 + *offset);
 
     if ((value & 2) == 0)
     {
@@ -1405,8 +1423,6 @@ int decode_meas3Doppler(raw_t* raw)
             continue;
 
         sys = satsys(raw->obuf.data[n].sat, &prn);
-        if (prn > MEAS3_SAT_MAX)
-            continue;
 
         for (navsys = 0; navsys < 7; navsys++)
             if (Meas3_NavSys[navsys] == sys)
@@ -1415,17 +1431,23 @@ int decode_meas3Doppler(raw_t* raw)
             continue;
 
         int svid = prn - Meas3_SVIDBase[navsys];
+        if (svid >= MEAS3_SAT_MAX) {
+            // Give up on the remainder, sync with the buffer offset would be lost.
+            trace(1, "SBF decode_meas3Doppler: svid=%d out of bounds %d\n", svid, MEAS3_SAT_MAX);
+            return ret;
+        }
 
         masterFreqIndex = meas3_freqAssignment[navsys][svid][0];
 
-        double freqMaster = code2freq(sys, raw->obuf.data[n].code[masterFreqIndex], raw->obuf.data[n].freq);
+        double freqMaster = code2freq(sys, raw->obuf.data[n].code[masterFreqIndex], raw->obuf.data[n].freq - 7);
 
         raw->obuf.data[n].D[masterFreqIndex] = (float)(-(prRate + (int32_t)meas3_refEpoch.prRate[navsys][svid] * 64) * 0.001 / (CLIGHT/freqMaster));
         for (int i = 0; i<MEAS3_SIG_MAX; i++) {
             slaveFreqIndex = meas3_freqAssignment[navsys][svid][i+1];
             if (slaveFreqIndex < 0)
                 break;
-            double freqSlave = code2freq(sys, raw->obuf.data[n].code[slaveFreqIndex], raw->obuf.data[n].freq);
+            prRate = meas3_DopplerPrRate(raw, &offset);
+            double freqSlave = code2freq(sys, raw->obuf.data[n].code[slaveFreqIndex], raw->obuf.data[n].freq - 7);
             raw->obuf.data[n].D[slaveFreqIndex] = (float)((raw->obuf.data[n].D[masterFreqIndex] * (CLIGHT/freqMaster) * 1000.0 - prRate) * 0.001 / (CLIGHT/freqSlave));
         }
     }
@@ -1451,12 +1473,10 @@ int decode_meas3CN(raw_t* raw)
     else if (strstr(raw->opt, "-AUX2")) ant_sel = 2;
     if ((flags & 0x7) != ant_sel) return 0;
 
-    for (n = 0; n < raw->obuf.n && offset+16 < (uint32_t)raw->len; n++) {
+    for (n = 0; n < raw->obuf.n && offset/2+16 < (uint32_t)raw->len; n++) {
         int navsys, sys, prn;
         int8_t masterFreqIndex, slaveFreqIndex;
         sys = satsys(raw->obuf.data[n].sat, &prn);
-        if (prn > MEAS3_SAT_MAX)
-            continue;
 
         for (navsys = 0; navsys < 7; navsys++)
             if (Meas3_NavSys[navsys] == sys)
@@ -1465,10 +1485,16 @@ int decode_meas3CN(raw_t* raw)
             continue;
 
         int svid = prn - Meas3_SVIDBase[navsys];
+        if (svid >= MEAS3_SAT_MAX) {
+            // Give up correcting the remainder.
+            trace(1, "SBF decode_meas3CN: svid=%d out of bounds %d\n", svid, MEAS3_SAT_MAX);
+            return ret;
+        }
 
         masterFreqIndex = meas3_freqAssignment[navsys][svid][0];
 
-        raw->obuf.data[n].SNR[masterFreqIndex] += (float)(((U1(raw->buff + 16 + offset / 2) >> ((offset % 2) * 4)) & 0xf) * .0625F - 0.5F)/SNR_UNIT + 0.5;
+        uint8_t mc = (U1(raw->buff + 16 + offset / 2) >> ((offset % 2) * 4)) & 0xf;
+        raw->obuf.data[n].SNR[masterFreqIndex] += (mc * 0.0625 - 0.5) / SNR_UNIT + 0.5;
         offset++;
         for (int i = 0; i<MEAS3_SIG_MAX; i++) {
             slaveFreqIndex = meas3_freqAssignment[navsys][svid][i+1];
@@ -1596,7 +1622,7 @@ static int decode_gpsrawcanav(raw_t *raw, int sys){
     return 0;
 }
 
-/* decode SBF raw nav message (raw navigation data) for glonass---------------*/
+/* Decode SBF raw nav message (raw navigation data) for GLONASS---------------*/
 static int decode_glorawcanav(raw_t *raw){
     geph_t geph = {0};
     double utc[8] = {0};
@@ -2428,7 +2454,7 @@ static int decode_glonav(raw_t *raw){
     eph.sat = sat;
     raw->nav.geph[prn-1] = eph;
     raw->ephsat = sat;
-    raw->nav.glo_fcn[prn-1] = eph.frq + 8; /* savbe frequency number */
+    raw->nav.glo_fcn[prn-1] = eph.frq + 8; /* save frequency number */
 
     return 2;
 }
@@ -3247,13 +3273,13 @@ static int decode_sbsprnmask(raw_t *raw)
 
     for (n=0; n<raw->nav.sbssat.nsat && n<MAXSAT; n++) {
        i = U1(p+9+n);
-       if      (i<= 37) sat = satno(SYS_GPS, i);    /*   0- 37: gps */
-       else if (i<= 61) sat = satno(SYS_GLO, i-37); /*  38- 61: glonass */
-       else if (i<=119) sat = 0;                    /*  62-119: future gnss */
+       if      (i<= 37) sat = satno(SYS_GPS, i);    /*   0- 37: GPS */
+       else if (i<= 61) sat = satno(SYS_GLO, i-37); /*  38- 61: GLONASSs */
+       else if (i<=119) sat = 0;                    /*  62-119: future GNSS */
        else if (i<=138) sat = satno(SYS_SBS, i);    /* 120-138: geo/waas */
        else if (i<=182) sat = 0;                    /* 139-182: reserved */
-       else if (i<=192) sat = satno(SYS_SBS, i+10); /* 183-192: qzss ref [2] */
-       else if (i<=202) sat = satno(SYS_QZS, i);    /* 193-202: qzss ref [2] */
+       else if (i<=192) sat = satno(SYS_SBS, i+10); /* 183-192: QZSS ref [2] */
+       else if (i<=202) sat = satno(SYS_QZS, i);    /* 193-202: QZSS ref [2] */
        else             sat = 0;                    /* 203-   : reserved */
        raw->nav.sbssat.sat[n].sat = sat;
     }
@@ -3924,6 +3950,7 @@ static int sync_sbf(unsigned char *buff, unsigned char data)
 *          -GALFNAV : select F/NAV for Galileo ephemeris (default: all)
 *          -NO_MEAS2: ignore range measurements version 2 blocks
 *          -NO_MEAS3: ignore range measurements version 3 blocks
+*          -RCVSTDS : save receiver stdevs to unused RINEX fields
 *-----------------------------------------------------------------------------*/
 extern int input_sbf(raw_t *raw, unsigned char data)
 {
