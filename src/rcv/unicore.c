@@ -723,11 +723,14 @@ static int decode_obsvmb(raw_t* raw)
 {
     uint8_t* p = raw->buff + HLEN;
     char* q;
-    double psr, pstd, adr, adrstd, dop, snr, lockt, tt, freq, glo_bias = 0.0;
+    double psr, adr, dop, snr, lockt, tt, freq, glo_bias = 0.0;
     int i, index, nobs, prn, sat, sys, code, idx, track, plock, clock, lli;
     int gfrq;
 
     if ((q = strstr(raw->opt, "-GLOBIAS="))) sscanf(q, "-GLOBIAS=%lf", &glo_bias);
+
+    int rcvstds = 0;
+    if (strstr(raw->opt, "-RCVSTDS")) rcvstds = 1;
 
     nobs = U4(p);
     if (nobs == 0)return 1;
@@ -767,8 +770,6 @@ static int decode_obsvmb(raw_t* raw)
         gfrq = U2(p) + 1; /* GLONASS FCN+8 */
         psr = R8(p + 4);
         adr = R8(p + 12);
-        pstd = U2(p + 20);
-        adrstd = U2(p + 22);
         dop = R4(p + 24);
         snr = U2(p + 28) / 100.0;
         lockt = R4(p + 32);
@@ -806,6 +807,23 @@ static int decode_obsvmb(raw_t* raw)
             raw->obs.data[index].SNR[idx] = (uint16_t)(snr / SNR_UNIT + 0.5);
             raw->obs.data[index].LLI[idx] = (uint8_t)lli;
             raw->obs.data[index].code[idx] = (uint8_t)code;
+            if (rcvstds) {
+                double pstd = U2(p + 20) * 0.01;  // Meters
+                // To RTKlib encoding
+                pstd = log2(pstd / 0.01) - 5;
+                pstd = pstd > 0 ? pstd : 0;
+                // Further limited to 9 in RINEX output
+                pstd = pstd <= 254 ? pstd : 254;
+                raw->obuf.data[index].Pstd[idx] = pstd + 0.5;
+
+                double lstd = U2(p + 22) * 0.0001; // Cycles
+                // To RTKlib encoding
+                lstd = lstd / 0.004;
+                lstd = lstd > 0 ? lstd : 0;
+                // Further limited to 9 in RINEX output
+                lstd = lstd <= 254 ? lstd : 254;
+                raw->obuf.data[index].Lstd[idx] = lstd + 0.5;
+            }
         }
     }
     return 1;
