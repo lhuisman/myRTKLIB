@@ -689,14 +689,14 @@ void Plot::openWaypointFile()
 void Plot::openObservationFile()
 {
     trace(3, "openObservationFile\n");
-    readObservation(QFileDialog::getOpenFileNames(this, tr("Open Obs/Nav Data"), observationFiles.value(0), tr("RINEX OBS (*.obs *.*o *.*d *.O.rnx *.*o.gz *.*o.Z *.d.gz *.d.Z);;All (*.*)")));
+    readObservation(QFileDialog::getOpenFileNames(this, tr("Open Obs/Nav Data"), observationFiles.value(0), tr("RINEX OBS (*.obs *.*o *.*O *.*d *.O.rnx *O.rnx *O.rnx.gz *O.crx *O.crx.gz *.*o.gz *.*o.Z *.d.gz *.d.Z);;All (*.*)")));
 }
 // callback on menu-open-nav-data -------------------------------------------
 void Plot::openNavigationFile()
 {
     trace(3, "openNavigationFile\n");
 
-    readNavigation(QFileDialog::getOpenFileNames(this, tr("Open Raw Obs/Nav Messages"), navigationFiles.value(0), tr("RINEX NAV (*.nav *.gnav *.hnav *.qnav *.*n *.*g *.*h *.*q *.*p *N.rnx);;All (*.*)")));
+    readNavigation(QFileDialog::getOpenFileNames(this, tr("Open Raw Obs/Nav Messages"), navigationFiles.value(0), tr("RINEX NAV (*.nav *.gnav *.hnav *.qnav *.*n *.*g *.*h *.*q *.*p *N.rnx *N.rnx.gz);;All (*.*)")));
 }
 // callback on menu-open-elev-mask ------------------------------------------
 void Plot::openElevationMaskFile()
