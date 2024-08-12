@@ -78,7 +78,13 @@ void Plot::showLegend(const QStringList &msgs)
 
     for (int i = 0; (i < 7) & (i < msgs.count()); i++) {
         lblQL[i]->setText(msgs[i]);
-        setWidgetTextColor(lblQL[i], plotOptDialog->getMarkerColor(sel, i + 1));
+        int col = i + 1; // Default coloring follows the marker color index
+        if (msgs[0] == " #OBS = 5 ") {
+            // Match the legend color to the observation color, see observationColor()
+            int n = i < 5 ? 5 - i : 0;
+            col = 3 - n + (n > 2 ? 5 : 0);
+        }
+        setWidgetTextColor(lblQL[i], plotOptDialog->getMarkerColor(sel, col));
         lblQL[i]->adjustSize();
         lblQL[i]->updateGeometry();
     }
@@ -316,7 +322,7 @@ QColor Plot::observationColor(const obsd_t *obs, double az, double el, QVariant 
     if (simulatedObservation) {
         color = sysColor(obs->sat);
     } else if (obstype.isNull()) {  // "ALL" selected
-        for (i = n = 0; i < NFREQ && n < 5; i++) {
+        for (i = n = 0; i < NFREQ + NEXOBS && n < 5; i++) {
             if (obs->L[i] != 0.0 || obs->P[i] != 0.0) n++;
         }
         if (n == 0) {
