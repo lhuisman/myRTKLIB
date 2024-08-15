@@ -1221,6 +1221,9 @@
      </sizepolicy>
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout_9">
+     <property name="spacing">
+      <number>0</number>
+     </property>
      <property name="leftMargin">
       <number>0</number>
      </property>
@@ -1335,7 +1338,7 @@
   </action>
   <action name="menuOpenShape">
    <property name="text">
-    <string>Open Shapefile</string>
+    <string>Open S&amp;hapefile</string>
    </property>
   </action>
   <action name="menuOpenSkyImage">
@@ -1380,7 +1383,7 @@
   </action>
   <action name="menuVisibilityAnalysis">
    <property name="text">
-    <string>Visibility Analysis...</string>
+    <string>&amp;Visibility Analysis...</string>
    </property>
   </action>
   <action name="menuSaveImage">
@@ -1409,7 +1412,7 @@
   </action>
   <action name="menuSaveElevationMask">
    <property name="text">
-    <string>Save Elev Mask...</string>
+    <string>S&amp;ave Elev Mask...</string>
    </property>
   </action>
   <action name="menuConnect">
@@ -1475,7 +1478,7 @@
   </action>
   <action name="menuTime">
    <property name="text">
-    <string>Time Span/Interval...</string>
+    <string>&amp;Time Span/Interval...</string>
    </property>
   </action>
   <action name="menuMapImage">
@@ -1484,12 +1487,12 @@
      <normaloff>:/buttons/map</normaloff>:/buttons/map</iconset>
    </property>
    <property name="text">
-    <string>Map Image...</string>
+    <string>&amp;Map Image...</string>
    </property>
   </action>
   <action name="menuSkyImage">
    <property name="text">
-    <string>Sky Image...</string>
+    <string>&amp;Sky Image...</string>
    </property>
   </action>
   <action name="menuWaypoint">
@@ -1502,7 +1505,7 @@
   </action>
   <action name="menuSourceSolution">
    <property name="text">
-    <string>Solution Source...</string>
+    <string>Sol&amp;ution Source...</string>
    </property>
    <property name="toolTip">
     <string>Show solution source text</string>
@@ -1510,7 +1513,7 @@
   </action>
   <action name="menuSourceObservation">
    <property name="text">
-    <string>Observation Data Source...</string>
+    <string>&amp;Observation Data Source...</string>
    </property>
    <property name="toolTip">
     <string>Show observation data source text</string>
@@ -1535,7 +1538,7 @@
      <normaloff>:/buttons/tool</normaloff>:/buttons/tool</iconset>
    </property>
    <property name="text">
-    <string>Options...</string>
+    <string>O&amp;ptions...</string>
    </property>
   </action>
   <action name="menuToolBar">
@@ -1546,7 +1549,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Show Tool Bar</string>
+    <string>&amp;Show Tool Bar</string>
    </property>
   </action>
   <action name="menuStatusBar">
@@ -1557,7 +1560,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Show Status Bar</string>
+    <string>Sh&amp;ow Status Bar</string>
    </property>
   </action>
   <action name="menuMapView">
@@ -1566,7 +1569,7 @@
      <normaloff>:/buttons/gm</normaloff>:/buttons/gm</iconset>
    </property>
    <property name="text">
-    <string>Map View...</string>
+    <string>&amp;Map View...</string>
    </property>
    <property name="iconText">
     <string>Map View</string>
@@ -1597,7 +1600,7 @@
      <normaloff>:/buttons/ori</normaloff>:/buttons/ori</iconset>
    </property>
    <property name="text">
-    <string>Center Origin</string>
+    <string>&amp;Center Origin</string>
    </property>
   </action>
   <action name="menuFitHoriz">
@@ -1633,7 +1636,7 @@
      <normaloff>:/icons/point</normaloff>:/icons/point</iconset>
    </property>
    <property name="text">
-    <string>Show Track Point</string>
+    <string>Show Track &amp;Point</string>
    </property>
   </action>
   <action name="menuFixCenter">
@@ -1648,7 +1651,7 @@
      <normaloff>:/buttons/trackc</normaloff>:/buttons/trackc</iconset>
    </property>
    <property name="text">
-    <string>Fix Track Center</string>
+    <string>&amp;Fix Track Center</string>
    </property>
   </action>
   <action name="menuFixHoriz">
@@ -1663,7 +1666,7 @@
      <normaloff>:/buttons/track</normaloff>:/buttons/track</iconset>
    </property>
    <property name="text">
-    <string>Fix Track Horizontal</string>
+    <string>Fi&amp;x Track Horizontal</string>
    </property>
   </action>
   <action name="menuFixVert">
@@ -1681,7 +1684,7 @@
      <normaloff>:/buttons/trackl</normaloff>:/buttons/trackl</iconset>
    </property>
    <property name="text">
-    <string>Fix Track Vertical</string>
+    <string>Fix T&amp;rack Vertical</string>
    </property>
   </action>
   <action name="menuShowSkyplot">
@@ -1693,7 +1696,7 @@
      <normaloff>:/buttons/graph</normaloff>:/buttons/graph</iconset>
    </property>
    <property name="text">
-    <string>Show Skyplot</string>
+    <string>Show S&amp;kyplot</string>
    </property>
   </action>
   <action name="menuShowImage">
@@ -1705,7 +1708,7 @@
      <normaloff>:/buttons/map</normaloff>:/buttons/map</iconset>
    </property>
    <property name="text">
-    <string>Show Image</string>
+    <string>Show &amp;Image</string>
    </property>
   </action>
   <action name="menuShowMap">
@@ -1717,7 +1720,7 @@
      <normaloff>:/buttons/showp</normaloff>:/buttons/showp</iconset>
    </property>
    <property name="text">
-    <string>Show Map/Waypoint</string>
+    <string>Show Map/&amp;Waypoint</string>
    </property>
    <property name="toolTip">
     <string>Show Map/Waypoint</string>
@@ -1741,7 +1744,7 @@
      <normaloff>:/buttons/anim2</normaloff>:/buttons/anim2</iconset>
    </property>
    <property name="text">
-    <string>Animation Stop</string>
+    <string>A&amp;nimation Stop</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+A</string>
@@ -1754,32 +1757,32 @@
   </action>
   <action name="menuMax">
    <property name="text">
-    <string>Maximized</string>
+    <string>&amp;Maximized</string>
    </property>
   </action>
   <action name="menuPlotMapViewHorizontal">
    <property name="text">
-    <string>Plot - Map View Horizontal</string>
+    <string>&amp;Plot - Map View Horizontal</string>
    </property>
   </action>
   <action name="menuAbout">
    <property name="text">
-    <string>About...</string>
+    <string>&amp;About...</string>
    </property>
   </action>
   <action name="menuOpenWaypoint">
    <property name="text">
-    <string>Open Waypoint...</string>
+    <string>Open &amp;Waypoint...</string>
    </property>
   </action>
   <action name="menuSaveWaypoint">
    <property name="text">
-    <string>Save Waypoint...</string>
+    <string>&amp;Save Waypoint...</string>
    </property>
   </action>
   <action name="menuMapLayer">
    <property name="text">
-    <string>Map Layer...</string>
+    <string>Map &amp;Layer...</string>
    </property>
   </action>
   <action name="menuBrowse">
@@ -1787,7 +1790,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Show Browse Panel</string>
+    <string>Show &amp;Browse Panel</string>
    </property>
   </action>
   <action name="menuShowGrid">
