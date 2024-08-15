@@ -135,7 +135,7 @@ void Plot::updateTimeSolution()
                        .arg(degreeChar);
         }
         if (1 <= data->stat && data->stat <= 6)
-            legend.append(QStringLiteral("%1:%2").arg(data->stat).arg(solutionType[data->stat]));
+            legend.append(QStringLiteral("%1: %2").arg(data->stat).arg(solutionType[data->stat]));
     }
     showMessage(msg);
     showLegend(legend);
@@ -248,10 +248,9 @@ void Plot::updateInfoSolution()
 
         timeStartString = timeString(timeStart, 0, 0);
         timeEndString = timeString(timeEnd, 0, 1);
-        if (plotOptDialog->getTimeFormat() && (p = timeStartString.indexOf(' '))) timeStartString = timeStartString.left(p);
-        timeEndString = timeEndString.mid(plotOptDialog->getTimeFormat() ? 5 : 0);
+        if (plotOptDialog->getTimeFormat() && (p = timeStartString.lastIndexOf(' '))) timeStartString = timeStartString.left(p);
 
-        msg += QStringLiteral("%1-%2 : N = %3").arg(timeStartString, timeEndString).arg(n);
+        msg += QStringLiteral("%1 - %2: N = %3").arg(timeStartString, timeEndString).arg(n);
 
         if (baselineMinMax[0] - baselineMinMax[1] > 100)
             msg += QStringLiteral(", B = %1-%2 km").arg(baselineMinMax[0] / 1E3, 0, 'f', 1).arg(baselineMinMax[1] / 1E3, 0, 'f', 1);
