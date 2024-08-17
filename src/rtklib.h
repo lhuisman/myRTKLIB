@@ -1135,6 +1135,7 @@ typedef struct {        /* RINEX options type */
     int autopos;        /* auto approx position */
     int phshift;        /* phase shift correction */
     int halfcyc;        /* half cycle correction */
+    int sortsats;       /* Sort by satellite index */
     int sep_nav;        /* separated nav files */
     gtime_t tstart;     /* first obs time */
     gtime_t tend;       /* last obs time */
