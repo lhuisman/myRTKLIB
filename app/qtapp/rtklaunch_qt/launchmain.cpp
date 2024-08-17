@@ -32,7 +32,7 @@
 
 #define BTN_SIZE        42
 #define BTN_COUNT       8
-#define MAX(x, y)        ((x) > (y) ? (x) : (y))
+#define MAX(x, y)       ((x) > (y) ? (x) : (y))
 
 //---------------------------------------------------------------------------
 MainForm::MainForm(QWidget *parent)
@@ -58,7 +58,7 @@ MainForm::MainForm(QWidget *parent)
     ui->btnRtklib->setStatusTip(tr("RTKLIB Version %1 %2").arg(VER_RTKLIB, PATCH_LEVEL));
 
     QCommandLineParser parser;
-    parser.setApplicationDescription("RTKLIB application launcher Qt");
+    parser.setApplicationDescription(tr("RTKLIB application launcher Qt"));
     parser.addHelpOption();
     parser.addVersionOption();
 

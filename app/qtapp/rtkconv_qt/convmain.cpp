@@ -92,7 +92,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     QString app_filename = QApplication::applicationFilePath();
     QFileInfo fi(app_filename);
-    iniFile = fi.absolutePath() + "/" + fi.baseName() + ".ini";
+    iniFile = QDir(fi.absolutePath()).absoluteFilePath(fi.baseName() + ".ini");
 
     convOptDialog = new ConvOptDialog(this);
     timeDialog = new TimeDialog(this);
@@ -384,7 +384,7 @@ void MainWindow::callRtkPlot()
 // callback on button-post-proc ---------------------------------------------
 void MainWindow::callRtkPost()
 {
-    QStringList cmds = {commandPostExe, QString("../../../bin/") + commandPostExe, QString("../rtkpost_qt/") + commandPostExe};
+    QStringList cmds = {commandPostExe, QDir("../../../bin/").filePath(commandPostExe), QDir("../rtkpost_qt/").filePath(commandPostExe)};
     QStringList opts;
     QDir appDir = QDir(QCoreApplication::applicationDirPath());
 

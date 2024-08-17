@@ -81,20 +81,20 @@ void FileOptDialog::setPath(const QString &path)
 
         QString token;
         foreach(token, tokens){
-            if (token == "T") ui->cBTimeTag->setChecked(true);
-            if (token.contains("+")) start = token.toDouble();
-            if (token.contains("x")) speed = QStringView{token}.mid(1).toDouble();
+            if (token == 'T') ui->cBTimeTag->setChecked(true);
+            if (token.contains('+')) start = token.toDouble();
+            if (token.contains('x')) speed = QStringView{token}.mid(1).toDouble();
             if (token.contains('P')) size_fpos = QStringView{token}.mid(2).toInt();
         }
 
         if (start <= 0.0) start = 0.0;
         if (speed <= 0.0) speed = 1.0;
 
-        int index = ui->cBTimeSpeed->findText(QString("x%1").arg(speed));
+        int index = ui->cBTimeSpeed->findText(QStringLiteral("x%1").arg(speed));
         if (index != -1) {
             ui->cBTimeSpeed->setCurrentIndex(index);
         } else {
-            ui->cBTimeSpeed->addItem(QString("x%1").arg(speed), speed);
+            ui->cBTimeSpeed->addItem(QStringLiteral("x%1").arg(speed), speed);
             ui->cBTimeSpeed->setCurrentIndex(ui->cBTimeSpeed->count());
         }
         ui->sBTimeStart->setValue(start);
@@ -111,14 +111,14 @@ void FileOptDialog::setPath(const QString &path)
             if (token == "T") ui->cBTimeTag->setChecked(true);
             if (token.contains("S=")) intv = QStringView{token}.mid(2).toDouble();
         };
-        int index = ui->cBSwapInterval->findText(QString("%1 h").arg(intv, 0, 'g', 3));
+        int index = ui->cBSwapInterval->findText(QStringLiteral("%1 h").arg(intv, 0, 'g', 3));
         if (index != -1) {
             ui->cBSwapInterval->setCurrentIndex(index);
         } else {
             if (intv == 0) {
                 ui->cBSwapInterval->setCurrentIndex(0);
             } else {
-                ui->cBSwapInterval->addItem(QString("%1 h").arg(intv, 0, 'g', 3), intv);
+                ui->cBSwapInterval->addItem(QStringLiteral("%1 h").arg(intv, 0, 'g', 3), intv);
                 ui->cBSwapInterval->setCurrentIndex(ui->cBTimeSpeed->count());
             }
         }

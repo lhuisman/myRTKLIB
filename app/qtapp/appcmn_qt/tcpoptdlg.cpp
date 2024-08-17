@@ -150,19 +150,19 @@ QString TcpOptDialog::getPath() {
     if (!user.isEmpty() || !password.isEmpty()) {
         path = user;
         if (!password.isEmpty())
-            path = QString("%1:%2").arg(path, password);
+            path = QStringLiteral("%1:%2").arg(path, password);
         path += "@";
     }
-    path = QString("%1%2").arg(path, ui->cBAddress->currentText());
+    path = QStringLiteral("%1%2").arg(path, ui->cBAddress->currentText());
     QString port = ui->sBPort->text();
     if (!port.isEmpty())
-        path = QString("%1:%2").arg(path, port);
+        path = QStringLiteral("%1:%2").arg(path, port);
     QString mntpnt = ui->cBMountPoint->currentText();
     QString str = ui->cBMountPoint->currentData().toString();
     if (!mntpnt.isEmpty() || !str.isEmpty()) {
-        path = QString("%1/%2").arg(path, mntpnt);
+        path = QStringLiteral("%1/%2").arg(path, mntpnt);
         if (!str.isEmpty())
-            path = QString("%1:%2").arg(path, str);
+            path = QStringLiteral("%1:%2").arg(path, str);
     }
     return path;
 }

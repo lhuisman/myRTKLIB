@@ -68,6 +68,6 @@ void StaListDialog::saveFile()
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) return;
 
     for (int i = 0; i < ui->lWStationList->count(); i++)
-        file.write((ui->lWStationList->item(i)->text() + "\n").toLatin1());
+        file.write((ui->lWStationList->item(i)->text() + '\n').toLatin1());
 }
 //---------------------------------------------------------------------------

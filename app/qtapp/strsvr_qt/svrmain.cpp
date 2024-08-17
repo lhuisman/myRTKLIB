@@ -76,7 +76,7 @@ MainForm::MainForm(QWidget *parent)
 
     QString file = QApplication::applicationFilePath();
     QFileInfo fi(file);
-    iniFile = fi.absoluteDir().filePath(fi.baseName()) + ".ini";
+    iniFile = fi.absoluteDir().filePath(fi.baseName() + ".ini");
 
     trayIcon = new QSystemTrayIcon(QIcon(":/icons/strsvr_Icon"));
 
@@ -400,11 +400,11 @@ void MainForm::updateServerStat()
     strsvrstat(&strsvr, stat, log_stat, byte, bps, msg);
     // update status indicators
     for (int i = 0; i < MAXSTR; i++) {
-        lblStatus[i]->setStyleSheet(QString("QLabel {background-color: %1;}").arg(color2String(color[stat[i] + 1])));
+        lblStatus[i]->setStyleSheet(QStringLiteral("QLabel {background-color: %1;}").arg(color2String(color[stat[i] + 1])));
         lblStatus[i]->setToolTip(statusStr[stat[i]+1]);
         lblBytes[i]->setText(QLocale::system().toString(byte[i]));
         lblBps[i]->setText(QLocale::system().toString(bps[i]));
-        lblLog[i]->setStyleSheet(QString("QLabel {background-color :%1;}").arg(color2String(color[log_stat[i]+1])));
+        lblLog[i]->setStyleSheet(QStringLiteral("QLabel {background-color :%1;}").arg(color2String(color[log_stat[i]+1])));
         lblLog[i]->setToolTip(statusStr[log_stat[i]+1]);
     }
     // update progress bar
@@ -413,7 +413,7 @@ void MainForm::updateServerStat()
 
     // update time
     time2str(time, str, 0);
-    ui->lblTime->setText(QString(tr("%1 GPST")).arg(str));
+    ui->lblTime->setText(tr("%1 GPST").arg(str));
 
     if (ui->panelStreams->isEnabled())
         ctime = timediff(endTime, startTime);
@@ -424,10 +424,10 @@ void MainForm::updateServerStat()
     t[1] = floor(ctime / 3600.0); ctime -= t[1] * 3600.0;
     t[2] = floor(ctime / 60.0); ctime -= t[2] * 60.0;
     t[3] = ctime;
-    ui->lblCurrentConnectionTime->setText(QString("%1d %2:%3:%4").arg(t[0], 0, 'f', 0).arg(t[1], 2, 'f', 0, QChar('0')).arg(t[2], 2, 'f', 0, QChar('0')).arg(t[3], 2, 'f', 0, QChar('0')));
+    ui->lblCurrentConnectionTime->setText(QStringLiteral("%1d %2").arg(t[0], 0, 'f', 0).arg(QLocale().toString(QTime(t[1],t[2], t[3]), "hh:mm:ss")));
 
     // update task tray icon
-    trayIcon->setToolTip(QString(tr("%1 bytes, %2 bps")).arg(QLocale::system().toString(byte[0]), QLocale::system().toString(bps[0])));
+    trayIcon->setToolTip(tr("%1, %2 bps").arg(QLocale().formattedDataSize(byte[0]), QLocale().toString(bps[0])));
     setTrayIcon(stat[0] <= 0 ? 0 : (stat[0] == 3 ? 2 : 1));
 
     ui->lblMessage->setText(QString(msg).trimmed());
@@ -577,11 +577,9 @@ void MainForm::stopServer()
 {
     char *cmds[MAXSTR];
     QComboBox *type[] = {ui->cBInput, ui->cBOutput1, ui->cBOutput2, ui->cBOutput3, ui->cBOutput4, ui->cBOutput5, ui->cBOutput6};
-    const int inputTypes[] = {STR_SERIAL, STR_TCPCLI, STR_TCPSVR, STR_NTRIPCLI, STR_UDPSVR, STR_FILE,
-                         STR_FTP, STR_HTTP};
+    const int inputTypes[] = {STR_SERIAL, STR_TCPCLI, STR_TCPSVR, STR_NTRIPCLI, STR_UDPSVR, STR_FILE, STR_FTP, STR_HTTP};
     const int outputTypes[] = {
-        STR_NONE, STR_SERIAL, STR_TCPCLI, STR_TCPSVR, STR_NTRIPSVR, STR_NTRIPCAS,
-        STR_UDPCLI, STR_FILE
+        STR_NONE, STR_SERIAL, STR_TCPCLI, STR_TCPSVR, STR_NTRIPSVR, STR_NTRIPCAS, STR_UDPCLI, STR_FILE
     };
     int streamTypes[MAXSTR];
 
@@ -684,7 +682,7 @@ void MainForm::tcpServerOptions(int index, int path)
     tcpOptDialog->setPath(paths[index][path]);
 
     tcpOptDialog->exec();
-    if (tcpOptDialog->result()!=QDialog::Accepted) return;
+    if (tcpOptDialog->result() != QDialog::Accepted) return;
 
     paths[index][path] = tcpOptDialog->getPath();
 }
@@ -768,7 +766,7 @@ void MainForm::fileOptions(int index, int path)
 {
     fileOptDialog->setOptions((index == 0) ? 0 : 1);
     fileOptDialog->setPath(paths[index][path]);
-    fileOptDialog->setWindowTitle("File Options");
+    fileOptDialog->setWindowTitle(tr("File Options"));
 
     fileOptDialog->exec();
     if (fileOptDialog->result() != QDialog::Accepted) return;
