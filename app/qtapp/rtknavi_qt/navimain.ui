@@ -431,6 +431,12 @@
             <layout class="QGridLayout" name="gridLayout">
              <item row="1" column="0">
               <widget class="QLabel" name="lblPositionText1">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>10</verstretch>
+                </sizepolicy>
+               </property>
                <property name="text">
                 <string>N:</string>
                </property>
@@ -438,6 +444,12 @@
              </item>
              <item row="1" column="1" colspan="2">
               <widget class="QLabel" name="lblPosition1">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>10</verstretch>
+                </sizepolicy>
+               </property>
                <property name="text">
                 <string>0 00' 00.0000&quot;</string>
                </property>
@@ -445,6 +457,12 @@
              </item>
              <item row="2" column="1" colspan="2">
               <widget class="QLabel" name="lblPosition2">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>10</verstretch>
+                </sizepolicy>
+               </property>
                <property name="text">
                 <string>0 00' 00.0000&quot;</string>
                </property>
@@ -452,6 +470,12 @@
              </item>
              <item row="4" column="0" colspan="3">
               <widget class="QLabel" name="lblStd">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>8</verstretch>
+                </sizepolicy>
+               </property>
                <property name="text">
                 <string>E: 0.000 N: 0.000 U: 0.000 m</string>
                </property>
@@ -459,6 +483,12 @@
              </item>
              <item row="3" column="0">
               <widget class="QLabel" name="lblPositionText3">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>10</verstretch>
+                </sizepolicy>
+               </property>
                <property name="text">
                 <string>H:</string>
                </property>
@@ -466,6 +496,12 @@
              </item>
              <item row="0" column="1">
               <widget class="QLabel" name="lblSolution">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>12</verstretch>
+                </sizepolicy>
+               </property>
                <property name="text">
                 <string>----</string>
                </property>
@@ -473,6 +509,12 @@
              </item>
              <item row="0" column="0">
               <widget class="QLabel" name="lblSolutionText">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>12</verstretch>
+                </sizepolicy>
+               </property>
                <property name="text">
                 <string>Solution:</string>
                </property>
@@ -480,6 +522,12 @@
              </item>
              <item row="2" column="0">
               <widget class="QLabel" name="lblPositionText2">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>10</verstretch>
+                </sizepolicy>
+               </property>
                <property name="text">
                 <string>E:</string>
                </property>
@@ -487,6 +535,12 @@
              </item>
              <item row="3" column="1" colspan="2">
               <widget class="QLabel" name="lblPosition3">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>10</verstretch>
+                </sizepolicy>
+               </property>
                <property name="text">
                 <string>0.000 m</string>
                </property>
@@ -494,6 +548,12 @@
              </item>
              <item row="5" column="0" colspan="3">
               <widget class="QLabel" name="lblNSatellites">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>8</verstretch>
+                </sizepolicy>
+               </property>
                <property name="text">
                 <string>Age: 0.0 s Ratio: 0.0 NSAT: 0</string>
                </property>

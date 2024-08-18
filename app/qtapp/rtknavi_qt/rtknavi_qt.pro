@@ -15,6 +15,7 @@ SOURCES += \
     ../appcmn_qt/fileoptdlg.cpp \
     ../appcmn_qt/ftpoptdlg.cpp \
     ../appcmn_qt/keydlg.cpp \
+    ../appcmn_qt/labelstretcher.cpp \
     ../appcmn_qt/maskoptdlg.cpp \
     ../appcmn_qt/refdlg.cpp \
     ../appcmn_qt/serioptdlg.cpp \
@@ -41,6 +42,7 @@ SOURCES += \
     markdlg.cpp
 
 HEADERS  += \
+    ../appcmn_qt/labelstretcher.h \
     instrdlg.h \
     rcvoptdlg.h \
     logstrdlg.h \

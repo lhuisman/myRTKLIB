@@ -557,7 +557,7 @@ void InputStrDialog::showFtpOptionsDialog(int index, int opt)
 //---------------------------------------------------------------------------
 void InputStrDialog::updateEnable()
 {
-    // (cBStream->currentIndex() == 4) -> Ffile stream
+    // (cBStream->currentIndex() == 4) -> File stream
     int enaFile = (ui->cBStreamC1->isChecked() && (ui->cBStream1->currentIndex() == 4)) ||
                   (ui->cBStreamC2->isChecked() && (ui->cBStream2->currentIndex() == 4)) ||
                   (ui->cBStreamC3->isChecked() && (ui->cBStream3->currentIndex() == 4));
