@@ -24,7 +24,7 @@ void LabelStretcher::setManaged(QWidget *w, bool managed) {
 bool LabelStretcher::eventFilter(QObject * obj, QEvent * ev) {
     auto widget = qobject_cast<QWidget*>(obj);
 
-    if (widget && ev->type() == QEvent::Resize)
+    if (widget && (ev->type() == QEvent::Resize || ev->type() == QEvent::Show))
         resized(widget);
 
     return false;
@@ -55,13 +55,15 @@ void LabelStretcher::setFont(QWidget *widget, const QFont &font) {
     }
 
     QFont f(font);
-    f.setPointSizeF(font.pointSizeF()*scale*0.5);
+    f.setPointSizeF(font.pointSizeF()*scale);
 
     widget->setFont(f);
     setFont(widget->layout(), font);
 }
 
 void LabelStretcher::setMinimumSize(QWidget *widget) {
+    if (!widget)
+        return;
     if (widget->layout())
         return;
     widget->setMinimumSize(widget->minimumSizeHint());
@@ -94,12 +96,15 @@ void LabelStretcher::resized(QWidget *widget) {
         widget->setProperty(kMinimumsAcquired, true);
     }
 
+    if (!widget->isVisible())
+        return;
+
     // Newton's method
     auto font = widget->font();
     auto fontSize = font.pointSizeF();
     qreal dStep = 1.0;
     int i;
-    for (i = 0; i < 10; ++i) {
+    for (i = 0; i < 5; ++i) {
         auto prevFontSize = fontSize;
         auto d = df(fontSize, dStep, widget);
         if (d == 0) {

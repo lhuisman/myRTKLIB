@@ -377,8 +377,7 @@ void MainWindow::updatePanels()
     if (panelMode <= 3) {
         ui->panelSolution->setVisible(true);
         ui->panelSolutionStatus ->setVisible(false);
-    }
-    else {
+    } else {
         ui->panelSolution->setVisible(false);
         ui->panelSolutionStatus ->setVisible(true);
     }
@@ -418,6 +417,7 @@ void MainWindow::updatePanels()
         ui->splitter->setSizes({ui->splitter->size().height()/5, ui->splitter->size().height()/5,
                                 ui->splitter->size().height()/5, ui->splitter->size().height()/5, ui->splitter->size().height()/5});
     }
+
 }
 // update enabled -----------------------------------------------------------
 void MainWindow::updateEnable()
@@ -1299,11 +1299,11 @@ void MainWindow::serverStop()
     ui->sBSolution->setEnabled(true);
     ui->btnStop->setVisible(false);
     menuStopAction->setEnabled(false);
-    setWidgetBackgroundColor(ui->lblServer, QColor(Qt::gray));
+    setWidgetBackgroundColor(ui->lblServer, QColor(Qt::darkGray));
 
     setTrayIcon(1);
 
-    setWidgetTextColor(ui->lblTime, QColor(Qt::gray));
+    setWidgetTextColor(ui->lblTime, QColor(Qt::darkGray));
     setWidgetBackgroundColor(ui->lblIndicatorSolution, QColor(Qt::white));
 
     n = solutionsEnd - solutionsStart; if (n < 0) n += optDialog->solutionBufferSize;
@@ -1353,8 +1353,8 @@ void MainWindow::updateServer()
         setWidgetTextColor(ui->lblTime, QColor(Qt::black));
     } else {
         setWidgetBackgroundColor(ui->lblIndicatorSolution, QColor(Qt::white));
-        setWidgetTextColor(ui->lblSolution, QColor(Qt::gray));
-        setWidgetBackgroundColor(ui->lblServer, rtksvr.state ? QColor(Qt::green) : QColor(Qt::gray));
+        setWidgetTextColor(ui->lblSolution, QColor(Qt::darkGray));
+        setWidgetBackgroundColor(ui->lblServer, rtksvr.state ? QColor(Qt::darkGreen) : QColor(Qt::darkGray));
     }
 
     if (!(++timerCycle % 5)) updatePlot();
@@ -1444,8 +1444,8 @@ void MainWindow::updateFont()
     QFont tmpFont = optDialog->positionFont;
     label[0]->setFont(tmpFont);
     setWidgetTextColor(label[7], color);
-    label[8]->setFont(tmpFont); setWidgetTextColor(label[8], QColor(Qt::gray));
-    label[9]->setFont(tmpFont); setWidgetTextColor(label[9], QColor(Qt::gray));
+    label[8]->setFont(tmpFont); setWidgetTextColor(label[8], QColor(Qt::darkGray));
+    label[9]->setFont(tmpFont); setWidgetTextColor(label[9], QColor(Qt::darkGray));
 }
 // update time --------------------------------------------------------------
 void MainWindow::updateTime()
@@ -1485,7 +1485,7 @@ void MainWindow::updatePosition()
                        ui->lblPosition1, ui->lblPosition2, ui->lblPosition3, ui->lblStd, ui->lblNSatellites};
     static const QString sol[] = {tr("----"), tr("FIX"), tr("FLOAT"), tr("SBAS"), tr("DGPS"), tr("SINGLE"), tr("PPP")};
     QString s[9], ext;
-    static const QColor color[] = {QColor(QColorConstants::Svg::silver), QColor(Qt::green), Color::Orange, Color::Fuchsia, QColor(Qt::blue), QColor(Qt::red), Color::Teal};
+    static const QColor color[] = {QColor(Qt::lightGray), QColor(Qt::darkGreen), Color::Orange, Color::Fuchsia, QColor(Qt::blue), QColor(Qt::red), Color::Teal};
     double *rrover = solutionRover + solutionsCurrent * 3;
     double *rbase = solutionReference + solutionsCurrent * 3;
     double *qrover = solutionQr + solutionsCurrent * 9;
@@ -1502,7 +1502,7 @@ void MainWindow::updatePosition()
     ui->lblSolutionText->setText(tr("Solution%1:").arg(ext));
 
     ui->lblSolution->setText(sol[stat]);
-    setWidgetTextColor(ui->lblSolution, rtksvr.state ? color[stat] : QColor(Qt::gray));
+    setWidgetTextColor(ui->lblSolution, rtksvr.state ? color[stat] : QColor(Qt::darkGray));
     setWidgetBackgroundColor(ui->lblIndicatorSolution, rtksvr.state ? color[stat] : QColor(Qt::white));
     ui->lblIndicatorSolution->setToolTip(sol[stat]);
 
@@ -1581,13 +1581,13 @@ void MainWindow::updatePosition()
     for (i = 0; i < 8; i++)
         label[i]->setText(s[i]);
     for (i = 3; i < 6; i++)
-        setWidgetTextColor(label[i], optDialog->processingOptions.mode == PMODE_MOVEB && solutionType <= 2 ? QColor(Qt::gray) : QColor(Qt::black));
+        setWidgetTextColor(label[i], optDialog->processingOptions.mode == PMODE_MOVEB && solutionType <= 2 ? QColor(Qt::darkGray) : QColor(Qt::black));
 
-    setWidgetBackgroundColor(ui->lblIndicatorQ, ui->lblIndicatorSolution->palette().color(ui->lblIndicatorSolution->foregroundRole()));
+    setWidgetBackgroundColor(ui->lblIndicatorQ, ui->lblIndicatorSolution->palette().color(ui->lblIndicatorSolution->backgroundRole()));
     ui->lblIndicatorQ->setToolTip(ui->lblIndicatorSolution->toolTip());
     ui->lblSolutionS->setText(ui->lblSolution->text());
     setWidgetTextColor(ui->lblSolutionS, ui->lblSolution->palette().color(ui->lblSolution->foregroundRole()));
-    ui->lblSolutionQ->setText(QStringLiteral("%1 %2 %3 %4 %5 %6 %7%8").arg(
+    ui->lblSolutionQ->setText(QStringLiteral("%1 %2 %3, %4 %5, %6 %7 %8").arg(
                                                                 ext,
                                                                 label[0]->text(),
                                                                 label[3]->text(),
@@ -1600,7 +1600,7 @@ void MainWindow::updatePosition()
 // update stream status indicators ------------------------------------------
 void MainWindow::updateStream()
 {
-    static const QColor color[] = {QColor(Qt::red), QColor(Qt::white), Color::Orange, Color::Green, Color::Lime};
+    static const QColor color[] = {QColor(Qt::red), QColor(Qt::white), Color::Orange, Qt::darkGreen, Color::Lime};
     QLabel *ind[MAXSTRRTK] = {ui->lblStream1, ui->lblStream2, ui->lblStream3, ui->lblStream4, ui->lblStream5, ui->lblStream6, ui->lblStream7, ui->lblStream8};
     int i, sstat[MAXSTRRTK] = {0};
     char msg[MAXSTRMSG] = "";
@@ -1689,35 +1689,35 @@ void MainWindow::drawSolutionPlot(QLabel *plot, int type, int freq)
             drawSnr(c, w, (h - topMargin) / 2, 0, topMargin, 0, freq);
             drawSnr(c, w, (h - topMargin) / 2, 0, topMargin + (h - topMargin) / 2, 1, freq);
             s1 = tr("Rover: Base %L1 SNR (dBHz)").arg(fstr[freq]);
-            drawText(c, x, 1, s1, Qt::gray, 1, 2);
+            drawText(c, x, 1, s1, Qt::darkGray, 1, 2);
         } else { // horizontal
             drawSnr(c, w / 2, h - topMargin, 0, topMargin, 0, freq);
             drawSnr(c, w / 2, h - topMargin, w / 2, topMargin, 1, freq);
             s1 = tr("Rover %L1 SNR (dBHz)").arg(fstr[freq]);
             s2 = tr("Base %L1 SNR (dBHz)").arg(fstr[freq]);
-            drawText(c, x, 1, s1, Qt::gray, 1, 2);
-            drawText(c, w / 2 + x, 1, s2, Qt::gray, 1, 2);
+            drawText(c, x, 1, s1, Qt::darkGray, 1, 2);
+            drawText(c, w / 2 + x, 1, s2, Qt::darkGray, 1, 2);
         }
     } else if (type == 1) { // snr plot rover
         drawSnr(c, w, h - topMargin, 0, topMargin, 0, type);
         s1 = tr("Rover %L1 SNR (dBHz)").arg(fstr[freq]);
-        drawText(c, x, 1, s1, Qt::gray, 1, 2);
+        drawText(c, x, 1, s1, Qt::darkGray, 1, 2);
     } else if (type == 2) { // skyplot rover
         drawSatellites(c, w, h, 0, 0, 0, type);
         s1 = tr("Rover %L1").arg(fstr[type]);
-        drawText(c, x, 1, s1, Qt::gray, 1, 2);
+        drawText(c, x, 1, s1, Qt::darkGray, 1, 2);
     } else if (type == 3) { // skyplot+snr plot rover
         s1 = tr("Rover %L1").arg(fstr[freq]);
         s2 = tr("SNR (dBHz)");
         if (w >= h * 2) { // horizontal
             drawSatellites(c, h, h, 0, 0, 0, freq);
             drawSnr(c, w - h, h - topMargin, h, topMargin, 0, freq);
-            drawText(c, x, 1, s1, Qt::gray, 1, 2);
-            drawText(c, x + h, 1, s2, Qt::gray, 1, 2);
+            drawText(c, x, 1, s1, Qt::darkGray, 1, 2);
+            drawText(c, x + h, 1, s2, Qt::darkGray, 1, 2);
         } else { // vertical
             drawSatellites(c, w, h / 2, 0, 0, 0, freq);
             drawSnr(c, w, (h - topMargin) / 2, 0, topMargin + (h - topMargin) / 2, 0, freq);
-            drawText(c, x, 1, s1, Qt::gray, 1, 2);
+            drawText(c, x, 1, s1, Qt::darkGray, 1, 2);
         }
     } else if (type == 4) { // skyplot rover+base
         s1 = tr("Rover %L1").arg(fstr[freq]);
@@ -1725,20 +1725,20 @@ void MainWindow::drawSolutionPlot(QLabel *plot, int type, int freq)
         if (w >= h) { // horizontal
             drawSatellites(c, w / 2, h, 0, 0, 0, freq);
             drawSatellites(c, w / 2, h, w / 2, 0, 1, freq);
-            drawText(c, x, 1, s1, Qt::gray, 1, 2);
-            drawText(c, x + w / 2, 1, s2, Qt::gray, 1, 2);
+            drawText(c, x, 1, s1, Qt::darkGray, 1, 2);
+            drawText(c, x + w / 2, 1, s2, Qt::darkGray, 1, 2);
         } else { // vertical
             drawSatellites(c, w, h / 2, 0, 0, 0, freq);
             drawSatellites(c, w, h / 2, 0, h / 2, 1, freq);
-            drawText(c, x, 1, s1, Qt::gray, 1, 2);
-            drawText(c, x, h / 2 + 1, s2, Qt::gray, 1, 2);
+            drawText(c, x, 1, s1, Qt::darkGray, 1, 2);
+            drawText(c, x, h / 2 + 1, s2, Qt::darkGray, 1, 2);
         }
     } else if (type == 5) { // baseline plot
         drawBaseline(c, id, w, h);
-        drawText(c, x, 1, tr("Baseline"), Qt::gray, 1, 2);
+        drawText(c, x, 1, tr("Baseline"), Qt::darkGray, 1, 2);
     } else if (type == 6) { // track plot
         drawTrack(c, id, &buffer);
-        drawText(c, x, 3, tr("Gnd Trk"), Qt::gray, 1, 2);
+        drawText(c, x, 3, tr("Gnd Trk"), Qt::darkGray, 1, 2);
     }
     plot->setPixmap(buffer);
 }
@@ -1761,7 +1761,7 @@ void MainWindow::updatePlot()
 // snr color ----------------------------------------------------------------
 QColor MainWindow::snrColor(int snr)
 {
-    QColor color[] = {Qt::green, Color::Orange, Color::Fuchsia, Qt::blue, Qt::red, Qt::gray};
+    QColor color[] = {Qt::darkGreen, Color::Orange, Color::Fuchsia, Qt::blue, Qt::red, Qt::darkGray};
     uint32_t r1, g1, b1;
     QColor c1, c2;
     double a;
@@ -1786,11 +1786,11 @@ void MainWindow::drawSnr(QPainter &c, int w, int h, int x0, int y0,
              int index, int freq)
 {
     static const QColor color[] = {
-        QColor(0,   128, 0), QColor(0, 128, 128), QColor(0xA0,   0, 0xA0),
-        QColor(128, 0,	 0), QColor(0, 0,   128), QColor( 128, 128,    0),
+        QColor(0  , 128,   0), QColor(128, 128,  0), QColor(0xA0,   0, 0xA0),
+        QColor(0  ,   0, 128), QColor(128,   0,  0), QColor(   0, 128,  128),
         QColor(128, 128, 128)
     };
-    static const QColor color_sys[] = {Qt::green, Color::Orange, Color::Fuchsia, Qt::blue, Qt::red, Color::Teal, Qt::gray};
+    static const QColor color_sys[] = {Qt::darkGreen, Color::Orange, Color::Fuchsia, Qt::blue, Qt::red, Color::Teal, Qt::darkGray};
     int i, j, snrIdx, sysIdx, numSystems, x1, y1, height, offset, topMargin, bottomMargin, hh, barDistance, barWidth, snr[NFREQ + 1], sysMask[7] = {0};
     char id[16], sys[] = "GREJCS", *q;
 
@@ -1807,14 +1807,14 @@ void MainWindow::drawSnr(QPainter &c, int w, int h, int x0, int y0,
     for (snr[0] = MINSNR + 10; snr[0] < MAXSNR; snr[0] += 10) {
         y1 = y0 + hh - (snr[0] - MINSNR) * hh / (MAXSNR - MINSNR);
         c.drawLine(x0 + 2, y1, x0 + w - 20, y1);
-        drawText(c, x0 + w - 4, y1, QLocale().toString(snr[0]), Qt::gray, 2, 0);
+        drawText(c, x0 + w - 4, y1, QLocale().toString(snr[0]), Qt::darkGray, 2, 0);
     }
 
     // draw outer box
     y1 = y0 + hh;
     QRect b(x0 + 2, y0, w - 2, hh);
     c.setBrush(Qt::NoBrush);
-    c.setPen(Qt::gray);
+    c.setPen(Qt::darkGray);
     c.drawRect(b);
 
     // draw SNR bars
@@ -1843,7 +1843,7 @@ void MainWindow::drawSnr(QPainter &c, int w, int h, int x0, int y0,
                 if (!validSatellites[index][i])
                     c.setBrush(QBrush(QColor(QColorConstants::LightGray), Qt::SolidPattern));
             } else {  // outline only
-                c.setPen(j < NFREQ + 1 ? QColor(QColorConstants::LightGray) : Qt::gray);
+                c.setPen(j < NFREQ + 1 ? QColor(QColorConstants::LightGray) : Qt::darkGray);
                 c.setBrush(Qt::NoBrush);
             }
             c.drawRect(r1);
@@ -1867,7 +1867,7 @@ void MainWindow::drawSatellites(QPainter &c, int w, int h, int x0, int y0,
                                 int index, int freq)
 {
     static const QColor color_sys[] = {
-        Qt::green, Color::Orange, Color::Fuchsia, Qt::blue, Qt::red, Qt::darkCyan, Qt::gray
+        Qt::darkGreen, Color::Orange, Color::Fuchsia, Qt::blue, Qt::red, Qt::darkCyan, Qt::darkGray
     };
     QColor color_text;
     QPoint p(w / 2, h / 2);
@@ -1901,7 +1901,7 @@ void MainWindow::drawSatellites(QPainter &c, int w, int h, int x0, int y0,
 
         c.setBrush(!validSatellites[index][k] ? Color::Silver :
                         (freq < NFREQ ? snrColor(snr[freq]) : color_sys[sysIdx]));
-        c.setPen(Qt::gray);
+        c.setPen(Qt::darkGray);
         color_text = Qt::white;
         if (freq < NFREQ + 1 && snr[freq] <= 0) {
             c.setPen(Color::Silver);
@@ -1914,13 +1914,13 @@ void MainWindow::drawSatellites(QPainter &c, int w, int h, int x0, int y0,
 
     // draw annotations
     dops(nsats, azel, 0.0, dop);
-    drawText(c, x0 + 3, y0 + h, tr("# Sat: %L1/%L2").arg(nsats, 2).arg(numSatellites[index], 2), Qt::gray, 1, 1);
-    drawText(c, x0 + w - 3, y0 + h, tr("GDOP: %L1").arg(dop[0], 0, 'f', 1), Qt::gray, 2, 1);
+    drawText(c, x0 + 3, y0 + h, tr("# Sat: %L1/%L2").arg(nsats, 2).arg(numSatellites[index], 2), Qt::darkGray, 1, 1);
+    drawText(c, x0 + w - 3, y0 + h, tr("GDOP: %L1").arg(dop[0], 0, 'f', 1), Qt::darkGray, 2, 1);
 }
 // draw baseline plot -------------------------------------------------------
 void MainWindow::drawBaseline(QPainter &c, int id, int w, int h)
 {
-    static const QColor colors[] = {Color::Silver, Qt::green, Color::Orange, Color::Fuchsia, Qt::blue, Qt::red, Color::Teal};
+    static const QColor colors[] = {Color::Silver, Qt::darkGreen, Color::Orange, Color::Fuchsia, Qt::blue, Qt::red, Color::Teal};
     static const QString directions = tr("NESW");
     QPoint center(w / 2, h / 2), p1, p2, pp;
     double radius = qMin(w * 0.95, h * 0.95) / 2;
@@ -1960,7 +1960,7 @@ void MainWindow::drawBaseline(QPainter &c, int id, int w, int h)
     p2 = QPoint(center.x() + sy, center.y() - cy);       // rover
 
     // draw two outer circles
-    c.setPen(Qt::gray);
+    c.setPen(Qt::darkGray);
     c.drawEllipse(center.x() - radius, center.y() - radius, 2 * radius + 1, 2 * radius + 1);
     radius2 = static_cast<int>(radius - d1 / 2);
     c.drawEllipse(center.x() - radius2, center.y() - radius2, 2 * radius2 + 1, 2 * radius2 + 1);
@@ -1974,7 +1974,7 @@ void MainWindow::drawBaseline(QPainter &c, int id, int w, int h)
         c.drawLine(center.x() + x1, center.y() - y1, center.x() + x2, center.y() - y2);
         c.setBrush(Qt::white);
         if (a % 90 == 0)  // draw label
-            drawText(c, center.x() + x1, center.y() - y1, directions[a / 90], Qt::gray, 0, 0);
+            drawText(c, center.x() + x1, center.y() - y1, directions[a / 90], Qt::darkGray, 0, 0);
         if (a == 0) {  // raw arrow to north
             x1 = static_cast<int>((radius - d1 * 3 / 2) * sin(a * D2R - az));
             y1 = static_cast<int>((radius - d1 * 3 / 2) * cos(a * D2R - az));
@@ -1994,12 +1994,12 @@ void MainWindow::drawBaseline(QPainter &c, int id, int w, int h)
     c.drawEllipse(pp.x() - d2 / 2 + 2, pp.y() - d2 / 2 + 2, d2 - 1, d2 - 1);
 
     pp = pitch >= 0.0 ? p2 : p1;
-    c.setPen(Qt::gray);
+    c.setPen(Qt::darkGray);
     c.drawLine(center, pp);
     if (pitch >= 0.0) {
         c.setBrush(Qt::white);
         c.drawEllipse(pp.x() - d2 / 2, pp.y() - d2 / 2, d2, d2);
-        drawArrow(c, center.x() + sya, center.y() - cya, d3, static_cast<int>((yaw - az) * R2D), Qt::gray);
+        drawArrow(c, center.x() + sya, center.y() - cya, d3, static_cast<int>((yaw - az) * R2D), Qt::darkGray);
     }
     c.setBrush(col);
     c.drawEllipse(pp.x() - d2 / 2 + 2, pp.y() - d2 / 2 + 2, d2 - 4, d2 - 4);
@@ -2007,14 +2007,14 @@ void MainWindow::drawBaseline(QPainter &c, int id, int w, int h)
     // draw annotations
     c.setBrush(Qt::white);
     digit = len < 1000.0 ? 3 : (len < 10000.0 ? 2 : (len < 100000.0 ? 1 : 0));
-    drawText(c, center.x(), center.y(), tr("%L1 m").arg(len, 0, 'f', digit), Qt::gray, 0, 0);
-    drawText(c, 3, h, tr("Y: %L1°").arg(yaw * R2D, 0, 'f', 1), Qt::gray, 1, 1);
-    drawText(c, w - 3, h, tr("P: %L1°").arg(pitch * R2D, 0, 'f', 1), Qt::gray, 2, 1);
+    drawText(c, center.x(), center.y(), tr("%L1 m").arg(len, 0, 'f', digit), Qt::darkGray, 0, 0);
+    drawText(c, 3, h, tr("Y: %L1°").arg(yaw * R2D, 0, 'f', 1), Qt::darkGray, 1, 1);
+    drawText(c, w - 3, h, tr("P: %L1°").arg(pitch * R2D, 0, 'f', 1), Qt::darkGray, 2, 1);
 }
 // draw track plot ----------------------------------------------------------
 void MainWindow::drawTrack(QPainter &c, int id, QPaintDevice *plot)
 {
-    static const QColor mcolor[] = {Color::Silver, Qt::green, Color::Orange, Color::Fuchsia, Qt::blue, Qt::red, Color::Teal};
+    static const QColor mcolor[] = {Color::Silver, Qt::darkGreen, Color::Orange, Color::Fuchsia, Qt::blue, Qt::red, Color::Teal};
     QColor *color;
     Graph *graph = new Graph(plot);
     QPoint p1, p2;
@@ -2082,9 +2082,9 @@ void MainWindow::drawTrack(QPainter &c, int id, QPaintDevice *plot)
     if (numPoints > 0) {
         graph->toPoint(x[currentPointNo], y[currentPointNo], p1);
         graph->drawMark(c, p1, Graph::MarkerTypes::Dot, Qt::white, 18, 0);
-        graph->drawMark(c, p1, Graph::MarkerTypes::Circle, rtksvr.state ? Qt::black : Qt::gray, 16, 0);
-        graph->drawMark(c, p1, Graph::MarkerTypes::Plus, rtksvr.state ? Qt::black : Qt::gray, 20, 0);
-        graph->drawMark(c, p1, Graph::MarkerTypes::Dot, rtksvr.state ? Qt::black : Qt::gray, 12, 0);
+        graph->drawMark(c, p1, Graph::MarkerTypes::Circle, rtksvr.state ? Qt::black : Qt::darkGray, 16, 0);
+        graph->drawMark(c, p1, Graph::MarkerTypes::Plus, rtksvr.state ? Qt::black : Qt::darkGray, 20, 0);
+        graph->drawMark(c, p1, Graph::MarkerTypes::Dot, rtksvr.state ? Qt::black : Qt::darkGray, 12, 0);
         graph->drawMark(c, p1, Graph::MarkerTypes::Dot, rtksvr.state ? color[currentPointNo] : Qt::white, 10, 0);
     }
 
@@ -2094,7 +2094,7 @@ void MainWindow::drawTrack(QPainter &c, int id, QPaintDevice *plot)
     graph->getScale(sx, sy);
     p2.rx() -= 35;
     p2.ry() -= 12;
-    graph->drawMark(c, p2, Graph::MarkerTypes::HScale, Qt::gray, static_cast<int>(xt / sx + 0.5), 0);
+    graph->drawMark(c, p2, Graph::MarkerTypes::HScale, Qt::darkGray, static_cast<int>(xt / sx + 0.5), 0);
 
     // scale text
     p2.ry() -= 2;
@@ -2106,14 +2106,14 @@ void MainWindow::drawTrack(QPainter &c, int id, QPaintDevice *plot)
         label = tr("%L1 m").arg(xt, 0, 'f', 0);
     else
         label = tr("%L1 km").arg(xt / 1000.0, 0, 'f', 0);
-    graph->drawText(c, p2, label, Qt::gray, Qt::white, 0, 1, 0);
+    graph->drawText(c, p2, label, Qt::darkGray, Qt::white, 0, 1, 0);
 
     // reference position
     if (norm(ref, 3) > 1E-6) {
         p1.rx() += 2;
         p1.ry() = p2.y() + 11;
         label = tr("%L1° %L2°").arg(pos[0] * R2D, 0, 'f', 9).arg(pos[1] * R2D, 0, 'f', 9);
-        graph->drawText(c, p1, label, Qt::gray, Qt::white, 1, 1, 0);
+        graph->drawText(c, p1, label, Qt::darkGray, Qt::white, 1, 1, 0);
     }
 
     delete graph;
@@ -2133,7 +2133,7 @@ void MainWindow::drawSky(QPainter &c, int w, int h, int x0, int y0)
     // draw elevation circles every 30 deg
     for (e = 0; e < 90; e += 30) {
         d = static_cast<int>(radius * (90 - e) / 90);
-        c.setPen(e == 0 ? Qt::gray : Color::Silver);  // outline in gray, other lines in silver
+        c.setPen(e == 0 ? Qt::darkGray : Color::Silver);  // outline in gray, other lines in silver
         c.drawEllipse(p.x() - d, p.y() - d, 2 * d + 1, 2 * d + 1);
     }
     // draw azimuth lines from center outwards every 45 deg
@@ -2143,7 +2143,7 @@ void MainWindow::drawSky(QPainter &c, int w, int h, int x0, int y0)
         c.setPen(Color::Silver);
         c.drawLine(p.x(), p.y(), p.x() + x, p.y() - y);
         if (a % 90 == 0)  // draw labels every 90 deg
-            drawText(c, p.x() + x, p.y() - y, label[a / 90], Qt::gray, 0, 0);
+            drawText(c, p.x() + x, p.y() - y, label[a / 90], Qt::darkGray, 0, 0);
     }
 }
 // draw text ----------------------------------------------------------------
