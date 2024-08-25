@@ -1663,10 +1663,9 @@ EXPORT int input_raw  (raw_t *raw, int format, uint8_t data);
 EXPORT int input_rawf (raw_t *raw, int format, FILE *fp);
 
 EXPORT int init_rt17  (raw_t *raw);
-EXPORT int init_cmr   (raw_t *raw);
+EXPORT int init_sbf   (raw_t *raw);
 EXPORT void free_rt17 (raw_t *raw);
-EXPORT void free_cmr  (raw_t *raw);
-EXPORT int update_cmr (raw_t *raw, rtksvr_t *svr, obs_t *obs);
+EXPORT void free_sbf  (raw_t *raw);
 
 EXPORT int input_oem4  (raw_t *raw, uint8_t data);
 EXPORT int input_cnav  (raw_t *raw, uint8_t data);
