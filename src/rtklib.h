@@ -863,7 +863,10 @@ typedef struct {        /* navigation data type */
 
 typedef struct {        /* station parameter type */
     char name   [MAXANT]; /* marker name */
-    char marker [MAXANT]; /* marker number */
+    char markerno[MAXANT]; /* marker number */
+    char markertype[MAXANT]; /* marker type */
+    char observer[MAXANT]; /* Observer */
+    char agency[MAXANT];  /* Agency */
     char antdes [MAXANT]; /* antenna descriptor */
     char antsno [MAXANT]; /* antenna serial number */
     char rectype[MAXANT]; /* receiver type descriptor */
