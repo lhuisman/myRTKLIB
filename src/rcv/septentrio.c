@@ -3779,6 +3779,7 @@ static int decode_sbf(raw_t *raw)
         case ID_DIFFCORRIN:     return 0; /* not yet supported */
 
         case ID_GEONETWORKTIME: return 0; /* not suppported by rtklib */
+        case ID_GEOALM:         return 0;
         case ID_PVTSATCART:     return 0; /* to be checked */
         case ID_GEOCORR:        return 0; /* to be checked */
 #endif /* UNUSED */
