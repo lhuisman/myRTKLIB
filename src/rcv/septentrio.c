@@ -3497,9 +3497,6 @@ static int decode_sbslongcorrh(raw_t* raw)
     int prn, i;
     uint8_t *p = raw->buff+8;
     uint8_t count, sbLength, no;
-    uint32_t tow;
-    uint16_t week;
-    int64_t t;
 
     trace(4, "SBF decode_sbslongcorrh:\n");
 
@@ -3518,8 +3515,8 @@ static int decode_sbslongcorrh(raw_t* raw)
         sprintf(raw->msgtype, "SBF SBAS Long Term Corrections from PRN=%d", prn);
     }
 
-    tow = U4(p + 0)/1000;
-    week = U2(p+4);
+    double tow = U4(p + 0) * 0.001;
+    uint16_t week = U2(p+4);
 
     count = U1(p+7);
     sbLength = U1(p+8);
@@ -3542,8 +3539,8 @@ static int decode_sbslongcorrh(raw_t* raw)
 
             raw->nav.sbssat.sat[no-1].lcorr.daf1 = R4(p+12+i*sbLength+32);
 
-            /* time of day */
-            t = (int)U4(p+12+i*sbLength+32)-(int)tow % 86400;  /* calculate day offset from TOW */
+            /* Time of day.  Calculate day offset from TOW. */
+            double t = U4(p+12+i*sbLength+36) - fmod(tow, 86400);
             if      (t <= -43200) t += 86400;
             else if (t >   43200) t -= 86400;
             raw->nav.sbssat.sat[no-1].lcorr.t0 = gpst2time(week, tow+t);
