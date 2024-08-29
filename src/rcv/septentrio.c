@@ -702,14 +702,14 @@ static int decode_measepoch(raw_t *raw)
         ret = flushobuf(raw);
     }
 
-    if (strstr(raw->opt, "-NO_MEAS2")) return 0;
+    if (strstr(raw->opt, "-NO_MEAS2")) return ret;
 
     if      (strstr(raw->opt, "-AUX1")) ant_sel = 1;
     else if (strstr(raw->opt, "-AUX2")) ant_sel = 2;
 
     if (raw->len < 20) {
         trace(2, "sbf measepoch length error: len=%d\n", raw->len);
-        return -1;
+        return ret ? ret : -1;
     }
     n1   = U1(p);
     len1 = U1(p+1);   /* size of measurement block type 1 */
@@ -717,7 +717,7 @@ static int decode_measepoch(raw_t *raw)
 
     if (U1(p+3) & 0x80) {
         trace(2, "sbf measepoch scrambled\n");
-        return -1;
+        return ret ? ret : -1;
     }
 
     // reset channel assignment
@@ -853,7 +853,7 @@ static int decode_measepochextra(raw_t *raw)
         sprintf(raw->msgtype, "SBF Measurement Data Extra");
     }
 
-    if (strstr(raw->opt, "-NO_MEAS2")) return 0;
+    if (strstr(raw->opt, "-NO_MEAS2")) return ret;
 
     if      (strstr(raw->opt, "-AUX1")) ant_sel = 1;
     else if (strstr(raw->opt, "-AUX2")) ant_sel = 2;
@@ -935,14 +935,14 @@ static int decode_meas3ranges(raw_t *raw) {
         ret = flushobuf(raw);
     }
 
-    if (strstr(raw->opt, "-NO_MEAS3")) return 0;
+    if (strstr(raw->opt, "-NO_MEAS3")) return ret;
 
     if      (strstr(raw->opt, "-AUX1")) ant_sel = 1;
     else if (strstr(raw->opt, "-AUX2")) ant_sel = 2;
 
     if (raw->len < 12) {
         trace(2, "sbf meas3ranges length error: len=%d\n", raw->len);
-        return -1;
+        return ret ? ret : -1;
     }
 
     uint32_t TOW = U4(p + 0);
@@ -958,11 +958,11 @@ static int decode_meas3ranges(raw_t *raw) {
 
     if (reserved > 31) {
         trace(2, "sbf meas3ranges invalid data version: len=%d\n", raw->len);
-        return -1;
+        return ret ? ret : -1;
     }
 
     int antennaIdx = misc & 7;
-    if (ant_sel != antennaIdx) return 0;
+    if (ant_sel != antennaIdx) return ret;
     uint32_t refEpochInterval = Meas3_EpochIntervals[misc >> 4]; /* interval for full epoche data */
 
     // if this is a reference epoch?
@@ -977,9 +977,12 @@ static int decode_meas3ranges(raw_t *raw) {
     /* invalidate frequency assignments */
     memset(sbf->meas3_freqAssignment, -1, MEAS3_SYS_MAX*MEAS3_SAT_MAX*MEAS3_SIG_MAX*sizeof(uint8_t));
 
-    if (((TOW % refEpochInterval) == 0) ||  // check reference epoch
-        (sbf->meas3_refEpoch.TOW == (uint32_t)(TOW / refEpochInterval)*refEpochInterval))  // or reference epoch is available
-    {
+    if (((TOW % refEpochInterval) != 0) &&  // check reference epoch
+        (sbf->meas3_refEpoch.TOW != (uint32_t)(TOW / refEpochInterval)*refEpochInterval)) { // or reference epoch is available
+        raw->obuf.n = 0;
+        return ret;
+    }
+
         for (int navsys = 0; navsys < MEAS3_SYS_MAX; navsys++) {
             if ((constellations & (1 << navsys)) == 0)
                 continue;  /* no data for this navigation system */
@@ -1375,7 +1378,7 @@ static int decode_meas3ranges(raw_t *raw) {
                 satCnt++;
             }
         }
-    }
+
     raw->obuf.n = n;
 
     return ret;
@@ -1428,12 +1431,12 @@ int decode_meas3Doppler(raw_t* raw)
         ret = flushobuf(raw);
     }
 
-    if (strstr(raw->opt, "-NO_MEAS3")) return 0;
+    if (strstr(raw->opt, "-NO_MEAS3")) return ret;
 
     uint16_t flags = U2(raw->buff + 14);
     if      (strstr(raw->opt, "-AUX1")) ant_sel = 1;
     else if (strstr(raw->opt, "-AUX2")) ant_sel = 2;
-    if ((flags & 0x7) != ant_sel) return 0;
+    if ((flags & 0x7) != ant_sel) return ret;
 
     for (n = 0; n < raw->obuf.n && offset+16 < (uint32_t)raw->len; n++) {
         int navsys, sys, prn;
@@ -1488,12 +1491,12 @@ int decode_meas3CN(raw_t* raw)
         ret = flushobuf(raw);
     }
 
-    if (strstr(raw->opt, "-NO_MEAS3")) return 0;
+    if (strstr(raw->opt, "-NO_MEAS3")) return ret;
 
     uint16_t flags = U2(raw->buff + 14);
     if      (strstr(raw->opt, "-AUX1")) ant_sel = 1;
     else if (strstr(raw->opt, "-AUX2")) ant_sel = 2;
-    if ((flags & 0x7) != ant_sel) return 0;
+    if ((flags & 0x7) != ant_sel) return ret;
 
     for (n = 0; n < raw->obuf.n && offset/2+16 < (uint32_t)raw->len; n++) {
         int navsys, sys, prn;
