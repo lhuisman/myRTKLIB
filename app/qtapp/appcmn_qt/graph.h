@@ -63,6 +63,8 @@ public:
     void getLimits(double *xl, double *yl);
     void setTick(const double xt, const double yt);
     void getTick(double &xt, double &yt);
+    void setLabelUnits(const QString & xUnit, const QString & yUnit);
+    void getLabelUnits(QString &xUnit, QString &yUnit);
     void drawAxis(QPainter &c, bool label, bool glabel);
     void drawMark(QPainter &c, const QPoint &p, int mark, const QColor &color, int size, int rot);
     void drawMark(QPainter &c, double x, double y, int mark, const QColor &color, int size, int rot);
@@ -113,5 +115,6 @@ private:
     double xCenter, yCenter;  // center coordinate (unit)
     double xScale, yScale;  // scale factor (unit/pixel)
     double xTick, yTick;   // grid interval (unit) (0:auto)
+    QString xLabelUnit, yLabelUnit;
 };
 #endif

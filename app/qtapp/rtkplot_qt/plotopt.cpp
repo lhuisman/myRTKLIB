@@ -26,6 +26,23 @@ PlotOptDialog::PlotOptDialog(QWidget *parent)
 {
     ui->setupUi(this);
 
+    ui->cBReceiverPosition->setItemData(0, tr("Use single‐point results as receiver positions by using observation and navigation data. For moving receivers, you shall set it."), Qt::ToolTipRole);
+    ui->cBReceiverPosition->setItemData(1, tr("Use uses latitude, longitude and height for static receivers as specified in the Lat/Lon/Hgt fields to the right."), Qt::ToolTipRole);
+    ui->cBReceiverPosition->setItemData(2, tr("Use \"APPROX POSITION XYZ\" in RINEX observation data header as the receiver position."), Qt::ToolTipRole);
+
+    ui->cBOrigin->setItemData(0, tr("Use first solution position"), Qt::ToolTipRole);
+    ui->cBOrigin->setItemData(1, tr("Use last solution position"), Qt::ToolTipRole);
+    ui->cBOrigin->setItemData(2, tr("Use the average of all solution positions"), Qt::ToolTipRole);
+    ui->cBOrigin->setItemData(3, tr("Set origin based on the linearly fitted positions"), Qt::ToolTipRole);
+    ui->cBOrigin->setItemData(4, tr("Use the base station position"), Qt::ToolTipRole);
+    ui->cBOrigin->setItemData(5, tr("Use latitude, longitude and height specified"), Qt::ToolTipRole);
+    ui->cBOrigin->setItemData(6, tr("The receiver ID is assumed as the 4-charactors of the solution file name head and the position is read from the position file"), Qt::ToolTipRole);
+    ui->cBOrigin->setItemData(7, tr("Use image center"), Qt::ToolTipRole);
+    ui->cBOrigin->setItemData(8, tr("Use map center"), Qt::ToolTipRole);
+    for (int i = 0; i < 10; i++)
+        ui->cBOrigin->setItemData(9 + i, tr("Use Waypoint %1").arg(i+1), Qt::ToolTipRole);
+
+
     refDialog = new RefDialog(this, 1);
 
     QCompleter *fileCompleter = new QCompleter(this);

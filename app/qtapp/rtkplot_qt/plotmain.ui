@@ -24,6 +24,21 @@
     <item row="0" column="0">
      <widget class="QWidget" name="widget_2" native="true">
       <layout class="QHBoxLayout" name="horizontalLayout_10">
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
        <item>
         <widget class="QSplitter" name="browseSplitter">
          <property name="orientation">
@@ -206,7 +221,7 @@
                     <item>
                      <widget class="QPushButton" name="btnOn1">
                       <property name="toolTip">
-                       <string>Plot1</string>
+                       <string>Show/Hide Plot 1</string>
                       </property>
                       <property name="checkable">
                        <bool>true</bool>
@@ -219,7 +234,7 @@
                     <item>
                      <widget class="QPushButton" name="btnOn2">
                       <property name="toolTip">
-                       <string>Plot2</string>
+                       <string>Show/Hide Plot 2</string>
                       </property>
                       <property name="checkable">
                        <bool>true</bool>
@@ -238,7 +253,7 @@
                        </sizepolicy>
                       </property>
                       <property name="toolTip">
-                       <string>Plot3</string>
+                       <string>Show/Hide Plot 3</string>
                       </property>
                       <property name="checkable">
                        <bool>true</bool>
@@ -432,14 +447,14 @@
                       </property>
                       <property name="icon">
                        <iconset resource="../icon/resources.qrc">
-                        <normaloff>:/buttons/trackc</normaloff>:/buttons/trackc</iconset>
+                        <normaloff>:/buttons/ori</normaloff>:/buttons/ori</iconset>
                       </property>
                      </widget>
                     </item>
                     <item>
                      <widget class="QToolButton" name="btnRangeList">
                       <property name="toolTip">
-                       <string/>
+                       <string>Select plot range.</string>
                       </property>
                       <property name="icon">
                        <iconset resource="../icon/resources.qrc">
@@ -505,7 +520,7 @@
                    </property>
                    <property name="icon">
                     <iconset resource="../icon/resources.qrc">
-                     <normaloff>:/buttons/trackc</normaloff>:/buttons/trackc</iconset>
+                     <normaloff>:/buttons/map</normaloff>:/buttons/map</iconset>
                    </property>
                    <property name="checkable">
                     <bool>true</bool>
@@ -835,111 +850,6 @@
              </property>
             </widget>
            </item>
-           <item>
-            <widget class="QListWidget" name="lWRangeList">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <item>
-              <property name="text">
-               <string>0.05</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>0.1</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>0.2</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>0.5</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>1</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>2</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>5</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>10</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>20</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>50</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>100</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>200</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>500</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>1000</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>2000</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>5000</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>10000</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>50000</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>100000</string>
-              </property>
-             </item>
-            </widget>
-           </item>
           </layout>
          </widget>
          <widget class="QWidget" name="panelBrowse" native="true">
@@ -1114,7 +1024,7 @@
     <addaction name="menuOpenMapImage"/>
     <addaction name="menuOpenSkyImage"/>
     <addaction name="menuOpenShape"/>
-    <addaction name="menuOpenWaypoint"/>
+    <addaction name="menuOpenWaypoints"/>
     <addaction name="separator"/>
     <addaction name="menuOpenObs"/>
     <addaction name="menuOpenNav"/>
@@ -1123,7 +1033,7 @@
     <addaction name="menuVisibilityAnalysis"/>
     <addaction name="separator"/>
     <addaction name="menuSaveImage"/>
-    <addaction name="menuSaveWaypoint"/>
+    <addaction name="menuSaveWaypoints"/>
     <addaction name="menuSaveDop"/>
     <addaction name="menuSaveSnrMp"/>
     <addaction name="menuSaveElevationMask"/>
@@ -1145,7 +1055,7 @@
     <addaction name="menuMapImage"/>
     <addaction name="menuSkyImage"/>
     <addaction name="menuMapLayer"/>
-    <addaction name="menuWaypoint"/>
+    <addaction name="menuWaypoints"/>
     <addaction name="separator"/>
     <addaction name="menuSourceSolution"/>
     <addaction name="menuSourceObservation"/>
@@ -1482,10 +1392,6 @@
    </property>
   </action>
   <action name="menuMapImage">
-   <property name="icon">
-    <iconset resource="../icon/resources.qrc">
-     <normaloff>:/buttons/map</normaloff>:/buttons/map</iconset>
-   </property>
    <property name="text">
     <string>&amp;Map Image...</string>
    </property>
@@ -1495,9 +1401,9 @@
     <string>&amp;Sky Image...</string>
    </property>
   </action>
-  <action name="menuWaypoint">
+  <action name="menuWaypoints">
    <property name="text">
-    <string>&amp;Waypoint...</string>
+    <string>&amp;Waypoints...</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+W</string>
@@ -1770,14 +1676,17 @@
     <string>&amp;About...</string>
    </property>
   </action>
-  <action name="menuOpenWaypoint">
+  <action name="menuOpenWaypoints">
    <property name="text">
-    <string>Open &amp;Waypoint...</string>
+    <string>Open &amp;Waypoints...</string>
    </property>
   </action>
-  <action name="menuSaveWaypoint">
+  <action name="menuSaveWaypoints">
    <property name="text">
-    <string>&amp;Save Waypoint...</string>
+    <string>&amp;Save Waypoints...</string>
+   </property>
+   <property name="toolTip">
+    <string>Save Waypoints</string>
    </property>
   </action>
   <action name="menuMapLayer">

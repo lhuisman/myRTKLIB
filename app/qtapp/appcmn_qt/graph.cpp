@@ -124,11 +124,11 @@ void Graph::setRight(const double x_, const double y_)
     yCenter = y_;
 }
 //---------------------------------------------------------------------------
-void Graph::getRight(double &x, double &y)
+void Graph::getRight(double &x_, double &y_)
 {
 //	x=XCent+(double)(Width-1)*XScale*0.5; y=YCent;
-    x = xCenter + (double)(width - 13) * xScale * 0.5;
-    y = yCenter;
+    x_ = xCenter + (double)(width - 13) * xScale * 0.5;
+    y_ = yCenter;
 }
 //---------------------------------------------------------------------------
 void Graph::setScale(const double xs_, const double ys_)
@@ -178,9 +178,22 @@ void Graph::getTick(double &xt, double &yt)
     yt = yTick > 0.0 ? yTick : autoTick(yScale);
 }
 //---------------------------------------------------------------------------
+void Graph::setLabelUnits(const QString & xUnit, const QString & yUnit)
+{
+    xLabelUnit = xUnit;
+    yLabelUnit = yUnit;
+}
+//---------------------------------------------------------------------------
+void Graph::getLabelUnits(QString &xUnit, QString &yUnit)
+{
+    xUnit = xLabelUnit;
+    yUnit = yLabelUnit;
+};
+//---------------------------------------------------------------------------
 double Graph::autoTick(double scale)
 {
-    double t[] = { 1.0, 2.0, 5.0, 10.0 }, tick = 30.0 * scale;
+    static const double t[] = { 1.0, 2.0, 5.0, 10.0 };
+    double tick = 30.0 * scale;
     double order = pow(10.0, floor(log10(tick)));
 
     for (int i = 0; i < 4; i++) {
@@ -192,9 +205,9 @@ double Graph::autoTick(double scale)
 //---------------------------------------------------------------------------
 double Graph::autoTickTime(double scale)
 {
-    const double t[] = { 0.1, 0.2, 0.5, 1.0, 3.0, 6.0, 12.0, 30.0, 60.0, 300.0, 900.0, 1800.0, 3600.0,
-                         7200.0, 10800.0, 21600.0, 43200.0, 86400.0, 86400.0 * 2, 86400.0 * 7, 86400.0 * 14,
-                         86400.0 * 35, 86400.0 * 70 };
+    static const double t[] = { 0.1, 0.2, 0.5, 1.0, 3.0, 6.0, 12.0, 30.0, 60.0, 300.0, 900.0, 1800.0, 3600.0,
+                                7200.0, 10800.0, 21600.0, 43200.0, 86400.0, 86400.0 * 2, 86400.0 * 7, 86400.0 * 14,
+                                86400.0 * 35, 86400.0 * 70 };
     double tick = 60.0 * scale;
 
     for (int i = 0; i < (int)(sizeof(t) / sizeof(*t)); i++) {
@@ -266,14 +279,14 @@ void Graph::drawGridLabel(QPainter &c, double xt, double yt)
                              (xLabelPosition == LabelPosition::OuterRot ? Alignment::Right : Alignment::Left);
                 int va = xLabelPosition >= LabelPosition::OuterRot ? Alignment::Center :
                              (xLabelPosition == LabelPosition::Outer ? Alignment::Right : Alignment::Left);
-                drawText(c, p, numText(i * xt, xt), color[2], ha, va, xLabelPosition >= LabelPosition::OuterRot ? 90 : 0);
+                drawText(c, p, numText(i * xt, xt) + xLabelUnit, color[2], ha, va, xLabelPosition >= LabelPosition::OuterRot ? 90 : 0);
             } else if (xLabelPosition == LabelPosition::Time) {
                 toPoint(i * xt, yl[0], p);
                 drawText(c, p, timeText(i * xt, xt), color[2], Alignment::Center, Alignment::Right, 0);
             } else if (xLabelPosition == LabelPosition::Axis) {
                 if (i == 0) continue;
                 toPoint(i * xt, 0.0, p);
-                drawText(c, p, numText(i * xt, xt), color[2], Alignment::Center, Alignment::Right, 0);
+                drawText(c, p, numText(i * xt, xt) + xLabelUnit, color[2], Alignment::Center, Alignment::Right, 0);
 			}
 		}
 	}
@@ -281,16 +294,17 @@ void Graph::drawGridLabel(QPainter &c, double xt, double yt)
         for (int i = (int)ceil(yl[0] / yt); i * yt <= yl[1]; i++) {
             if (yLabelPosition <= LabelPosition::InnerRot) {
                 toPoint(xl[0], i * yt, p);
+                if (yLabelPosition == LabelPosition::Outer) p.rx() -= 1;
                 int ha = yLabelPosition >= LabelPosition::OuterRot ? Alignment::Center :
                              (yLabelPosition == LabelPosition::Outer ? Alignment::Right : Alignment::Left);
                 int va = yLabelPosition <= LabelPosition::Inner ? Alignment::Center :
                              (yLabelPosition == LabelPosition::OuterRot ? Alignment::Left : Alignment::Right);
-                drawText(c, p, numText(i * yt, yt), color[2], ha, va, yLabelPosition >= LabelPosition::OuterRot ? 90 : 0);
+                drawText(c, p, numText(i * yt, yt) + yLabelUnit, color[2], ha, va, yLabelPosition >= LabelPosition::OuterRot ? 90 : 0);
             } else if (yLabelPosition == LabelPosition::Axis) {
                 if (i == 0) continue;
                 toPoint(0.0, i * yt, p);
                 p.rx() += 2;
-                drawText(c, p, numText(i * yt, yt), color[2], Alignment::Left, Alignment::Center, 0);
+                drawText(c, p, numText(i * yt, yt) + yLabelUnit, color[2], Alignment::Left, Alignment::Center, 0);
 			}
 		}
 	}
@@ -611,7 +625,7 @@ void Graph::drawText(QPainter &c, double x, double y, const QString &str, const 
 //---------------------------------------------------------------------------
 void Graph::drawCircle(QPainter &c, const QPoint &p, const QColor &color, int rx, int ry, int style)
 {
-    Qt::PenStyle ps[] = { Qt::SolidLine, Qt::DotLine, Qt::DashLine, Qt::DashDotLine, Qt::DashDotDotLine };
+    static const Qt::PenStyle ps[] = { Qt::SolidLine, Qt::DotLine, Qt::DashLine, Qt::DashDotLine, Qt::DashDotDotLine };
     int x = p.x() - rx, w = 2 * rx, y = p.y() - ry, h = 2 * ry;
 
     QPen pen = c.pen();
@@ -751,7 +765,7 @@ void Graph::drawPolyline(QPainter &c, QPoint *p, int n)
 //---------------------------------------------------------------------------
 void Graph::drawPoly(QPainter &c, QPoint *p, int n, const QColor &color, int style)
 {
-    Qt::PenStyle ps[] = { Qt::SolidLine, Qt::DotLine, Qt::DashLine, Qt::DashDotLine, Qt::DashDotDotLine };
+    static const Qt::PenStyle ps[] = { Qt::SolidLine, Qt::DotLine, Qt::DashLine, Qt::DashDotLine, Qt::DashDotDotLine };
     QPoint pc[2];
 
     QPen pen = c.pen();
@@ -798,7 +812,7 @@ void Graph::drawPoly(QPainter &c, double *x, double *y, int n, const QColor &col
 void Graph::drawPatch(QPainter &c, QPoint *p, int n, const QColor &color1, const QColor &color2,
               int style)
 {
-    Qt::PenStyle ps[] = {Qt::SolidLine, Qt::DotLine, Qt::DashLine, Qt::DashDotLine, Qt::DashDotDotLine};
+    static const Qt::PenStyle ps[] = {Qt::SolidLine, Qt::DotLine, Qt::DashLine, Qt::DashDotLine, Qt::DashDotDotLine};
     int xmin = 1000000, xmax = 0, ymin = 1000000, ymax = 0;
 
     if (n > 30000) return; // # of points overflow
@@ -818,7 +832,7 @@ void Graph::drawPatch(QPainter &c, QPoint *p, int n, const QColor &color1, const
     c.setPen(pen);
     c.setBrush(color2);
 
-    c.drawPolygon(p, n - 1);
+    c.drawPolygon(p, n);
 
     pen.setStyle(Qt::SolidLine);
     c.setPen(pen);
@@ -900,13 +914,14 @@ void Graph::drawSkyPlot(QPainter &c, const QPoint &p, const QColor &color1, cons
     for (int el = 0; el < 90; el += 15) {
         int ys = r - r * el / 90;
         pen.setStyle(el == 0 ? Qt::SolidLine : Qt::DotLine);
+        c.setPen(pen);
         c.drawEllipse(p.x() - ys, p.y() - ys, 2 * ys, 2 * ys);
         if (el <= 0) continue;
 
         ps.setX(p.x());
         ps.setY(p.y() - ys);
 
-        drawText(c, ps, QString::number(el), color2, bgcolor, Alignment::Left, Alignment::Center, 0);
+        drawText(c, ps, QString::number(el) + "°", color2, bgcolor, Alignment::Left, Alignment::Center, 0);
 	}
     pen.setStyle(Qt::DotLine);
     pen.setColor(color2);
@@ -917,7 +932,7 @@ void Graph::drawSkyPlot(QPainter &c, const QPoint &p, const QColor &color1, cons
         c.drawLine(p.x(), p.y(), ps.x(), ps.y());
         ps.rx() +=  3 * sin(az * D2R);
         ps.ry() += -3 * cos(az * D2R);
-        s = QString::number(az);
+        s = QString::number(az) + "°";
         if (!(az % 90)) s = dir[i++];
         drawText(c, ps, s, color2, bgcolor, Alignment::Center, Alignment::Bottom, -az);
 	}

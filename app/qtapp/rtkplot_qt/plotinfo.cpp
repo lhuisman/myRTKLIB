@@ -128,11 +128,10 @@ void Plot::updateTimeSolution()
             r = norm(data->rr, 3);
             az = norm(data->rr, 2) <= 1E-12 ? 0.0 : atan2(data->rr[0], data->rr[1]) * R2D;
             el = r <= 1E-12 ? 0.0 : asin(data->rr[2] / r) * R2D;
-            msg += QStringLiteral("B = %1 m, D = %2%4, %3%4,  Q = ")
+            msg += QStringLiteral("B = %1 m, D = %2°, %3°,  Q = ")
                        .arg(r, 0, 'f', 3)
                        .arg(az < 0.0 ? az + 360.0 : az, 6, 'f', 2)
-                       .arg(el, 5, 'f', 2)
-                       .arg(degreeChar);
+                       .arg(el, 5, 'f', 2);
         }
         if (1 <= data->stat && data->stat <= 6)
             legend.append(QStringLiteral("%1: %2").arg(data->stat).arg(solutionType[data->stat]));
@@ -278,33 +277,33 @@ void Plot::updatePlotTypeMenu()
     ui->cBPlotTypeSelection->clear();
 
     if (solutionData[0].n > 0 || solutionData[1].n > 0 || (nObservation <= 0 && solutionStat[0].n <= 0 && solutionStat[1].n <= 0)) {
-        ui->cBPlotTypeSelection->addItem(PTypes[PLOT_TRK]);
-        ui->cBPlotTypeSelection->addItem(PTypes[PLOT_SOLP]);
-        ui->cBPlotTypeSelection->addItem(PTypes[PLOT_SOLV]);
-        ui->cBPlotTypeSelection->addItem(PTypes[PLOT_SOLA]);
-        ui->cBPlotTypeSelection->addItem(PTypes[PLOT_NSAT]);
+        ui->cBPlotTypeSelection->addItem(PTypes[PLOT_TRK], PLOT_TRK);
+        ui->cBPlotTypeSelection->addItem(PTypes[PLOT_SOLP], PLOT_SOLP);
+        ui->cBPlotTypeSelection->addItem(PTypes[PLOT_SOLV], PLOT_SOLV);
+        ui->cBPlotTypeSelection->addItem(PTypes[PLOT_SOLA], PLOT_SOLA);
+        ui->cBPlotTypeSelection->addItem(PTypes[PLOT_NSAT], PLOT_NSAT);
     }
 
     if (nObservation > 0) {
-        ui->cBPlotTypeSelection->addItem(PTypes[PLOT_OBS]);
-        ui->cBPlotTypeSelection->addItem(PTypes[PLOT_SKY]);
-        ui->cBPlotTypeSelection->addItem(PTypes[PLOT_DOP]);
+        ui->cBPlotTypeSelection->addItem(PTypes[PLOT_OBS], PLOT_OBS);
+        ui->cBPlotTypeSelection->addItem(PTypes[PLOT_SKY], PLOT_SKY);
+        ui->cBPlotTypeSelection->addItem(PTypes[PLOT_DOP], PLOT_DOP);
     }
 
     if (solutionStat[0].n > 0 || solutionStat[1].n > 0) {
-        ui->cBPlotTypeSelection->addItem(PTypes[PLOT_RES]);
-        ui->cBPlotTypeSelection->addItem(PTypes[PLOT_RESE]);
+        ui->cBPlotTypeSelection->addItem(PTypes[PLOT_RES], PLOT_RES);
+        ui->cBPlotTypeSelection->addItem(PTypes[PLOT_RESE], PLOT_RESE);
     }
 
-    if (nObservation > 0) {
-        ui->cBPlotTypeSelection->addItem(PTypes[PLOT_SNR]);
-        ui->cBPlotTypeSelection->addItem(PTypes[PLOT_SNRE]);
-        ui->cBPlotTypeSelection->addItem(PTypes[PLOT_MPS]);
+    if ((nObservation > 0)  && (!simulatedObservation)) {
+        ui->cBPlotTypeSelection->addItem(PTypes[PLOT_SNR], PLOT_SNR);
+        ui->cBPlotTypeSelection->addItem(PTypes[PLOT_SNRE], PLOT_SNRE);
+        ui->cBPlotTypeSelection->addItem(PTypes[PLOT_MPS], PLOT_MPS);
     }
 
     // select previously selected item again
     for (int i = 0; i < ui->cBPlotTypeSelection->count(); i++) {
-        if (ui->cBPlotTypeSelection->itemText(i) != PTypes[plotType]) continue;
+        if (ui->cBPlotTypeSelection->itemData(i) != plotType) continue;
         ui->cBPlotTypeSelection->setCurrentIndex(i);
         ui->cBPlotTypeSelection->blockSignals(false);
         return;
@@ -426,7 +425,7 @@ void Plot::updatePoint(int x, int y)
             az = r <= 0.0 ? 0.0 : ATAN2(enu[0], enu[1]) * R2D;
             if (az < 0.0) az += 360.0;
 
-            msg = tr("R: %1 m, D: %2%3").arg(r, 0, 'f', 4).arg(az, 5, 'f', 1).arg(degreeChar);
+            msg = tr("R: %1 m, D: %2°").arg(r, 0, 'f', 4).arg(az, 5, 'f', 1);
         } else {
             ecef2pos(originPosition, pos);
             enu2ecef(pos, enu, rr);
@@ -444,12 +443,12 @@ void Plot::updatePoint(int x, int y)
             az = el >= 90.0 ? 0.0 : ATAN2(q[0], q[1]) * R2D;
             if (az < 0.0) az += 360.0;
 
-            msg = tr("Az: %1%3, El: %2%3").arg(az, 5, 'f', 1).arg(el, 4, 'f', 1).arg(degreeChar);
+            msg = tr("Az: %1°, El: %2°").arg(az, 5, 'f', 1).arg(el, 4, 'f', 1);
         }
     } else if (plotType == PLOT_SNRE || plotType==PLOT_RESE) { // snr-el-plot
         graphDual[0]->toPos(p, q[0], q[1]);
 
-        msg = tr("El: %1%2").arg(q[0], 4, 'f', 1).arg(degreeChar);
+        msg = tr("El: %1°").arg(q[0], 4, 'f', 1);
     } else {
         graphTriple[0]->toPos(p, xx, yy);
         time = gpst2time(week, xx);
@@ -464,3 +463,53 @@ void Plot::updatePoint(int x, int y)
     ui->lblMessage2->setText(msg);
 }
 //---------------------------------------------------------------------------
+QString Plot::plotDetails(const QPoint &globalPos) {
+    QPoint pos = ui->lblDisplay->mapFromGlobal(globalPos);
+
+    if (ui->lblDisplay->geometry().contains(pos)) {
+        double xx, yy, xs, ys, xt, yp[MAXSAT] = { 0 };
+        int i, j, sats[MAXSAT] = { 0 }, nSats = 0;
+        QPoint p1, p2;
+        gtime_t time;
+        char id[16];
+
+        switch (plotType) {
+        case PLOT_OBS: // TODO: add other plot types
+            // count used satellites
+            for (i = 0; i < observation.n; i++) {
+                if (!satelliteSelection[observation.data[i].sat - 1]) continue;
+                sats[observation.data[i].sat - 1] = 1;
+            }
+            for (i = 0; i < MAXSAT; i++)
+                if (sats[i]) nSats++;
+
+            for (i = 0, j = 0; i < MAXSAT; i++) {
+                if (!sats[i]) continue;
+                yp[nSats - (++j)] = i;
+            }
+
+            graphSingle->toPos(pos, xx, yy);
+            graphSingle->getExtent(p1, p2);
+            graphSingle->getScale(xs, ys);
+
+            for (i = 0; i < observation.n; i++) {
+                obsd_t *obs = &observation.data[i];
+
+                xt = timePosition(obs->time);
+                if (fabs(xt - xx) / xs > 0.9) {
+                    int sat = static_cast<int>((yy/ys) / (p2.y() - p1.y()) * nSats - 0.5);
+                    satno2id(yp[sat] + 1, id);
+
+                    time = gpst2time(week, xx);
+                    if (plotOptDialog->getTimeFormat() == 2)
+                        time = utc2gpst(time);                         // UTC
+                    else if (plotOptDialog->getTimeFormat() == 3)
+                        time = timeadd(gpst2utc(time), -9 * 3600.0);   // JST
+
+                    return QString("%1: %2").arg(timeString(time, 0, 1)).arg(id);
+                }
+            }
+        };
+    };
+    return QString();
+}

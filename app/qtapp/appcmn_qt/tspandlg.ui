@@ -71,7 +71,7 @@
       <string> s</string>
      </property>
      <property name="maximum">
-      <double>360.000000000000000</double>
+      <double>3600.000000000000000</double>
      </property>
     </widget>
    </item>
