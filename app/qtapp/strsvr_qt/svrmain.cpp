@@ -31,6 +31,7 @@
 #include <QStringList>
 #include <QDir>
 #include <QLocale>
+#include <QTime>
 
 #include "rtklib.h"
 #include "svroptdlg.h"

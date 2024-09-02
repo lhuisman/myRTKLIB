@@ -1741,7 +1741,7 @@ void Plot::wheelEvent(QWheelEvent *event)
 #if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
     p = ui->lblDisplay->mapFromGlobal(event->globalPosition()).toPoint();
 #else
-    p = ui->lblDisplay->mapFromGlobal(event->globalPos()).x().toPoint();
+    p = ui->lblDisplay->mapFromGlobal(event->globalPosition().toPoint());
 #endif
 
     trace(4, "wheelEvent: WheelDelta=%d\n", event->angleDelta().y());
