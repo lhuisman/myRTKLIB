@@ -172,7 +172,9 @@ MainWindow::MainWindow(QWidget *parent)
         { "",		      0, NULL,		       ""      }
     };
 
-    rtksvrinit(&rtksvr);
+    rtksvr = (rtksvr_t *)malloc(sizeof(rtksvr_t));
+    if (rtksvr == NULL) std::exit(1);
+    rtksvrinit(rtksvr);
     strinit(&monistr);
 
     setWindowTitle(tr("%1 ver. %2 %3").arg(PRGNAME).arg(VER_RTKLIB, PATCH_LEVEL));
@@ -187,7 +189,7 @@ MainWindow::MainWindow(QWidget *parent)
     inputStrDialog = new InputStrDialog(this);
     outputStrDialog = new OutputStrDialog(this);
     logStrDialog = new LogStrDialog(this);
-    monitor = new MonitorDialog(this, &rtksvr, &monistr);
+    monitor = new MonitorDialog(this, rtksvr, &monistr);
     markDialog = new MarkDialog(this);
     systemTray = new QSystemTrayIcon(this);
 
@@ -276,7 +278,8 @@ MainWindow::~MainWindow()
     delete [] ages;
     delete [] ratioAR;
 
-    rtksvrfree(&rtksvr);
+    rtksvrfree(rtksvr);
+    free(rtksvr);
 }
 
 // callback on form create --------------------------------------------------
@@ -326,7 +329,7 @@ void MainWindow::showEvent(QShowEvent *event)
     }
 
     loadOptions();
-    loadNavigation(&rtksvr.nav);
+    loadNavigation(&rtksvr->nav);
     openMonitorPort(optDialog->monitorPort);
 
     updatePanels();
@@ -359,7 +362,7 @@ void MainWindow::closeEvent(QCloseEvent *)
         strclose(&monistr);
     }
     saveOptions();
-    saveNavigation(&rtksvr.nav);
+    saveNavigation(&rtksvr->nav);
 }
 // update panel -------------------------------------------------------------
 void MainWindow::updatePanels()
@@ -782,7 +785,7 @@ void MainWindow::showOutputStreamDialog()
     for (i = 3; i < 5; i++) {
         if (!update[i - 3]) continue;
 
-        rtksvrclosestr(&rtksvr, i);
+        rtksvrclosestr(rtksvr, i);
 
         if (!streamEnabled[i]) continue;
 
@@ -796,7 +799,7 @@ void MainWindow::showOutputStreamDialog()
             continue;
         }
         optDialog->solutionOptions.posf = inputFormat[i];
-        rtksvropenstr(&rtksvr, i, str, qPrintable(path), &optDialog->solutionOptions);
+        rtksvropenstr(rtksvr, i, str, qPrintable(path), &optDialog->solutionOptions);
     }
 }
 // callback on button-log-streams -------------------------------------------
@@ -851,7 +854,7 @@ void MainWindow::showLogStreamDialog()
     for (i = 5; i < 8; i++) {
         if (!update[i - 5]) continue;
 
-        rtksvrclosestr(&rtksvr, i);
+        rtksvrclosestr(rtksvr, i);
 
         if (!streamEnabled[i]) continue;
 
@@ -864,7 +867,7 @@ void MainWindow::showLogStreamDialog()
             streamEnabled[i] = 0;
             continue;
         }
-        rtksvropenstr(&rtksvr, i, str, qPrintable(path), &optDialog->solutionOptions);
+        rtksvropenstr(rtksvr, i, str, qPrintable(path), &optDialog->solutionOptions);
     }
 }
 // callback on button-solution-show -----------------------------------------
@@ -1135,7 +1138,7 @@ void MainWindow::serverStart()
         }
         for (i = 0; i < MAXSAT; i++) {
             if (!(pcv = searchpcv(i + 1, "", time, &pcvs))) continue;
-            rtksvr.nav.pcvs[i] = *pcv;
+            rtksvr->nav.pcvs[i] = *pcv;
         }
         free(pcvs.pcv);
     }
@@ -1199,7 +1202,7 @@ void MainWindow::serverStart()
     if (optDialog->solutionOptions.geoid > 0 && strlen(optDialog->fileOptions.geoid) > 0)
         opengeoid(optDialog->solutionOptions.geoid, qPrintable(optDialog->fileOptions.geoid));
     if (strlen(optDialog->fileOptions.dcb) > 0)
-        readdcb(optDialog->fileOptions.dcb, &rtksvr.nav, NULL);
+        readdcb(optDialog->fileOptions.dcb, &rtksvr->nav, NULL);
 
     for (i = 0; i < 2; i++) {
         solopt[i] = optDialog->solutionOptions;
@@ -1211,11 +1214,11 @@ void MainWindow::serverStart()
     stropt[3] = optDialog->serverBufferSize;
     stropt[4] = optDialog->fileSwapMargin;
     strsetopt(stropt);
-    strncpy(rtksvr.cmd_reset, qPrintable(resetCommand), 4095);
-    rtksvr.bl_reset = maxBaseLine;
+    strncpy(rtksvr->cmd_reset, qPrintable(resetCommand), 4095);
+    rtksvr->bl_reset = maxBaseLine;
 
     // start rtk server
-    if (!rtksvrstart(&rtksvr, optDialog->serverCycle, optDialog->serverBufferSize, streamTypes, (const char **)serverPaths, inputFormat, optDialog->navSelect,
+    if (!rtksvrstart(rtksvr, optDialog->serverCycle, optDialog->serverBufferSize, streamTypes, (const char **)serverPaths, inputFormat, optDialog->navSelect,
                       (const char **)cmds, (const char **)cmds_periodic, (const char **)rcvopts, optDialog->nmeaCycle, nmeaRequestType, nmeapos,
                      &optDialog->processingOptions, solopt, &monistr, errmsg)) {
 
@@ -1273,7 +1276,7 @@ void MainWindow::serverStop()
 
     for (i = 0; i < 3; i++) {
         cmds[i] = NULL;
-        streamTypes = rtksvr.stream[i].type;
+        streamTypes = rtksvr->stream[i].type;
 
         if (streamTypes == STR_SERIAL) {
             cmds[i] = new char[1024];
@@ -1285,7 +1288,7 @@ void MainWindow::serverStop()
             if (commandEnableTcp[i][1]) strncpy(cmds[i], qPrintable(commandsTcp[i][1]), 1023);
         }
     }
-    rtksvrstop(&rtksvr, (const char **)cmds);
+    rtksvrstop(rtksvr, (const char **)cmds);
 
     for (i = 0; i < 3; i++) delete[] cmds[i];
 
@@ -1328,17 +1331,17 @@ void MainWindow::updateServer()
 
     timerCycle++;
 
-    rtksvrlock(&rtksvr);
+    rtksvrlock(rtksvr);
 
-    for (i = 0; i < rtksvr.nsol; i++) {
-        sol = rtksvr.solbuf + i;
-        updateLog(sol->stat, sol->time, sol->rr, sol->qr, rtksvr.rtk.rb, sol->ns, sol->age, sol->ratio);
+    for (i = 0; i < rtksvr->nsol; i++) {
+        sol = rtksvr->solbuf + i;
+        updateLog(sol->stat, sol->time, sol->rr, sol->qr, rtksvr->rtk.rb, sol->ns, sol->age, sol->ratio);
         update = 1;
     }
-    rtksvr.nsol = 0;
-    solutionCurrentStatus = rtksvr.state ? rtksvr.rtk.sol.stat : 0;
+    rtksvr->nsol = 0;
+    solutionCurrentStatus = rtksvr->state ? rtksvr->rtk.sol.stat : 0;
 
-    rtksvrunlock(&rtksvr);
+    rtksvrunlock(rtksvr);
 
     if (update) {
         updateTime();
@@ -1354,7 +1357,7 @@ void MainWindow::updateServer()
     } else {
         setWidgetBackgroundColor(ui->lblIndicatorSolution, QColor(Qt::white));
         setWidgetTextColor(ui->lblSolution, QColor(Qt::darkGray));
-        setWidgetBackgroundColor(ui->lblServer, rtksvr.state ? QColor(Qt::darkGreen) : QColor(Qt::darkGray));
+        setWidgetBackgroundColor(ui->lblServer, rtksvr->state ? QColor(Qt::darkGreen) : QColor(Qt::darkGray));
     }
 
     if (!(++timerCycle % 5)) updatePlot();
@@ -1495,15 +1498,15 @@ void MainWindow::updatePosition()
 
     trace(4, "updatePosition\n");
 
-    if (rtksvr.rtk.opt.mode == PMODE_STATIC || rtksvr.rtk.opt.mode == PMODE_PPP_STATIC)
+    if (rtksvr->rtk.opt.mode == PMODE_STATIC || rtksvr->rtk.opt.mode == PMODE_PPP_STATIC)
         ext = " (S)";
-    else if (rtksvr.rtk.opt.mode == PMODE_FIXED || rtksvr.rtk.opt.mode == PMODE_PPP_FIXED)
+    else if (rtksvr->rtk.opt.mode == PMODE_FIXED || rtksvr->rtk.opt.mode == PMODE_PPP_FIXED)
         ext = " (F)";
     ui->lblSolutionText->setText(tr("Solution%1:").arg(ext));
 
     ui->lblSolution->setText(sol[stat]);
-    setWidgetTextColor(ui->lblSolution, rtksvr.state ? color[stat] : QColor(Qt::darkGray));
-    setWidgetBackgroundColor(ui->lblIndicatorSolution, rtksvr.state ? color[stat] : QColor(Qt::white));
+    setWidgetTextColor(ui->lblSolution, rtksvr->state ? color[stat] : QColor(Qt::darkGray));
+    setWidgetBackgroundColor(ui->lblIndicatorSolution, rtksvr->state ? color[stat] : QColor(Qt::white));
     ui->lblIndicatorSolution->setToolTip(sol[stat]);
 
     if (norm(rrover, 3) > 0.0 && norm(rbase, 3) > 0.0)
@@ -1607,7 +1610,7 @@ void MainWindow::updateStream()
 
     trace(4, "updateStream\n");
 
-    rtksvrsstat(&rtksvr, sstat, msg);
+    rtksvrsstat(rtksvr, sstat, msg);
     for (i = 0; i < MAXSTRRTK; i++) {
         setWidgetBackgroundColor(ind[i], color[sstat[i]+1]);
         if (sstat[i]) {
@@ -1655,13 +1658,13 @@ void MainWindow::drawSolutionPlot(QLabel *plot, int type, int freq)
         snr0[i] = snr[0][i];
         snr1[i] = snr[1][i];
     }
-    ns[0] = rtksvrostat(&rtksvr, 0, &time, sat[0], az[0], el[0], snr0, vsat[0]);
-    ns[1] = rtksvrostat(&rtksvr, 1, &time, sat[1], az[1], el[1], snr1, vsat[1]);
+    ns[0] = rtksvrostat(rtksvr, 0, &time, sat[0], az[0], el[0], snr0, vsat[0]);
+    ns[1] = rtksvrostat(rtksvr, 1, &time, sat[1], az[1], el[1], snr1, vsat[1]);
 
-    rtksvrlock(&rtksvr);
-    matcpy(rr, rtksvr.rtk.sol.rr, 3, 1);
+    rtksvrlock(rtksvr);
+    matcpy(rr, rtksvr->rtk.sol.rr, 3, 1);
     ecef2pos(rr, pos);
-    rtksvrunlock(&rtksvr);
+    rtksvrunlock(rtksvr);
 
     for (i = 0; i < 2; i++) {
         if (ns[i] > 0) {
@@ -1934,7 +1937,7 @@ void MainWindow::drawBaseline(QPainter &c, int id, int w, int h)
     trace(4, "drawBaseline: w=%d h=%d\n", w, h);
 
     if (PMODE_DGPS <= optDialog->processingOptions.mode && optDialog->processingOptions.mode <= PMODE_FIXED) {
-        col = (rtksvr.state && solutionStatus[solutionsCurrent] && solutionCurrentStatus) ? colors[solutionStatus[solutionsCurrent]] : Qt::white;
+        col = (rtksvr->state && solutionStatus[solutionsCurrent] && solutionCurrentStatus) ? colors[solutionStatus[solutionsCurrent]] : Qt::white;
 
         if (norm(rrover, 3) > 0.0 && norm(rbase, 3) > 0.0)
             for (i = 0; i < 3; i++)
@@ -2082,10 +2085,10 @@ void MainWindow::drawTrack(QPainter &c, int id, QPaintDevice *plot)
     if (numPoints > 0) {
         graph->toPoint(x[currentPointNo], y[currentPointNo], p1);
         graph->drawMark(c, p1, Graph::MarkerTypes::Dot, Qt::white, 18, 0);
-        graph->drawMark(c, p1, Graph::MarkerTypes::Circle, rtksvr.state ? Qt::black : Qt::darkGray, 16, 0);
-        graph->drawMark(c, p1, Graph::MarkerTypes::Plus, rtksvr.state ? Qt::black : Qt::darkGray, 20, 0);
-        graph->drawMark(c, p1, Graph::MarkerTypes::Dot, rtksvr.state ? Qt::black : Qt::darkGray, 12, 0);
-        graph->drawMark(c, p1, Graph::MarkerTypes::Dot, rtksvr.state ? color[currentPointNo] : Qt::white, 10, 0);
+        graph->drawMark(c, p1, Graph::MarkerTypes::Circle, rtksvr->state ? Qt::black : Qt::darkGray, 16, 0);
+        graph->drawMark(c, p1, Graph::MarkerTypes::Plus, rtksvr->state ? Qt::black : Qt::darkGray, 20, 0);
+        graph->drawMark(c, p1, Graph::MarkerTypes::Dot, rtksvr->state ? Qt::black : Qt::darkGray, 12, 0);
+        graph->drawMark(c, p1, Graph::MarkerTypes::Dot, rtksvr->state ? color[currentPointNo] : Qt::white, 10, 0);
     }
 
     // draw scale
@@ -2646,19 +2649,19 @@ void MainWindow::saveOptions()
 //---------------------------------------------------------------------------
 void MainWindow::btnMarkClicked()
 {
-    markDialog->setPositionMode(rtksvr.rtk.opt.mode);
+    markDialog->setPositionMode(rtksvr->rtk.opt.mode);
     markDialog->setName(markerName);
     markDialog->setComment(markerComment);
     markDialog->setStationPositionFile(optDialog->fileOptions.stapos);
 
     if (markDialog->exec() != QDialog::Accepted) return;
 
-    rtksvr.rtk.opt.mode = markDialog->getPositionMode();
+    rtksvr->rtk.opt.mode = markDialog->getPositionMode();
     markerName = markDialog->getName();
     markerComment = markDialog->getComment();
 
     if (!markerName.isEmpty())
-        rtksvrmark(&rtksvr, qPrintable(markerName), qPrintable(markerComment));
+        rtksvrmark(rtksvr, qPrintable(markerName), qPrintable(markerComment));
     
     updatePosition();
 }

@@ -84,7 +84,7 @@ protected:
     void showEvent(QShowEvent*);
     void closeEvent(QCloseEvent *);
 
-    rtksvr_t rtksvr;                        // rtk server struct
+    rtksvr_t *rtksvr;                       // rtk server struct
     stream_t monistr;                       // monitor stream
 
 private:
