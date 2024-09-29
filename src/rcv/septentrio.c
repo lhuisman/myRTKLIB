@@ -377,6 +377,11 @@ static double   R8(const uint8_t *p) {double   r; memcpy(&r, p, 8); return r;}
 static int32_t  I4(const uint8_t *p) {int32_t  u; memcpy(&u, p, 4); return u;}
 static int16_t  I2(const uint8_t *p) {int16_t  i; memcpy(&i, p, 2); return i;}
 
+static void STR(const uint8_t *p, size_t size, char *string) {
+  memcpy(string, p, size);
+  string[size] = '\0';
+}
+
 /* checksum lookup table -----------------------------------------------------*/
 static const unsigned short CRC_16CCIT_LookUp[256] = {
   0x0000, 0x1021, 0x2042, 0x3063, 0x4084, 0x50a5, 0x60c6, 0x70e7,
@@ -3667,6 +3672,111 @@ static int decode_extevent(raw_t *raw)
     return 0;
 }
 
+static int decode_rxsetup(raw_t *raw)
+{
+    if (raw->len < 264) {
+        trace(1, "SBF decode_rxsetup: Block too short len=%d\n", raw->len);
+        return -1;
+    }
+
+    if (raw->outtype) {
+        sprintf(raw->msgtype, "SBF RX Setup");
+    }
+    char marker_name[61];
+    STR(raw->buff + 16, 60, marker_name);
+    strcpy(raw->sta.name, marker_name);
+    char markerno[21];
+    STR(raw->buff + 76, 20, markerno);
+    strcpy(raw->sta.marker, markerno); // TODO markerno
+    trace(2, "decode_rxsetup: marker_name='%s' markerno='%s'\n", marker_name, markerno);
+
+    char observer[21];
+    STR(raw->buff + 96, 20, observer);
+    // strcpy(raw->sta.observer, observer); // TODO
+    char agency[41];
+    STR(raw->buff + 116, 40, agency);
+    //strcpy(raw->sta.agency, agency); // TODO
+    trace(2, "decode_rxsetup: observer='%s' agency='%s'\n", observer, agency);
+
+    char rx_serial_num[21];
+    STR(raw->buff + 156, 20, rx_serial_num);
+    strcpy(raw->sta.recsno, rx_serial_num);
+    char rx_name[21];
+    STR(raw->buff + 176, 20, rx_name);
+    // Is this the appropriate mapping?
+    strcpy(raw->sta.rectype, rx_name);
+    char rx_version[21];
+    STR(raw->buff + 196, 20, rx_version);
+    strcpy(raw->sta.recver, rx_version);
+    trace(2, "decode_rxsetup: rx_serial_no='%s' rx_name='%s' rx_version='%s'\n", rx_serial_num, rx_name, rx_version);
+
+    char ant_serial_num[21];
+    STR(raw->buff + 216, 20, ant_serial_num);
+    strcpy(raw->sta.antsno, ant_serial_num);
+    char ant_type[21];
+    STR(raw->buff + 236, 20, ant_type);
+    // Is this the appropriate mapping?
+    strcpy(raw->sta.antdes, ant_type);
+    trace(2, "decode_rxsetup: ant_serial_num='%s' ant_type='%s'\n", ant_serial_num, ant_type);
+
+    double deltah = R4(raw->buff + 256);
+    double deltae = R4(raw->buff + 260);
+    double deltan = R4(raw->buff + 264);
+    trace(2, "decode_rxsetup: delta h=%lf e=%lf n=%lf\n", deltah, deltae, deltan);
+    raw->sta.del[2] = deltah;
+    raw->sta.del[0] = deltae;
+    raw->sta.del[1] = deltan;
+    raw->sta.deltype = 0; // enu
+
+    if (raw->len > 288) {
+        // Rev 1
+        char marker_type[21];
+        STR(raw->buff + 268, 20, marker_type);
+        //strcpy(raw->sta.markertype, marker_type); // TODO
+        trace(2, "decode_rxsetup: marker type '%s'\n", marker_type);
+    }
+    if (raw->len > 328) {
+        // Rev 2.
+        char gnss_firmware_ver[41];
+        STR(raw->buff + 288, 40, gnss_firmware_ver);
+        trace(2, "decode_rxsetup: gnss_firmware_ver='%s'\n", gnss_firmware_ver);
+        // TODO user this?
+    }
+    if (raw->len > 368) {
+        // Rev 3.
+        char product_name[41];
+        STR(raw->buff + 328, 40, product_name);
+        trace(2, "decode_rxsetup: product='%s'\n", product_name);
+        // TODO user this?
+    }
+    if (raw->len > 402) {
+        // Rev 4
+        double pos[3];
+        pos[0] = R8(raw->buff + 368);  // Lat
+        pos[1] = R8(raw->buff + 376);  // Lon
+        pos[2] = R4(raw->buff + 384);  // Height
+        if (pos[0] != -2e10 && pos[1] != -2e10 && pos[2] != -2e10) {
+            pos2ecef(pos, raw->sta.pos);
+            trace(2, "decode_rxsetup: lat=%lf lon=%lf height=%lf\n", pos[0]*R2D, pos[1]*R2D, pos[2]);
+        }
+
+        char station_code[11];
+        STR(raw->buff + 388, 10, station_code);
+        trace(2, "decode_rxsetup: station_code='%s'\n", station_code);
+        // TODO use the station code?
+
+        uint8_t monument_idx = U1(raw->buff + 398);
+        uint8_t receiver_idx = U1(raw->buff + 399);
+        trace(2, "decode_rxsetup: monument_idx=%u receiver_idx=%u\n", monument_idx, receiver_idx);
+        // TODO use these idx's?
+
+        char country_code[4];
+        STR(raw->buff + 400, 3, country_code);
+        trace(2, "decode_rxsetup: country_code='%s'\n", country_code);
+    }
+  
+    return 5;
+}
 
 /* decode SBF raw message --------------------------------------------------*/
 static int decode_sbf(raw_t *raw)
@@ -3696,11 +3806,15 @@ static int decode_sbf(raw_t *raw)
     }
     uint32_t tow = U4(raw->buff+8);
     uint16_t week = U2(raw->buff+12);
-    if (tow == 4294967295u || week == 65535u) {
+    if (tow != 4294967295u && week != 65535u) {
+        raw->time = gpst2time(week, tow*0.001);
+    } else {
         trace(2, "sbf tow/week error: type=%d len=%d\n", type, raw->len);
-        return -1;
+        // Don't want to miss some blocks, that don't need the time.
+        if (type != ID_RXSETUP) {
+            return -1;
+        }
     }
-    raw->time = gpst2time(week, tow*0.001);
 
     if (raw->outtype) {
         time2str(raw->time, tstr, 2);
@@ -3965,8 +4079,10 @@ static int decode_sbf(raw_t *raw)
         case ID_COSMOSTATUS:
         case ID_GALAUTHSTATUS:
         case ID_FUGROAUTHSTATUS:
+            return 0;
             /* Miscellaneous Blocks */
         case ID_RXSETUP:
+            return decode_rxsetup(raw);
         case ID_RXMESSAGE:
         case ID_COMMANDS:
         case ID_COMMENT:
