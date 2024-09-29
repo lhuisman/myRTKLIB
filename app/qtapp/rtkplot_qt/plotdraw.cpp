@@ -44,7 +44,6 @@ void Plot::updateDisplay()
 
     if (flush) {
         QGuiApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-        QApplication::processEvents();
         if (buffer.size() != ui->lblDisplay->size())
             buffer = QPixmap(ui->lblDisplay->size());
 
@@ -1621,7 +1620,7 @@ void Plot::drawDop(QPainter &c, int level)
     else if (doptype == 1)  // NSAT
         label = tr("# of Satellites (El>=%1°)").arg(plotOptDialog->getElevationMask(), 0, 'f', 0);
     else
-        label = tr("DOP (El>=%1°)").arg(plotOptDialog->getElevationMask(), 0, 'f', 0);
+        label = tr("DOP x 10 (El>=%1°)").arg(plotOptDialog->getElevationMask(), 0, 'f', 0);
     graphSingle->drawText(c, p1, label, plotOptDialog->getCColor(2), Graph::Alignment::Center, Graph::Alignment::Center, 90);
 
     if (!ui->btnSolution1->isChecked()) return;
@@ -1663,6 +1662,7 @@ void Plot::drawDop(QPainter &c, int level)
         }
     }
 
+    // draw number of satellites
     if (doptype == 0 || doptype == 1) {  // ALL or NSAT
         for (i = 0; i < n; i++) y[i] = ns[i];
 
@@ -1794,6 +1794,9 @@ void Plot::drawSnr(QPainter &c, int level)
     int idx;
 
     trace(3, "drawSnr: level=%d\n", level);
+
+    if (!multipath[0])
+        updateMp();
 
     if (0 <= observationIndex && observationIndex < nObservation && ui->btnShowTrack->isChecked())
         time_selected = observation.data[indexObservation[observationIndex]].time;
@@ -1986,6 +1989,9 @@ void Plot::drawSnrE(QPainter &c, int level)
 
     trace(3, "drawSnrE: level=%d\n", level);
 
+    if (!multipath[0])
+        updateMp();
+
     int bottomPanel = 0;
     for (int panel = 0; panel < 2; panel++)
         if (btn[panel]->isChecked()) bottomPanel = panel;
@@ -2170,6 +2176,9 @@ void Plot::drawMpSky(QPainter &c, int level)
     double radius, xl[2], yl[2], xs, ys;
 
     trace(3, "drawMpSky: level=%d\n", level);
+
+    if (!multipath[0])
+        updateMp();
 
     graphSky->getLimits(xl, yl);
     radius = qMin(xl[1] - xl[0], yl[1] - yl[0]) * 0.45;
