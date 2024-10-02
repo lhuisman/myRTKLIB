@@ -183,7 +183,7 @@ static int decode_bnx_00(raw_t *raw, uint8_t *buff, int len)
                 msg+=sprintf(msg," [%02x]%s",fid,str);
             }
             if      (fid==0x08) strcpy(raw->sta.name   ,str);
-            else if (fid==0x09) strcpy(raw->sta.marker ,str);
+            else if (fid==0x09) strcpy(raw->sta.markerno, str);
             else if (fid==0x17) strcpy(raw->sta.antdes ,str);
             else if (fid==0x18) strcpy(raw->sta.antsno ,str);
             else if (fid==0x19) strcpy(raw->sta.rectype,str);

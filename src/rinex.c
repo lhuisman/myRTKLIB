@@ -253,7 +253,10 @@ static void init_sta(sta_t *sta)
 {
     int i;
     *sta->name   ='\0';
-    *sta->marker ='\0';
+    *sta->markerno ='\0';
+    *sta->markertype ='\0';
+    *sta->observer = '\0';
+    *sta->agency = '\0';
     *sta->antdes ='\0';
     *sta->antsno ='\0';
     *sta->rectype='\0';
@@ -380,10 +383,17 @@ static void decode_obsh(FILE *fp, char *buff, double ver, int *tsys,
         if (sta) setstr(sta->name,buff,60);
     }
     else if (strstr(label,"MARKER NUMBER"       )) { /* opt */
-        if (sta) setstr(sta->marker,buff,20);
+        if (sta) setstr(sta->markerno,buff,20);
     }
-    else if (strstr(label,"MARKER TYPE"         )) ; /* ver.3 */
-    else if (strstr(label,"OBSERVER / AGENCY"   )) ;
+    else if (strstr(label,"MARKER TYPE"         )) { /* ver.3 */
+        if (sta) setstr(sta->markertype,buff,20);
+    }
+    else if (strstr(label,"OBSERVER / AGENCY"   )) {
+        if (sta) {
+            setstr(sta->observer, buff, 20);
+            setstr(sta->agency, buff+20, 40);
+        }
+    }
     else if (strstr(label,"REC # / TYPE / VERS" )) {
         if (sta) {
             setstr(sta->recsno, buff,   20);

@@ -3687,15 +3687,15 @@ static int decode_rxsetup(raw_t *raw)
     strcpy(raw->sta.name, marker_name);
     char markerno[21];
     STR(raw->buff + 76, 20, markerno);
-    strcpy(raw->sta.marker, markerno); // TODO markerno
+    strcpy(raw->sta.markerno, markerno);
     trace(2, "decode_rxsetup: marker_name='%s' markerno='%s'\n", marker_name, markerno);
 
     char observer[21];
     STR(raw->buff + 96, 20, observer);
-    // strcpy(raw->sta.observer, observer); // TODO
+    strcpy(raw->sta.observer, observer);
     char agency[41];
     STR(raw->buff + 116, 40, agency);
-    //strcpy(raw->sta.agency, agency); // TODO
+    strcpy(raw->sta.agency, agency);
     trace(2, "decode_rxsetup: observer='%s' agency='%s'\n", observer, agency);
 
     char rx_serial_num[21];
@@ -3732,7 +3732,7 @@ static int decode_rxsetup(raw_t *raw)
         // Rev 1
         char marker_type[21];
         STR(raw->buff + 268, 20, marker_type);
-        //strcpy(raw->sta.markertype, marker_type); // TODO
+        strcpy(raw->sta.markertype, marker_type);
         trace(2, "decode_rxsetup: marker type '%s'\n", marker_type);
     }
     if (raw->len > 328) {

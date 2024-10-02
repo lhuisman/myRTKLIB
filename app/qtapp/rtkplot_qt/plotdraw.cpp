@@ -1463,7 +1463,7 @@ void Plot::drawSky(QPainter &c, int level)
 
     // show station data
     if (plotOptDialog->getShowStats() && !simulatedObservation) {
-        s = tr("MARKER: %1 %2").arg(station.name, station.marker);
+        s = tr("MARKER: %1 %2 %3").arg(station.name, station.markerno, station.markertype);
         drawLabel(graphSky, c, p1, s, Graph::Alignment::Left, Graph::Alignment::Top); p1.ry() += hh;
         s = tr("REC: %1 %2 %3").arg(station.rectype, station.recver, station.recsno);
         drawLabel(graphSky, c, p1, s, Graph::Alignment::Left, Graph::Alignment::Top); p1.ry() += hh;
@@ -2147,7 +2147,7 @@ void Plot::drawSnrE(QPainter &c, int level)
             graphDual[topPanel]->getExtent(p1, p2);
             p1.rx() += 8;
             p1.ry() += 6;
-            s = tr("MARKER: %1 %2").arg(station.name, station.marker);
+            s = tr("MARKER: %1 %2 %3").arg(station.name, station.markerno, station.markertype);
             drawLabel(graphDual[topPanel], c, p1, s, Graph::Alignment::Left, Graph::Alignment::Top); p1.ry() += hh;
             s = tr("REC: %1 %2 %3").arg(station.rectype, station.recver, station.recsno);
             drawLabel(graphDual[topPanel], c, p1, s, Graph::Alignment::Left, Graph::Alignment::Top); p1.ry() += hh;
