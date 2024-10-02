@@ -2000,7 +2000,7 @@ extern int input_rnxctr(rnxctr_t *rnx, FILE *fp)
     }
     else { /* other ephemeris */
         sys=satsys(eph.sat,&prn);
-        set=(sys==SYS_GAL&&(eph.code&(1<<9)))?1:0; /* GAL 0:I/NAV,1:F/NAV */
+        set=(sys==SYS_GAL&&(eph.code&((1<<8)|(1<<1))))?1:0; /* GAL 0:I/NAV,1:F/NAV */
         rnx->nav.eph[eph.sat-1+MAXSAT*set]=eph;
         rnx->time=eph.ttr;
         rnx->ephsat=eph.sat;
