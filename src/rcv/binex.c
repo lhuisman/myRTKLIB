@@ -528,7 +528,7 @@ static int decode_bnx_01_05(raw_t *raw, uint8_t *buff, int len)
     }
     if (!(sat=satno(SYS_CMP,prn))) {
         trace(2,"BINEX 0x01-05: satellite error prn=%d\n",prn);
-        return 0;
+        return -1;
     }
     eph.sat=sat;
     eph.A=SQR(sqrtA);
@@ -599,7 +599,7 @@ static int decode_bnx_01_06(raw_t *raw, uint8_t *buff, int len)
     }
     if (!(sat=satno(SYS_QZS,prn))) {
         trace(2,"BINEX 0x01-06: satellite error prn=%d\n",prn);
-        return 0;
+        return -1;
     }
     eph.sat=sat;
     eph.A=SQR(sqrtA);
@@ -662,7 +662,7 @@ static int decode_bnx_01_07(raw_t *raw, uint8_t *buff, int len)
     }
     if (!(sat=satno(SYS_IRN,prn))) {
         trace(2,"BINEX 0x01-07: satellite error prn=%d\n",prn);
-        return 0;
+        return -1;
     }
     eph.sat=sat;
     eph.A=SQR(sqrtA);
