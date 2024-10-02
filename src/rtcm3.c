@@ -767,7 +767,7 @@ static int decode_type1019(rtcm_t *rtcm)
         eph.tgd[0]=getbits(rtcm->buff,i, 8)*P2_31;        i+= 8;
         eph.svh   =getbitu(rtcm->buff,i, 6);              i+= 6;
         eph.flag  =getbitu(rtcm->buff,i, 1);              i+= 1;
-        eph.fit   =getbitu(rtcm->buff,i, 1)?0.0:4.0; /* 0:4hr,1:>4hr */
+        eph.fit   =getbitu(rtcm->buff,i, 1)?6:4; /* 0:4hr,1:>4hr */
     }
     else {
         trace(2,"rtcm3 1019 length error: len=%d\n",rtcm->len);
@@ -1160,7 +1160,7 @@ static int decode_type1044(rtcm_t *rtcm)
         eph.svh   =getbitu(rtcm->buff,i, 6);              i+= 6;
         eph.tgd[0]=getbits(rtcm->buff,i, 8)*P2_31;        i+= 8;
         eph.iodc  =getbitu(rtcm->buff,i,10);              i+=10;
-        eph.fit   =getbitu(rtcm->buff,i, 1)?0.0:2.0; /* 0:2hr,1:>2hr */
+        eph.fit   =getbitu(rtcm->buff,i, 1)?4:2; /* 0:2hr,1:>2hr */
     }
     else {
         trace(2,"rtcm3 1044 length error: len=%d\n",rtcm->len);
