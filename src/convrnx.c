@@ -990,6 +990,12 @@ static int screent_ttol(gtime_t time, gtime_t ts, gtime_t te, double tint,
            (ts.time==0||timediff(time,ts)>=-ttol)&&
            (te.time==0||timediff(time,te)<  ttol);
 }
+/* Order observation data by the RTKLib satellite index */
+static int cmpobs(const void *p1, const void *p2)
+{
+    obsd_t *obs1 = (obsd_t *)p1, *obs2 = (obsd_t *)p2;
+    return obs1->sat > obs2->sat;
+}
 /* convert observation data --------------------------------------------------*/
 static void convobs(FILE **ofp, rnxopt_t *opt, strfile_t *str, int *n,
                     gtime_t *tend, int *staid)
@@ -1032,6 +1038,10 @@ static void convobs(FILE **ofp, rnxopt_t *opt, strfile_t *str, int *n,
     /* resolve half-cycle ambiguity */
     if (opt->halfcyc) {
         resolve_halfc(str,str->obs->data,str->obs->n);
+    }
+    /* Sort observation data by the RTKLib satellite index */
+    if (opt->sortsats) {
+        qsort(str->obs->data, str->obs->n, sizeof(obsd_t), cmpobs);
     }
     /* output RINEX observation data */
     outrnxobsb(ofp[0],opt,str->obs->data,str->obs->n,str->obs->flag);
