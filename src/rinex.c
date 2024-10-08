@@ -1219,8 +1219,8 @@ static int decode_eph(double ver, int sat, gtime_t toc, const double *data,
         if (sys==SYS_GPS) {
             eph->fit=data[28];        /* fit interval (h) */
         }
-        else {
-            eph->fit=data[28]==0.0?1.0:2.0; /* fit interval (0:1h,1:>2h) */
+        else if (sys==SYS_QZS) {
+            eph->fit=data[28]==0.0?2:4; /* fit interval (0:2h,1:>2h) */
         }
     }
     else if (sys==SYS_GAL) { /* GAL ver.3 */
@@ -2753,7 +2753,7 @@ extern int outrnxnavb(FILE *fp, const rnxopt_t *opt, const eph_t *eph)
         outnavf(fp,eph->fit);
     }
     else if (sys==SYS_QZS) {
-        outnavf(fp,eph->fit>2.0?1.0:0.0);
+        outnavf(fp,eph->fit>2?1.0:0.0);
     }
     else if (sys==SYS_CMP) {
         outnavf(fp,eph->iodc); /* AODC */

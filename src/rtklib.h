@@ -1647,7 +1647,7 @@ EXPORT uint32_t rtk_crc32 (const uint8_t *buff, int len);
 EXPORT uint32_t rtk_crc24q(const uint8_t *buff, int len);
 EXPORT uint16_t rtk_crc16 (const uint8_t *buff, int len);
 EXPORT int decode_word (uint32_t word, uint8_t *data);
-EXPORT int decode_frame(const uint8_t *buff, eph_t *eph, alm_t *alm,
+EXPORT int decode_frame(const uint8_t *buff, int sys, eph_t *eph, alm_t *alm,
                         double *ion, double *utc);
 EXPORT int test_glostr(const uint8_t *buff);
 EXPORT int decode_glostr(const uint8_t *buff, geph_t *geph, double *utc);

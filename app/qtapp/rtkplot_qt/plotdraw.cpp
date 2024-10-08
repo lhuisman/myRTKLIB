@@ -2335,7 +2335,6 @@ void Plot::drawResidual(QPainter &c, int level)
                 int q;
 
                 if (solstat->sat != sat || solstat->frq != frq) continue;
-                if (solstat->resp == 0.0 && solstat->resc == 0.0) continue;
 
                 x[0][m[0]] = x[1][m[1]] = x[2][m[2]] = x[3][m[3]] = timePosition(solstat->time);
                 y[0][m[0]] = solstat->resp;

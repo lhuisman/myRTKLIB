@@ -1546,7 +1546,7 @@ static int decode_gpsionutc(raw_t *raw, int sat)
 {
     double ion[8], utc[8];
 
-    if (!decode_frame(raw->subfrm[sat-1], NULL, NULL, ion, utc)) return 0;
+    if (!decode_frame(raw->subfrm[sat-1], SYS_GPS, NULL, NULL, ion, utc)) return 0;
 
     adj_utcweek(raw->time, &utc[3]);
     adj_utcweek(raw->time, &utc[5]);
@@ -1623,7 +1623,7 @@ static int decode_gpsrawcanav(raw_t *raw, int sys){
 
     if (id == 3) {
         eph_t eph = {0};
-        if (!decode_frame(raw->subfrm[sat-1], &eph, NULL, NULL, NULL))
+        if (!decode_frame(raw->subfrm[sat-1], sys, &eph, NULL, NULL, NULL))
             return 0;
 
         if (!strstr(raw->opt, "-EPHALL")) {
@@ -2231,7 +2231,7 @@ static int decode_gpsnav(raw_t *raw)
     if (eph.iode != iode3)
         trace(2, "SBF decode_gpsnav: mismatch of IODE in subframe 2 and 3: iode2=%d iode3=%d\n",
               eph.iode, iode3);
-    eph.fit = U1(raw->buff + 26) ? 0 : 4;
+    eph.fit = U1(raw->buff + 26) ? 6 : 4;
     /* byte 27: reserved */
     eph.tgd[0] = R4(raw->buff + 28);
     uint32_t tocs = U4(raw->buff + 32);
@@ -3111,7 +3111,7 @@ static int decode_qzssnav(raw_t *raw){
     eph.iodc = U2(raw->buff + 22);
     eph.iode = U1(raw->buff + 24);
     /* byte 25: IODE from frame 3 */
-    eph.fit = U1(raw->buff + 26);
+    eph.fit = U1(raw->buff + 26) ? 4 : 2;
     /* byte 27: reserved */
     if (R4(raw->buff + 28) != -2.e10) eph.tgd[0] = R4(raw->buff + 28);
     double toc = U4(raw->buff + 32);
