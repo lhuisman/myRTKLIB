@@ -110,6 +110,7 @@ static const char *help[]={
 "                  binex= BINEX",
 "                  rt17 = Trimble RT17",
 "                  sbf  = Septentrio SBF",
+"                  unicore = Unicore binary data output",
 "                  rinex= RINEX",
 "     -ro opt      receiver options",
 "     -f freq      number of frequencies [5]",
@@ -167,6 +168,7 @@ static const char *help[]={
 "     *.bnx,*binex  BINEX",
 "     *.rt17        Trimble RT17",
 "     *.sbf         Septentrio SBF",
+"     *.unc         Unicore binary data output",
 "     *.obs,*.*o    RINEX OBS",
 "     *.rnx         RINEX OBS"
 "     *.nav,*.*n    RINEX NAV",
