@@ -134,6 +134,7 @@ static const char *help[]={
 "     -nomask [sig[,...]] signal no mask (same as above)",
 "     -x sat       exclude satellite",
 "     -y sys       exclude systems (G:GPS,R:GLO,E:GAL,J:QZS,S:SBS,C:BDS,I:IRN)",
+"     --glofcn [-7 to 6][,...]] GLONASS fcn for R01 to R32",
 "     -d dir       output directory [same as input file]",
 "     -c staid     use RINEX file name convention with staid [off]",
 "     -o ofile     output RINEX OBS file",
@@ -338,6 +339,40 @@ static void setmask(const char *argv, rnxopt_t *opt, int mask)
         }
     }
 }
+// Set GLONASS fcn -----------------------------------------------------------
+static void setglofcn(const char *argv, rnxopt_t *opt) {
+  char buff[1024];
+  strncpy(buff, argv, sizeof(buff));
+  buff[1023] = '\0';
+  char *p = buff;
+  for (int i = 0; i < 32; i++) {
+    if (p == NULL) break;
+    char *fcnstr = p;
+    for (;;) {
+      int c = *p++;
+      if (c == ',') {
+        p[-1] = '\0';
+        break;
+      }
+      if (c == '\0') {
+        p = NULL;
+        break;
+      }
+    }
+    if (strlen(fcnstr) < 1) continue;
+    int fcn;
+    int r = sscanf(fcnstr, "%d", &fcn);
+    if (r != 1) {
+      fprintf(stderr, "GLONASS R%02d fcn invalid '%s'\n", i + 1, fcnstr);
+      continue;
+    }
+    if (fcn < -7 || fcn > 6) {
+      fprintf(stderr, "GLONASS R%02d fcn %d out of range [-7 to 6]\n", i + 1, fcn);
+      continue;
+    }
+    opt->glofcn[i] = fcn + 8;
+  }
+}
 /* get start time of input file -----------------------------------------------*/
 static int get_filetime(const char *file, gtime_t *time)
 {
@@ -527,6 +562,9 @@ static int cmdopts(int argc, char **argv, rnxopt_t *opt, char **ifile,
             else if (!strcmp(sys,"S")) opt->navsys&=~SYS_SBS;
             else if (!strcmp(sys,"C")) opt->navsys&=~SYS_CMP;
             else if (!strcmp(sys,"I")) opt->navsys&=~SYS_IRN;
+        }
+        else if (!strcmp(argv[i], "--glofcn") && i + 1 < argc) {
+            setglofcn(argv[++i], opt);
         }
         else if (!strcmp(argv[i],"-d" )&&i+1<argc) {
             *dir=argv[++i];
