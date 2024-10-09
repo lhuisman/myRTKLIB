@@ -112,7 +112,7 @@ static const char *help[]={
 "                  sbf  = Septentrio SBF",
 "                  rinex= RINEX",
 "     -ro opt      receiver options",
-"     -f freq      number of frequencies [5]",
+"     -f freq      number of frequencies [all]",
 "     -hc comment  rinex header: comment line",
 "     -hm marker   rinex header: marker name",
 "     -hn markno   rinex header: marker number",
@@ -384,7 +384,7 @@ static int cmdopts(int argc, char **argv, rnxopt_t *opt, char **ifile,
 {
     double eps[]={1980,1,1,0,0,0},epe[]={2037,12,31,0,0,0};
     double epr[]={2010,1,1,0,0,0},span=0.0;
-    int i,j,k,sat,nf=5,format=-1;
+    int i,j,k,sat,nf=6,format=-1;
     char *p,*sys,*fmt="",*paths[1],path[1024],buff[256];
     
     opt->rnxver=304;
@@ -562,6 +562,7 @@ static int cmdopts(int argc, char **argv, rnxopt_t *opt, char **ifile,
     if (nf>=3) opt->freqtype|=FREQTYPE_L3;
     if (nf>=4) opt->freqtype|=FREQTYPE_L4;
     if (nf>=5) opt->freqtype|=FREQTYPE_L5;
+    if (nf>=6) opt->freqtype|=FREQTYPE_ALL;
     
     if (!opt->trtcm.time) {
         get_filetime(*ifile,&opt->trtcm);
