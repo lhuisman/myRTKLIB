@@ -264,7 +264,7 @@ static char *obscodes[]={       /* observation code strings */
     "2I","2Q","6I","6Q","3I", "3Q","3X","1I","1Q","5A", /* 40-49 */
     "5B","5C","9A","9B","9C", "9X","1D","5D","5P","5Z", /* 50-59 */
     "6E","7D","7P","7Z","8D", "8P","4A","4B","4X","6D", /* 60-69 */
-    "6P"
+    "6P",""
 };
 static char codepris[7][MAXFREQ][16]={  /* code priority for each freq-index */
     /* L1/E1/B1 L2/E5b/B2b L5/E5a/B2a E6/LEX/B3 E5(a+b)         */
