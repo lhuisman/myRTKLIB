@@ -317,8 +317,8 @@ static int decode_gpsephb(raw_t* raw)
     eph.ttr = raw->time;
 
     if (!strstr(raw->opt, "-EPHALL")) {
-        if (timediff(raw->nav.eph[sat - 1].toe, eph.toe) == 0.0 &&
-            timediff(raw->nav.eph[sat - 1].toc, eph.toc) == 0.0) return 0;
+        if (fabs(timediff(raw->nav.eph[sat - 1].toe, eph.toe)) < 1e-9 &&
+            fabs(timediff(raw->nav.eph[sat - 1].toc, eph.toc)) < 1e-9) return 0;
     }
 
     raw->nav.eph[sat - 1] = eph;
@@ -476,8 +476,8 @@ static int decode_galephb(raw_t* raw) {
 
     if (!strstr(raw->opt, "-EPHALL")) {
         if (eph.iode == raw->nav.eph[sat - 1 + MAXSAT * set].iode &&
-            timediff(eph.toe, raw->nav.eph[sat - 1 + MAXSAT * set].toe) == 0.0 &&
-            timediff(eph.toc, raw->nav.eph[sat - 1 + MAXSAT * set].toc) == 0.0) {
+            fabs(timediff(eph.toe, raw->nav.eph[sat - 1 + MAXSAT * set].toe)) < 1e-9 &&
+            fabs(timediff(eph.toc, raw->nav.eph[sat - 1 + MAXSAT * set].toc)) < 1e-9) {
             return 0; /* unchanged */
         }
     }
@@ -551,8 +551,8 @@ static int decode_bdsephb(raw_t* raw)
     eph.ttr = raw->time;
 
     if (!strstr(raw->opt, "-EPHALL")) {
-        if (timediff(raw->nav.eph[sat - 1].toe, eph.toe) == 0.0 &&
-            timediff(raw->nav.eph[sat - 1].toc, eph.toc) == 0.0) return 0;
+        if (fabs(timediff(raw->nav.eph[sat - 1].toe, eph.toe)) < 1e-9 &&
+            fabs(timediff(raw->nav.eph[sat - 1].toc, eph.toc)) < 1e-9) return 0;
     }
     raw->nav.eph[sat - 1] = eph;
     raw->ephsat = sat;
@@ -630,8 +630,8 @@ static int decode_qzssephb(raw_t* raw) {
     eph.ttr = raw->time;
 
     if (!strstr(raw->opt, "-EPHALL")) {
-        if (timediff(raw->nav.eph[sat - 1].toe, eph.toe) == 0.0 &&
-            timediff(raw->nav.eph[sat - 1].toc, eph.toc) == 0.0) return 0;
+        if (fabs(timediff(raw->nav.eph[sat - 1].toe, eph.toe)) < 1e-9 &&
+            fabs(timediff(raw->nav.eph[sat - 1].toc, eph.toc)) < 1e-9) return 0;
     }
 
     raw->nav.eph[sat - 1] = eph;
@@ -709,7 +709,7 @@ static int decode_irnssephb(raw_t* raw) {
     eph.tgd[1] = 0.0;
 
     if (!strstr(raw->opt, "-EPHALL")) {
-        if (timediff(raw->nav.eph[sat - 1].toe, eph.toe) == 0.0 &&
+        if (fabs(timediff(raw->nav.eph[sat - 1].toe, eph.toe)) < 1e-9 &&
             raw->nav.eph[sat - 1].iode == eph.iode) return 0; /* unchanged */
     }
     raw->nav.eph[sat - 1] = eph;
