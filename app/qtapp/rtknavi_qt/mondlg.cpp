@@ -50,6 +50,7 @@ MonitorDialog::MonitorDialog(QWidget *parent, rtksvr_t *server, stream_t* stream
     connect(ui->cBSelectObservation, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &MonitorDialog::observationModeChanged);
     connect(ui->cBSelectInputStream, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &MonitorDialog::inputStreamChanged);
     connect(ui->cBSelectSolutionStream, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &MonitorDialog::solutionStreamChanged);
+    connect(ui->cBSelectEphemeris, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &MonitorDialog::ephemerisSetChanged);
     connect(&updateTimer, &QTimer::timeout, this, &MonitorDialog::updateDisplays);
 }
 //---------------------------------------------------------------------------
@@ -125,6 +126,16 @@ void MonitorDialog::solutionStreamChanged()
     solutionStream = ui->cBSelectSolutionStream->currentIndex();
     consoleBuffer.clear();
     ui->tWConsole->clear();
+}
+//---------------------------------------------------------------------------
+void MonitorDialog::ephemerisSetChanged()
+{
+    int sys = sys_tbl[ui->cBSelectSingleNavigationSystem->currentIndex() + 1];
+    if (sys == SYS_GAL) {
+        ui->lblInformation->setText((ui->cBSelectEphemeris->currentIndex() % 2) ? tr("F/NAV") : tr("I/NAV"));
+    } else {
+        ui->lblInformation->setText("");
+    }
 }
 //---------------------------------------------------------------------------
 void MonitorDialog::updateDisplays()
