@@ -741,7 +741,7 @@ extern int rtksvrinit(rtksvr_t *svr)
     for (i=0;i<MAXSAT*4 ;i++) svr->nav.eph [i]=eph0;
     for (i=0;i<NSATGLO*2;i++) svr->nav.geph[i]=geph0;
     for (i=0;i<NSATSBS*2;i++) svr->nav.seph[i]=seph0;
-    svr->nav.n =svr->nav.nmax =MAXSAT *2;
+    svr->nav.n =svr->nav.nmax =MAXSAT *4;
     svr->nav.ng=svr->nav.ngmax=NSATGLO*2;
     svr->nav.ns=svr->nav.nsmax=NSATSBS*2;
     
