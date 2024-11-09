@@ -1161,6 +1161,7 @@ typedef struct {        /* satellite status type */
     uint16_t snr_rover [NFREQ]; /* rover signal strength (0.25 dBHz) */
     uint16_t snr_base  [NFREQ]; /* base signal strength (0.25 dBHz) */
     uint8_t fix [NFREQ]; /* ambiguity fix flag (1:float,2:fix,3:hold) */
+    int code[NFREQ][2];  // Current code per frequency index for the base and rover.
     uint8_t slip[NFREQ]; /* cycle-slip flag */
     uint8_t half[NFREQ]; /* half-cycle valid flag */
     int lock [NFREQ];   /* lock counter of phase */
