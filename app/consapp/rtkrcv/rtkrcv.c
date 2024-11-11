@@ -649,7 +649,7 @@ static void prstatus(vt_t *vt)
          "PPP-kinema","PPP-static"
     };
     gtime_t eventime={0};
-    const char *freq[]={"-","L1","L1+L2","L1+L2+E5b","L1+L2+E5b+L5","",""};
+    const char *freq[]={"-","L1","L1+L2","L1+L2+E5b","L1+L2+E5b+L5","5","6","7"};
     rtcm_t rtcm[3];
     pthread_t thread;
     int i,j,n,cycle,state,rtkstat,nsat0,nsat1,prcout,rcvcount,tmcount,timevalid,nave;
