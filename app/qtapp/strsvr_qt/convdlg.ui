@@ -41,7 +41,7 @@
       <string/>
      </property>
      <property name="text">
-      <string>Message Types(Interval in seconds) separeted by comma</string>
+      <string>Message Types(Interval in seconds) separated by comma</string>
      </property>
     </widget>
    </item>
@@ -105,7 +105,7 @@
    <item row="3" column="0">
     <widget class="QLineEdit" name="lEOutputMessages">
      <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Comma separeted list of message type IDs with interval given in round brackets, e.g. 1004(1),1012(1)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Comma separated list of message type IDs with interval given in round brackets, e.g. 1004(1),1012(1)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
       <string>1004(1),1012(1)</string>
