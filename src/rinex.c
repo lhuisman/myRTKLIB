@@ -676,11 +676,11 @@ static int readrnxh(FILE *fp, double *ver, char *type, int *sys, int *tsys,
         }
         else if (strstr(label,"RINEX VERSION / TYPE")) {
             *ver=str2num(buff,0,9);
-            /* format change for clock files >=3.04 */
+            // Format change for clock files >=3.04
             *type=(*ver<3.04||flag==0)?*(buff+20):*(buff+21);
 
-            /* satellite system */
-            switch (*(buff+40)) {
+            // Satellite system
+            switch ((*ver<3.04||flag==0)?*(buff+40):*(buff+42)) {
                 case ' ':
                 case 'G': *sys=SYS_GPS;  *tsys=TSYS_GPS; break;
                 case 'R': *sys=SYS_GLO;  *tsys=TSYS_UTC; break;
