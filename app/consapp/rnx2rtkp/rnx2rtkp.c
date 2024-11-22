@@ -110,7 +110,6 @@ int main(int argc, char **argv)
     prcopt.glomodear=GLO_ARMODE_ON;
     solopt.timef=0;
     sprintf(solopt.prog ,"%s ver.%s %s",PROGNAME,VER_RTKLIB,PATCH_LEVEL);
-    sprintf(filopt.trace,"%s.trace",PROGNAME);
 
     /* load options from configuration file */
     for (i=1;i<argc;i++) {
@@ -194,6 +193,12 @@ int main(int argc, char **argv)
     if (n<=0) {
         showmsg("error : no input file");
         return EXIT_FAILURE;
+    }
+    if (solopt.trace > 0) {
+        if (*filopt.trace == '\0')
+            sprintf(filopt.trace, "%s.trace", PROGNAME);
+        traceopen(filopt.trace);
+        tracelevel(solopt.trace);
     }
     ret=postpos(ts,te,tint,0.0,&prcopt,&solopt,&filopt,infile,n,outfile,"","");
 
