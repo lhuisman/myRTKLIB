@@ -647,6 +647,26 @@ static void udrcvbias(rtk_t *rtk, double tt)
         }
     }
 }
+// Detect a change in the observation code for a given frequency index.
+// Only one bias per frequency index per satallite is supported, so if the
+// observation code changes then consider it a slip.
+static void detslp_code(rtk_t *rtk, const obsd_t *obs, int i, int rcv) {
+  int sat = obs[i].sat;
+  for (int f = 0; f < rtk->opt.nf; f++) {
+    int code = obs[i].code[f];
+    if (code == CODE_NONE) continue;
+    int ccode = rtk->ssat[sat - 1].code[f][rcv - 1];
+    if (code != ccode) {
+      rtk->ssat[sat - 1].code[f][rcv - 1] = code;
+      // Skip flagging a slip and emitting a message when initializing.
+      if (ccode != CODE_NONE) {
+        rtk->ssat[sat - 1].slip[f] |= LLI_SLIP;
+        errmsg(rtk, "slip detected, code change (sat=%3d rcv=%d F=%d code=%2d %2s to %2d %2s)\n", sat,
+               rcv, f, ccode, code2obs(ccode), code, code2obs(code));
+      }
+    }
+  }
+}
 /* detect cycle slip by LLI --------------------------------------------------*/
 static void detslp_ll(rtk_t *rtk, const obsd_t *obs, int i, int rcv)
 {
@@ -795,6 +815,10 @@ static void udbias(rtk_t *rtk, double tt, const obsd_t *obs, const int *sat,
     detslp_dop(rtk,obs,ir,ns,2,nav);
 
     for (i=0;i<ns;i++) {
+        // Detect cycle slip by code change.
+        detslp_code(rtk, obs, iu[i], 1);
+        detslp_code(rtk, obs, ir[i], 2);
+
         /* detect cycle slip by LLI */
         detslp_ll(rtk,obs,iu[i],1);
         detslp_ll(rtk,obs,ir[i],2);
