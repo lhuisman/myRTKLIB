@@ -2248,7 +2248,7 @@ extern void rtkfree(rtk_t *rtk)
 *                               (I:fixed mode,O:single mode)
 *                .dtr[0]    O   receiver clock bias (s)
 *                .dtr[1-5]  O   receiver GLO/GAL/BDS/IRN/QZS-GPS time offset (s)
-*                .Qr[]      O   rover position covarinace
+*                .Qr[]      O   rover position covariance
 *                .stat      O   solution status (SOLQ_???)
 *                .ns        O   number of valid satellites
 *                .age       O   age of differential (s)
@@ -2366,7 +2366,7 @@ extern int rtkpos(rtk_t *rtk, const obsd_t *obs, int n, const nav_t *nav)
     }
     if (opt->mode==PMODE_MOVEB) { /*  moving baseline */
         /* estimate position/velocity of base station,
-           skip if position varinace below threshold*/
+           skip if position variance below threshold*/
         if (rtk->P[0]==0||rtk->P[0]>STD_PREC_VAR_THRESH) {
             if (!pntpos(obs+nu,nr,nav,&rtk->opt,&solb,NULL,NULL,msg)) {
                 errmsg(rtk,"base station position error (%s)\n",msg);
@@ -2398,7 +2398,7 @@ extern int rtkpos(rtk_t *rtk, const obsd_t *obs, int n, const nav_t *nav)
     trace(3,"base pos: "); tracemat(3,rtk->rb,1,3,13,4);
     }
 
-    /* relative potitioning */
+    /* Relative positioning */
     relpos(rtk,obs,nu,nr,nav);
     rtk->epoch++;
     outsolstat(rtk,nav);
