@@ -619,11 +619,15 @@ static int code2freq_GLO(uint8_t code, int fcn, double *freq)
 {
     char *obs=code2obs(code);
 
-    if (fcn<-7||fcn>6) return -1;
-
     switch (obs[0]) {
-        case '1': *freq=FREQ1_GLO+DFRQ1_GLO*fcn; return 0; /* G1 */
-        case '2': *freq=FREQ2_GLO+DFRQ2_GLO*fcn; return 1; /* G2 */
+        case '1':  /* G1 */
+          if (fcn<-7||fcn>6) return -1;
+          *freq=FREQ1_GLO+DFRQ1_GLO*fcn;
+          return 0;
+        case '2': /* G2 */
+          if (fcn<-7||fcn>6) return -1;
+          *freq=FREQ2_GLO+DFRQ2_GLO*fcn;
+          return 1;
         case '3': *freq=FREQ3_GLO;               return 2; /* G3 */
         case '4': *freq=FREQ1a_GLO;              return 0; /* G1a */
         case '6': *freq=FREQ2a_GLO;              return 1; /* G2a */
@@ -756,12 +760,12 @@ extern double code2freq(int sys, uint8_t code, int fcn)
 *-----------------------------------------------------------------------------*/
 extern double sat2freq(int sat, uint8_t code, const nav_t *nav)
 {
-    int i,fcn=0,sys,prn;
+    int i,fcn=-8,sys,prn;
 
     sys=satsys(sat,&prn);
 
-    if (sys==SYS_GLO) {
-        if (!nav) return 0.0;
+    if (sys==SYS_GLO && nav) {
+        /* First non-empty entry */
         for (i=0;i<nav->ng;i++) {
             if (nav->geph[i].sat==sat) break;
         }
@@ -771,7 +775,6 @@ extern double sat2freq(int sat, uint8_t code, const nav_t *nav)
         else if (nav->glo_fcn[prn-1]>0) {
             fcn=nav->glo_fcn[prn-1]-8;
         }
-        else return 0.0;
     }
     return code2freq(sys,code,fcn);
 }

@@ -12,6 +12,7 @@
 *     [5] NovAtel, OM-20000129 Rev6 OEM6 Family Firmware Reference Manual, 2014
 *     [6] NovAtel, OM-20000169 v15C OEM7 Commands and Logs Reference Manual,
 *         June 2020
+*     [7] Bynav, UG017 Inteface Protocol, Nov 2022
 *
 * version : $Revision: 1.2 $ $Date: 2008/07/14 00:05:05 $
 * history : 2007/10/08 1.0 new
@@ -73,6 +74,8 @@
 *                           use API sat2freq() to get carrier-frequency
 *                           use API code2idx() to get freq-index
 *                           use integer types in stdint.h
+*           2024/12/06 1.19 support Bynav M2X receiver (ref[7])
+*                           add receiver option -CL6I
 *-----------------------------------------------------------------------------*/
 #include "rtklib.h"
 
@@ -218,6 +221,7 @@ static int sig2code(int sys, int sigtype)
     }
     else if (sys==SYS_GAL) {
         switch (sigtype) {
+            case  1: return CODE_L1B; /* E1B  (Bynav M2) */
             case  2: return CODE_L1C; /* E1C  (OEM6) */
             case  6: return CODE_L6B; /* E6B  (OEM7) */
             case  7: return CODE_L6C; /* E6C  (OEM7) */
@@ -351,8 +355,10 @@ static int checkpri(const char *opt, int sys, int code, int idx)
     else if (sys==SYS_CMP) {
         if (strstr(opt,"-CL1P")&&idx==0) return (code==CODE_L1P)?0:-1;
         if (strstr(opt,"-CL7D")&&idx==0) return (code==CODE_L7D)?0:-1;
+        if (strstr(opt,"-CL6I")&&idx==1) return (code==CODE_L6I)?1:-1;
         if (code==CODE_L1P) return (nex<1)?-1:NFREQ;
         if (code==CODE_L7D) return (nex<2)?-1:NFREQ+1;
+        if (code==CODE_L6I) return (nex<3)?-1:NFREQ+2;
     }
     return idx<NFREQ?idx:-1;
 }

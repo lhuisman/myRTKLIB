@@ -112,10 +112,10 @@ const char *msm_sig_sbs[32] = {
     "", "",   "", "", "", "", "", ""};                       // 25-32
 const char *msm_sig_cmp[32] = {
     // BeiDou: ref [17] table 3.5-108.
-    // 6D, 6P, 6Z, 7P, 7Z, 8D, 8P, 8X are tentative from the PocketSDR extensions
-    "",   "2I", "2Q", "2X", "", "",   "",   "6I", "6Q", "6X", "6D", "6P",  //  1-12
-    "6Z", "7I", "7Q", "7X", "", "8D", "8P", "8X", "",   "5D", "5P", "5X",  // 13-24
-    "7D", "7P", "7Z", "",   "", "1D", "1P", "1X"};                         // 25-32
+    // 1S, 1L, 1Z, 6D, 6P, 6Z, 7P, 7Z, 8D, 8P, 8X are tentative from the PocketSDR extensions
+    "",   "2I", "2Q", "2X", "1S", "1L", "1Z", "6I", "6Q", "6X", "6D", "6P",  //  1-12
+    "6Z", "7I", "7Q", "7X", "",   "8D", "8P", "8X", "",   "5D", "5P", "5X",  // 13-24
+    "7D", "7P", "7Z", "",   "",   "1D", "1P", "1X"};                         // 25-32
 const char *msm_sig_irn[32] = {
     // NavIC/IRNSS: ref [17] table 3.5-108.3.
     // 1D, 1P, 1X, 9B, 9C, 9X, 5B, 5C, and 5X are tentative from the
