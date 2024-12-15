@@ -258,6 +258,7 @@ static int inputobs(obsd_t *obs, int solq, const prcopt_t *popt)
 
     if (0<=iobsu&&iobsu<obss.n) {
         gtime_t time = obss.data[iobsu].time;
+        settime(time);
         char tstr[40];
         if (checkbrk("processing : %s Q=%d",time2str(time,tstr,0),solq)) {
             aborts=1;
