@@ -363,7 +363,7 @@ static double varerr(int sat, int sys, double el, double snr_rover,
         if (code) var+=SQR(opt->err[7]*0.01*(1<<(obs->Pstd[frq]+5))); /* 0.01*2^(n+5) */
         else var+=SQR(opt->err[7]*obs->Lstd[frq]*0.004*0.2); /* 0.004 cycles -> m) */
     }
-
+    /* FIXME: the scaling factor is not 3 for other signals/constellations than GPS L1/L2 */
     var*=(opt->ionoopt==IONOOPT_IFLC)?SQR(3.0):1.0;
     return var;
 }
@@ -418,7 +418,7 @@ static void corr_meas(const obsd_t *obs, const nav_t *nav, const double *azel,
 
         /* antenna phase center and phase windup correction */
         L[i]=obs->L[i]*CLIGHT/freq[i]-dants[i]-dantr[i]-phw*CLIGHT/freq[i];
-        P[i]=obs->P[i]       -dants[i]-dantr[i];
+        P[i]=obs->P[i]               -dants[i]-dantr[i];
 
         if (opt->sateph==EPHOPT_SSRAPC||opt->sateph==EPHOPT_SSRCOM) {
             /* select SSR code correction based on code */
@@ -459,11 +459,11 @@ static void detslp_ll(rtk_t *rtk, const obsd_t *obs, int n)
     trace(3,"detslp_ll: n=%d\n",n);
 
     for (i=0;i<n&&i<MAXOBS;i++) for (j=0;j<nf;j++) {
-        if (obs[i].L[j]==0.0||!(obs[i].LLI[j]&3)) continue;
+        if (obs[i].L[j]==0.0||!(obs[i].LLI[j]&(LLI_SLIP|LLI_HALFC))) continue;
 
         trace(3,"detslp_ll: slip detected sat=%2d f=%d\n",obs[i].sat,j+1);
 
-        rtk->ssat[obs[i].sat-1].slip[j]=1;
+        rtk->ssat[obs[i].sat-1].slip[j]=LLI_SLIP;
     }
 }
 /* detect cycle slip by geometry free phase jump -----------------------------*/
@@ -487,7 +487,7 @@ static void detslp_gf(rtk_t *rtk, const obsd_t *obs, int n, const nav_t *nav)
             trace(3,"detslip_gf: slip detected sat=%2d gf=%8.3f->%8.3f\n",
                   obs[i].sat,g0,g1);
 
-            for (j=0;j<rtk->opt.nf;j++) rtk->ssat[obs[i].sat-1].slip[j]|=1;
+            for (j=0;j<rtk->opt.nf;j++) rtk->ssat[obs[i].sat-1].slip[j]|=LLI_SLIP;
         }
     }
 }
@@ -511,7 +511,7 @@ static void detslp_mw(rtk_t *rtk, const obsd_t *obs, int n, const nav_t *nav)
             trace(3,"detslip_mw: slip detected sat=%2d mw=%8.3f->%8.3f\n",
                   obs[i].sat,w0,w1);
 
-            for (j=0;j<rtk->opt.nf;j++) rtk->ssat[obs[i].sat-1].slip[j]|=1;
+            for (j=0;j<rtk->opt.nf;j++) rtk->ssat[obs[i].sat-1].slip[j]|=LLI_SLIP;
         }
     }
 }
@@ -935,7 +935,7 @@ static int ppp_res(int post, const obsd_t *obs, int n, const double *rs,
 {
     prcopt_t *opt=&rtk->opt;
     double y,r,cdtr,bias,rr[3],pos[3],e[3],dtdx[3],L[NFREQ],P[NFREQ],Lc,Pc;
-    double var[MAXOBS*2],dtrp=0.0,dion=0.0,vart=0.0,vari=0.0,dcb,freq;
+    double var[MAXOBS*2*NFREQ],dtrp=0.0,dion=0.0,vart=0.0,vari=0.0,dcb,freq;
     double dantr[NFREQ]={0},dants[NFREQ]={0};
     double ve[MAXOBS*2*NFREQ]={0},vmax=0;
     char str[32];
@@ -1148,7 +1148,7 @@ static void update_stat(rtk_t *rtk, const obsd_t *obs, int n, int stat)
         rtk->ssat[obs[i].sat-1].snr_base[j] =0;
     }
     for (i=0;i<MAXSAT;i++) for (j=0;j<opt->nf;j++) {
-        if (rtk->ssat[i].slip[j]&3) rtk->ssat[i].slipc[j]++;
+        if (rtk->ssat[i].slip[j]&(LLI_SLIP|LLI_HALFC)) rtk->ssat[i].slipc[j]++;
         if (rtk->ssat[i].fix[j]==2&&stat!=SOLQ_FIX) rtk->ssat[i].fix[j]=1;
     }
 }
