@@ -23,7 +23,7 @@ void TimeDialog::setTime(const gtime_t &time)
     QDateTime qtime_gpst, qtime_utc;
     gtime_t utc;
     double tow, doy;
-	int week;
+    int week;
 
     utc = gpst2utc(time);
 
