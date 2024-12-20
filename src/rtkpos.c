@@ -1211,10 +1211,10 @@ static int ddres(rtk_t *rtk, const obsd_t *obs, double dt, const double *x,
                  int ns, double *v, double *H, double *R, int *vflg)
 {
     prcopt_t *opt=&rtk->opt;
-    double bl,dr[3],posu[3],posr[3],didxi=0.0,didxj=0.0,*im,threshadj;
+    double bl,dr[3],posu[3],posr[3],didxi=0.0,didxj=0.0,*im;
     double *tropr,*tropu,*dtdxr,*dtdxu,*Ri,*Rj,freqi,freqj,*Hi=NULL,df;
     int i,j,k,m,f,nv=0,nb[NFREQ*NSYS*2+2]={0},b=0,sysi,sysj,nf=NF(opt);
-    int ii,jj,frq,code;
+    int frq,code;
 
     trace(3,"ddres   : dt=%.4f ns=%d\n",dt,ns);
 
@@ -1305,17 +1305,17 @@ static int ddres(rtk_t *rtk, const obsd_t *obs, double dt, const double *x,
                         Hi[IT(1,opt)+k]=-(dtdxr[k+i*3]-dtdxr[k+j*3]);
                     }
                 }
-                ii=IB(sat[i],frq,opt);
-                jj=IB(sat[j],frq,opt);
-                if (!code) {
-                    /* adjust phase residual by double-differenced phase-bias term,
+                if (opt->mode > PMODE_DGPS && !code) {
+                    int ii = IB(sat[i], frq, opt);
+                    int jj = IB(sat[j], frq, opt);
+                    /* Adjust phase residual by double-differenced phase-bias term,
                           IB=look up index by sat&freq */
                     if (opt->ionoopt!=IONOOPT_IFLC) {
-                        /* phase-bias states are single-differenced so need to difference them */
+                        /* Phase-bias states are single-differenced so need to difference them */
                         v[nv]-=CLIGHT/freqi*x[ii]-CLIGHT/freqj*x[jj];
                         if (H) {
-                        Hi[ii]= CLIGHT/freqi;
-                        Hi[jj]=-CLIGHT/freqj;
+                            Hi[ii]= CLIGHT/freqi;
+                            Hi[jj]=-CLIGHT/freqj;
                         }
                     }
                     else {
@@ -1357,8 +1357,15 @@ static int ddres(rtk_t *rtk, const obsd_t *obs, double dt, const double *x,
                 else      rtk->ssat[sat[j]-1].resc[frq]=v[nv];  /* carrier phase */
 
                 /* open up outlier threshold if one of the phase biases was just initialized */
-                threshadj=(P[ii+rtk->nx*ii]==SQR(rtk->opt.std[0]))||
-                    (P[jj+rtk->nx*jj]==SQR(rtk->opt.std[0]))?10:1;
+                double threshadj = 1;
+                if (opt->mode > PMODE_DGPS) {
+                  // Open up outlier threshold if one of the phase biases was just initialized.
+                  int ii = IB(sat[i], frq, opt);
+                  int jj = IB(sat[j], frq, opt);
+                  if (P[ii + rtk->nx * ii] == SQR(rtk->opt.std[0]) ||
+                      P[jj + rtk->nx * jj] == SQR(rtk->opt.std[0]))
+                    threshadj = 10;
+                }
                 /* if residual too large, flag as outlier */
                 if (fabs(v[nv])>opt->maxinno[code]*threshadj) {
                     rtk->ssat[sat[j]-1].vsat[frq]=0;
@@ -1383,6 +1390,7 @@ static int ddres(rtk_t *rtk, const obsd_t *obs, double dt, const double *x,
 
                 /* set valid data flags */
                 if (opt->mode>PMODE_DGPS) {
+                    // Only valid for AR if there is phase data.
                     if (!code) rtk->ssat[sat[i]-1].vsat[frq]=rtk->ssat[sat[j]-1].vsat[frq]=1;
                 }
                 else {
@@ -1396,10 +1404,15 @@ static int ddres(rtk_t *rtk, const obsd_t *obs, double dt, const double *x,
                 else
                     icb=rtk->ssat[sat[i]-1].icbias[frq]*CLIGHT/freqi -
                         rtk->ssat[sat[j]-1].icbias[frq]*CLIGHT/freqj;
-                jj=IB(sat[j],frq,&rtk->opt);
+                double xjj = 0.0, Pjj = 0.0;
+                if (opt->mode>PMODE_DGPS) {
+                    int jj = IB(sat[j], frq, &rtk->opt);
+                    xjj = x[jj];
+                    Pjj = P[jj + jj * rtk->nx];
+                }
                 trace(3,"sat=%3d-%3d %s%d v=%13.3f R=%9.6f %9.6f icb=%9.3f lock=%5d x=%9.3f P=%.3f\n",
                         sat[i],sat[j],code?"P":"L",frq+1,v[nv],Ri[nv],Rj[nv],icb,
-                        rtk->ssat[sat[j]-1].lock[frq],x[jj],P[jj+jj*rtk->nx]);
+                        rtk->ssat[sat[j]-1].lock[frq],xjj,Pjj);
 #endif
 
                 vflg[nv++]=(sat[i]<<16)|(sat[j]<<8)|((code?1:0)<<4)|(frq);
