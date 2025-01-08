@@ -57,10 +57,10 @@ static const char *help[]={
 " if run foreground or send signal SIGINT for background process.",
 " if both of the input stream and the output stream follow #format, the",
 " format of input messages are converted to output. To specify the output",
-" messages, use -msg option. If the option -in or -out omitted, stdin for",
-" input or stdout for output is used. If the stream in the option -in or -out",
-" is null, stdin or stdout is used as well.",
-" Command options are as follows.",
+" messages, use the -msg option before the respective -out options. If the",
+" option -in or -out omitted, stdin for input or stdout for output is used.",
+" If the stream in the option -in or -out is null, stdin or stdout is used as",
+" well. Command options are as follows.",
 "",
 " -in  stream[#format] input  stream path and format",
 " -out stream[#format] output stream path and format",
@@ -89,7 +89,7 @@ static const char *help[]={
 "    binex        : BINEX (only in)",
 "    rt17         : Trimble RT17 (only in)",
 "    sbf          : Septentrio SBF (only in)",
-"    unc          : Unicore (only in)",
+"    unicore      : Unicore (only in)",
 "",
 " -msg \"type[(tint)][,type[(tint)]...]\"",
 "                   rtcm message types and output intervals (s)",
@@ -263,26 +263,32 @@ int main(int argc, char **argv)
     static char s1[MAXSTR][MAXSTRPATH]={{0}},s2[MAXSTR][MAXSTRPATH]={{0}};
     char *paths[MAXSTR],*logs[MAXSTR];
     char *cmdfile[MAXSTR]={"","","","",""},*cmds[MAXSTR],*cmds_periodic[MAXSTR];
-    char *local="",*proxy="",*msg="1004,1019",*opt="",buff[256],*p;
+    char *local="",*proxy="",*opt="",buff[256],*p;
     char strmsg[MAXSTRMSG]="",*antinfo="",*rcvinfo="";
     char *ant[]={"","",""},*rcv[]={"","",""},*logfile="";
     int i,j,n=0,dispint=5000,trlevel=0,opts[]={10000,10000,2000,32768,10,0,30,0};
     int types[MAXSTR]={STR_FILE,STR_FILE},stat[MAXSTR]={0},log_stat[MAXSTR]={0};
     int byte[MAXSTR]={0},bps[MAXSTR]={0},fmts[MAXSTR]={0},sta=0;
     int deamon=0;
+    const char *msg = "1004,1019"; // Current messages.
+    const char *msgs[MAXSTR];      // Messages per output stream.
     
     for (i=0;i<MAXSTR;i++) {
         paths[i]=s1[i];
         logs[i]=s2[i];
         cmds[i]=cmd_strs[i];
         cmds_periodic[i]=cmd_periodic_strs[i];
+        msgs[i] = msg;
     }
     for (i=1;i<argc;i++) {
         if (!strcmp(argv[i],"-in")&&i+1<argc) {
             if (!decodepath(argv[++i],types,paths[0],fmts)) return EXIT_FAILURE;
         }
+        else if (!strcmp(argv[i],"-msg")&&i+1<argc) msg=argv[++i];
         else if (!strcmp(argv[i],"-out")&&i+1<argc&&n<MAXSTR-1) {
             if (!decodepath(argv[++i],types+n+1,paths[n+1],fmts+n+1)) return EXIT_FAILURE;
+            // Capture the current messages for this output stream.
+            msgs[n + 1] = msg;
             n++;
         }
         else if (!strcmp(argv[i],"-p")&&i+3<argc) {
@@ -301,7 +307,6 @@ int main(int argc, char **argv)
             stadel[1]=atof(argv[++i]);
             stadel[2]=atof(argv[++i]);
         }
-        else if (!strcmp(argv[i],"-msg")&&i+1<argc) msg=argv[++i];
         else if (!strcmp(argv[i],"-opt")&&i+1<argc) opt=argv[++i];
         else if (!strcmp(argv[i],"-sta")&&i+1<argc) sta=atoi(argv[++i]);
         else if (!strcmp(argv[i],"-d"  )&&i+1<argc) dispint=atoi(argv[++i]);
@@ -340,7 +345,7 @@ int main(int argc, char **argv)
             fprintf(stderr,"specify input format\n");
             return EXIT_FAILURE;
         }
-        if (!(conv[i]=strconvnew(fmts[0],fmts[i+1],msg,sta,sta!=0,opt))) {
+        if (!(conv[i]=strconvnew(fmts[0],fmts[i+1],msgs[i+1],sta,sta!=0,opt))) {
             fprintf(stderr,"stream conversion error\n");
             return EXIT_FAILURE;
         }
