@@ -1814,12 +1814,11 @@ static int resamb_LAMBDA(rtk_t *rtk, double *bias, double *xa,int gps,int glo,in
 /* resolve integer ambiguity by LAMBDA using partial fix techniques and multiple attempts -----------------------*/
 static int manage_amb_LAMBDA(rtk_t *rtk, double *bias, double *xa, const int *sat, int nf, int ns)
 {
-    int i,f,lockc[NFREQ],ar=0,excflag=0,arsats[MAXOBS]={0};
     int gps1=-1,glo1=-1,sbas1=-1,gps2,glo2,sbas2,nb,rerun,dly;
     float ratio1,posvar=0;
 
     /* calc position variance, will skip AR if too high to avoid false fix */
-    for (i=0;i<3;i++) posvar+=rtk->P[i+i*rtk->nx];
+    for (int i=0;i<3;i++) posvar+=rtk->P[i+i*rtk->nx];
     posvar/=3.0; /* maintain compatibility with previous code */
 
     trace(3,"posvar=%.6f\n",posvar);
@@ -1835,23 +1834,41 @@ static int manage_amb_LAMBDA(rtk_t *rtk, double *bias, double *xa, const int *sa
         rtk->nb_ar=0;
         return 0;
     }
-    /* if no fix on previous sample and enough sats, exclude next sat in list */
-    if (rtk->sol.prev_ratio2<rtk->sol.thres&&rtk->nb_ar>=rtk->opt.mindropsats) {
-        /* find and count sats used last time for AR */
-        for (f=0;f<nf;f++) for (i=0;i<ns;i++)
-            if (rtk->ssat[sat[i]-1].vsat[f] && rtk->ssat[sat[i]-1].lock[f]>=0 && rtk->ssat[sat[i]-1].azel[1]>=rtk->opt.elmin) {
-                arsats[ar++]=i;
-            }
-        if (rtk->excsat<ar) {
-            i=sat[arsats[rtk->excsat]];
-            for (f=0;f<nf;f++) {
-                lockc[f]=rtk->ssat[i-1].lock[f];  /* save lock count */
-                /* remove sat from AR long enough to enable hold if stays fixed */
-                rtk->ssat[i-1].lock[f]=-rtk->nb_ar;
-            }
-            trace(3,"AR: exclude sat %d\n",i);
-            excflag=1;
-        } else rtk->excsat=0; /* exclude none and reset to beginning of list */
+    // If no fix on previous sample and enough sats, exclude next sat in list.
+    int lockc[NFREQ], excsat = 0;
+    if (rtk->sol.prev_ratio2 < rtk->sol.thres && rtk->nb_ar >= rtk->opt.mindropsats) {
+      // Find the position of the last excluded sat.
+      int i = 0;
+      if (rtk->excsat != 0) {
+        for (; i < ns; i++) {
+          if (rtk->excsat == sat[i]) {
+            i++;
+            break;
+          }
+        }
+        // If not found then restart from the first sat.
+        if (i >= ns) i = 0;
+      }
+      // Find the next sat used last time for AR.
+      for (; i < ns; i++) {
+        for (int f = 0; f < nf; f++) {
+          if (rtk->ssat[sat[i] - 1].vsat[f] && rtk->ssat[sat[i] - 1].lock[f] >= 0 &&
+              rtk->ssat[sat[i] - 1].azel[1] >= rtk->opt.elmin) {
+            excsat = sat[i];
+            break;
+          }
+        }
+        if (excsat) break;
+      }
+      if (excsat) {
+        for (int f = 0; f < nf; f++) {
+          lockc[f] = rtk->ssat[excsat - 1].lock[f]; // Save lock count.
+          // Remove sat from AR long enough to enable hold if stays fixed.
+          rtk->ssat[excsat - 1].lock[f] = -rtk->nb_ar;
+        }
+        trace(3, "AR: exclude sat %d\n", excsat);
+      }
+      rtk->excsat = excsat;
     }
 
     /* for inital ambiguity resolution attempt, include all enabled sats */
@@ -1869,7 +1886,7 @@ static int manage_amb_LAMBDA(rtk_t *rtk, double *bias, double *xa, const int *sa
             (rtk->sol.ratio<rtk->opt.thresar[0]*1.1 && rtk->sol.ratio<rtk->sol.prev_ratio1/2.0))) {
             trace(3,"low ratio: check for new sat\n");
             dly=2;
-            for (i=0;i<ns;i++) for (f=0;f<nf;f++) {
+            for (int i=0;i<ns;i++) for (int f=0;f<nf;f++) {
                 if (rtk->ssat[sat[i]-1].fix[f]!=2) continue;
                 /* check for new sats */
                 if (rtk->ssat[sat[i]-1].lock[f]==0) {
@@ -1900,11 +1917,11 @@ static int manage_amb_LAMBDA(rtk_t *rtk, double *bias, double *xa, const int *sa
         if (glo1!=glo2||gps1!=gps2)
             nb=resamb_LAMBDA(rtk,bias,xa,gps2,glo2,sbas2);
     }
-    /* restore excluded sat if still no fix or significant increase in ar ratio */
-    if (excflag && (rtk->sol.ratio<rtk->sol.thres) && (rtk->sol.ratio<(1.5*rtk->sol.prev_ratio2))) {
-        i=sat[arsats[rtk->excsat++]];
-        for (f=0;f<nf;f++) rtk->ssat[i-1].lock[f]=lockc[f];
-        trace(3,"AR: restore sat %d\n",i);
+    /* Restore excluded sat if still no fix or significant increase in ar ratio */
+    if (excsat && (rtk->sol.ratio < rtk->sol.thres) &&
+        (rtk->sol.ratio < (1.5 * rtk->sol.prev_ratio2))) {
+      for (int f = 0; f < nf; f++) rtk->ssat[excsat - 1].lock[f] = lockc[f];
+      trace(3, "AR: restore sat %d\n", excsat);
     }
 
     rtk->sol.prev_ratio1=ratio1>0?ratio1:rtk->sol.ratio;
