@@ -332,6 +332,27 @@ static int Base64_Decode(uint8_t *_pcData,
   } /* for() */
   return 0;
 } /* Base64_Decode() */
+/* URA value (m) to URA index ------------------------------------------------*/
+
+static int uraindex(double value)
+{
+    static const double ura_eph[]={
+        2.4,3.4,4.85,6.85,9.65,13.65,24.0,48.0,96.0,192.0,384.0,768.0,1536.0,
+        3072.0,6144.0,0.0
+    };
+    int i;
+    for (i=0;i<15;i++) if (ura_eph[i]>=value) break;
+    return i;
+}
+
+static int sisa_index(double value)
+{
+    if (value<0.0 || value>6.0) return 255; /* unknown or NAPA */
+    else if (value<=0.5) return (int)(value/0.01);
+    else if (value<=1.0) return (int)((value-0.5)/0.02)+50;
+    else if (value<=2.0) return (int)((value-1.0)/0.04)+75;
+    return ((int)(value-2.0)/0.16)+100;
+}
 
 /* SBP checksum calculation --------------------------------------------------*/
 static uint16_t sbp_checksum(uint8_t *buff, int len) {
@@ -440,6 +461,7 @@ static int decode_msgobs(raw_t *raw) {
   tow = U4(p);         /* TOW in ms */
   dResTow = I4(p + 4); /* residual Time Of Week */
   week = U2(p + 8);    /* GPS week */
+  week = adjgpsweek(week);
   num_obs = p[10];       /* number of observations in message */
   /*  uSeqSize = num_obs>>4; */
   /*  uSeqIdx  = num_obs&0xf; */
@@ -511,7 +533,7 @@ static int decode_msgobs(raw_t *raw) {
       raw->obuf.data[ii].P[freq] = (flags & 0x1) ? pseudorange : 0.0;
       raw->obuf.data[ii].L[freq] = (flags & 0x2) ? carr_phase : 0.0;
       raw->obuf.data[ii].D[freq] = (flags & 0x8) ? (float)freq_doppler : 0.0f;
-      raw->obuf.data[ii].SNR[freq] = cn0_int;
+      raw->obuf.data[ii].SNR[freq] = (cn0_int*0.25/SNR_UNIT+0.5);
       raw->obuf.data[ii].code[freq] = code;
 
       if (flags & 0x2) {
@@ -770,6 +792,7 @@ static int decode_gpsnav_dep_e(raw_t *raw) {
   eph.sat = sat;
   raw->nav.eph[sat - 1] = eph;
   raw->ephsat = sat;
+  raw->ephset=0;
   return 2;
 }
 

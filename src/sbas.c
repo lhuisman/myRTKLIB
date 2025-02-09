@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------------------
 * sbas.c : sbas functions
 *
-*          Copyright (C) 2007-2016 by T.TAKASU, All rights reserved.
+*          Copyright (C) 2007-2020 by T.TAKASU, All rights reserved.
 *
 * option : -DRRCENA  enable rrc correction
 *          
@@ -35,6 +35,7 @@
 *           2011/01/15 1.8  use api ionppp()
 *                           add prn mask of qzss for qzss L1SAIF
 *           2016/07/29 1.9  crc24q() -> rtk_crc24q()
+*           2020/11/30 1.10 use integer types in stdint.h
 *-----------------------------------------------------------------------------*/
 #include "rtklib.h"
 
@@ -43,7 +44,7 @@
 #define WEEKOFFSET  1024        /* gps week offset for NovAtel OEM-3 */
 
 /* sbas igp definition -------------------------------------------------------*/
-static const short
+static const int16_t
 x1[]={-75,-65,-55,-50,-45,-40,-35,-30,-25,-20,-15,-10,- 5,  0,  5, 10, 15, 20,
        25, 30, 35, 40, 45, 50, 55, 65, 75, 85},
 x2[]={-55,-50,-45,-40,-35,-30,-25,-20,-15,-10, -5,  0,  5, 10, 15, 20, 25, 30,
@@ -169,7 +170,7 @@ static int decode_sbstype2(const sbsmsg_t *msg, sbssat_t *sbssat)
         t0 =sbssat->sat[j].fcorr.t0;
         prc=sbssat->sat[j].fcorr.prc;
         sbssat->sat[j].fcorr.t0=gpst2time(msg->week,msg->tow);
-        sbssat->sat[j].fcorr.prc=getbits(msg->msg,18+i*12,12)*0.125f;
+        sbssat->sat[j].fcorr.prc=getbits(msg->msg,18+i*12,12)*0.125;
         sbssat->sat[j].fcorr.udre=udre+1;
         dt=timediff(sbssat->sat[j].fcorr.t0,t0);
         if (t0.time==0||dt<=0.0||18.0<dt||sbssat->sat[j].fcorr.ai==0) {
@@ -195,7 +196,8 @@ static int decode_sbstype6(const sbsmsg_t *msg, sbssat_t *sbssat)
     for (i=0;i<4;i++) {
         iodf[i]=getbitu(msg->msg,14+i*2,2);
     }
-    for (i=0;i<sbssat->nsat&&i<MAXSAT;i++) {
+    /* At most 51 entries in the message */
+    for (i=0;i<sbssat->nsat&&i<=51;i++) {
         if (sbssat->sat[i].fcorr.iodf!=iodf[i/13]) continue;
         udre=getbitu(msg->msg,22+i*4,4);
         sbssat->sat[i].fcorr.udre=udre+1;
@@ -214,7 +216,8 @@ static int decode_sbstype7(const sbsmsg_t *msg, sbssat_t *sbssat)
     
     sbssat->tlat=getbitu(msg->msg,14,4);
     
-    for (i=0;i<sbssat->nsat&&i<MAXSAT;i++) {
+    /* At most 51 entries in the message */
+    for (i=0;i<sbssat->nsat&&i<=51;i++) {
         sbssat->sat[i].fcorr.ai=getbitu(msg->msg,22+i*4,4);
     }
     return 1;
@@ -259,7 +262,7 @@ static int decode_sbstype9(const sbsmsg_t *msg, nav_t *nav)
     }
     nav->seph[NSATSBS+i]=nav->seph[i]; /* previous */
     nav->seph[i]=seph;                 /* current */
-    
+
     trace(5,"decode_sbstype9: prn=%d\n",msg->prn);
     return 1;
 }
@@ -275,7 +278,7 @@ static int decode_sbstype18(const sbsmsg_t *msg, sbsion_t *sbsion)
     else if (9<=band&&band<=10) {p=igpband2[band-9]; m=5;}
     else return 0;
     
-    sbsion[band].iodi=(short)getbitu(msg->msg,22,2);
+    sbsion[band].iodi=(int16_t)getbitu(msg->msg,22,2);
     
     for (i=1,n=0;i<=201;i++) {
         if (!getbitu(msg->msg,23+i,1)) continue;
@@ -371,7 +374,7 @@ static int decode_sbstype24(const sbsmsg_t *msg, sbssat_t *sbssat)
         udre=getbitu(msg->msg,86+4*i,4);
         
         sbssat->sat[j].fcorr.t0  =gpst2time(msg->week,msg->tow);
-        sbssat->sat[j].fcorr.prc =getbits(msg->msg,14+i*12,12)*0.125f;
+        sbssat->sat[j].fcorr.prc =getbits(msg->msg,14+i*12,12)*0.125;
         sbssat->sat[j].fcorr.udre=udre+1;
         sbssat->sat[j].fcorr.iodf=iodf;
     }
@@ -454,7 +457,7 @@ static void readmsgs(const char *file, int sel, gtime_t ts, gtime_t te,
 {
     sbsmsg_t *sbs_msgs;
     int i,week,prn,ch,msg;
-    unsigned int b;
+    uint32_t b;
     double tow,ep[6]={0};
     char buff[256],*p;
     gtime_t time;
@@ -484,6 +487,12 @@ static void readmsgs(const char *file, int sel, gtime_t ts, gtime_t te,
             if (sscanf(++p,"%d,%d",&ch,&prn)<2) continue;
             if (!(p=getfield(p,4))) continue;
         }
+        else if (!strncmp(buff,"$FRMA",5)) { /* NovAtel OEM3 */
+            if (!(p=getfield(buff,2))) continue;
+            if (sscanf(p,"%d,%lf,%d",&week,&tow,&prn)<3) continue;
+            if (!(p=getfield(p,6))) continue;
+            if (week<WEEKOFFSET) week+=WEEKOFFSET;
+        }
         else continue;
         
         if (sel!=0&&sel!=prn) continue;
@@ -506,7 +515,7 @@ static void readmsgs(const char *file, int sel, gtime_t ts, gtime_t te,
         sbs->msgs[sbs->n].prn=prn;
         for (i=0;i<29;i++) sbs->msgs[sbs->n].msg[i]=0;
         for (i=0;*(p-1)&&*p&&i<29;p+=2,i++) {
-            if (sscanf(p,"%2X",&b)==1) sbs->msgs[sbs->n].msg[i]=(unsigned char)b;
+            if (sscanf(p,"%2X",&b)==1) sbs->msgs[sbs->n].msg[i]=(uint8_t)b;
         }
         sbs->msgs[sbs->n++].msg[28]&=0xC0;
     }
@@ -521,7 +530,7 @@ static int cmpmsgs(const void *p1, const void *p2)
 }
 /* read sbas message file ------------------------------------------------------
 * read sbas message file
-* args   : char     *file   I   sbas message file (wind-card * is expanded)
+* args   : char     *file   I   sbas message file (wild-card * is expanded)
 *          int      sel     I   sbas satellite prn number selection (0:all)
 *         (gtime_t  ts      I   start time)
 *         (gtime_t  te      I   end time  )
@@ -582,11 +591,11 @@ extern int sbsreadmsg(const char *file, int sel, sbs_t *sbs)
 *-----------------------------------------------------------------------------*/
 extern void sbsoutmsg(FILE *fp, sbsmsg_t *sbsmsg)
 {
-    int i,type=sbsmsg->msg[1]>>2;
+    int i,prn=sbsmsg->prn,type=sbsmsg->msg[1]>>2;
     
     trace(4,"sbsoutmsg:\n");
     
-    fprintf(fp,"%4d %6d %3d %2d : ",sbsmsg->week,sbsmsg->tow,sbsmsg->prn,type);
+    fprintf(fp,"%4d %6d %3d %2d : ",sbsmsg->week,sbsmsg->tow,prn,type);
     for (i=0;i<29;i++) fprintf(fp,"%02X",sbsmsg->msg[i]);
     fprintf(fp,"\n");
 }
@@ -786,8 +795,9 @@ static int sbslongcorr(gtime_t time, int sat, const sbssat_t *sbssat,
         if (p->sat!=sat||p->lcorr.t0.time==0) continue;
         t=timediff(time,p->lcorr.t0);
         if (fabs(t)>MAXSBSAGEL) {
+            char tstr[40];
             trace(2,"sbas long-term correction expired: %s sat=%2d t=%5.0f\n",
-                  time_str(time,0),sat,t);
+                  time2str(time,tstr,0),sat,t);
             return 0;
         }
         for (i=0;i<3;i++) drs[i]=p->lcorr.dpos[i]+p->lcorr.dvel[i]*t;
@@ -801,7 +811,8 @@ static int sbslongcorr(gtime_t time, int sat, const sbssat_t *sbssat,
     /* if sbas satellite without correction, no correction applied */
     if (satsys(sat,NULL)==SYS_SBS) return 1;
     
-    trace(2,"no sbas long-term correction: %s sat=%2d\n",time_str(time,0),sat);
+    char tstr[40];
+    trace(2,"no sbas long-term correction: %s sat=%2d\n",time2str(time,tstr,0),sat);
     return 0;
 }
 /* fast correction -----------------------------------------------------------*/
@@ -832,7 +843,8 @@ static int sbsfastcorr(gtime_t time, int sat, const sbssat_t *sbssat,
               *prc,sqrt(*var),t);
         return 1;
     }
-    trace(2,"no sbas fast correction: %s sat=%2d\n",time_str(time,0),sat);
+    char tstr[40];
+    trace(2,"no sbas fast correction: %s sat=%2d\n",time2str(time,tstr,0),sat);
     return 0;
 }
 /* sbas satellite ephemeris and clock correction -------------------------------
@@ -872,7 +884,7 @@ extern int sbssatcorr(gtime_t time, int sat, const nav_t *nav, double *rs,
     
     dts[0]+=dclk+prc/CLIGHT;
     
-    trace(5,"sbssatcorr: sat=%2d drs=%6.3f %6.3f %6.3f dclk=%.3f %.3f var=%.3f\n",
+    trace(4,"sbssatcorr: sat=%2d drs=%6.3f %6.3f %6.3f dclk=%.3f %.3f var=%.3f\n",
           sat,drs[0],drs[1],drs[2],dclk,prc/CLIGHT,*var);
     
     return 1;
@@ -881,15 +893,15 @@ extern int sbssatcorr(gtime_t time, int sat, const nav_t *nav, double *rs,
 * decode sbas message frame words and check crc
 * args   : gtime_t time     I   reception time
 *          int    prn       I   sbas satellite prn number
-*          unsigned int *word I message frame words (24bit x 10)
+*          uint32_t *word   I   message frame words (24bit x 10)
 *          sbsmsg_t *sbsmsg O   sbas message
 * return : status (1:ok,0:crc error)
 *-----------------------------------------------------------------------------*/
-extern int sbsdecodemsg(gtime_t time, int prn, const unsigned int *words,
+extern int sbsdecodemsg(gtime_t time, int prn, const uint32_t *words,
                         sbsmsg_t *sbsmsg)
 {
     int i,j;
-    unsigned char f[29];
+    uint8_t f[29];
     double tow;
     
     trace(5,"sbsdecodemsg: prn=%d\n",prn);
@@ -899,9 +911,9 @@ extern int sbsdecodemsg(gtime_t time, int prn, const unsigned int *words,
     sbsmsg->tow=(int)(tow+DTTOL);
     sbsmsg->prn=prn;
     for (i=0;i<7;i++) for (j=0;j<4;j++) {
-        sbsmsg->msg[i*4+j]=(unsigned char)(words[i]>>((3-j)*8));
+        sbsmsg->msg[i*4+j]=(uint8_t)(words[i]>>((3-j)*8));
     }
-    sbsmsg->msg[28]=(unsigned char)(words[7]>>18)&0xC0;
+    sbsmsg->msg[28]=(uint8_t)(words[7]>>18)&0xC0;
     for (i=28;i>0;i--) f[i]=(sbsmsg->msg[i]>>6)+(sbsmsg->msg[i-1]<<2);
     f[0]=sbsmsg->msg[0]>>6;
     

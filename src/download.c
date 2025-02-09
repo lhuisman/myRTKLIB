@@ -1,30 +1,35 @@
 /*------------------------------------------------------------------------------
 * download.c : gnss data downloader
 *
-*          Copyright (C) 2012 by T.TAKASU, All rights reserved.
+*          Copyright (C) 2012-2020 by T.TAKASU, All rights reserved.
 *
 * version : $Revision:$ $Date:$
 * history : 2012/12/28  1.0  new
 *           2013/06/02  1.1  replace S_IREAD by S_IRUSR
+*           2020/11/30  1.2  support protocol https:// and ftps://
+*                            support compressed RINEX (CRX) files
+*                            support wild-card (*) in URL for FTP and FTPS
+*                            use "=" to separate file name from URL
+*                            fix bug on double-free of download paths
+*                            limit max number of download paths
+*                            use integer types in stdint.h
 *-----------------------------------------------------------------------------*/
+#define _POSIX_C_SOURCE 199506
 #include <errno.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 
 #include "rtklib.h"
 
-#define NMAX_STA    2048            /* max number of stations */
-#define NMAX_TYPE   256             /* max number of data types */
-#define NMAX_URL    1024            /* max number of urls in opptions file */
+#define FTP_CMD     "wget"          /* FTP/HTTP command */
+#define FTP_TIMEOUT 60              /* FTP/HTTP timeout (s) */
+#define FTP_LISTING ".listing"      /* FTP listing file */
+#define FTP_NOFILE  2048            /* FTP error no file */
+#define HTTP_NOFILE 1               /* HTTP error no file */
+#define FTP_RETRY   3               /* FTP number of retry */
+#define MAX_PATHS   131072          /* max number of download paths */
 
-#define FTP_CMD     "wget"          /* ftp/http command */
-#define FTP_TIMEOUT 60              /* ftp/http timeout (s) */
-#define FTP_LISTING ".listing"      /* ftp/http listing file */
-#define FTP_NOFILE  2048            /* ftp error no file */
-#define HTTP_NOFILE 1               /* http error no file */
-#define FTP_RETRY   3               /* ftp number of retry */
-
-/* type definition -----------------------------------------------------------*/
+/* type definitions ----------------------------------------------------------*/
 
 typedef struct {                    /* download path type */
     char *remot;                    /* remote path */
@@ -91,7 +96,7 @@ static char *parse_str(char *buff, char *str, int nmax)
 {
     char *p,*q,sep[]=" \r\n";
     
-    for (p=buff;*p&&*p==' ';p++) ;
+    for (p=buff;*p==' ';p++) ;
     
     if (*p=='"') sep[0]=*p++; /* enclosed within quotation marks */
     
@@ -104,12 +109,13 @@ static char *parse_str(char *buff, char *str, int nmax)
 /* compare str1 and str2 with wildcards (*) ----------------------------------*/
 static int cmp_str(const char *str1, const char *str2)
 {
-    char s1[35],s2[35],*p,*q;
+    char s1[1026],s2[1026],*p,*q;
     
     sprintf(s1,"^%s$",str1);
     sprintf(s2,"^%s$",str2);
-    
-    for (p=s1,q=strtok(s2,"*");q;q=strtok(NULL,"*")) {
+
+    char *r;
+    for (p=s1,q=strtok_r(s2,"*",&r);q;q=strtok_r(NULL,"*",&r)) {
         if ((p=strstr(p,q))) p+=strlen(q); else break;
     }
     return p!=NULL;
@@ -119,11 +125,13 @@ static void remot2local(const char *remot, const char *dir, char *local)
 {
     char *p;
     
-    if ((p=strrchr(remot,'/'))) p++; else p=(char *)remot;
+    if      ((p=strrchr(remot,'='))) p++;
+    else if ((p=strrchr(remot,'/'))) p++;
+    else p=(char *)remot;
     
-    sprintf(local,"%s%c%s",dir,FILEPATHSEP,p);
+    sprintf(local,"%s%c%s",dir,RTKLIB_FILEPATHSEP,p);
 }
-/* test file existance -------------------------------------------------------*/
+/* test file existence -------------------------------------------------------*/
 static int exist_file(const char *local)
 {
 #ifdef WIN32
@@ -135,14 +143,16 @@ static int exist_file(const char *local)
     return buff.st_mode&S_IRUSR;
 #endif
 }
-/* test file existance -------------------------------------------------------*/
+/* test local file existence -------------------------------------------------*/
 static int test_file(const char *local)
 {
     char buff[1024],*p;
     int comp=0;
     
+    if (strchr(local,'*')) { /* test wild-card (*) in path */
+        return 0;
+    }
     strcpy(buff,local);
-    if (exist_file(buff)) return 1;
     if ((p=strrchr(buff,'.'))&&
         (!strcmp(p,".z")||!strcmp(p,".gz")||!strcmp(p,".zip")||
          !strcmp(p,".Z")||!strcmp(p,".GZ")||!strcmp(p,".ZIP"))) {
@@ -152,6 +162,11 @@ static int test_file(const char *local)
     }
     if ((p=strrchr(buff,'.'))&&strlen(p)==4&&(*(p+3)=='d'||*(p+3)=='D')) {
         *(p+3)=*(p+3)=='d'?'o':'O';
+        if (exist_file(buff)) return 1;
+        comp=1;
+    }
+    if ((p=strrchr(buff,'.'))&&(!strcmp(p,".crx")||!strcmp(p,".CRX"))) {
+        if (!strcmp(p,".crx")) strcpy(p,".cro"); else strcpy(p,".CRO");
         if (exist_file(buff)) return 1;
         comp=1;
     }
@@ -176,10 +191,11 @@ static int add_path(paths_t *paths, const char *remot, const char *dir)
     char local[1024];
     
     if (paths->n>=paths->nmax) {
-        paths->nmax=paths->nmax<=0?1024:paths->nmax*2;
+        if ((paths->nmax=paths->nmax<=0?1024:paths->nmax*2)>MAX_PATHS) {
+            return 0;
+        }
         paths_path=(path_t *)realloc(paths->path,sizeof(path_t)*paths->nmax);
         if (!paths_path) {
-            free_path(paths);
             return 0;
         }
         paths->path=paths_path;
@@ -190,7 +206,6 @@ static int add_path(paths_t *paths, const char *remot, const char *dir)
     
     if (!(paths->path[paths->n].remot=(char *)malloc(strlen(remot)+1))||
         !(paths->path[paths->n].local=(char *)malloc(strlen(local)+1))) {
-        free_path(paths);
         return 0;
     }
     strcpy(paths->path[paths->n].remot,remot);
@@ -233,7 +248,7 @@ static int gen_path(gtime_t time, gtime_t time_p, int seqnos, int seqnoe,
 }
 /* generate download paths ---------------------------------------------------*/
 static int gen_paths(gtime_t time, gtime_t time_p, int seqnos, int seqnoe,
-                     const url_t *url, char **stas, int nsta, const char *dir,
+                     const url_t *url, const char **stas, int nsta, const char *dir,
                      paths_t *paths)
 {
     int i;
@@ -279,7 +294,7 @@ static int mkdir_r(const char *dir)
     if (!*dir||!strcmp(dir+1,":\\")) return 1;
     
     strcpy(pdir,dir);
-    if ((p=strrchr(pdir,FILEPATHSEP))) {
+    if ((p=strrchr(pdir,RTKLIB_FILEPATHSEP))) {
         *p='\0';
         h=FindFirstFile(pdir,&data);
         if (h==INVALID_HANDLE_VALUE) {
@@ -298,7 +313,7 @@ static int mkdir_r(const char *dir)
     if (!*dir) return 1;
     
     strcpy(pdir,dir);
-    if ((p=strrchr(pdir,FILEPATHSEP))) {
+    if ((p=strrchr(pdir,RTKLIB_FILEPATHSEP))) {
         *p='\0';
         if (!(fp=fopen(pdir,"r"))) {
             if (!mkdir_r(pdir)) return 0;
@@ -311,13 +326,12 @@ static int mkdir_r(const char *dir)
     return 0;
 #endif
 }
-/* get remote file list ------------------------------------------------------*/
+/* get remote file list for FTP or FTPS --------------------------------------*/
 static int get_list(const path_t *path, const char *usr, const char *pwd,
                     const char *proxy)
 {
     FILE *fp;
     char cmd[4096],env[1024]="",remot[1024],*opt="",*opt2="",*p;
-    int stat;
     
 #ifndef WIN32
     opt2=" -o /dev/null";
@@ -335,15 +349,39 @@ static int get_list(const path_t *path, const char *usr, const char *pwd,
     sprintf(cmd,"%s%s %s --ftp-user=%s --ftp-password=%s --glob=off "
             "--passive-ftp --no-remove-listing -N %s-t 1 -T %d%s\n",
             env,FTP_CMD,remot,usr,pwd,opt,FTP_TIMEOUT,opt2);
-    
     execcmd_to(cmd);
     
     if (!(fp=fopen(FTP_LISTING,"r"))) return 0;
     fclose(fp);
     return 1;
 }
+/* replace wild-card (*) in the paths ----------------------------------------*/
+static int rep_paths(path_t *path, const char *file)
+{
+    char buff1[1024],buff2[1024],*p,*q,*remot,*local;
+    
+    strcpy(buff1,path->remot);
+    strcpy(buff2,path->local);
+    if ((p=strrchr(buff1,'/'))) p++; else p=buff1;
+    if ((q=strrchr(buff2,RTKLIB_FILEPATHSEP))) q++; else q=buff2;
+    strcpy(p,file);
+    strcpy(q,file);
+    
+    if (!(remot=(char *)malloc(strlen(buff1)+1)) ||
+        !(local=(char *)malloc(strlen(buff2)+1))) {
+        free(remot);
+        return 0;
+    }
+    strcpy(remot,buff1);
+    strcpy(local,buff2);
+    free(path->remot);
+    free(path->local);
+    path->remot=remot;
+    path->local=local;
+    return 1;
+}
 /* test file in remote file list ---------------------------------------------*/
-static int test_list(const path_t *path)
+static int test_list(path_t *path)
 {
     FILE *fp;
     char buff[1024],*file,*list,*p;
@@ -351,7 +389,12 @@ static int test_list(const path_t *path)
     
     if (!(fp=fopen(FTP_LISTING,"r"))) return 1;
     
-    if ((p=strrchr(path->remot,'/'))) file=p+1; else return 1;
+    if ((p=strrchr(path->remot,'/')))
+        file=p+1;
+    else {
+        fclose(fp);
+        return 1;
+    }
     
     /* search file in remote file list */
     while (fgets(buff,sizeof(buff),fp)) {
@@ -369,12 +412,23 @@ static int test_list(const path_t *path)
             fclose(fp);
             return 1;
         }
+        /* compare with wild-card (*) */
+        if (cmp_str(list,file)) {
+            
+            /* replace wild-card (*) in the paths */
+            if (!rep_paths(path,list)) {
+                fclose(fp);
+                return 0;
+            }
+            fclose(fp);
+            return 1;
+        }
     }
     fclose(fp);
     return 0;
 }
 /* execute download ----------------------------------------------------------*/
-static int exec_down(const path_t *path, char *remot_p, const char *usr,
+static int exec_down(path_t *path, char *remot_p, const char *usr,
                      const char *pwd, const char *proxy, int opts, int *n,
                      FILE *fp)
 {
@@ -386,10 +440,12 @@ static int exec_down(const path_t *path, char *remot_p, const char *usr,
     opt2=" 2> /dev/null";
 #endif
     strcpy(dir,path->local);
-    if ((p=strrchr(dir,FILEPATHSEP))) *p='\0';
+    if ((p=strrchr(dir,RTKLIB_FILEPATHSEP))) *p='\0';
     
-    if      (!strncmp(path->remot,"ftp://" ,6)) proto=0;
-    else if (!strncmp(path->remot,"http://",7)) proto=1;
+    if      (!strncmp(path->remot,"ftp://"  ,6)) proto=0;
+    else if (!strncmp(path->remot,"ftps://" ,7)) proto=2;
+    else if (!strncmp(path->remot,"http://" ,7)) proto=1;
+    else if (!strncmp(path->remot,"https://",8)) proto=1;
     else {
         trace(2,"exec_down: invalid path %s\n",path->remot);
         showmsg("STAT=X");
@@ -406,16 +462,16 @@ static int exec_down(const path_t *path, char *remot_p, const char *usr,
     }
     showmsg("STAT=_");
     
-    /* get remote file list */
-    if ((p=strrchr(path->remot,'/'))&&
+    /* get remote file list for FTP or FTPS */
+    if ((proto==0||proto==2)&&(p=strrchr(path->remot,'/'))&&
         strncmp(path->remot,remot_p,p-path->remot)) {
         
         if (get_list(path,usr,pwd,proxy)) {
             strcpy(remot_p,path->remot);
         }
     }
-    /* test file in listing */
-    if (proto==0&&!test_list(path)) {
+    /* test file in listing for FTP or FTPS or extend wild-card in file path */
+    if ((proto==0||proto==2)&&!test_list(path)) {
         showmsg("STAT=x");
         if (fp) fprintf(fp,"%s NO_FILE\n",path->remot);
         n[1]++;
@@ -428,14 +484,22 @@ static int exec_down(const path_t *path, char *remot_p, const char *usr,
         n[3]++;
         return 0;
     }
+    /* re-test local file existence for file with wild-card */
+    if (!(opts&DLOPT_FORCE)&&test_file(path->local)) {
+        showmsg("STAT=.");
+        if (fp) fprintf(fp,"%s in %s\n",path->remot,dir);
+        n[2]++;
+        return 0;
+    }
     /* proxy option */
     if (*proxy) {
-        sprintf(env,"set %s_proxy=http://%s & ",proto==0?"ftp":"http",proxy);
+        sprintf(env,"set %s_proxy=http://%s & ",proto==0||proto==2?"ftp":"http",
+                proxy);
         sprintf(opt," --proxy=on ");
     }
     /* download command */
     sprintf(errfile,"%s.err",path->local);
-    if (proto==0) {
+    if (proto==0||proto==2) {
         sprintf(cmd,"%s%s %s --ftp-user=%s --ftp-password=%s --glob=off "
                 "--passive-ftp %s-t %d -T %d -O \"%s\" -o \"%s\"%s\n",
                 env,FTP_CMD,path->remot,usr,pwd,opt,FTP_RETRY,FTP_TIMEOUT,
@@ -460,7 +524,7 @@ static int exec_down(const path_t *path, char *remot_p, const char *usr,
             n[1]++;
         }
         else {
-            trace(2,"exec_down: %s error %d\n",proto==0?"ftp":"http",ret);
+            trace(2,"exec_down: error proto=%d %d\n",proto,ret);
             showmsg("STAT=X");
             if (fp) fprintf(fp," ERROR (%d)\n",ret);
             n[3]++;
@@ -504,17 +568,16 @@ static int test_local(gtime_t ts, gtime_t te, double ti, const char *path,
     int stat,abort=0;
     
     for (time=ts;timediff(time,te)<=1E-3;time=timeadd(time,ti)) {
-        
-        sprintf(str,"%s->%s",path,local);
-        
-        if (showmsg(str)) {
-            abort=1;
-            break;
-        }
         genpath(path,sta,time,0,remot);
         genpath(dir ,sta,time,0,dir_t);
         remot2local(remot,dir_t,local);
         
+        sprintf(str,"%s->%s",path,local);
+        if (showmsg(str)) {
+            abort=1;
+            break;
+        }
+
         stat=test_file(local);
         
         fprintf(fp," %s",stat==0?"-":(stat==1?"o":"z"));
@@ -528,7 +591,7 @@ static int test_local(gtime_t ts, gtime_t te, double ti, const char *path,
 }
 /* test local files ----------------------------------------------------------*/
 static int test_locals(gtime_t ts, gtime_t te, double ti, const url_t *url,
-                       char **stas, int nsta, const char *dir, int *nc, int *nt,
+                       const char **stas, int nsta, const char *dir, int *nc, int *nt,
                        FILE *fp)
 {
     int i;
@@ -552,7 +615,7 @@ static int test_locals(gtime_t ts, gtime_t te, double ti, const url_t *url,
     return 0;
 }
 /* print total count of local files ------------------------------------------*/
-static int print_total(const url_t *url, char **stas, int nsta, int *nc,
+static int print_total(const url_t *url, const char **stas, int nsta, int *nc,
                        int *nt, FILE *fp)
 {
     int i;
@@ -567,16 +630,16 @@ static int print_total(const url_t *url, char **stas, int nsta, int *nc,
     fprintf(fp,"%-12s: %5d/%5d\n",url->type,nc[0],nt[0]);
     return 1;
 }
-/* read url address list file of gnss data -------------------------------------
-* read url address list file of gnss data
-* args   : char   *file     I   gnss data url file
+/* read URL list file ----------------------------------------------------------
+* read URL list file for GNSS data
+* args   : char   *file     I   URL list file
 *          char   **types   I   selected types ("*":wildcard)
 *          int    ntype     I   number of selected types
-*          urls_t *urls     O   urls
-*          int    nmax      I   max number of urls
-* return : number of urls (0:error)
+*          urls_t *urls     O   URL list
+*          int    nmax      I   max number of URL list
+* return : number of URL addresses (0:error)
 * notes  :
-*    (1) url list file contains records containing the following fields
+*    (1) URL list file contains records containing the following fields
 *        separated by spaces. if a field contains spaces, enclose it within "".
 *
 *        data_type  url_address       default_local_directory
@@ -585,7 +648,9 @@ static int print_total(const url_t *url, char **stas, int nsta, int *nc,
 *    (3) url_address should be:
 *
 *        ftp://host_address/file_path or
-*        http://host_address/file_path
+*        ftps://host_address/file_path or
+*        http://host_address/file_path or
+*        https://host_address/file_path
 *
 *    (4) the field url_address or default_local_directory can include the
 *        follwing keywords replaced by date, time, station names and environment
@@ -607,7 +672,7 @@ static int print_total(const url_t *url, char **stas, int nsta, int *nc,
 *        %r -> rrrr    : station name
 *        %{env} -> env : environment variable
 *-----------------------------------------------------------------------------*/
-extern int dl_readurls(const char *file, char **types, int ntype, url_t *urls,
+extern int dl_readurls(const char *file, const char **types, int ntype, url_t *urls,
                        int nmax)
 {
     FILE *fp;
@@ -663,7 +728,8 @@ extern int dl_readstas(const char *file, char **stas, int nmax)
     }
     while (fgets(buff,sizeof(buff),fp)&&n<nmax) {
         if ((p=strchr(buff,'#'))) *p='\0';
-        for (p=strtok(buff," \r\n");p&&n<nmax;p=strtok(NULL," \r\n")) {
+        char *r;
+        for (p=strtok_r(buff," \r\n",&r);p&&n<nmax;p=strtok_r(NULL," \r\n",&r)) {
             strcpy(stas[n++],p);
         }
     }
@@ -681,14 +747,14 @@ extern int dl_readstas(const char *file, char **stas, int nmax)
 *          double tint      I   time interval (s)
 *          int    seqnos    I   sequence number start
 *          int    seqnoe    I   sequence number end
-*          url_t  *urls     I   url address list
-*          int    nurl      I   number of urls
+*          url_t  *urls     I   URL list
+*          int    nurl      I   number of URL list
 *          char   **stas    I   station list
-*          int    nsta      I   number of stations
+*          int    nsta      I   number of station list
 *          char   *dir      I   local directory
 *          char   *remote_p I   previous remote file path
-*          char   *usr      I   login user for ftp
-*          char   *pwd      I   login password for ftp
+*          char   *usr      I   login user for FTP or FTPS
+*          char   *pwd      I   login password for FTP or FTPS
 *          char   *proxy    I   proxy server address
 *          int    opts      I   download options (or of the followings)
 *                                 DLOPT_FORCE = force download existing file
@@ -698,10 +764,16 @@ extern int dl_readstas(const char *file, char **stas, int nmax)
 *          char   *msg      O   output messages
 *          FILE   *fp       IO  log file pointer (NULL: no output log)
 * return : status (1:ok,0:error,-1:aborted)
-* notes  : urls should be read by using dl_readurl()
+* notes  : The URL list should be read by using dl_readurl()
+*          In the FTP or FTPS cases, the file name in a URL can contain wild-
+*          cards (*). The directory in a URL can not contain any wild-cards.
+*          If the file name contains wild-cards, dl_exec() gets a file-list in
+*          the remote directory and downloads the firstly matched file in the
+*          remote file-list. The secondary matched or the following files are
+*          not downloaded.
 *-----------------------------------------------------------------------------*/
 extern int dl_exec(gtime_t ts, gtime_t te, double ti, int seqnos, int seqnoe,
-                   const url_t *urls, int nurl, char **stas, int nsta,
+                   const url_t *urls, int nurl, const char **stas, int nsta,
                    const char *dir, const char *usr, const char *pwd,
                    const char *proxy, int opts, char *msg, FILE *fp)
 {
@@ -709,7 +781,7 @@ extern int dl_exec(gtime_t ts, gtime_t te, double ti, int seqnos, int seqnoe,
     gtime_t ts_p={0};
     char str[2048],remot_p[1024]="";
     int i,n[4]={0};
-    unsigned int tick=tickget();
+    uint32_t tick=tickget();
     
     showmsg("STAT=_");
     
@@ -719,6 +791,7 @@ extern int dl_exec(gtime_t ts, gtime_t te, double ti, int seqnos, int seqnoe,
         for (i=0;i<nurl;i++) {
             if (!gen_paths(ts,ts_p,seqnos,seqnoe,urls+i,stas,nsta,dir,&paths)) {
                 free_path(&paths);
+                sprintf(msg,"too many download files");
                 return 0;
             }
         }
@@ -756,8 +829,8 @@ extern int dl_exec(gtime_t ts, gtime_t te, double ti, int seqnos, int seqnoe,
 * execute local file test
 * args   : gtime_t ts,te    I   time start and end
 *          double tint      I   time interval (s)
-*          url_t  *urls     I   download urls
-*          int    nurl      I   number of urls
+*          url_t  *urls     I   remote URL addresses
+*          int    nurl      I   number of remote URL addresses
 *          char   **stas    I   stations
 *          int    nsta      I   number of stations
 *          char   *dir      I   local directory
@@ -767,7 +840,7 @@ extern int dl_exec(gtime_t ts, gtime_t te, double ti, int seqnos, int seqnoe,
 * return : status (1:ok,0:error,-1:aborted)
 *-----------------------------------------------------------------------------*/
 extern void dl_test(gtime_t ts, gtime_t te, double ti, const url_t *urls,
-                    int nurl, char **stas, int nsta, const char *dir,
+                    int nurl, const char **stas, int nsta, const char *dir,
                     int ncol, int datefmt, FILE *fp)
 {
     gtime_t time;
@@ -776,9 +849,10 @@ extern void dl_test(gtime_t ts, gtime_t te, double ti, const url_t *urls,
     int i,j,n,m,*nc,*nt,week,flag,abort=0;
     
     if (ncol<1) ncol=1; else if (ncol>200) ncol=200;
-     
+
+    char tstr[40];
     fprintf(fp,"** LOCAL DATA AVAILABILITY (%s, %s) **\n\n",
-            time_str(timeget(),0),*dir?dir:"*");
+            time2str(timeget(),tstr,0),*dir?dir:"*");
     
     for (i=n=0;i<nurl;i++) {
         n+=strstr(urls[i].path,"%s")||strstr(urls[i].path,"%S")?nsta:1;

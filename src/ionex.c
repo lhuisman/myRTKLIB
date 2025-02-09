@@ -7,7 +7,7 @@
 *     [1] S.Schear, W.Gurtner and J.Feltens, IONEX: The IONosphere Map EXchange
 *         Format Version 1, February 25, 1998
 *     [2] S.Schaer, R.Markus, B.Gerhard and A.S.Timon, Daily Global Ionosphere
-*         Maps based on GPS Carrier Phase Data Routinely producted by CODE
+*         Maps based on GPS Carrier Phase Data Routinely produced by CODE
 *         Analysis Center, Proceeding of the IGS Analysis Center Workshop, 1996
 *
 * version : $Revision:$ $Date:$
@@ -48,51 +48,57 @@ static tec_t *addtec(const double *lats, const double *lons, const double *hgts,
 {
     tec_t *p,*nav_tec;
     gtime_t time0={0};
-    int i,n,ndata[3];
+    int i,n,ndata[3],indx;
     
     trace(3,"addtec  :\n");
     
     ndata[0]=nitem(lats);
     ndata[1]=nitem(lons);
     ndata[2]=nitem(hgts);
-    if (ndata[0]<=1||ndata[1]<=1||ndata[2]<=0) return NULL;
-    
-    if (nav->nt>=nav->ntmax) {
-        nav->ntmax+=256;
-        if (!(nav_tec=(tec_t *)realloc(nav->tec,sizeof(tec_t)*nav->ntmax))) {
-            trace(1,"readionex malloc error ntmax=%d\n",nav->ntmax);
-            free(nav->tec); nav->tec=NULL; nav->nt=nav->ntmax=0;
+    if (ndata[0] > 1 && ndata[1] > 1 && ndata[2] > 0)
+    {
+        if (nav->nt >= nav->ntmax) {
+            nav->ntmax += 256;
+            if (!(nav_tec = (tec_t*)realloc(nav->tec, sizeof(tec_t) * nav->ntmax))) {
+                trace(1, "readionex malloc error ntmax=%d\n", nav->ntmax);
+                free(nav->tec); nav->tec = NULL; nav->nt = nav->ntmax = 0;
+                return NULL;
+            }
+            for (indx = nav->ntmax - 1; indx >= nav->ntmax - 256; indx--)
+                memset(&nav_tec[indx], 0, sizeof(tec_t));
+            nav->tec = nav_tec;
+        }
+        p = nav->tec + nav->nt;
+        p->time = time0;
+        p->rb = rb;
+        for (i = 0; i < 3; i++) {
+            p->ndata[i] = ndata[i];
+            p->lats[i] = lats[i];
+            p->lons[i] = lons[i];
+            p->hgts[i] = hgts[i];
+        }
+        n = ndata[0] * ndata[1] * ndata[2];
+
+        if (!(p->data = (double*)malloc(sizeof(double) * n)) ||
+            !(p->rms = (float*)malloc(sizeof(float) * n))) {
             return NULL;
         }
-        nav->tec=nav_tec;
+        for (i = 0; i < n; i++) {
+            /* Thanks to 'if (ndata[0]>1 && ndata[1]>1 && ndata[2]>0)' we know analysis is wrong - disable 6386 */
+            p->data[i] = 0.0;
+            p->rms[i] = 0.0f;
+        }
+        nav->nt++;
+        return p;
     }
-    p=nav->tec+nav->nt;
-    p->time=time0;
-    p->rb=rb;
-    for (i=0;i<3;i++) {
-        p->ndata[i]=ndata[i];
-        p->lats[i]=lats[i];
-        p->lons[i]=lons[i];
-        p->hgts[i]=hgts[i];
-    }
-    n=ndata[0]*ndata[1]*ndata[2];
-    
-    if (!(p->data=(double *)malloc(sizeof(double)*n))||
-        !(p->rms =(float  *)malloc(sizeof(float )*n))) {
+    else
         return NULL;
-    }
-    for (i=0;i<n;i++) {
-        p->data[i]=0.0;
-        p->rms [i]=0.0f;
-    }
-    nav->nt++;
-    return p;
 }
 /* read ionex dcb aux data ----------------------------------------------------*/
 static void readionexdcb(FILE *fp, double *dcb, double *rms)
 {
     int i,sat;
-    char buff[1024],id[32],*label;
+    char buff[1024],id[8],*label;
     
     trace(3,"readionexdcb:\n");
     
@@ -268,7 +274,7 @@ static void combtec(nav_t *nav)
 /* read ionex tec grid file ----------------------------------------------------
 * read ionex ionospheric tec grid file
 * args   : char   *file       I   ionex tec grid file
-*                                 (wind-card * is expanded)
+*                                 (wild-card * is expanded)
 *          nav_t  *nav        IO  navigation data
 *                                 nav->nt, nav->ntmax and nav->tec are modified
 *          int    opt         I   read option (1: no clear of tec data,0:clear)
@@ -278,7 +284,6 @@ static void combtec(nav_t *nav)
 extern void readtec(const char *file, nav_t *nav, int opt)
 {
     FILE *fp;
-    double lats[3]={0},lons[3]={0},hgts[3]={0},rb=0.0,nexp=-1.0;
     double dcb[MAXSAT]={0},rms[MAXSAT]={0};
     int i,n;
     char *efiles[MAXEXFILE];
@@ -304,6 +309,7 @@ extern void readtec(const char *file, nav_t *nav, int opt)
             continue;
         }
         /* read ionex header */
+        double lats[3]={0},lons[3]={0},hgts[3]={0},rb=0.0,nexp=-1.0;
         if (readionexh(fp,lats,lons,hgts,&rb,&nexp,dcb,rms)<=0.0) {
             trace(2,"ionex file format error %s\n",efiles[i]);
             continue;
@@ -318,10 +324,10 @@ extern void readtec(const char *file, nav_t *nav, int opt)
     /* combine tec grid data */
     if (nav->nt>0) combtec(nav);
     
-    /* P1-P2 dcb */
-    for (i=0;i<MAXSAT;i++) {
-        nav->cbias[i][0]=CLIGHT*dcb[i]*1E-9; /* ns->m */
-    }
+    /* P1-P2 dcb (not used)*/
+    /* for (i=0;i<MAXSAT;i++) { */
+    /*    nav->cbias[i][0]=CLIGHT*dcb[i]*1E-9; */ /* ns->m */
+    /* } */
 }
 /* interpolate tec grid data -------------------------------------------------*/
 static int interptec(const tec_t *tec, int k, const double *posp, double *value,
@@ -378,7 +384,8 @@ static int iondelay(gtime_t time, const tec_t *tec, const double *pos,
     double fs,posp[3]={0},vtec,rms,hion,rp;
     int i;
     
-    trace(3,"iondelay: time=%s pos=%.1f %.1f azel=%.1f %.1f\n",time_str(time,0),
+    char tstr[40];
+    trace(3,"iondelay: time=%s pos=%.1f %.1f azel=%.1f %.1f\n",time2str(time,tstr,0),
           pos[0]*R2D,pos[1]*R2D,azel[0]*R2D,azel[1]*R2D);
     
     *delay=*var=0.0;
@@ -430,7 +437,8 @@ extern int iontec(gtime_t time, const nav_t *nav, const double *pos,
     double dels[2],vars[2],a,tt;
     int i,stat[2];
     
-    trace(3,"iontec  : time=%s pos=%.1f %.1f azel=%.1f %.1f\n",time_str(time,0),
+    char tstr[40];
+    trace(3,"iontec  : time=%s pos=%.1f %.1f azel=%.1f %.1f\n",time2str(time,tstr,0),
           pos[0]*R2D,pos[1]*R2D,azel[0]*R2D,azel[1]*R2D);
     
     if (azel[1]<MIN_EL||pos[2]<MIN_HGT) {
@@ -442,7 +450,7 @@ extern int iontec(gtime_t time, const nav_t *nav, const double *pos,
         if (timediff(nav->tec[i].time,time)>0.0) break;
     }
     if (i==0||i>=nav->nt) {
-        trace(2,"%s: tec grid out of period\n",time_str(time,0));
+        trace(2,"%s: tec grid out of period\n",time2str(time,tstr,0));
         return 0;
     }
     if ((tt=timediff(nav->tec[i].time,nav->tec[i-1].time))==0.0) {
@@ -455,7 +463,7 @@ extern int iontec(gtime_t time, const nav_t *nav, const double *pos,
     
     if (!stat[0]&&!stat[1]) {
         trace(2,"%s: tec grid out of area pos=%6.2f %7.2f azel=%6.1f %5.1f\n",
-              time_str(time,0),pos[0]*R2D,pos[1]*R2D,azel[0]*R2D,azel[1]*R2D);
+              time2str(time,tstr,0),pos[0]*R2D,pos[1]*R2D,azel[0]*R2D,azel[1]*R2D);
         return 0;
     }
     if (stat[0]&&stat[1]) { /* linear interpolation by time */

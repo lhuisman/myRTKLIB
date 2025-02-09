@@ -6,16 +6,37 @@
 
 QT       -= core gui
 
-TARGET = RTKLib
 TEMPLATE = lib
-CONFIG += staticlib
+TARGET = RTKLib
+
+DEFINES -= UNICODE TRACE
 
 include(../RTKLib.pri)
 
-QMAKE_CFLAGS += -Wall -ansi -pedantic -Wno-unused-but-set-variable  -DTRACE -g
-DEFINES -= UNICODE
+*g++* {
+    QMAKE_CFLAGS += -std=c99 -Wall -pedantic -Wno-unused-but-set-variable -g
+    QMAKE_LFLAGS += -Wl,-z,undefs
+}
+
+win* {
+    CONFIG += staticlib
+}
+
+macx {
+    CONFIG += staticlib
+}
+
+
+*msvc* {
+    QMAKE_CFLAGS += -D_CRT_SECURE_NO_WARNINGS
+}
+
+ROOT_DIRECTORY = $${PWD}/..
+
+DESTDIR = $${ROOT_DIRECTORY}/lib
 
 SOURCES += rtkcmn.c \
+    trace.c \
     convkml.c \
     convrnx.c \
     convgpx.c \
@@ -31,9 +52,7 @@ SOURCES += rtkcmn.c \
     postpos.c \
     ppp.c \
     ppp_ar.c \
-    ppp_corr.c \
     preceph.c \
-    qzslex.c \
     rcvraw.c \
     rinex.c \
     rtcm.c \
@@ -50,19 +69,15 @@ SOURCES += rtkcmn.c \
     tle.c \
     rcv/binex.c \
     rcv/crescent.c \
-    rcv/gw10.c \
     rcv/javad.c \
     rcv/novatel.c \
     rcv/nvs.c \
-    rcv/rcvlex.c \
     rcv/rt17.c \
     rcv/septentrio.c \
     rcv/skytraq.c \
-    rcv/ublox.c \
-    rcv/tersus.c \
-    rcv/comnav.c \
     rcv/swiftnav.c \
-    rcv/cmr.c
+    rcv/ublox.c \
+    rcv/unicore.c 
 
 HEADERS += rtklib.h
 

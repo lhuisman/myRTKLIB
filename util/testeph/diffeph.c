@@ -8,7 +8,7 @@
 #include "rtklib.h"
 
 static const char *usage[]={
-"Synopsys",
+"Synopsis",
 " diffeph [-t0 y/m/d h:m:s][-ts ts][-ti ti][-s s][-1 r][-2 b][-t]",
 "         [-o][-u lat lon][-x level] file ...",
 "",
@@ -25,7 +25,7 @@ static const char *usage[]={
 "-t          output time as yyyy/mm/dd hh:mm:ss",
 "-e          output difference as ecef-x/y/z [radial/along-trk/cross-trk]",
 "-o          output satellite position/clock-bias",
-"-u lat lon  refrence position latitude and longitude for ure",
+"-u lat lon  reference position latitude and longitude for ure",
 "-x level    trace level",
 "file ...    compared ephemeris files and antenna parameters file",
 NULL};
@@ -39,7 +39,7 @@ static void prusage(void)
 /* update rtcm struct --------------------------------------------------------*/
 static void updatertcm(gtime_t time, rtcm_t *rtcm, nav_t *nav, FILE *fp)
 {
-    char s1[32],s2[32];
+    char s1[40],s2[40];
     int i;
     
     while (input_rtcm3f(rtcm,fp)>=0) {
@@ -71,7 +71,7 @@ static void printephdiff(gtime_t time, int sat, int eph1, int eph2,
     double drs[3],drss[3],rc[3],er[3],ea[3],ec[3];
     double rr[3],e[3],rr1[3],rr2[3],r1,r2,azel[2];
     int i,week,svh1,svh2;
-    char tstr[32];
+    char tstr[40];
     
     if (!satpos(time,time,sat,eph1,nav1,rs1,dts1,&var1,&svh1)) return;
     if (!satpos(time,time,sat,eph2,nav2,rs2,dts2,&var2,&svh2)) return;
@@ -82,9 +82,9 @@ static void printephdiff(gtime_t time, int sat, int eph1, int eph2,
     cross3(rs2,rs2+3,rc);
     if (!normv3(rc,ec)) return;
     cross3(ea,ec,er);
-    drss[0]=dot(drs,er,3); /* radial/along-trk/cross-trk */
-    drss[1]=dot(drs,ea,3);
-    drss[2]=dot(drs,ec,3);
+    drss[0]=dot3(drs,er); /* radial/along-trk/cross-trk */
+    drss[1]=dot3(drs,ea);
+    drss[2]=dot3(drs,ec);
     
     if (topt) {
         time2str(time,tstr,0);
@@ -214,7 +214,8 @@ int main(int argc, char **argv)
     for (i=0;i<(int)(tspan*3600.0/tint);i++) {
        time=timeadd(t0,tint*i);
        
-       fprintf(stderr,"time=%s\r",time_str(time,0));
+       char tstr[40];
+       fprintf(stderr,"time=%s\r",time2str(time,tstr,0));
        
        /* update ephemeris in navigation data */
        if (fp) {

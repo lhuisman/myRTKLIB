@@ -48,7 +48,10 @@ static void tide_pl(const double *eu, const double *rp, double GMp,
     
     trace(4,"tide_pl : pos=%.3f %.3f\n",pos[0]*R2D,pos[1]*R2D);
     
-    if ((r=norm(rp,3))<=0.0) return;
+    if ((r=norm(rp,3))<=0.0) {
+        dr[0]=dr[1]=dr[2]=0;
+        return;
+    }
     
     for (i=0;i<3;i++) ep[i]=rp[i]/r;
     
@@ -61,7 +64,7 @@ static void tide_pl(const double *eu, const double *rp, double GMp,
     p=(3.0*sinl*sinl-1.0)/2.0;
     H2=0.6078-0.0006*p;
     L2=0.0847+0.0002*p;
-    a=dot(ep,eu,3);
+    a=dot3(ep,eu);
     dp=K2*3.0*L2*a;
     du=K2*(H2*(1.5*a*a-0.5)-3.0*L2*a*a);
     
@@ -118,17 +121,17 @@ static void tide_solid(const double *rsun, const double *rmoon,
 static void tide_oload(gtime_t tut, const double *odisp, double *denu)
 {
     const double args[][5]={
-        {1.40519E-4, 2.0,-2.0, 0.0, 0.00},  /* M2 */
-        {1.45444E-4, 0.0, 0.0, 0.0, 0.00},  /* S2 */
-        {1.37880E-4, 2.0,-3.0, 1.0, 0.00},  /* N2 */
-        {1.45842E-4, 2.0, 0.0, 0.0, 0.00},  /* K2 */
-        {0.72921E-4, 1.0, 0.0, 0.0, 0.25},  /* K1 */
-        {0.67598E-4, 1.0,-2.0, 0.0,-0.25},  /* O1 */
-        {0.72523E-4,-1.0, 0.0, 0.0,-0.25},  /* P1 */
-        {0.64959E-4, 1.0,-3.0, 1.0,-0.25},  /* Q1 */
-        {0.53234E-5, 0.0, 2.0, 0.0, 0.00},  /* Mf */
-        {0.26392E-5, 0.0, 1.0,-1.0, 0.00},  /* Mm */
-        {0.03982E-5, 2.0, 0.0, 0.0, 0.00}   /* Ssa */
+        {1.40519E-4, 2.0,-2.0, 0.0, 0.00},  // M2 semidiurnal principal lunar.
+        {1.45444E-4, 0.0, 0.0, 0.0, 0.00},  // S2 semidiurnal principal solar.
+        {1.37880E-4, 2.0,-3.0, 1.0, 0.00},  // N2 semidiurnal lunar elliptical.
+        {1.45842E-4, 2.0, 0.0, 0.0, 0.00},  // K2 semidiurnal luni-solar declination.
+        {0.72921E-4, 1.0, 0.0, 0.0, 0.25},  // K1 diurnal luni-solar declination.
+        {0.67598E-4, 1.0,-2.0, 0.0,-0.25},  // O1 diurnal principal lunar.
+        {0.72523E-4,-1.0, 0.0, 0.0,-0.25},  // P1 diurnal principal solar.
+        {0.64959E-4, 1.0,-3.0, 1.0,-0.25},  // Q1 diurnal elliptical lunar.
+        {0.53234E-5, 0.0, 2.0, 0.0, 0.00},  // Mf Lunar fortnightly.
+        {0.26392E-5, 0.0, 1.0,-1.0, 0.00},  // Mm Lunar monthly.
+        {0.03982E-5, 2.0, 0.0, 0.0, 0.00}   // Ssa Solar semiannual.
     };
     const double ep1975[]={1975,1,1,0,0,0};
     double ep[6],fday,days,t,t2,t3,a[5],ang,dp[3]={0};
@@ -240,7 +243,8 @@ extern void tidedisp(gtime_t tutc, const double *rr, int opt, const erp_t *erp,
     int year,mon,day;
 #endif
     
-    trace(3,"tidedisp: tutc=%s\n",time_str(tutc,0));
+    char tstr[40];
+    trace(3,"tidedisp: tutc=%s\n",time2str(tutc,tstr,0));
     
     if (erp) {
         geterp(erp,utc2gpst(tutc),erpv);
@@ -254,7 +258,7 @@ extern void tidedisp(gtime_t tutc, const double *rr, int opt, const erp_t *erp,
     pos[0]=asin(rr[2]/norm(rr,3));
     pos[1]=atan2(rr[1],rr[0]);
     xyz2enu(pos,E);
-    
+
     if (opt&1) { /* solid earth tides */
         
         /* sun and moon position in ecef */
@@ -276,12 +280,12 @@ extern void tidedisp(gtime_t tutc, const double *rr, int opt, const erp_t *erp,
     }
     if ((opt&2)&&odisp) { /* ocean tide loading */
         tide_oload(tut,odisp,denu);
-        matmul("TN",3,1,3,1.0,E,denu,0.0,drt);
+        matmul("TN",3,1,3,E,denu,drt);
         for (i=0;i<3;i++) dr[i]+=drt[i];
     }
     if ((opt&4)&&erp) { /* pole tide */
         tide_pole(tut,pos,erpv,denu);
-        matmul("TN",3,1,3,1.0,E,denu,0.0,drt);
+        matmul("TN",3,1,3,E,denu,drt);
         for (i=0;i<3;i++) dr[i]+=drt[i];
     }
     trace(5,"tidedisp: dr=%.3f %.3f %.3f\n",dr[0],dr[1],dr[2]);

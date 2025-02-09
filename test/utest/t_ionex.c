@@ -8,7 +8,7 @@
 static void dumptec(const tec_t *tec, int n, int level)
 {
     const tec_t *p;
-    char s[64];
+    char s[40];
     int i,j,k,m;
     
     for (i=0;i<n;i++) {
@@ -52,7 +52,7 @@ static void dumpdcb(const nav_t *nav)
     int i;
     printf("dcbs=\n");
     for (i=0;i<MAXSAT;i++) {
-        printf("%3d: P1-P2=%6.3f\n",i+1,nav->cbias[i][0]/CLIGHT*1E9); /* ns */
+        printf("%3d: P1-P2=%6.3f\n",i+1,nav->cbias[i][0][0]/CLIGHT*1E9); /* ns */
     }
 }
 /* readtec() */

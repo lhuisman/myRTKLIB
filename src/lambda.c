@@ -186,12 +186,12 @@ extern int lambda(int n, int m, const double *a, const double *Q, double *F,
     if (n<=0||m<=0) return -1;
     L=zeros(n,n); D=mat(n,1); Z=eye(n); z=mat(n,1); E=mat(n,m);
     
-    /* LD (lower diaganol) factorization (Q=L'*diag(D)*L) */
+    /* LD (lower diagonal) factorization (Q=L'*diag(D)*L) */
     if (!(info=LD(n,Q,L,D))) {
         
         /* lambda reduction (z=Z'*a, Qz=Z'*Q*Z=L'*diag(D)*L) */
         reduction(n,L,D,Z);
-        matmul("TN",n,1,n,1.0,Z,a,0.0,z); /* z=Z'*a */
+        matmul("TN",n,1,n,Z,a,z); /* z=Z'*a */
         
         /* mlambda search 
             z = transformed double-diff phase biases
