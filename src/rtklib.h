@@ -49,8 +49,12 @@
 extern "C" {
 #endif
 
-#ifdef WIN_DLL
-#define EXPORT __declspec(dllexport) /* for Windows DLL */
+#ifdef _MSC_VER
+#ifdef WIN_DLL /* for Windows DLL */
+#define EXPORT __declspec(dllexport)
+#else
+#define EXPORT __declspec(dllimport)
+#endif
 #else
 #define EXPORT
 #endif
