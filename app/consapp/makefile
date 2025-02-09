@@ -5,7 +5,7 @@
 export CC = gcc
 
 BINDIR = /usr/local/bin
-DIRS   = pos2kml str2str rnx2rtkp convbin rtkrcv
+DIRS   = pos2kml str2str rnx2rtkp convbin rtkrcv rnxbslns
 
 # Get number of parallel build jobs
 
